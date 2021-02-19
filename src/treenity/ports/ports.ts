@@ -3,25 +3,26 @@ import { Subject } from 'rxjs';
 
 
 const messageEmitter = new EventEmitter();
+//
+// interface IInPort<T> {
+//
+// }
+//
+// export function registerInPort<T>(value, portName): IInPort<T> {
+//
+// }
+//
+// export function registerOutPort<T>(value, portName, enabler): () => void {
+//   const onQuery = (query) => {
+//
+//   };
+//   messageEmitter.on(`${value._id}_{portName}`, onQuery);
+// }
 
-interface IInPort<T>
-
-:
-{
-  send(value
-:
-  any;
-):
-  Promise<any>;
+export class ArrayInPort {
+  type: string = 'in';
 }
 
-export function registerInPort<T>(value, portName): IInPort<T> {
-
-}
-
-export function registerOutPort<T>(value, portName, enabler): () => void {
-  const onQuery = (query) => {
-
-  };
-  messageEmitter.on(`${value._id}_{portName}`, onQuery);
+export class ArrayOutPort {
+  type: string = 'out';
 }

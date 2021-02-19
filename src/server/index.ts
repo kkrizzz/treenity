@@ -18,7 +18,7 @@ import config from '../config-common';
 import { HelloService } from '../mods/server';
 import createClientDb from '../mods/mongo/mongod';
 import '../treenity/service';
-import TreeService from '../treenity/tree/tree.service';
+import { TreeService } from '../treenity/tree/server';
 import MessageService from '../treenity/message/message.service';
 import { render } from '../treenity/react/react-nil';
 import React from 'react';
@@ -60,7 +60,7 @@ async function main() {
   const tree = app.use('tree', new TreeService())
     .service('tree').hooks({
       error: {
-        all: [console.error],
+        all: [err => console.error(err.stack)],
       },
       after: {
         find: [

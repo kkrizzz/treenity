@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout, Tree } from 'antd';
 import styled from 'styled-components';
@@ -41,36 +41,36 @@ const LogoText = styled.span`
 
 function collectChildren(node, groupped) {
   if (groupped[node.key]) {
-    node.children = groupped[node.key].map((c) =>
-      collectChildren(
-        {
+    node.children = groupped[node.key].map((c) => {
+        const childNode = {
           key: c._id,
           title: c.name,
           className: 'tr-tree-item',
-        },
-        groupped,
-      ),
+        };
+        return collectChildren(childNode, groupped);
+      },
     );
   }
+  node.loaded = node.children?.length > 0;
+  node.isLeaf = node.children?.length === 0;
   return node;
 }
 
-function createTreeData(tree) {
+function createTreeData(root, tree) {
   const groupped = groupBy(tree, (t) => t._p);
-  return (
-    collectChildren(
-      {
-        key: '',
-      },
-      groupped,
-    ).children || []
+  groupped[''] = [root];
+  const result = collectChildren(
+    { key: '' },
+    groupped,
   );
+  return result?.children || [];
 }
 
 const TreeRootLayout = observer(function TreeRootLayout({ value }: any) {
   const { current, setCurrentId } = useCurrent();
-  const [tree] = useServiceFind('tree', {});
-  const treeData = createTreeData(tree);
+  const [tree, loadSubtree] = useServiceFind('tree', { _p: value._id });
+  const treeData = createTreeData(value, tree);
+  const [loadedKeys, setLoadedKeys] = useState(() => [value._id]);
 
   return (
     <Layout>
@@ -86,7 +86,13 @@ const TreeRootLayout = observer(function TreeRootLayout({ value }: any) {
         <Tree
           selectedKeys={[current._id]}
           autoExpandParent
-          onSelect={(keys) => setCurrentId(keys[0] || value._id)}
+          // onSelect={(keys) => setCurrentId(keys[0] || value._id)}
+          loadedKeys={loadedKeys}
+          loadData={async (node) => {
+            setLoadedKeys([...loadedKeys, node.key]);
+            if (node.loaded) return;
+            await loadSubtree({ _p: node.key });
+          }}
           className="tr-tree"
           treeData={treeData}
           motion={null}

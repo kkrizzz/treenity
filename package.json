@@ -89,7 +89,7 @@
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "@types/socket.io-client": "^1.4.33",
-    "esbuild": "^0.7.13",
+    "esbuild": "^0.8.42",
     "jest": "^26.4.2",
     "less": "^3.12.2",
     "parcel": "1",

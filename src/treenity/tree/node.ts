@@ -24,7 +24,10 @@ function dispatcher(snap: any): IAnyType {
     if (type) return type;
   }
 
-  throw new Error(`type not found: '${snap._t}'`);
+  console.warn(`type not found: '${snap._t}'`);
+
+  return Meta;
+  // throw new Error(`type not found: '${snap._t}'`);
 }
 
 // fake type to create right meta type by its type-string
@@ -33,6 +36,8 @@ const UnionMeta = Meta.named('union-meta');
 UnionMeta.isAssignableFrom = function (snap) {
   return true;
 };
+
+export const UnionMetaType = t.union({ dispatcher }, UnionMeta);
 
 const NodeModel = meta(
   'node',
@@ -43,7 +48,8 @@ const NodeModel = meta(
       _p: t.string,
       _pa: t.array(t.string),
       _r: t.optional(t.number, 0),
-      _m: t.array(t.union({ dispatcher }, UnionMeta)),
+      _m: t.array(UnionMetaType),
+      _re: t.optional(t.string, 'root'), // resolver
     })
       .views(self => ({
         get metas() {

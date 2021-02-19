@@ -7,13 +7,15 @@ import { isStateTreeNode } from 'mobx-state-tree';
 
 
 import { makeUpdateFromActions } from '../model/make-patch-update';
-import { Node } from './node';
+import { Node, UnionMetaType } from './node';
 
 import { randomId } from '../../common/random-id';
 import assert from 'assert';
 import { Instance, SnapshotIn } from 'mobx-state-tree';
 import { check } from '../../utils/check';
 import { Channel, RealTimeConnection } from '@feathersjs/transport-commons/lib/channels/channel/base';
+import { getTypeContextConfig } from '../context/context-db';
+import { applyResolver } from './collection-resolver';
 
 const cache = {};
 const subscriptions: {
@@ -181,14 +183,22 @@ export default class TreeService implements ServiceMethods<InNode> {
   }
 
   async find(params: Params): Promise<InNode | InNode[] | Paginated<InNode> | null> {
-    let { subscribe, subId, ...query } = params.query || {};
+    let { query: { subscribe, resolver, subId, ...query } } = params;
+
+    console.log('find', params.query);
 
     if (subscribe === false && params.connection) {
       this.unsubscribe(params.connection, subId);
       return null;
     }
 
-    const data = await this.collection.find({ query });
+    if (!resolver) throw new Error('set resolver');
+
+    const resolverNode = await this.collection.get(resolver);
+
+    const data = await applyResolver(resolverNode, query, this.app);
+
+    // const data = await this.collection.find({ query });
     if (subscribe === true && params.connection) {
       const subId = this.subscribe(params.connection, data, randomId(), query);
 

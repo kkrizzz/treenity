@@ -56,7 +56,7 @@ export function useServiceFind(name, query) {
         applyPatch(node, patch);
         applyPatch(node, { path: '/_r', op: 'replace', value: r });
       } catch (err) {
-        console.error(err);
+        console.error(err.stack);
       }
     };
     service.on('created', created);
@@ -64,7 +64,7 @@ export function useServiceFind(name, query) {
     service.on('removed', removed);
     service.on('updated', updated);
 
-    service.find({ query: { ...query, subscribe: true } }).then(({ data, subId }) => {
+    service.find({ query: { resolver: 'root', subscribe: true, ...query } }).then(({ data, subId }) => {
       nodes.splice(0, nodes.length, ...data); // clear array
       subIdRef.current = subId;
       // nodes.push(...data);
@@ -82,7 +82,7 @@ export function useServiceFind(name, query) {
 
   const find = async (query) => {
     const service = app.service(name);
-    const { data } = await service.find({ query: { ...query, subId: subIdRef.current } });
+    const { data } = await service.find({ query: { ...query, subId: subIdRef.current, resolver: 'root' } });
     nodes.push(...data);
   };
 
