@@ -47,6 +47,7 @@
     "@feathersjs/socketio": "^4.5.8",
     "@feathersjs/socketio-client": "^4.5.8",
     "@feathersjs/transport-commons": "^4.5.8",
+    "beautiful-react-diagrams": "git+https://github.com/feddot2517/beautiful-react-diagrams",
     "antd": "^4.11.2",
     "assert": "^2.0.0",
     "config": "^3.3.1",

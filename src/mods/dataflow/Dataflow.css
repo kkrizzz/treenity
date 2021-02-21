@@ -1,0 +1,38 @@
+.dataflow {
+  height: 100%;
+  display: flex;
+}
+
+.dataflow__blocks-menu {
+  padding: 4px;
+  height: 100%;
+  width: 300px;
+  background: #dbdbdb;
+}
+
+.dataflow__workspace__toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dataflow__workspace {
+  flex: 1;
+}
+
+.dataflow__workspace__diagram {
+  height: 100%;
+}
+
+.dataflow__blocks-menu__search-list__item {
+  cursor: grab;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin: 4px 0;
+  background: #ffffff;
+}
+
+.dataflow__blocks-menu__search-list {
+  margin-top: 4px;
+}
