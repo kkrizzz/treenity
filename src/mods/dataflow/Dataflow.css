@@ -4,18 +4,18 @@
 }
 
 .dataflow__blocks-menu {
-  padding: 4px;
+  padding: 8px;
   height: 100%;
   width: 300px;
-  background: #dbdbdb;
+  background: #ffffff;
 }
 
 .dataflow__workspace__toolbar {
   display: flex;
-  justify-content: flex-end;
 }
 
 .dataflow__workspace {
+  overflow: hidden;
   flex: 1;
 }
 
@@ -30,9 +30,32 @@
   align-items: center;
   padding: 12px;
   margin: 4px 0;
-  background: #ffffff;
+  background: #efefef;
 }
 
 .dataflow__blocks-menu__search-list {
   margin-top: 4px;
+}
+.dataflow__workspace__context-menu {
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.39);
+  padding: 4px;
+  background: #0c134c;
+  z-index: 10000;
+}
+
+.dataflow__workspace__context-menu_item {
+  user-select: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  color: white;
+}
+
+.dataflow__workspace__context-menu_item:hover {
+  background: rgba(139, 0, 0, 0.38);
+}
+
+.dataflow__sub-menu {
+  padding: 24px;
+  background: white;
+  width: 280px;
 }

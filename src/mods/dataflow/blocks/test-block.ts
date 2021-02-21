@@ -1,5 +1,6 @@
 import { randomString } from '../utils/randomString';
 import { block } from './block';
+import {lists} from "./lists";
 
 export function testBlock(coordinates: any = [0, 0]): any {
   return block({
@@ -14,5 +15,6 @@ export function testBlock(coordinates: any = [0, 0]): any {
   });
 }
 
+testBlock.list = lists.DEFAULT
 testBlock.named = 'Тестовый блок';
 testBlock.support = 'Это тестовый гайд для тестового блока.'
