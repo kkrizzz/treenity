@@ -1,6 +1,6 @@
 export const lists = {
     DEFAULT: {
-        name: 'Стандартные'
+        name: 'df.diagram.common'
     },
     TEST: {
         name: 'Тестовый лист'

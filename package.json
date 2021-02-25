@@ -53,7 +53,7 @@
     "config": "^3.3.1",
     "cors": "latest",
     "dayjs": "^1.8.36",
-    "feathers-mongodb": "^6.1.0",
+    "feathers-mongodb": "^6.3.0",
     "helmet": "^4.1.1",
     "history": "^5.0.0",
     "immer": "^7.0.9",

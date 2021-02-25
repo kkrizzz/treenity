@@ -50,6 +50,7 @@ async function main() {
     name,
     mongoService({
       Model: db.collection(name),
+      disableObjectify: true,
     }),
   );
 

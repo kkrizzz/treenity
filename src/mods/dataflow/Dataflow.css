@@ -23,6 +23,13 @@
   height: 100%;
 }
 
+.feddot-dragscroll {
+  height: 100%;
+  width: 100%;
+  transition: all 1s ease-in;
+  overflow: auto;
+}
+
 .dataflow__blocks-menu__search-list__item {
   cursor: grab;
   display: flex;
