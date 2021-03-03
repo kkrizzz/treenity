@@ -2,29 +2,29 @@ import { useEffect } from 'react';
 import { types } from 'mobx-state-tree';
 import { addComponent } from '../../treenity/context/context-db';
 import { meta } from '../../treenity/meta/meta.model';
-import { json } from 'body-parser';
-import cors from 'cors';
-
-const express = require('express');
+import {useApp} from "../../treenity/react/useApp";
+import mongoService from 'feathers-mongodb';
+import createClientDb from "../mongo/mongod";
 
 const RestServiceMeta = meta('rest.service', types.model({
   baseUrl: types.string,
   collectionName: types.string,
 }));
 
-addComponent(RestServiceMeta, 'service', {}, ({ value, app }) => {
+addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
+  const app = useApp();
+  const db = createClientDb(app);
+
   useEffect(() => {
-    const baseUrl = value.baseUrl;
-    const app = express();
-    app.use(json());
-    app.use(cors('*'));
-    const collection = app.service(value.collectionName);
+    db.then(db => {
+      app.use(value.baseUrl, mongoService({
+        Model: db.collection(value.collectionName),
+        disableObjectify: true
+      }))
+    })
 
-    app.get(value.baseUrl, (req, res) => {
-
-    });
-    app.get(value.baseUrl, (req, res) => {
-
-    });
+    return () => undefined
   }, []);
+
+  return null;
 });

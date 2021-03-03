@@ -8,6 +8,7 @@ import set from 'lodash/set';
 import memoize from 'lodash/memoize';
 import useAsyncEffect from 'use-async-effect';
 import { promised } from './promised';
+import {add} from "winston";
 
 const PROGRAM_ID = new PublicKey('So11111111111111111111111111111111111111112');
 const derivedKey = memoize(async function derivedKey(accountId, context, name) {
@@ -35,8 +36,6 @@ export function loadScript(address, context, code) {
   window.t__context = { preact: { ...React, html } };
 
   const loader = `
-    import { Connection } from 'unpkg.com/@solana/web3.js';
-  
     const add = (comp) => window.__addComponent('${address}', '${context}', comp);
     const { preact } = window.t__context;
 
@@ -76,7 +75,7 @@ export function useAccountComponent(address: string, context: string, name: stri
     async () => {
       // const [derived, nonce] = await derivedKey(address, context, name);
       // const derivedAccount = await conn.getAccountInfoAndContext(derived);
-      return scriptCode(address, context); //derivedAccount?.data.toString() || scriptCode(address, context);
+      return await scriptCode(address, context); //derivedAccount?.data.toString() || scriptCode(address, context);
     },
   );
   useAsyncEffect(async () => {
@@ -90,28 +89,7 @@ export function useAccountComponent(address: string, context: string, name: stri
   return [components[address]?.[context], loading, []];
 }
 
-function scriptCode(addr, context) {
-  const scripts = {
-    'So11111111111111111111111111111111111111112': {
-      react: `
-      const { useState, html } = preact;
-
-      const ClickCounter = () => {
-        const [count, setCount] = useState(0);
-        const increment = () => setCount(count + 1);
-        return html\`
-          <div>
-            This is main Solana smart contract!
-            <button onClick=\${increment}>
-              Clicked \${count} times
-            </button>
-          </div>
-        \`;
-      };
-
-      add(ClickCounter);`,
-    },
-    'So11111111111111111111111111111111111111113': {},
-  };
-  return scripts[addr][context];
+async function scriptCode(addr, context) {
+  const targetView = await fetch(`http://localhost:3100/test?address=${addr}`, {method: 'get'});
+  return (await targetView.json())[0][context]
 }

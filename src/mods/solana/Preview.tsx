@@ -1,21 +1,15 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { loadScript, useAccount } from './useAccount';
+import {loadScript, useAccount, useAccountComponent} from './useAccount';
 import useParams from './useParams';
 
 
-export default function Preview({ code }) {
+export default function Preview() {
   const [address, name = 'any'] = useParams();
-
   const [accData, isAccLoading] = useAccount(address);
-  const { data: scriptData, isLoading } = useQuery(code, () => loadScript(address, 'react', code));
-
-  if (isLoading || isAccLoading) return null;
-
-  const [Component] = scriptData;
+  const [Component, loading, data] = useAccountComponent(address, 'react', name);
 
   return Component && <>
-    {code}
-    <Component address={address} data={accData!.data} name={name} context="react" />
+    <Component address={address} name={name} context="react" />
   </>;
 }

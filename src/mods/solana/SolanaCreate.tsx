@@ -7,6 +7,7 @@ import 'prismjs/themes/prism.css'; //Example style, you can use another
 
 import useParams from './useParams';
 import Preview from './Preview';
+import {getFormData} from "./getFormData";
 
 export default function Solana() {
   const [address] = useParams();
@@ -24,12 +25,26 @@ export default function Solana() {
     case 'preview':
       return (<>
         {tabs}
-        <Preview code={code} />
+        <Preview/>
       </>);
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const {name, context, code} = getFormData(e);
+    const formData = {
+      name,
+      [context]: code
+    }
 
+    fetch('http://localhost:3100/test',{
+      method: 'POST',
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({...formData, address}),
+    }).then(res => console.log(res));
   };
   // const [Component, loading, data] = useAccountComponent(address, 'react', name);
   return (<>
@@ -40,13 +55,15 @@ export default function Solana() {
         <div className="row">
           <div className="col-sm-12 col-md-6">
             <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="username">context</label>
-            <input type="text" id="context" placeholder="context" />
+            <select name="context" id="context" placeholder="context" >
+              <option value="react">React</option>
+            </select>
           </div>
         </div>
         <div className="row">
           <div className="col-sm-12 col-md-6">
             <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="name">Name</label>
-            <input type="text" id="name" placeholder="name" />
+            <input name="name" type="text" id="name" placeholder="name" />
           </div>
         </div>
         <div className="row">
@@ -54,6 +71,7 @@ export default function Solana() {
             <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="code">Code</label>
             <div style={{ display: 'inline-block' }}>
               <ReactSimpleCodeEditor
+                name="code"
                 value={code}
                 onValueChange={(code) => setCode(code)}
                 highlight={(code) => highlight(code, languages.js)}
@@ -71,6 +89,7 @@ export default function Solana() {
             </div>
           </div>
         </div>
+        <button type="submit" className="primary">Save</button>
       </fieldset>
     </form>
   </>);

@@ -27,6 +27,7 @@ import { Context } from '../treenity/context/meta-context';
 import { Node } from '../treenity/tree/node';
 import { AppProvider } from '../treenity/react/useApp';
 import services from './services';
+import {Sysinit} from "../treenity/service/Sysinit";
 
 config.isServer = true;
 
@@ -50,6 +51,7 @@ async function main() {
     name,
     mongoService({
       Model: db.collection(name),
+      disableObjectify: true
     }),
   );
 
