@@ -38,12 +38,11 @@ export const DragScroll = (props: DragScrollProps) => {
     if (e.deltaY > 0) {
       if (zoom < 1) container.current.style.zoom = `${zoom + 0.1}`;
     } else {
-      if (zoom > 0.1) container.current.style.zoom = `${zoom - 0.1}`;
+      if (zoom > 0.5) container.current.style.zoom = `${zoom - 0.1}`;
     }
   }
 
   function onScroll(e) {
-
   }
 
   function onMouseMove(e: any) {

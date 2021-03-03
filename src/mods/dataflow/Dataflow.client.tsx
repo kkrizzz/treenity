@@ -19,6 +19,7 @@ import { randomId } from '../../common/random-id';
 import { getType } from './utils/getType';
 import { otherDiagramBlock } from './blocks/otherDiagram';
 import {DragScroll} from "./components/DragScroll";
+import {mapDiagramsFromMetasNode} from "./utils/mapDiagramsFromNode";
 
 const { Panel } = Collapse;
 
@@ -28,20 +29,7 @@ addComponent(Dataflow, 'react', {}, ({ onChange, value }) => {
       lastSchema && lastSchema.nodes.length
       ? lastSchema
       : {
-          nodes:   value.node._m
-              .filter((i) => i._t === 'df.diagram' && i._id !== value._id)
-              .map((n) => {
-                if(!n.schema) return null
-                const parsedSchemeFromOtherDiagram = JSON.parse(n.schema).nodes
-                const {outputs} = parsedSchemeFromOtherDiagram.find(t=>t.payload.block.type === 'db.blocks.common.inputs');
-                const {inputs} = parsedSchemeFromOtherDiagram.find(t=>t.payload.block.type === 'db.blocks.common.outputs');
-                return otherDiagramBlock(
-                    `${n._id}.Тестовая диагрмма`,
-                    [0, 0],
-                    outputs,
-                    inputs
-                )
-              }).filter(i => i !== null),
+          nodes: mapDiagramsFromMetasNode(value).map(otherDiagramBlock),
         }
   );
 
@@ -103,6 +91,7 @@ addComponent(Dataflow, 'react', {}, ({ onChange, value }) => {
   const removeNode = (nodeId: string) => {
     const targetNode = schema.nodes.find((i) => i.id === nodeId);
     if (!targetNode) return;
+    setSelectedNodeId('');
 
     controller.removeNode({ id: nodeId });
   };
@@ -179,6 +168,7 @@ addComponent(Dataflow, 'react', {}, ({ onChange, value }) => {
                   controller,
                   schema,
                   block: selectedNode,
+                  meta: value
                 })}
               </div>
             ) : (

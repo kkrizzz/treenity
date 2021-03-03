@@ -14,7 +14,7 @@ export function block({
   content: string;
   inputs?: Array<Port>;
   outputs?: Array<Port>;
-  coordinates?: [number, number];
+  coordinates?: Array<number>;
   payload?: any;
   render?: ReactNode
 }) {

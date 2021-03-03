@@ -54,6 +54,7 @@ export const matchContexts = (contexts: { [context: string]: object }, matchTags
 // TODO: fix callback type value from any
 export interface ContextComponentProps<T extends IAnyModelType> {
   value: Instance<T>;
+  props: any,
   onChange: <Params extends any[] = any[0]>(callback: (value: Instance<T>, ...params: Params) => void, deps?: Array<any>) => (...params: Params) => void;
 }
 

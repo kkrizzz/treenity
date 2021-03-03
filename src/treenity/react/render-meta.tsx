@@ -11,6 +11,7 @@ import { useApp } from './useApp';
 import saveNode from '../tree/save-node';
 
 const getTypeName = (type) => {
+  if(typeof type === 'string') return type;
   if (isType(type)) return type.name;
   if (isStateTreeNode(type)) return getType(type).name;
 

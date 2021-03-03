@@ -33,7 +33,7 @@
   display: none;
 }
 
-.dataflow__blocks-menu__search-list__item {
+.dataflow__blocks-menu__list__item {
   cursor: grab;
   display: flex;
   justify-content: space-between;
