@@ -22,15 +22,7 @@ const inject = (comp) => (
 );
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/:address" element={inject(<Solana />)} />
-        <Route path="/:address/create" element={inject(<SolanaCreate />)} />
-        <Route path='/:address/:name' element={inject(<Solana />)} />
-      </Routes>
-    </BrowserRouter>
-  );
+  return inject(<Solana />);
 };
 
 render(html`

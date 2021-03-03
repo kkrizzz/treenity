@@ -1,12 +1,18 @@
-import { useParams } from 'react-router-dom';
-import { useAccountComponent } from './useAccount';
-import { ConnectionProvider } from './useConnection';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import SolanaCreate from './SolanaCreate';
+import { useAccountComponent } from './useAccount';
+import { ConnectionProvider } from './useConnection';
+import useParams from './useParams';
 
 
 export default function Solana() {
-  const { address, name = 'any' } = useParams();
+  const [address, name = 'any'] = useParams();
+
+  switch (name) {
+    case 'create':
+      return <SolanaCreate />;
+  }
 
   const [Component, loading, data] = useAccountComponent(address, 'react', name);
 
