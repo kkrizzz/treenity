@@ -1,21 +1,25 @@
-import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import React, { useEffect, useState } from 'react';
 import SolanaCreate from './SolanaCreate';
-import { useAccountComponent } from './useAccount';
-import { ConnectionProvider } from './useConnection';
+import {loadScript, useAccount, useAccountComponent} from './useAccount';
 import useParams from './useParams';
-
+import StorageManager from "./storageInterface";
+import {add} from "winston";
+import {SolanaView} from "./SolanaVIew";
 
 export default function Solana() {
-  const [address, name = 'any'] = useParams();
+  const [address, name = 'any', edit] = useParams();
+  const [loadEnd, setLoadEnd] = useState<boolean>(false);
+  const [view, setView] = useState<any>(null);
+  const [accountData, accountLoading] = useAccount(address);
 
-  switch (name) {
-    case 'create':
-      return <SolanaCreate />;
-  }
+  useEffect(() => {
+    StorageManager.findView(address, name).then(([v])=> {
+      setLoadEnd(true);
+      setView(v);
+    })
+  }, [])
+  if(!loadEnd && accountLoading) return <div className="spinner"/>
 
-  const [Component, loading, data] = useAccountComponent(address, 'react', name);
-
-  return Component &&
-    <Component address={address} data={data} name={name} context="react" />;
+  if (edit) return <SolanaCreate view={view} accountData={accountData}/>
+  else return <SolanaView accountData={accountData} view={view}/>
 }

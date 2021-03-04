@@ -7,90 +7,97 @@ import 'prismjs/themes/prism.css'; //Example style, you can use another
 
 import useParams from './useParams';
 import Preview from './Preview';
-import {getFormData} from "./getFormData";
+import { getFormData } from './getFormData';
+import StorageManager from './storageInterface';
 
-export default function Solana() {
-  const [address] = useParams();
+export default function Solana({view, accountData}) {
+  const [address, viewName] = useParams();
   const [tab, setTab] = useState('edit');
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(view?.['react'] || '');
 
   const tabs = (
     <div className="button-group">
-      <button onClick={() => setTab('edit')}>Edit</button>
-      <button onClick={() => setTab('preview')}>Preview</button>
+      <button className={tab=='edit'?'primary':''} onClick={() => setTab('edit')}>Edit</button>
+      <button className={tab=='preview'?'primary':''} onClick={() => setTab('preview')}>Preview</button>
     </div>
   );
 
   switch (tab) {
     case 'preview':
-      return (<>
-        {tabs}
-        <Preview/>
-      </>);
+      return (
+        <>
+          {tabs}
+          <Preview accountData={accountData} code={code}/>
+        </>
+      );
   }
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const {name, context, code} = getFormData(e);
+    const { context, code } = getFormData(e);
     const formData = {
-      name,
-      [context]: code
-    }
+      name: viewName,
+      [context]: code,
+    };
 
-    fetch('http://localhost:3100/test',{
-      method: 'POST',
-      cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({...formData, address}),
-    }).then(res => console.log(res));
+    if(view) {
+      StorageManager.patchView(view._id,{...formData, address}).catch(alert)
+    }else {
+      StorageManager.createView({...formData, address}).catch(alert)
+    }
   };
-  // const [Component, loading, data] = useAccountComponent(address, 'react', name);
-  return (<>
-    {tabs}
-    <form onSubmit={onSubmit}>
-      <fieldset>
-        <legend>Simple form</legend>
-        <div className="row">
-          <div className="col-sm-12 col-md-6">
-            <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="username">context</label>
-            <select name="context" id="context" placeholder="context" >
-              <option value="react">React</option>
-            </select>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-sm-12 col-md-6">
-            <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="name">Name</label>
-            <input name="name" type="text" id="name" placeholder="name" />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-sm-12 col-md-6" style={{ display: 'flex' }}>
-            <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="code">Code</label>
-            <div style={{ display: 'inline-block' }}>
-              <ReactSimpleCodeEditor
-                name="code"
-                value={code}
-                onValueChange={(code) => setCode(code)}
-                highlight={(code) => highlight(code, languages.js)}
-                padding={10}
-                style={{
-                  minHeight: 200,
-                  width: 400,
-                  fontSize: 14,
-                  background: '#F8F8F8',
-                  border: '1px solid rgb(221, 221, 221)',
-                  margin: 'calc(var(--universal-margin) / 2)',
-                  borderRadius: 'var(--universal-border-radius)',
-                }}
-              />
+
+  return (
+    <>
+      {tabs}
+      <form onSubmit={onSubmit}>
+        <fieldset>
+          <legend>Simple form</legend>
+          <div className="row">
+            <div className="col-sm-12 col-md-6">
+              <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="username">
+                Context
+              </label>
+              <select name="context" id="context" placeholder="Context">
+                <option value="react">React</option>
+                <option value="react">Cell</option>
+                <option value="react">List</option>
+                <option value="react">Card</option>
+                <option value="react">Thumbnail</option>
+                <option value="react">Icon</option>
+              </select>
             </div>
           </div>
-        </div>
-        <button type="submit" className="primary">Save</button>
-      </fieldset>
-    </form>
-  </>);
+          <div className="row">
+            <div className="col-sm-12 col-md-6" style={{ display: 'flex' }}>
+              <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="code">
+                Code
+              </label>
+              <div style={{ display: 'inline-block' }}>
+                <ReactSimpleCodeEditor
+                  name="code"
+                  value={code}
+                  onValueChange={(code) => setCode(code)}
+                  highlight={(code) => highlight(code, languages.js)}
+                  padding={10}
+                  style={{
+                    minHeight: 200,
+                    width: 400,
+                    fontSize: 14,
+                    background: '#F8F8F8',
+                    border: '1px solid rgb(221, 221, 221)',
+                    margin: 'calc(var(--universal-margin) / 2)',
+                    borderRadius: 'var(--universal-border-radius)',
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <button type="submit" className="primary">
+            Save
+          </button>
+        </fieldset>
+      </form>
+    </>
+  );
 }

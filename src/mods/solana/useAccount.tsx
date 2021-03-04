@@ -9,6 +9,7 @@ import memoize from 'lodash/memoize';
 import useAsyncEffect from 'use-async-effect';
 import { promised } from './promised';
 import {add} from "winston";
+import StorageManager from "./storageInterface";
 
 const PROGRAM_ID = new PublicKey('So11111111111111111111111111111111111111112');
 const derivedKey = memoize(async function derivedKey(accountId, context, name) {
@@ -19,7 +20,7 @@ const derivedKey = memoize(async function derivedKey(accountId, context, name) {
 });
 
 const loadedScripts: { [code: string]: boolean } = {};
-const components: { [code: string]: any } = {};
+export const components: { [code: string]: any } = {};
 const readys: { [code: string]: any } = {};
 
 
@@ -63,21 +64,16 @@ export function useAccount(address: string): [AccountInfo<Buffer> | undefined, b
 export function useAccountComponent(address: string, context: string, name: string) {
   if (!/^[A-z0-9]+$/.test(address)) throw new Error('bad address');
 
-  const conn = useConnection();
   const [loading, setLoading] = useState(true);
+  const [accountInfo, isLoading] = useAccount(address);
 
-  const { data: accountInfo, isLoading } = useQuery(
-    `acc_${address}`,
-    () => conn.getAccountInfo(new PublicKey(address)),
-  );
   const { data: code, isLoading: isScriptLoading } = useQuery(
     `acc_${address}_${context}_${name}`,
     async () => {
-      // const [derived, nonce] = await derivedKey(address, context, name);
-      // const derivedAccount = await conn.getAccountInfoAndContext(derived);
-      return await scriptCode(address, context); //derivedAccount?.data.toString() || scriptCode(address, context);
+      return await scriptCode(address, name, context);
     },
   );
+
   useAsyncEffect(async () => {
     if (!code || isScriptLoading || loadedScripts[code]) return;
     loadedScripts[code] = true;
@@ -89,7 +85,6 @@ export function useAccountComponent(address: string, context: string, name: stri
   return [components[address]?.[context], loading, []];
 }
 
-async function scriptCode(addr, context) {
-  const targetView = await fetch(`http://localhost:3100/test?address=${addr}`, {method: 'get'});
-  return (await targetView.json())[0][context]
+async function scriptCode(addr, name, context) {
+  return {context: ''}[context]
 }

@@ -19,7 +19,6 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
     db.then(db => {
       app.use(value.baseUrl, mongoService({
         Model: db.collection(value.collectionName),
-        disableObjectify: true
       }))
     })
 
