@@ -42,7 +42,7 @@ export function loadScript(id: string, code: string, context) {
   let loaded = loadedScripts[id];
   if (loaded) {
     if (loaded.code === code) {
-      return loaded;
+      return Promise.resolve(loaded);
     } else {
       unload(id);
     }
