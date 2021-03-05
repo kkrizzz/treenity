@@ -1,4 +1,5 @@
 import { html } from 'htm/preact';
+import * as preact from 'preact/compat';
 import findLastIndex from 'lodash/findLastIndex';
 import { promised } from './promised';
 
@@ -28,8 +29,10 @@ function reactToHtmPreact(execCode: string) {
       if (!tags.length) {
         fixedCode += execCode.slice(prev, start);
         fixedCode += 'html`' +
-          execCode.slice(start, end).replace(/<([A-Z][\w\d_]+)/g, '<${$1}') +
-          '`';
+          execCode.slice(start, end)
+            .replace(/\{(.*?)\}/g, '${$1}')
+            .replace(/<([A-Z][\w\d_]+)/g, '<${$1}')
+          + '`';
         prev = end;
       }
     }
@@ -55,6 +58,7 @@ export function loadScript(id: string, code: string, context) {
     code,
     context: {
       html,
+      preact,
       ...context,
     },
     ready: false,
@@ -87,9 +91,9 @@ export function loadScript(id: string, code: string, context) {
 
   const loader = `
   ${imports}
+  const __ls = window.__loadedScripts['${id}'];
   (async function() {
-    const __ls = window.__loadedScripts['${id}'];
-    const { html, add, Render, ...context } = __ls.context;
+    const { html, add, Render, preact, ...context } = __ls.context;
 
       ${fixedCode}
     
