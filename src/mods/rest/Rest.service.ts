@@ -23,8 +23,8 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
       }));
     });
 
-    return () => undefined
-  }, []);
+    return () => undefined;
+  }, [value.baseUrl]);
 
   return null;
 });

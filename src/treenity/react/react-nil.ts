@@ -1,6 +1,6 @@
 // import Reconciler from 'react-reconciler/cjs/react-reconciler.production.min'
 import React from 'react';
-import Reconciler from 'react-reconciler/cjs/react-reconciler.development';
+import Reconciler from 'react-reconciler';
 
 const emptyObject = {};
 

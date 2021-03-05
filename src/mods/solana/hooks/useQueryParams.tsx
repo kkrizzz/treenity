@@ -5,7 +5,7 @@ export default function useQueryParams(): { [name: string]: string } {
     .map(p => p.split('=').map(decodeURIComponent));
   const query = {};
   for (let [key, value] of queryParams) {
-    query[key] = value;
+    query[key] = value ?? null;
   }
   return query;
 }

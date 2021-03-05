@@ -7,15 +7,16 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch-server": "parcel watch --target node --public-url ./ src/server/index.ts",
-    "client": "parcel build src/client/index.html --out-dir dist/client-prod --public-url ./",
-    "sol:build": "parcel build src/mods/solana/index.html --out-dir dist/solana --public-url /",
+    "client:build": "NODE_ENV=production parcel build src/client/index.html --out-dir dist/client-prod --public-url ./",
+    "client:serve": "parcel serve --port 3101 src/client/index.html --out-dir dist/client",
+    "client:watch": "parcel watch src/client/index.html --out-dir dist/client",
+    "sol:build": "NODE_ENV=production parcel build src/mods/solana/index.html --out-dir dist/solana-prod --public-url /",
     "sol:serve": "parcel serve --port 3102 src/mods/solana/index.html --out-dir dist/solana",
     "sol:watch": "parcel watch src/mods/solana/index.html --out-dir dist/solana --public-url /",
-    "watch-client": "parcel watch src/client/index.html --out-dir dist/client",
-    "serve-client": "parcel serve --port 3101 src/client/index.html --out-dir dist/client",
+    "server:build": "NODE_ENV=production parcel build --target node --out-file dist/server-prod.js --public-url ./ src/server/index.ts",
+    "server:watch": "parcel watch --target node --out-file dist/server-dev.js --public-url ./ src/server/index.ts",
     "jest": "jest --forceExit",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "lg": "parcel watch --target node --public-url ./src/logicEngine/test.ts"
   },
   "directories": {

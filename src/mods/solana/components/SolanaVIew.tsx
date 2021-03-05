@@ -5,7 +5,7 @@ addComponent('default', 'default', 'react', {}, () => (
   <div>
     <p>
       This is the default view. Want to <a
-      href="?edit=true"
+      href="?edit"
       style={{ color: '#104378', textDecoration: 'underline' }}>customize?</a>
     </p>
   </div>

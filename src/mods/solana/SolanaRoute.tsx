@@ -10,7 +10,7 @@ export default function SolanaRoute() {
   const ctx = `react${context && context !== 'react' ? ` ${context}` : ''}`;
 
   const { edit } = useQueryParams();
-  if (edit) return <SolanaEdit id={id} name={name} context={ctx} />;
+  if (edit !== undefined) return <SolanaEdit id={id} name={name} context={ctx} />;
 
   return <Render id={id} context={ctx} name={name} />;
 }

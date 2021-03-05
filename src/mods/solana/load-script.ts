@@ -13,6 +13,31 @@ function unload(id) {
   }
 }
 
+function reactToHtmPreact(execCode: string) {
+  const tags: number[] = [];
+  let prev = 0;
+  let fixedCode = '';
+  for (let i = 0; i < execCode.length; i++) {
+    const c = execCode[i];
+    const c2 = execCode[i + 1];
+    if (c === '<' && c2 !== '/') {
+      tags.push(i);
+    } else if ((c === '<' && c2 === '/') || (c === '/' && c2 === '>')) {
+      const start = tags.pop()!;
+      const end = c === '<' ? execCode.indexOf('>', i) + 1 : i + 1;
+      if (!tags.length) {
+        fixedCode += execCode.slice(prev, start);
+        fixedCode += 'html`' +
+          execCode.slice(start, end).replace(/<([A-Z][\w\d_]+)/g, '<${$1}') +
+          '`';
+        prev = end;
+      }
+    }
+  }
+  fixedCode += execCode.slice(prev);
+  return fixedCode;
+}
+
 export function loadScript(id: string, code: string, context) {
   let loaded = loadedScripts[id];
   if (loaded) {
@@ -56,6 +81,9 @@ export function loadScript(id: string, code: string, context) {
   const importsIdx = findLastIndex(codeLines, line => line.startsWith('import'));
   const imports = codeLines.slice(0, importsIdx + 1).join('\n');
   const execCode = codeLines.slice(importsIdx + 1).join('\n');
+  const fixedCode = reactToHtmPreact(execCode);
+
+  console.log(fixedCode);
 
   const loader = `
   ${imports}
@@ -63,7 +91,7 @@ export function loadScript(id: string, code: string, context) {
     const __ls = window.__loadedScripts['${id}'];
     const { html, add, Render, ...context } = __ls.context;
 
-      ${execCode}
+      ${fixedCode}
     
       window.onerror = undefined; 
       __ls.onReady();
