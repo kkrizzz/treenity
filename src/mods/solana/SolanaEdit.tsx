@@ -1,24 +1,53 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactSimpleCodeEditor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css'; //Example style, you can use another
+import useParams from './hooks/useParams';
+import { getFormData } from './utils/getFormData';
+import { restStorageManager } from './rest-storage-manager';
+import { addComponent } from './component-db';
+import { loadScript } from './load-script';
+import Render from './Render';
+import { makeId } from './utils/make-id';
 
-import useParams from './useParams';
-import Preview from './Preview';
-import { getFormData } from './getFormData';
-import StorageManager from './storageInterface';
+const contexts = [
+  'react',
+  'react cell',
+  'react list',
+  'react card',
+  'react thumbnail',
+];
 
-export default function Solana({view, accountData}) {
-  const [address, viewName] = useParams();
+function Preview({ accountData, code }) {
+  const [address, name, context = 'react'] = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const CONTEXT = 'react';
+  useEffect(() => {
+    loadScript(makeId(address, CONTEXT, name), code, {
+      add(component) {
+        addComponent(address, name, CONTEXT, {}, component);
+      },
+    }).then(() => setIsLoading(false));
+  }, [code]);
+
+  if (!code) return null;
+  if (isLoading) return <div className="spinner" />;
+
+  return <Render id={address} name={name} context={context || 'react'} />;
+}
+
+
+export default function SolanaEdit({ value, address, name, view }) {
   const [tab, setTab] = useState('edit');
-  const [code, setCode] = useState(view?.['react'] || '');
+  const [code, setCode] = useState('');
 
   const tabs = (
     <div className="button-group">
-      <button className={tab=='edit'?'primary':''} onClick={() => setTab('edit')}>Edit</button>
-      <button className={tab=='preview'?'primary':''} onClick={() => setTab('preview')}>Preview</button>
+      <button className={tab == 'edit' ? 'primary' : ''} onClick={() => setTab('edit')}>Edit</button>
+      <button className={tab == 'preview' ? 'primary' : ''} onClick={() => setTab('preview')}>Preview</button>
     </div>
   );
 
@@ -27,7 +56,7 @@ export default function Solana({view, accountData}) {
       return (
         <>
           {tabs}
-          <Preview accountData={accountData} code={code}/>
+          <Preview accountData={value} code={code} />
         </>
       );
   }
@@ -35,15 +64,12 @@ export default function Solana({view, accountData}) {
   const onSubmit = (e) => {
     e.preventDefault();
     const { context, code } = getFormData(e);
-    const formData = {
-      name: viewName,
-      [context]: code,
-    };
 
-    if(view) {
-      StorageManager.patchView(view._id,{...formData, address}).catch(alert)
-    }else {
-      StorageManager.createView({...formData, address}).catch(alert)
+    if (view) {
+      restStorageManager.patch(view._id, { data: code }).catch(alert);
+    } else {
+      const _id = makeId(address, context, name);
+      restStorageManager.create({ _id, data: code }).catch(alert);
     }
   };
 
@@ -59,12 +85,9 @@ export default function Solana({view, accountData}) {
                 Context
               </label>
               <select name="context" id="context" placeholder="Context">
-                <option value="react">React</option>
-                <option value="react">Cell</option>
-                <option value="react">List</option>
-                <option value="react">Card</option>
-                <option value="react">Thumbnail</option>
-                <option value="react">Icon</option>
+                {contexts.map(context => (
+                  <option value={context}>{context}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -101,3 +124,5 @@ export default function Solana({view, accountData}) {
     </>
   );
 }
+
+addComponent('default', 'default', 'react edit', {}, SolanaEdit);

@@ -19,7 +19,7 @@ const CurrentNodeContext = createContext<ICurrentNodeContext>(
 );
 export const useCurrent = () => useContext(CurrentNodeContext);
 
-export function RenderCurrent({ context = 'layout ?root' }) {
+export function RenderRoute({ context = 'layout ?root' }) {
   const { context: ctx = context, rootId = 'root', id = 'root' } = useParams();
 
   const navigate = useNavigate();

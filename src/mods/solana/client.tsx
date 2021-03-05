@@ -2,12 +2,13 @@ import React from 'react';
 import 'regenerator-runtime/runtime';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { html, render } from 'htm/preact';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ConnectionProvider } from './hooks/useConnection';
 
 import config from '../../config-common';
-import Solana from './Solana';
-import SolanaCreate from './SolanaCreate';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ConnectionProvider } from './useConnection';
+import SolanaRoute from './SolanaRoute';
+import './SolanaEdit';
+
 
 config.isClient = true;
 
@@ -22,7 +23,7 @@ const inject = (comp) => (
 );
 
 const App = () => {
-  return inject(<Solana />);
+  return inject(<SolanaRoute />);
 };
 
 render(html`

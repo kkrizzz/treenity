@@ -16,11 +16,12 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
   const db = createClientDb(app);
 
   useEffect(() => {
+    console.log('starting rest service on', value.baseUrl);
     db.then(db => {
       app.use(value.baseUrl, mongoService({
         Model: db.collection(value.collectionName),
-      }))
-    })
+      }));
+    });
 
     return () => undefined
   }, []);
