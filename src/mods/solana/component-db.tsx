@@ -1,5 +1,5 @@
 import set from 'lodash/set';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export const components: { [code: string]: any } = {};
 
