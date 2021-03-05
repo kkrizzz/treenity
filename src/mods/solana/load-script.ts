@@ -49,8 +49,8 @@ export async function loadScript(id, code, context) {
   loadedScripts[id] = loaded;
 
   const loader = `(async function() {
+    const __ls = window.__loadedScripts['${id}'];
     try {
-      const __ls = window.__loadedScripts['${id}'];
       const { html, add, ...context } = __ls.context;
 
       ${code}
