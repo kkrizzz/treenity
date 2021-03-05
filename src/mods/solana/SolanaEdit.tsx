@@ -131,4 +131,4 @@ export default function SolanaEdit({ value, id, name, context }) {
   );
 }
 
-addComponent('default', 'default', 'react edit', {}, SolanaEdit);
+// addComponent('default', 'default', 'react edit', {}, SolanaEdit);
