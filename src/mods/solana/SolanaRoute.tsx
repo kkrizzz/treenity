@@ -5,12 +5,8 @@ import Render from './Render';
 import SolanaEdit from './SolanaEdit';
 
 export default function SolanaRoute() {
-  let [id, name, context] = useParams();
+  let [id, name = 'default', context = 'react'] = useParams();
 
-  if (!context) {
-    context = name;
-    name = 'default';
-  }
   const ctx = `react${context && context !== 'react' ? ` ${context}` : ''}`;
 
   const { edit } = useQueryParams();
