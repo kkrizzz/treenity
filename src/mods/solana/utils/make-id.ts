@@ -9,6 +9,6 @@ const derivedKey = memoize(async function derivedKey(accountId, context, name): 
   );
 });
 
-export function makeId(address: string, context: string, name: string): string {
+export function makeId(address: string, name: string, context: string): string {
   return `${address}_${context.replace(' ', '-')}_${name}`; //(await derivedKey(address, context, name))[0].toBase58();
 }

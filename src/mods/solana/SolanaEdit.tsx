@@ -11,6 +11,7 @@ import { addComponent } from './component-db';
 import { loadScript } from './load-script';
 import Render from './Render';
 import { makeId } from './utils/make-id';
+import { useQuery } from 'react-query';
 
 const contexts = [
   'react',
@@ -20,15 +21,13 @@ const contexts = [
   'react thumbnail',
 ];
 
-function Preview({ accountData, code }) {
-  const [address, name, context = 'react'] = useParams();
+function Preview({ accountData, code, id, name, context }) {
   const [isLoading, setIsLoading] = useState(true);
 
-  const CONTEXT = 'react';
   useEffect(() => {
-    loadScript(makeId(address, CONTEXT, name), code, {
+    loadScript(makeId(id, name, context), code, {
       add(component) {
-        addComponent(address, name, CONTEXT, {}, component);
+        addComponent(id, name, context, {}, component);
       },
     }).then(() => setIsLoading(false));
   }, [code]);
@@ -36,13 +35,19 @@ function Preview({ accountData, code }) {
   if (!code) return null;
   if (isLoading) return <div className="spinner" />;
 
-  return <Render id={address} name={name} context={context || 'react'} />;
+  return <Render id={id} name={name} context={context || 'react'} />;
 }
 
 
-export default function SolanaEdit({ value, address, name, view }) {
+export default function SolanaEdit({ value, id, name, context }) {
   const [tab, setTab] = useState('edit');
   const [code, setCode] = useState('');
+
+  const _id = makeId(id, name, context);
+  const { data: view, isLoading, refetch, ...rest } = useQuery(_id, () => restStorageManager.get(_id), {});
+  useEffect(() => {
+    if (!isLoading && view && rest) setCode(view.data);
+  }, [_id, isLoading]);
 
   const tabs = (
     <div className="button-group">
@@ -56,7 +61,7 @@ export default function SolanaEdit({ value, address, name, view }) {
       return (
         <>
           {tabs}
-          <Preview accountData={value} code={code} />
+          <Preview accountData={value} code={code} id={id} name={name} context={context} />
         </>
       );
   }
@@ -68,9 +73,10 @@ export default function SolanaEdit({ value, address, name, view }) {
     if (view) {
       restStorageManager.patch(view._id, { data: code }).catch(alert);
     } else {
-      const _id = makeId(address, context, name);
+      const _id = makeId(id, context, name);
       restStorageManager.create({ _id, data: code }).catch(alert);
     }
+    refetch().catch(alert);
   };
 
   return (
@@ -78,7 +84,7 @@ export default function SolanaEdit({ value, address, name, view }) {
       {tabs}
       <form onSubmit={onSubmit}>
         <fieldset>
-          <legend>Simple form</legend>
+          <legend>Component edit</legend>
           <div className="row">
             <div className="col-sm-12 col-md-6">
               <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="username">

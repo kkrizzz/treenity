@@ -32,8 +32,9 @@ class RestStorageManager<T> implements ServiceMethods<T> {
   }
 
   async get(id: string): Promise<T> {
-    const viewData = await fetch(`${this.baseUrl}/${id}`);
-    return await viewData.json() as T;
+    const req = await fetch(`${this.baseUrl}/${id}`);
+    const json = await req.json();
+    return (json as T);
   }
 
   async find(): Promise<any> {

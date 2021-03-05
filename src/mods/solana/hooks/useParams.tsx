@@ -1,4 +1,4 @@
-const urlMatcher = /^https?:\/\/[\w.\d\-]+(:\d+)?\/([\w.\d\-]+)((\/([\w.\d\-]+)(\/([\w.\d\-]+))?)(\?.*)?)?$/i;
+const urlMatcher = /^https?:\/\/[\w.\d\-]+(:\d+)?\/([\w.\d\-]+)((\/([\w.\d\-]+)(\/([\w.\d\-]+))?)?(\?.*)?)?$/i;
 
 export default function useParams() {
   const m = document.location.href.match(urlMatcher);
