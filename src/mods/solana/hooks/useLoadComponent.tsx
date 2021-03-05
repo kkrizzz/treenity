@@ -23,15 +23,19 @@ export function useLoadAccountComponent(address: string, name: string, context: 
   }
 
   useAsyncEffect(async () => {
-    const id = await makeId(address, context, name);
-    const contextConfig = await restStorageManager.get(id);
-    await loadScript(id, contextConfig.data, {
-      add(component): void {
-        addComponent(address, name, context, {}, component);
-      },
-    });
+    const id = await makeId(address, name, context);
+    try {
+      const contextConfig = await restStorageManager.get(id);
+      await loadScript(id, contextConfig.data, {
+        add(component): void {
+          addComponent(address, name, context, {}, component);
+        },
+      });
+    } catch (err) {
+      addComponent(address, name, context, {}, getComponent('default', 'default', context).component);
+    }
     setLoading(false);
-  }, [address, context, name]);
+  }, [address, name, context]);
 
   return [null, loading];
 }

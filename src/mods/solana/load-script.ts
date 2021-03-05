@@ -13,7 +13,7 @@ function unload(id) {
   }
 }
 
-export function loadScript(id, code, context) {
+export function loadScript(id: string, code: string, context) {
   let loaded = loadedScripts[id];
   if (loaded) {
     if (loaded.code === code) {
@@ -38,15 +38,18 @@ export function loadScript(id, code, context) {
     },
     onReady() {
       this.ready = true;
+      context.onReady?.();
       this.prom.resolve(this);
       delete this.prom;
     },
     onError(err) {
       this.error = err;
+      context.onError?.(err);
       this.prom.reject(err);
       delete this.prom;
     },
   };
+  window.onerror = err => loaded.onError(new Error(err));
   loadedScripts[id] = loaded;
 
   const codeLines = code.split('\n');
@@ -58,12 +61,13 @@ export function loadScript(id, code, context) {
   ${imports}
   (async function() {
     const __ls = window.__loadedScripts['${id}'];
-    const { html, add, ...context } = __ls.context;
+    const { html, add, Render, ...context } = __ls.context;
 
       ${execCode}
     
+      window.onerror = undefined; 
       __ls.onReady();
-  })().catch(__ls.onError)`;
+  })().catch(err => __ls.onError(err))`;
 
   try {
     const script = document.createElement('script');

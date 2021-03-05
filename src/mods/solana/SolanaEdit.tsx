@@ -26,10 +26,14 @@ function Preview({ accountData, code, id, name, context }) {
 
   useEffect(() => {
     loadScript(makeId(id, name, context), code, {
+      Render,
       add(component) {
         addComponent(id, name, context, {}, component);
       },
-    }).then(() => setIsLoading(false));
+      onError(err) {
+        this.add(() => <div className="card error" style={{ minWidth: 800 }}>{err.stack}</div>);
+      },
+    }).finally(() => setIsLoading(false));
   }, [code]);
 
   if (!code) return null;
@@ -73,7 +77,7 @@ export default function SolanaEdit({ value, id, name, context }) {
     if (view) {
       restStorageManager.patch(view._id, { data: code }).catch(alert);
     } else {
-      const _id = makeId(id, context, name);
+      const _id = makeId(id, name, context);
       restStorageManager.create({ _id, data: code }).catch(alert);
     }
     refetch().catch(alert);
@@ -125,6 +129,9 @@ export default function SolanaEdit({ value, id, name, context }) {
           <button type="submit" className="primary">
             Save
           </button>
+          <a href="?" className="button secondary right">
+            Go
+          </a>
         </fieldset>
       </form>
     </>

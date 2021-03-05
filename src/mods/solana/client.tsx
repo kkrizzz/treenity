@@ -1,6 +1,5 @@
 import React from 'react';
 import 'regenerator-runtime/runtime';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { html, render } from 'htm/preact';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ConnectionProvider } from './hooks/useConnection';
@@ -8,6 +7,7 @@ import { ConnectionProvider } from './hooks/useConnection';
 import config from '../../config-common';
 import SolanaRoute from './SolanaRoute';
 import './SolanaEdit';
+import './components/SolanaVIew';
 
 
 config.isClient = true;
