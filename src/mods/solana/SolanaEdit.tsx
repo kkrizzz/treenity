@@ -71,6 +71,10 @@ function Preview({ accountData, code, id, name, context }) {
   </ErrorBoundary>;
 }
 
+function linkToHref(link: string) {
+  const [id, ctx, name] = link.split('_');
+  return `${id}/${name}/${ctx}`;
+}
 
 export default function SolanaEdit({ value, id, name, context }) {
   const [tab, setTab] = useState('edit');
@@ -107,7 +111,7 @@ export default function SolanaEdit({ value, id, name, context }) {
     e.preventDefault();
     const { context, code } = getFormData(e);
 
-    const linkId = link.includes('_') ? link : makeId(link, 'default', 'react');
+    const linkId = (!link || link.includes('_')) ? link : makeId(link, 'default', 'react');
 
     if (view) {
       restStorageManager.patch(view._id, { data: code, link: linkId }).catch(alert);
@@ -169,7 +173,7 @@ export default function SolanaEdit({ value, id, name, context }) {
               </label>
               <input name="link" type="text" id="link" value={link} onChange={evt => setLink(evt.target.value)}
                      disabled={!!code}
-              />
+              /> {link && <a href={`/${linkToHref(link)}`}>go</a>}
             </div>
           </div>
           <button type="submit" className="primary">
