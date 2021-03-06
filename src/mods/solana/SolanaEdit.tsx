@@ -75,11 +75,15 @@ function Preview({ accountData, code, id, name, context }) {
 export default function SolanaEdit({ value, id, name, context }) {
   const [tab, setTab] = useState('edit');
   const [code, setCode] = useState('');
+  const [link, setLink] = useState('');
 
   const _id = makeId(id, name, context);
   const { data: view, isLoading, refetch, ...rest } = useQuery(_id, () => restStorageManager.get(_id), {});
   useEffect(() => {
-    if (!isLoading && view && rest) setCode(view.data);
+    if (!isLoading && view && rest) {
+      setCode(view.data);
+      setLink(view.link);
+    }
   }, [_id, isLoading]);
 
   const tabs = (
@@ -103,11 +107,13 @@ export default function SolanaEdit({ value, id, name, context }) {
     e.preventDefault();
     const { context, code } = getFormData(e);
 
+    const linkId = link.includes('_') ? link : makeId(link, 'default', 'react');
+
     if (view) {
-      restStorageManager.patch(view._id, { data: code }).catch(alert);
+      restStorageManager.patch(view._id, { data: code, link: linkId }).catch(alert);
     } else {
       const _id = makeId(id, name, context);
-      restStorageManager.create({ _id, data: code }).catch(alert);
+      restStorageManager.create({ _id, data: code, link: linkId }).catch(alert);
     }
     refetch().catch(alert);
   };
@@ -142,6 +148,7 @@ export default function SolanaEdit({ value, id, name, context }) {
                   onValueChange={(code) => setCode(code)}
                   highlight={(code) => highlight(code, languages.js)}
                   padding={10}
+                  disabled={!!link}
                   style={{
                     minHeight: 200,
                     width: 400,
@@ -153,6 +160,16 @@ export default function SolanaEdit({ value, id, name, context }) {
                   }}
                 />
               </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-12 col-md-6" style={{ display: 'flex' }}>
+              <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="link">
+                Link to ID
+              </label>
+              <input name="link" type="text" id="link" value={link} onChange={evt => setLink(evt.target.value)}
+                     disabled={!!code}
+              />
             </div>
           </div>
           <button type="submit" className="primary">

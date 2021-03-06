@@ -56,5 +56,6 @@ export default RestStorageManager;
 interface Entry {
   _id: string;
   data: string;
+  link: string;
 };
 export const restStorageManager = new RestStorageManager<Entry>(MONGO_SERVICE_URL);

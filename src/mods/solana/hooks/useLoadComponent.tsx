@@ -26,7 +26,12 @@ export function useLoadAccountComponent(address: string, name: string, context: 
   useAsyncEffect(async () => {
     const id = await makeId(address, name, context);
     try {
-      const contextConfig = await restStorageManager.get(id);
+      let link = id;
+      let contextConfig;
+      do {
+        contextConfig = await restStorageManager.get(contextConfig?.link || id);
+        link = contextConfig.link;
+      } while (contextConfig.link);
       await loadScript(id, contextConfig.data, {
         Render,
         add(component): void {
