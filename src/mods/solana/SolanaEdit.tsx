@@ -21,7 +21,7 @@ const contexts = [
   'react thumbnail',
 ];
 
-class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { error: null };
@@ -41,7 +41,7 @@ class ErrorBoundary extends React.Component {
     const { error } = this.state;
     if (error) {
       // You can render any custom fallback UI
-      return <div className="card weeoe">{error.message}</div>;
+      return <div className="card error">{error.message}</div>;
     }
 
     return this.props.children;
