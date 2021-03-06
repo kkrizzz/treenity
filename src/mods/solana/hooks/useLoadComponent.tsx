@@ -4,6 +4,7 @@ import useAsyncEffect from 'use-async-effect';
 import { makeId } from '../utils/make-id';
 import { restStorageManager } from '../rest-storage-manager';
 import { loadScript } from '../load-script';
+import Render from '../Render';
 
 const addressRegEx = /^[A-z0-9]+$/;
 
@@ -27,6 +28,7 @@ export function useLoadAccountComponent(address: string, name: string, context: 
     try {
       const contextConfig = await restStorageManager.get(id);
       await loadScript(id, contextConfig.data, {
+        Render,
         add(component): void {
           addComponent(address, name, context, {}, component);
         },

@@ -2,16 +2,29 @@ import React from 'react';
 import { useAccount } from './hooks/useAccount';
 import { useLoadAccountComponent } from './hooks/useLoadComponent';
 
-function Render({ id, name, context }) {
-  const [accountInfo, isAccLoading] = useAccount(id);
+interface RenderProps {
+  id: string;
+  name?: string;
+  context?: string;
+  children?: any;
+}
 
+function Render({ id, name = 'default', context = 'react', children }: RenderProps) {
+  console.log('rendering', id, name, context);
   const [componentInfo, isLoading] = useLoadAccountComponent(id, name, context);
+  if (isLoading) return <div className="spinner" />;
 
-  if (isLoading || isAccLoading) return <div className="spinner" />;
+  const { component: Component, props, needAccount } = componentInfo;
 
-  const { component: Component, props } = componentInfo;
+  if (needAccount) {
+    const [accountInfo, isAccLoading] = useAccount(id);
+    if (isAccLoading) {
+      return <div className="spinner" />;
+    }
+    return <Component {...props} id={id} value={accountInfo} context={context} name={name} children={children} />;
+  }
 
-  return <Component {...props} id={id} value={accountInfo} context={context} name={name} />;
+  return <Component {...props} id={id} context={context} name={name} children={children} />;
 }
 
 export default Render;
