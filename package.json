@@ -61,6 +61,7 @@
     "cors": "latest",
     "dayjs": "^1.8.36",
     "feathers-mongodb": "^6.1.0",
+    "feathers-mongodb-fuzzy-search": "^2.0.1",
     "helmet": "^4.1.1",
     "history": "^5.0.0",
     "htm": "^3.0.4",
