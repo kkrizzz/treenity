@@ -41,6 +41,14 @@ function reactToHtmPreact(execCode: string) {
   return fixedCode;
 }
 
+function minify(strs, ...objs) {
+  let res = strs[0];
+  for (let i = 0; i < objs.length; i++) {
+    res += objs[i].toString() + strs[i + 1];
+  }
+  return res.trim().split('\n').join(' ');
+}
+
 export function loadScript(id: string, code: string, context) {
   let loaded = loadedScripts[id];
   if (loaded) {
@@ -66,6 +74,8 @@ export function loadScript(id: string, code: string, context) {
       unload(this.id);
     },
     onReady() {
+      // @ts-ignore
+      window.onerror = undefined;
       this.ready = true;
       context.onReady?.();
       this.prom.resolve(this);
@@ -89,17 +99,25 @@ export function loadScript(id: string, code: string, context) {
 
   console.log(fixedCode);
 
-  const loader = `
-  ${imports}
+  const loader = `${imports} ${minify`
   const __ls = window.__loadedScripts['${id}'];
+  
   (async function() {
+  try {
     const { html, add, Render, preact, ...context } = __ls.context;
-
-      ${fixedCode}
+    `}
+    ////////////// user code /////////////////
     
-      window.onerror = undefined; 
-      __ls.onReady();
-  })().catch(err => __ls.onError(err))`;
+    ${fixedCode}
+    
+    ////////////// user code /////////////////
+    ${minify`
+    __ls.onReady();
+  } catch (err) {
+    __ls.onError(err);
+  }
+  })().catch(err => __ls.onError(err));
+  //# sourceURL=${id}.js`}`;
 
   try {
     const script = document.createElement('script');
@@ -108,7 +126,7 @@ export function loadScript(id: string, code: string, context) {
     loadedScripts[id].element = document.getElementsByTagName('head')[0].appendChild(script);
   } catch (err) {
     console.error('script', loaded, 'failed to load', err);
-    // return Promise.reject(err);
+    loaded.onError(err);
   }
 
   return prom;
