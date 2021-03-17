@@ -16,6 +16,7 @@ import { useQuery } from 'react-query';
 const contexts = [
   'react',
   'react cell',
+  'react transaction',
   'react list',
   'react card',
   'react thumbnail',
@@ -126,26 +127,26 @@ export default function SolanaEdit({ value, id, name, context }) {
     <>
       {tabs}
       <form onSubmit={onSubmit}>
-        <fieldset>
-          <legend>Component edit</legend>
-          <div className="row">
-            <div className="col-sm-12 col-md-6">
-              <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="username">
-                Context
-              </label>
-              <select name="context" id="context" placeholder="Context">
-                {contexts.map(context => (
-                  <option value={context}>{context}</option>
-                ))}
-              </select>
+        {/*<fieldset>*/}
+        {/*<legend>Component edit</legend>*/}
+        <div className="row">
+          <div className="col-sm-12 col-md-6">
+            <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="username">
+              Context
+            </label>
+            <select name="context" id="context" value={context} placeholder="Context">
+              {contexts.map(context => (
+                <option value={context}>{context}</option>
+              ))}
+            </select>
             </div>
           </div>
           <div className="row">
-            <div className="col-sm-12 col-md-6" style={{ display: 'flex' }}>
+            <div className="col-sm-12 col-md-12" style={{ display: 'flex' }}>
               <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="code">
                 Code
               </label>
-              <div style={{ display: 'inline-block' }}>
+              <div style={{ display: 'inline-block', width: '100%' }}>
                 <ReactSimpleCodeEditor
                   name="code"
                   value={code}
@@ -155,7 +156,7 @@ export default function SolanaEdit({ value, id, name, context }) {
                   disabled={!!link}
                   style={{
                     minHeight: 200,
-                    width: 400,
+                    width: '100%',
                     fontSize: 14,
                     background: '#F8F8F8',
                     border: '1px solid rgb(221, 221, 221)',
@@ -167,13 +168,14 @@ export default function SolanaEdit({ value, id, name, context }) {
             </div>
           </div>
           <div className="row">
-            <div className="col-sm-12 col-md-6" style={{ display: 'flex' }}>
+            <div className="col-sm-12 col-md-12" style={{ display: 'flex' }}>
               <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="link">
-                Link to ID
+                {link ? <a href={`/${linkToHref(link)}`}>Link to ID</a> : 'Link to ID'}
               </label>
               <input name="link" type="text" id="link" value={link} onChange={evt => setLink(evt.target.value)}
+                     style={{ width: '100%' }}
                      disabled={!!code}
-              /> {link && <a href={`/${linkToHref(link)}`}>go</a>}
+              />
             </div>
           </div>
           <button type="submit" className="primary">
@@ -182,7 +184,7 @@ export default function SolanaEdit({ value, id, name, context }) {
           <a href="?" className="button secondary right">
             Go
           </a>
-        </fieldset>
+        {/*</fieldset>*/}
       </form>
     </>
   );
