@@ -5,6 +5,7 @@ import { makeId } from '../utils/make-id';
 import { restStorageManager } from '../rest-storage-manager';
 import { loadScript } from '../load-script';
 import Render from '../Render';
+import useLocation from "./useLocation";
 
 const addressRegEx = /^[A-z0-9]+$/;
 
@@ -14,17 +15,18 @@ export function useLoadAccountComponent(address: string, name: string, context: 
   const [loading, setLoading] = useState(true);
 
   const config = getComponent(address, name, context);
-  if (config || !loading) {
+  if (config && !loading) {
     // need this one empty to match next one
     useAsyncEffect(async () => {
       setLoading(false);
     }, []);
 
-    return [config, loading];
+    return [config, false];
   }
 
   useAsyncEffect(async () => {
     const id = await makeId(address, name, context);
+    setLoading(true);
     try {
       let link = id;
       let contextConfig;
@@ -44,5 +46,5 @@ export function useLoadAccountComponent(address: string, name: string, context: 
     setLoading(false);
   }, [address, name, context]);
 
-  return [null, loading];
+  return [null, true];
 }
