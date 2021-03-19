@@ -1,0 +1,39 @@
+.solana-edit__toolbar {
+    padding: 16px;
+    background: #1c3f53;
+    color: white;
+    width: 3vw;
+}
+
+.solana-edit_workspace-toolbar {
+    color: white;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background: #263238;
+    padding: 4px;
+}
+
+.custom-solana-icon {
+    vertical-align: center;
+    padding: 8px 0;
+    cursor: pointer;
+}
+
+.solana-edit__toolbar-controls {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.react-codemirror2 {
+    width: 100%;
+    height: 100%;
+}
+
+.CodeMirror {
+    width: 100%;
+    height: 100%;
+}

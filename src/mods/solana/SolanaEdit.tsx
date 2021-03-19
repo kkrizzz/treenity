@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import ReactSimpleCodeEditor from 'react-simple-code-editor';
-import { highlight, languages } from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/themes/prism.css'; //Example style, you can use another
-import useParams from './hooks/useParams';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/xml/xml';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/hint/show-hint.css';
+import 'codemirror/addon/edit/closetag';
+import 'codemirror/addon/hint/javascript-hint';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/jsx/jsx';
+import './SolanaEdit.css';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { getFormData } from './utils/getFormData';
 import { restStorageManager } from './rest-storage-manager';
 import { addComponent } from './component-db';
@@ -12,6 +17,13 @@ import { loadScript } from './load-script';
 import Render from './Render';
 import { makeId } from './utils/make-id';
 import { useQuery } from 'react-query';
+import { Icon } from './components/Icon';
+import { Modal } from './components/Modal';
+import { useAsyncDebounce } from './hooks/useAsyncDebounce';
+import { throttle } from './hooks/throttle';
+import { icons } from './components/icons';
+import {key} from "./utils/keyCode";
+import {toast} from "./utils/toast";
 
 const contexts = [
   'react',
@@ -59,7 +71,11 @@ function Preview({ accountData, code, id, name, context }) {
         addComponent(id, name, context, {}, component);
       },
       onError(err) {
-        this.add(() => <div className="card error" style={{ minWidth: 800 }}>{err.stack}</div>);
+        this.add(() => (
+          <div className="card error" style={{ maxWidth: '400px' }}>
+            {err.stack}
+          </div>
+        ));
       },
     }).finally(() => setIsLoading(false));
   }, [code]);
@@ -67,9 +83,11 @@ function Preview({ accountData, code, id, name, context }) {
   if (!code) return null;
   if (isLoading) return <div className="spinner" />;
 
-  return <ErrorBoundary>
-    <Render id={id} name={name} context={context || 'react'} />
-  </ErrorBoundary>;
+  return (
+    <ErrorBoundary>
+      <Render id={id} name={name} context={context || 'react'} />
+    </ErrorBoundary>
+  );
 }
 
 function linkToHref(link: string) {
@@ -78,115 +96,207 @@ function linkToHref(link: string) {
 }
 
 export default function SolanaEdit({ value, id, name, context }) {
-  const [tab, setTab] = useState('edit');
   const [code, setCode] = useState('');
+  const [initialCode, setInitialCode] = useState('');
+  const [editorValue, setEditorValue] = useState('');
+  const [showIsDraft, setShowIsDraft] = useState(false);
   const [link, setLink] = useState('');
+  const [selectedContext, setSelectedContext] = useState(context);
+  const [settingsIsVisible, showSettings] = useState(false);
+  const [infoIsVisible, showInfo] = useState(false);
 
   const _id = makeId(id, name, context);
-  const { data: view, isLoading, refetch, ...rest } = useQuery(_id, () => restStorageManager.get(_id), {});
-  useEffect(() => {
-    if (!isLoading && view && rest) {
-      setCode(view.data);
-      setLink(view.link);
-    }
-  }, [_id, isLoading]);
-
-  const tabs = (
-    <div className="button-group">
-      <button className={tab == 'edit' ? 'primary' : ''} onClick={() => setTab('edit')}>Edit</button>
-      <button className={tab == 'preview' ? 'primary' : ''} onClick={() => setTab('preview')}>Preview</button>
-    </div>
+  const { data: view, isLoading, refetch, ...rest } = useQuery(
+    _id,
+    () => restStorageManager.get(_id),
+    {}
   );
 
-  switch (tab) {
-    case 'preview':
-      return (
-        <>
-          {tabs}
-          <Preview accountData={value} code={code} id={id} name={name} context={context} />
-        </>
-      );
-  }
+  const draft_id = makeId(id, name + '_draft', context);
+  const { data: draft, isLoading: draftIsLoading, refetch: refetchDraft } = useQuery(
+    draft_id,
+    () => restStorageManager.get(draft_id),
+    {}
+  );
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const { context, code } = getFormData(e);
-
-    const linkId = (!link || link.includes('_')) ? link : makeId(link, 'default', 'react');
-
-    if (view) {
-      restStorageManager.patch(view._id, { data: code, link: linkId }).catch(alert);
-    } else {
-      const _id = makeId(id, name, context);
-      restStorageManager.create({ _id, data: code, link: linkId }).catch(alert);
+  useEffect(() => {
+    if (!draftIsLoading && draft && draft.data) {
+      setInitialCode(draft.data);
+      setCode(draft.data);
+      setShowIsDraft(true);
+    } else if (!isLoading && !draftIsLoading && view && rest && !draft) {
+      setCode(draft.data);
+      setInitialCode(view.data);
+      setLink(view.link);
     }
-    refetch().catch(alert);
+  }, [_id, isLoading, draftIsLoading]);
+
+  const rewindCodeToOriginal = () => {
+    if (view) {
+      setShowIsDraft(false);
+      setEditorValue(view.data);
+      setInitialCode(view.data);
+    }
   };
 
+  const saveDraft = throttle((value) => {
+    if (draft) {
+      restStorageManager.patch(draft._id, { data: value }).catch();
+    } else {
+      const draft_id = makeId(id, name + '_draft', selectedContext);
+      restStorageManager.create({ _id: draft_id, data: editorValue, link: '' }).catch();
+    }
+  }, 2000);
+
+  const onSubmit = () => {
+    const linkId = !link || link.includes('_') ? link : makeId(link, 'default', 'react');
+
+    if (view) {
+      restStorageManager.patch(view._id, { data: editorValue || code, link: linkId }).catch();
+    } else {
+      const _id = makeId(id, name, selectedContext);
+      restStorageManager.create({ _id, data: editorValue, link: linkId }).catch();
+    }
+    refetch().catch(()=>toast('Sorry, something wrong :(')).then(()=>toast('Successful saved!'));
+  };
+
+  const openView = () => {
+    window.open(`/${id}/${name}`, '_blank');
+  };
+
+  const renderTagAutoComplete = (cm, option) => {
+    const targetStr = '<Render id="" name="default" context="react"/>';
+    return new Promise(function (accept) {
+      const {line, ch} = cm.getCursor();
+      const lineText = cm.getLine(line);
+      const template = /<R$|<Re$|<Ren$|<Rend$|<Rende$/;
+      const match = lineText.match(template);
+      const targetIndex = lineText.indexOf(match);
+      if (targetIndex !== -1) {
+        cm.doc.replaceRange(
+          targetStr,
+          {
+            line,
+            ch: ch - match[0].length
+          },
+          {
+            line,
+            ch: targetStr.length
+          }
+        );
+      }
+      accept(null);
+    });
+  };
+
+  const updatePreview = (e) => {
+    if(key.isCtrlEnter(e) || key.isCmdEnter(e)) {
+      setCode(editorValue)
+    }
+  }
+
   return (
-    <>
-      {tabs}
-      <form onSubmit={onSubmit}>
-        {/*<fieldset>*/}
-        {/*<legend>Component edit</legend>*/}
-        <div className="row">
-          <div className="col-sm-12 col-md-6">
-            <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="username">
-              Context
-            </label>
-            <select name="context" id="context" value={context} placeholder="Context">
-              {contexts.map(context => (
-                <option value={context}>{context}</option>
-              ))}
-            </select>
-            </div>
+    <div onKeyUp={updatePreview}  style={{ display: 'flex', height: '100vh', maxHeight: '100vh' }}>
+      <Modal
+          transparent={false}
+          isVisible={infoIsVisible}
+          onBackdropPress={() => showInfo(false)}
+      >
+        <h4>Hotkeys</h4>
+        <h5>Update preview <small>Ctrl+Enter or Cmd+Enter</small></h5>
+        <h5>Auto Render complete <small>Ctrl+Space</small> </h5>
+      </Modal>
+      <Modal
+        transparent={false}
+        isVisible={settingsIsVisible}
+        onBackdropPress={() => showSettings(false)}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label style={{ width: 100, display: 'inline-block' }} htmlFor="username">
+            Context
+          </label>
+          <select
+            onChange={(e) => setSelectedContext(e.target.value)}
+            name="context"
+            id="context"
+            value={selectedContext}
+            placeholder="Context"
+          >
+            {contexts.map((context) => (
+              <option selected={selectedContext === context} value={context}>
+                {context}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label style={{ width: 100, display: 'inline-block' }} htmlFor="link">
+            {link ? <a href={`/${linkToHref(link)}`}>Link to ID</a> : 'Link to ID'}
+          </label>
+          <input
+            name="link"
+            type="text"
+            id="link"
+            value={link}
+            onChange={(evt) => setLink(evt.target.value)}
+            style={{ width: '100%' }}
+            disabled={!!editorValue}
+          />
+        </div>
+      </Modal>
+      {draft && draft.data && view && view.data !== draft.data && showIsDraft && (
+        <span className="toast">
+          This is a draft. press
+          <Icon
+            style={{
+              display: 'inline-table',
+              transform: 'scale(0.7, 0.7)',
+              verticalAlign: 'middle',
+            }}
+            name="rewind"
+          />
+          to get original
+        </span>
+      )}
+      <div className="solana-edit__toolbar min">
+        <div className="solana-edit__toolbar-controls">
+          <div>
+            <Icon name="refresh" onClick={() => setCode(editorValue)} />
+            <Icon name="save" onClick={() => onSubmit()} />
+            <Icon name="play" onClick={() => openView()} />
+            <Icon name="rewind" onClick={() => rewindCodeToOriginal()} />
           </div>
-          <div className="row">
-            <div className="col-sm-12 col-md-12" style={{ display: 'flex' }}>
-              <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="code">
-                Code
-              </label>
-              <div style={{ display: 'inline-block', width: '100%' }}>
-                <ReactSimpleCodeEditor
-                  name="code"
-                  value={code}
-                  onValueChange={(code) => setCode(code)}
-                  highlight={(code) => highlight(code, languages.js)}
-                  padding={10}
-                  disabled={!!link}
-                  style={{
-                    minHeight: 200,
-                    width: '100%',
-                    fontSize: 14,
-                    background: '#F8F8F8',
-                    border: '1px solid rgb(221, 221, 221)',
-                    margin: 'calc(var(--universal-margin) / 2)',
-                    borderRadius: 'var(--universal-border-radius)',
-                  }}
-                />
-              </div>
-            </div>
+          <div>
+            <Icon name="info" onClick={() => showInfo(true)} />
+            <Icon name="settings" onClick={() => showSettings(true)} />
           </div>
-          <div className="row">
-            <div className="col-sm-12 col-md-12" style={{ display: 'flex' }}>
-              <label style={{ minWidth: 100, display: 'inline-block' }} htmlFor="link">
-                {link ? <a href={`/${linkToHref(link)}`}>Link to ID</a> : 'Link to ID'}
-              </label>
-              <input name="link" type="text" id="link" value={link} onChange={evt => setLink(evt.target.value)}
-                     style={{ width: '100%' }}
-                     disabled={!!code}
-              />
-            </div>
-          </div>
-          <button type="submit" className="primary">
-            Save
-          </button>
-          <a href="?" className="button secondary right">
-            Go
-          </a>
-        {/*</fieldset>*/}
-      </form>
-    </>
+        </div>
+      </div>
+      <div style={{ width: '50vw', display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
+        <CodeMirror
+          value={initialCode}
+          options={{
+            autoCloseTags: true,
+            extraKeys: { 'Ctrl-Space': 'autocomplete' },
+            mode: 'jsx',
+            theme: 'material',
+            lineNumbers: true,
+            lineWrapping: true,
+            htmlMode: true,
+            hintOptions: { hint: renderTagAutoComplete },
+          }}
+          onChange={(editor, change, value) => {
+            setEditorValue(value);
+            saveDraft(value);
+          }}
+        />
+      </div>
+      <div style={{ width: '47vw' }}>
+        {code && !draftIsLoading && (
+          <Preview key={code} accountData={value} code={code} id={id} name={name} context={context} />
+        )}
+      </div>
+    </div>
   );
 }
 
