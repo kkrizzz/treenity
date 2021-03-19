@@ -109,14 +109,14 @@ export default function SolanaEdit({ value, id, name, context }) {
   const { data: view, isLoading, refetch, ...rest } = useQuery(
     _id,
     () => restStorageManager.get(_id),
-    {}
+    {retry: false}
   );
 
   const draft_id = makeId(id, name + '_draft', context);
   const { data: draft, isLoading: draftIsLoading, refetch: refetchDraft } = useQuery(
     draft_id,
     () => restStorageManager.get(draft_id),
-    {}
+    {retry: false}
   );
 
   useEffect(() => {
@@ -124,9 +124,9 @@ export default function SolanaEdit({ value, id, name, context }) {
       setInitialCode(draft.data);
       setCode(draft.data);
       setShowIsDraft(true);
-    } else if (!isLoading && !draftIsLoading && view && rest && !draft) {
-      setCode(draft.data);
+    } else if (!isLoading && !draftIsLoading && view && rest && (!draft || draft && !draft.data)) {
       setInitialCode(view.data);
+      setCode(view.data);
       setLink(view.link);
     }
   }, [_id, isLoading, draftIsLoading]);
