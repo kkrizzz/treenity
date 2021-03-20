@@ -205,47 +205,11 @@ export default function SolanaEdit({ value, id, name, context }) {
           isVisible={infoIsVisible}
           onBackdropPress={() => showInfo(false)}
       >
-        <h4>Hotkeys</h4>
+        <h3>Hotkeys</h3>
         <h5>Update preview <small>Ctrl+Enter or Cmd+Enter</small></h5>
         <h5>Auto Render complete <small>Ctrl+Space</small> </h5>
-      </Modal>
-      <Modal
-        transparent={false}
-        isVisible={settingsIsVisible}
-        onBackdropPress={() => showSettings(false)}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label style={{ width: 100, display: 'inline-block' }} htmlFor="username">
-            Context
-          </label>
-          <select
-            onChange={(e) => setSelectedContext(e.target.value)}
-            name="context"
-            id="context"
-            value={selectedContext}
-            placeholder="Context"
-          >
-            {contexts.map((context) => (
-              <option selected={selectedContext === context} value={context}>
-                {context}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label style={{ width: 100, display: 'inline-block' }} htmlFor="link">
-            {link ? <a href={`/${linkToHref(link)}`}>Link to ID</a> : 'Link to ID'}
-          </label>
-          <input
-            name="link"
-            type="text"
-            id="link"
-            value={link}
-            onChange={(evt) => setLink(evt.target.value)}
-            style={{ width: '100%' }}
-            disabled={!!editorValue}
-          />
-        </div>
+        <h3>Hints</h3>
+        <h5><small>To add Link, clear your code</small></h5>
       </Modal>
       {draft && draft.data && view && view.data !== draft.data && showIsDraft && (
         <span className="toast">
@@ -271,11 +235,43 @@ export default function SolanaEdit({ value, id, name, context }) {
           </div>
           <div>
             <Icon name="info" onClick={() => showInfo(true)} />
-            <Icon name="settings" onClick={() => showSettings(true)} />
           </div>
         </div>
       </div>
       <div style={{ width: '50vw', display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
+        <div className="solana-edit_workspace-toolbar">
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <label style={{ width: 100, display: 'inline-block' }} htmlFor="username">
+              Context
+            </label>
+            <select
+                onChange={(e) => setSelectedContext(e.target.value)}
+                name="context"
+                id="context"
+                value={selectedContext}
+                placeholder="Context"
+            >
+              {contexts.map((context) => (
+                  <option selected={selectedContext === context} value={context}>
+                    {context}
+                  </option>
+              ))}
+            </select>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <label style={{ width: 100, display: 'inline-block' }} htmlFor="link">
+              {link ? <a href={`/${linkToHref(link)}`}>Link to ID</a> : 'Link to ID'}
+            </label>
+            <input
+                name="link"
+                type="text"
+                id="link"
+                value={link}
+                onChange={(evt) => setLink(evt.target.value)}
+                disabled={!!editorValue}
+            />
+          </div>
+        </div>
         <CodeMirror
           value={initialCode}
           ref={i => editor.current = i}

@@ -6,12 +6,10 @@
 }
 
 .solana-edit_workspace-toolbar {
+    height: 20vh;
+    min-height: 160px;
     color: white;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
     background: #263238;
-    padding: 4px;
 }
 
 .custom-solana-icon {
@@ -31,14 +29,13 @@
 .react-codemirror2 {
     font-family: monospace !important;
     width: 100%;
-    height: 100%;
+    flex: 1;
 }
 
 .CodeMirror {
     font-family: monospace !important;
-    font-size: 16px;
     width: 100%;
-    height: 100%;
+    height: 80vh;
 }
 
 .CodeMirror span {
