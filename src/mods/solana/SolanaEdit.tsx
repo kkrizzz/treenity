@@ -105,6 +105,8 @@ export default function SolanaEdit({ value, id, name, context }) {
   const [settingsIsVisible, showSettings] = useState(false);
   const [infoIsVisible, showInfo] = useState(false);
 
+  const editor = React.useRef<any>();
+
   const _id = makeId(id, name, context);
   const { data: view, isLoading, refetch, ...rest } = useQuery(
     _id,
@@ -134,8 +136,9 @@ export default function SolanaEdit({ value, id, name, context }) {
   const rewindCodeToOriginal = () => {
     if (view) {
       setShowIsDraft(false);
+      editor.current.editor.setValue(view.data);
+      setCode(view.data);
       setEditorValue(view.data);
-      setInitialCode(view.data);
     }
   };
 
@@ -275,6 +278,7 @@ export default function SolanaEdit({ value, id, name, context }) {
       <div style={{ width: '50vw', display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
         <CodeMirror
           value={initialCode}
+          ref={i => editor.current = i}
           options={{
             autoCloseTags: true,
             extraKeys: { 'Ctrl-Space': 'autocomplete' },
