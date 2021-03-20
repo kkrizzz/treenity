@@ -240,11 +240,12 @@ export default function SolanaEdit({ value, id, name, context }) {
       </div>
       <div style={{ width: '50vw', display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
         <div className="solana-edit_workspace-toolbar">
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ width: 100, display: 'inline-block' }} htmlFor="username">
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <label style={{ width: 60, display: 'inline-block' }} htmlFor="username">
               Context
             </label>
             <select
+                style={{width: 170, height: 38}}
                 onChange={(e) => setSelectedContext(e.target.value)}
                 name="context"
                 id="context"
@@ -258,11 +259,12 @@ export default function SolanaEdit({ value, id, name, context }) {
               ))}
             </select>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ width: 100, display: 'inline-block' }} htmlFor="link">
+          <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+            <label style={{ marginRight: 4,width: 60, display: 'inline-block', whiteSpace: 'nowrap' }} htmlFor="link">
               {link ? <a href={`/${linkToHref(link)}`}>Link to ID</a> : 'Link to ID'}
             </label>
             <input
+                style={{width: '100%', minWidth: 170, height: 38}}
                 name="link"
                 type="text"
                 id="link"
