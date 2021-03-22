@@ -2,7 +2,7 @@ import { html } from 'htm/preact';
 import * as preact from 'preact/compat';
 import findLastIndex from 'lodash/findLastIndex';
 import { promised } from './promised';
-
+import {useBitQuery} from "./hooks/useBitQuery";
 
 export const loadedScripts: { [id: string]: any } = {};
 window.__loadedScripts = loadedScripts;
@@ -67,6 +67,10 @@ export function loadScript(id: string, code: string, context) {
     context: {
       html,
       preact,
+      require: (url) => {
+        return System.import(url)
+      },
+      useBitQuery,
       ...context,
     },
     ready: false,
@@ -104,7 +108,7 @@ export function loadScript(id: string, code: string, context) {
   
   (async function() {
   try {
-    const { html, add, Render, preact, ...context } = __ls.context;
+    const { require, useBitQuery, html, add, Render, preact, ...context } = __ls.context;
     `}
     ////////////// user code /////////////////
     
