@@ -295,9 +295,9 @@ export default function SolanaEdit({ value, id, name, context }) {
         />
       </div>
       <div style={{ width: '47vw' }}>
-        {code && !draftIsLoading? (
+        {code && !draftIsLoading && (
           <Preview key={code} accountData={value} code={code} id={id} name={name} context={context} />
-        ): link? <Render id={link}/>: ''}
+        )}
       </div>
     </div>
   );
