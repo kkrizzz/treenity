@@ -240,10 +240,10 @@ export default function SolanaEdit({ value, id, name, context }) {
       </div>
       <div style={{ width: '50vw', display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
         <div className="solana-edit_workspace-toolbar">
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <label style={{ width: 60, display: 'inline-block' }} htmlFor="username">
+          <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'row' }}>
+            <div style={{ marginLeft: 4, width: 60, display: 'inline-block' }} htmlFor="username">
               Context
-            </label>
+            </div>
             <select
                 style={{width: 170, height: 38}}
                 onChange={(e) => setSelectedContext(e.target.value)}
@@ -259,12 +259,12 @@ export default function SolanaEdit({ value, id, name, context }) {
               ))}
             </select>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-            <label style={{ marginRight: 4,width: 60, display: 'inline-block', whiteSpace: 'nowrap' }} htmlFor="link">
+          <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'row', width: '100%' }}>
+            <div style={{ marginRight: 4,width: 60, display: 'inline-block', whiteSpace: 'nowrap' }} htmlFor="link">
               {link ? <a href={`/${linkToHref(link)}`}>Link to ID</a> : 'Link to ID'}
-            </label>
+            </div>
             <input
-                style={{width: '100%', minWidth: 170, height: 38}}
+                style={{width: '100%', minWidth: 170, height: 38, marginLeft: 8}}
                 name="link"
                 type="text"
                 id="link"
@@ -278,6 +278,7 @@ export default function SolanaEdit({ value, id, name, context }) {
           value={initialCode}
           ref={i => editor.current = i}
           options={{
+            tabSize: 2,
             autoCloseTags: true,
             extraKeys: { 'Ctrl-Space': 'autocomplete' },
             mode: 'jsx',
@@ -294,9 +295,9 @@ export default function SolanaEdit({ value, id, name, context }) {
         />
       </div>
       <div style={{ width: '47vw' }}>
-        {code && !draftIsLoading && (
+        {code && !draftIsLoading? (
           <Preview key={code} accountData={value} code={code} id={id} name={name} context={context} />
-        )}
+        ): link? <Render id={link}/>: ''}
       </div>
     </div>
   );

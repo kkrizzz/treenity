@@ -7,10 +7,10 @@
 
 .solana-edit_workspace-toolbar {
     align-items: center;
-    width: 100%;
     display: flex;
     height: 6vh;
-    min-width: 50vw;
+    padding: 4px;
+    min-width: calc(50vw - 8px);
     overflow-x: auto;
     overflow-y: hidden;
     min-height: 46px;
