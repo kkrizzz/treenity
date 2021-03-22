@@ -1,6 +1,7 @@
 /.cache
 /.parcel-cache
 /dist
+/legacy
 node_modules
 yarn-error.txt
 

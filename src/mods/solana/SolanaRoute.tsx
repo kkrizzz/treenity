@@ -5,18 +5,18 @@ import Render from './Render';
 import SolanaEdit from './SolanaEdit';
 
 export default function SolanaRoute() {
-  let [id = 'root', name = 'default', context = 'react'] = useParams();
+  let [id, name, context] = useParams();
 
   const ctx = `react${context && context !== 'react' ? ` ${context}` : ''}`;
 
-  const { edit } = useQueryParams();
-  if (edit !== undefined) return <SolanaEdit id={id} name={name} context={ctx} />;
+  const { edit, ...props } = useQueryParams();
+  if (edit !== undefined) return <SolanaEdit value={null} id={id} name={name} context={ctx} />;
 
   if (id === 'layout') {
     return <Render id={id} context={ctx} name={name} />;
   }
 
-  return <Render id="layout">
-    <Render id={id} context={ctx} name={name} />
+  return <Render id="layout" context={ctx}>
+    <Render {...props} id={id} context={ctx} name={name} />
   </Render>;
 }

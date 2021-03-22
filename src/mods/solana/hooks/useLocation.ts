@@ -1,16 +1,15 @@
 import React from "react";
 
-history.pushState = function()
-{
-    History.prototype.pushState.apply(history, arguments);
-    window.dispatchEvent(new Event('pushState'))
-}
+history.pushState = function pushState(...args) {
+    History.prototype.pushState.apply(history, args);
+    window.dispatchEvent(new Event('pushState'));
+};
 
 export default function useLocation() {
-    const [location, setLocation] = React.useState(window.location.href);
+    const [location, setLocation] = React.useState(window.location);
 
     const handleHashChange = React.useCallback(() => {
-        setLocation(window.location.href);
+        setLocation(window.location);
     }, []);
 
     React.useEffect(() => {

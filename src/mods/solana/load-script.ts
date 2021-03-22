@@ -92,7 +92,7 @@ export function loadScript(id: string, code: string, context) {
       delete this.prom;
     },
   };
-  window.onerror = err => loaded.onError(new Error(err));
+  window.onerror = err => loaded.onError(err);
   loadedScripts[id] = loaded;
 
   const codeLines = code.split('\n');

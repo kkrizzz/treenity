@@ -13,6 +13,7 @@
     "sol:build": "NODE_ENV=production parcel build src/mods/solana/index.html --out-dir dist/solana-prod --public-url /",
     "sol:serve": "parcel serve --port 3102 src/mods/solana/index.html --out-dir dist/solana",
     "sol:watch": "parcel watch src/mods/solana/index.html --out-dir dist/solana --public-url /",
+    "sol:deploy": "./scripts/deploy-sol.sh",
     "server:build": "NODE_ENV=production parcel build --target node --out-file dist/server-prod.js --public-url ./ src/server/index.ts",
     "server:watch": "parcel watch --target node --out-file dist/server-dev.js --public-url ./ src/server/index.ts",
     "jest": "jest --forceExit",

@@ -6,7 +6,7 @@ import { restStorageManager } from '../rest-storage-manager';
 import { loadScript } from '../load-script';
 import Render from '../Render';
 
-const addressRegEx = /^[A-z0-9]+$/;
+const addressRegEx = /^[A-z0-9:\.]+$/;
 
 export function useLoadAccountComponent(address: string, name: string, context: string): [any, boolean] {
   if (!addressRegEx.test(address)) throw new Error('bad address');
