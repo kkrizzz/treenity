@@ -31,9 +31,10 @@ function reactToHtmPreact(execCode: string) {
         fixedCode += 'html`' +
           execCode.slice(start, end)
             .replace(/\{(.*?)\}/g, '${$1}')
-            .replace(/<([A-Z][\w\d_]+)/g, '<${$1}')
+            .replace(/<([A-Z][\w\d_]*)/g, '<${$1}')
           + '`';
         prev = end;
+        i = prev;
       }
     }
   }

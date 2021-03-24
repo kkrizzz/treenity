@@ -68,7 +68,7 @@ export class ErrorBoundary extends React.Component {
   }
 }
 
-function Preview({ accountData, code, id, name, context }) {
+function Preview({ accountData, code, id, name, context, ...params }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -92,7 +92,7 @@ function Preview({ accountData, code, id, name, context }) {
 
   return (
     <ErrorBoundary>
-      <Render id={id} name={name} context={context || 'react'} />
+      <Render {...params} id={id} name={name} context={context || 'react'} />
     </ErrorBoundary>
   );
 }
@@ -107,11 +107,11 @@ function linkToHref(link: string) {
   return `${id}/${name}/${ctx}`;
 }
 
-export default function SolanaEdit({ value, id, name, context }) {
+export default function SolanaEdit({ value, id, name, context, ...params }) {
   const [code, setCode] = useState('');
   const [initialCode, setInitialCode] = useState('');
   const [editorValue, setEditorValue] = useState('');
-  const [inCodePreview, setInCodePreview] = useState<any>(undefined)
+  const [inCodePreview, setInCodePreview] = useState<any>(undefined);
   const [showIsDraft, setShowIsDraft] = useState(false);
   const [link, setLink] = useState('');
   const [selectedContext, setSelectedContext] = useState(context);
@@ -390,12 +390,13 @@ export default function SolanaEdit({ value, id, name, context }) {
       <div style={{ width: '47vw' }}>
         {link ? (
           <ErrorBoundary>
-            <Render key={makeOutLink(link).id} {...makeOutLink(link)} />
+            <Render {...params} key={makeOutLink(link).id} {...makeOutLink(link)} />
           </ErrorBoundary>
         ) : (
           code &&
           !draftIsLoading && (
             <Preview
+              {...params}
               key={code}
               accountData={value}
               code={code}
