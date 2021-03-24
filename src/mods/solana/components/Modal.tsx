@@ -9,16 +9,25 @@ interface ModalProps {
   onBackdropPress: Function;
   children?: ReactNode;
   background?: string;
-  height?: string;
+  height?: number | string;
+  width?: number | string,
+  top?: number | string,
 }
 
-export const Modal = (props: ModalProps) => {
+const defaultProps: ModalProps = {
+    transparent: false,
+    isVisible: false,
+    onBackdropPress: ()=>{},
+    width: 300,
+    height: 'auto',
+    top: '30%'
+}
+
+export const Modal = (props: ModalProps = defaultProps) => {
   return props.isVisible?(
     <div
+      onClick={()=>props.onBackdropPress()}
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
         position: 'absolute',
         zIndex: 100500,
         width: '100%',
@@ -32,9 +41,10 @@ export const Modal = (props: ModalProps) => {
           marginLeft: 'auto',
           padding: 16,
           background: 'white',
-          width: 300,
-          height: 'auto',
-          top: '30%',
+          width: props.width,
+          height: props.height,
+          position: 'relative',
+          top: props.top,
         }}
       >
         <Icon

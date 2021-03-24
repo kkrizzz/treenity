@@ -14,17 +14,30 @@ function Render({ id, name = 'default', context = 'react', children }: RenderPro
   const [componentInfo, isLoading] = useLoadAccountComponent(id, name, context);
   if (isLoading) return <div className="spinner" />;
 
-  const { component: Component, props, needAccount } = componentInfo;
+  try {
+    const { component: Component, props, needAccount } = componentInfo;
 
-  if (needAccount) {
-    const [accountInfo, isAccLoading] = useAccount(id);
-    if (isAccLoading) {
-      return <div className="spinner" />;
+    if (needAccount) {
+      const [accountInfo, isAccLoading] = useAccount(id);
+      if (isAccLoading) {
+        return <div className="spinner" />;
+      }
+      return (
+        <Component
+          {...props}
+          id={id}
+          value={accountInfo}
+          context={context}
+          name={name}
+          children={children}
+        />
+      );
     }
-    return <Component {...props} id={id} value={accountInfo} context={context} name={name} children={children} />;
-  }
 
-  return <Component {...props} id={id} context={context} name={name} children={children} />;
+    return <Component {...props} id={id} context={context} name={name} children={children} />;
+  } catch (e) {
+    return null;
+  }
 }
 
 export default Render;

@@ -47,3 +47,12 @@
 .CodeMirror span {
     font-family: monospace !important;
 }
+
+a:visited {
+    color: #2cc5d2 !important;
+}
+
+.cm-render-highlight {
+    color: #66eefd !important;
+    cursor: pointer;
+}

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/xml/xml';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/edit/closetag';
+import 'codemirror/addon/search/searchcursor';
+import './codemirror-addons/keyword'
 import 'codemirror/addon/hint/javascript-hint';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/jsx/jsx';
@@ -22,8 +24,8 @@ import { Modal } from './components/Modal';
 import { useAsyncDebounce } from './hooks/useAsyncDebounce';
 import { throttle } from './hooks/throttle';
 import { icons } from './components/icons';
-import {key} from "./utils/keyCode";
-import {toast} from "./utils/toast";
+import { key } from './utils/keyCode';
+import { toast } from './utils/toast';
 
 const contexts = [
   'react',
@@ -43,6 +45,11 @@ export class ErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { error };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.children.props.id !== this.props.children?.props?.id)
+      this.setState({ error: null });
   }
 
   componentDidCatch(error, errorInfo) {
@@ -90,6 +97,11 @@ function Preview({ accountData, code, id, name, context }) {
   );
 }
 
+function makeOutLink(link) {
+  const [id, context, name] = link.split('_');
+  return { id, context, name };
+}
+
 function linkToHref(link: string) {
   const [id, ctx, name] = link.split('_');
   return `${id}/${name}/${ctx}`;
@@ -99,26 +111,27 @@ export default function SolanaEdit({ value, id, name, context }) {
   const [code, setCode] = useState('');
   const [initialCode, setInitialCode] = useState('');
   const [editorValue, setEditorValue] = useState('');
+  const [inCodePreview, setInCodePreview] = useState<any>(undefined)
   const [showIsDraft, setShowIsDraft] = useState(false);
   const [link, setLink] = useState('');
   const [selectedContext, setSelectedContext] = useState(context);
-  const [settingsIsVisible, showSettings] = useState(false);
   const [infoIsVisible, showInfo] = useState(false);
 
   const editor = React.useRef<any>();
+  const linkInput = React.useRef<any>();
 
   const _id = makeId(id, name, context);
   const { data: view, isLoading, refetch, ...rest } = useQuery(
     _id,
     () => restStorageManager.get(_id),
-    {retry: false}
+    { retry: false }
   );
 
   const draft_id = makeId(id, name + '_draft', context);
   const { data: draft, isLoading: draftIsLoading, refetch: refetchDraft } = useQuery(
     draft_id,
     () => restStorageManager.get(draft_id),
-    {retry: false}
+    { retry: false }
   );
 
   useEffect(() => {
@@ -126,7 +139,13 @@ export default function SolanaEdit({ value, id, name, context }) {
       setInitialCode(draft.data);
       setCode(draft.data);
       setShowIsDraft(true);
-    } else if (!isLoading && !draftIsLoading && view && rest && (!draft || draft && !draft.data)) {
+    } else if (
+      !isLoading &&
+      !draftIsLoading &&
+      view &&
+      rest &&
+      (!draft || (draft && !draft.data))
+    ) {
       setInitialCode(view.data);
       setCode(view.data);
       setLink(view.link);
@@ -160,7 +179,9 @@ export default function SolanaEdit({ value, id, name, context }) {
       const _id = makeId(id, name, selectedContext);
       restStorageManager.create({ _id, data: editorValue, link: linkId }).catch();
     }
-    refetch().catch(()=>toast('Sorry, something wrong :(')).then(()=>toast('Successful saved!'));
+    refetch()
+      .catch(() => toast('Sorry, something wrong :('))
+      .then(() => toast('Successful saved!'));
   };
 
   const openView = () => {
@@ -170,7 +191,7 @@ export default function SolanaEdit({ value, id, name, context }) {
   const renderTagAutoComplete = (cm, option) => {
     const targetStr = '<Render id="" name="default" context="react"/>';
     return new Promise(function (accept) {
-      const {line, ch} = cm.getCursor();
+      const { line, ch } = cm.getCursor();
       const lineText = cm.getLine(line);
       const template = /<R$|<Re$|<Ren$|<Rend$|<Rende$/;
       const match = lineText.match(template);
@@ -193,23 +214,47 @@ export default function SolanaEdit({ value, id, name, context }) {
   };
 
   const updatePreview = (e) => {
-    if(key.isCtrlEnter(e) || key.isCmdEnter(e)) {
-      setCode(editorValue)
+    if (key.isCtrlEnter(e) || key.isCmdEnter(e)) {
+      setCode(editorValue);
+    }
+  };
+
+  const onBlurLinkInput = () => {
+    const { value } = linkInput.current;
+    const linkId = !value || value.includes('_') ? value : makeId(value, 'default', 'react');
+    setLink(linkId);
+    linkInput.current.value = linkId;
+  };
+
+  const markEditorText = (e, val, className) => {
+    const cursor = e.getSearchCursor(val);
+    while (cursor.findNext()) {
+      console.log(cursor.from(), cursor.to())
+      const result = e.markText(
+          cursor.from(),
+          cursor.to(),
+          { className }
+      );
     }
   }
 
   return (
-    <div onKeyUp={updatePreview}  style={{ display: 'flex', height: '100vh', maxHeight: '100vh' }}>
-      <Modal
-          transparent={false}
-          isVisible={infoIsVisible}
-          onBackdropPress={() => showInfo(false)}
-      >
+    <div onKeyUp={updatePreview} style={{ display: 'flex', height: '100vh', maxHeight: '100vh' }}>
+      <Modal top="10%" width={800} transparent={false} isVisible={!!inCodePreview} onBackdropPress={()=>setInCodePreview(undefined)}>
+        {!!inCodePreview && <Render {...inCodePreview}/>}
+      </Modal>
+      <Modal transparent={false} isVisible={infoIsVisible} onBackdropPress={() => showInfo(false)}>
         <h3>Hotkeys</h3>
-        <h5>Update preview <small>Ctrl+Enter or Cmd+Enter</small></h5>
-        <h5>Auto Render complete <small>Ctrl+Space</small> </h5>
+        <h5>
+          Update preview <small>Ctrl+Enter or Cmd+Enter</small>
+        </h5>
+        <h5>
+          Auto Render complete <small>Ctrl+Space</small>{' '}
+        </h5>
         <h3>Hints</h3>
-        <h5><small>To add Link, clear your code</small></h5>
+        <h5>
+          <small>To add Link, clear your code</small>
+        </h5>
       </Modal>
       {draft && draft.data && view && view.data !== draft.data && showIsDraft && (
         <span className="toast">
@@ -245,58 +290,120 @@ export default function SolanaEdit({ value, id, name, context }) {
               Context
             </div>
             <select
-                style={{width: 170, height: 38}}
-                onChange={(e) => setSelectedContext(e.target.value)}
-                name="context"
-                id="context"
-                value={selectedContext}
-                placeholder="Context"
+              style={{ width: 170, height: 38 }}
+              onChange={(e) => setSelectedContext(e.target.value)}
+              name="context"
+              id="context"
+              value={selectedContext}
+              placeholder="Context"
             >
               {contexts.map((context) => (
-                  <option selected={selectedContext === context} value={context}>
-                    {context}
-                  </option>
+                <option selected={selectedContext === context} value={context}>
+                  {context}
+                </option>
               ))}
             </select>
           </div>
-          <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'row', width: '100%' }}>
-            <div style={{ marginRight: 4,width: 60, display: 'inline-block', whiteSpace: 'nowrap' }} htmlFor="link">
-              {link ? <a href={`/${linkToHref(link)}`}>Link to ID</a> : 'Link to ID'}
+          <div
+            style={{ alignItems: 'center', display: 'flex', flexDirection: 'row', width: '100%' }}
+          >
+            <div
+              style={{
+                marginRight: 4,
+                width: 60,
+                display: 'inline-block',
+                whiteSpace: 'nowrap',
+                color: 'white',
+              }}
+              htmlFor="link"
+            >
+              {link ? (
+                <a target="_blank" href={`/${linkToHref(link)}`}>
+                  Link to ID
+                </a>
+              ) : (
+                'Link to ID'
+              )}
             </div>
             <input
-                style={{width: '100%', minWidth: 170, height: 38, marginLeft: 8}}
-                name="link"
-                type="text"
-                id="link"
-                value={link}
-                onChange={(evt) => setLink(evt.target.value)}
-                disabled={!!editorValue}
+              ref={linkInput}
+              onBlur={onBlurLinkInput}
+              onKeyUp={(e) => {
+                if (key.isEnter(e)) {
+                  onBlurLinkInput();
+                  e.stopPropagation();
+                }
+              }}
+              style={{ width: '100%', minWidth: 170, height: 38, marginLeft: 8 }}
+              name="link"
+              type="text"
+              id="link"
+              defaultValue={link}
+              disabled={!!editorValue}
             />
           </div>
         </div>
         <CodeMirror
           value={initialCode}
-          ref={i => editor.current = i}
+          editorDidMount={(i) => {
+          i.getWrapperElement().onmousedown = function(e) {
+              e.preventDefault()
+              e.stopImmediatePropagation()
+              e.stopPropagation()
+              if(!e.ctrlKey) return;
+              const {line} = i.coordsChar({ left: e.clientX, top: e.clientY });
+              const lineContent = i.getLine(line)
+
+              const idMatcher = /id="([^"]*?)"/gm;
+              const nameMatcher = /name="([^"]*?)"/gm;
+              const contextMatcher = /context="([^"]*?)"/gm;
+
+              const id = idMatcher.exec(lineContent)?.[1]
+              const name = nameMatcher.exec(lineContent)?.[1]
+              const context = contextMatcher.exec(lineContent)?.[1]
+
+              if (!id) return;
+              setInCodePreview({id, name, context});
+          }}}
           options={{
+            resetSelectionOnContextMenu: false,
+            readOnly: !!link,
             tabSize: 2,
             autoCloseTags: true,
-            extraKeys: { 'Ctrl-Space': 'autocomplete' },
+            extraKeys: { 'Ctrl-Space': 'autocomplete', 'Ctrl-LeftClick': function(cm, e) {
+                // its a redefine
+              }},
             mode: 'jsx',
             theme: 'material',
             lineNumbers: true,
-            lineWrapping: true,
+            lineWrapping: false,
             htmlMode: true,
             hintOptions: { hint: renderTagAutoComplete },
           }}
           onChange={(editor, change, value) => {
             setEditorValue(value);
             saveDraft(value);
+            //markEditorText(editor, /<Render[\s\S]*\/>/, 'render-highlight')
           }}
         />
       </div>
       <div style={{ width: '47vw' }}>
-        {code && !draftIsLoading && (
-          <Preview key={code} accountData={value} code={code} id={id} name={name} context={context} />
+        {link ? (
+          <ErrorBoundary>
+            <Render key={makeOutLink(link).id} {...makeOutLink(link)} />
+          </ErrorBoundary>
+        ) : (
+          code &&
+          !draftIsLoading && (
+            <Preview
+              key={code}
+              accountData={value}
+              code={code}
+              id={id}
+              name={name}
+              context={context}
+            />
+          )
         )}
       </div>
     </div>

@@ -34,8 +34,8 @@ export function useLoadAccountComponent(address: string, name: string, context: 
       } while (contextConfig.link);
       await loadScript(id, contextConfig.data, {
         Render,
-        add(component): void {
-          addComponent(address, name, context, {}, component);
+        add(component, options = {}): void {
+          addComponent(address, name, context, options, component);
         },
       });
     } catch (err) {
