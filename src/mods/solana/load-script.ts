@@ -2,10 +2,10 @@ import { html } from 'htm/preact';
 import * as preact from 'preact/compat';
 import findLastIndex from 'lodash/findLastIndex';
 import { promised } from './promised';
-import {useBitQuery} from "./hooks/useBitQuery";
+import { useBitQuery } from './hooks/useBitQuery';
 
 export const loadedScripts: { [id: string]: any } = {};
-window.__loadedScripts = loadedScripts;
+globalThis.__loadedScripts = loadedScripts;
 
 function unload(id) {
   if (loadedScripts[id]) {
@@ -14,7 +14,29 @@ function unload(id) {
   }
 }
 
-function reactToHtmPreact(execCode: string) {
+function fixHtmlInnerCode(code: string) {
+  const inners: number[] = [];
+  let prev = 0;
+  let fixedCode = '';
+  for (let i = 0; i < code.length; i++) {
+    const c = code[i];
+
+    if (c === '{') {
+      inners.push(i);
+    } else if (c === '}') {
+      const start = inners.pop() || 0;
+      if (inners.length !== 0) continue;
+      const end = i;
+      fixedCode += code.slice(prev, start);
+      fixedCode += '${' + reactToHtmPreact(code.slice(start + 1, end));
+      prev = end;
+    }
+  }
+  fixedCode += code.slice(prev);
+  return fixedCode;
+}
+
+export function reactToHtmPreact(execCode: string) {
   const tags: number[] = [];
   let prev = 0;
   let fixedCode = '';
@@ -28,11 +50,12 @@ function reactToHtmPreact(execCode: string) {
       const end = c === '<' ? execCode.indexOf('>', i) + 1 : i + 1;
       if (!tags.length) {
         fixedCode += execCode.slice(prev, start);
-        fixedCode += 'html`' +
-          execCode.slice(start, end)
-            .replace(/\{(.*?)\}/g, '${$1}')
-            .replace(/<([A-Z][\w\d_]*)/g, '<${$1}')
-          + '`';
+        fixedCode +=
+          'html`' +
+          fixHtmlInnerCode(execCode.slice(start, end))
+            // .replace(/\{(.*?)\}/g, '${$1}')
+            .replace(/<([A-Z][\w\d_]*)/g, '<${$1}') +
+          '`';
         prev = end;
         i = prev;
       }
@@ -69,7 +92,7 @@ export function loadScript(id: string, code: string, context) {
       html,
       preact,
       require: (url) => {
-        return System.import(url)
+        return globalThis.System.import(url);
       },
       useBitQuery,
       ...context,
@@ -93,11 +116,11 @@ export function loadScript(id: string, code: string, context) {
       delete this.prom;
     },
   };
-  window.onerror = err => loaded.onError(err);
+  globalThis.onerror = (err) => loaded.onError(err);
   loadedScripts[id] = loaded;
 
   const codeLines = code.split('\n');
-  const importsIdx = findLastIndex(codeLines, line => line.startsWith('import'));
+  const importsIdx = findLastIndex(codeLines, (line) => line.startsWith('import'));
   const imports = codeLines.slice(0, importsIdx + 1).join('\n');
   const execCode = codeLines.slice(importsIdx + 1).join('\n');
   const fixedCode = reactToHtmPreact(execCode);

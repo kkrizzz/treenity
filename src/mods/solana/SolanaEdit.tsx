@@ -206,7 +206,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
           {
             line,
             ch: targetStr.length,
-          },
+          }
         );
       }
       accept(null);
