@@ -9,7 +9,7 @@ interface RenderProps {
   children?: any;
 }
 
-function Render({ id, name = 'default', context = 'react', children }: RenderProps) {
+function Render({ id, name = 'default', context = 'react', children, ...more }: RenderProps) {
   console.log('rendering', id, name, context);
   const [componentInfo, isLoading] = useLoadAccountComponent(id, name, context);
   if (isLoading) return <div className="spinner" />;
@@ -24,6 +24,7 @@ function Render({ id, name = 'default', context = 'react', children }: RenderPro
       }
       return (
         <Component
+          {...more}
           {...props}
           id={id}
           value={accountInfo}
@@ -34,7 +35,9 @@ function Render({ id, name = 'default', context = 'react', children }: RenderPro
       );
     }
 
-    return <Component {...props} id={id} context={context} name={name} children={children} />;
+    return (
+      <Component {...more} {...props} id={id} context={context} name={name} children={children} />
+    );
   } catch (e) {
     return null;
   }
