@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/xml/xml';
@@ -6,7 +6,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/show-hint.css';
 import 'codemirror/addon/edit/closetag';
 import 'codemirror/addon/search/searchcursor';
-import './codemirror-addons/keyword'
+import './codemirror-addons/keyword';
 import 'codemirror/addon/hint/javascript-hint';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/jsx/jsx';
@@ -201,12 +201,12 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
           targetStr,
           {
             line,
-            ch: ch - match[0].length
+            ch: ch - match[0].length,
           },
           {
             line,
-            ch: targetStr.length
-          }
+            ch: targetStr.length,
+          },
         );
       }
       accept(null);
@@ -229,19 +229,21 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
   const markEditorText = (e, val, className) => {
     const cursor = e.getSearchCursor(val);
     while (cursor.findNext()) {
-      console.log(cursor.from(), cursor.to())
-      const result = e.markText(
-          cursor.from(),
-          cursor.to(),
-          { className }
-      );
+      console.log(cursor.from(), cursor.to());
+      const result = e.markText(cursor.from(), cursor.to(), { className });
     }
-  }
+  };
 
   return (
     <div onKeyUp={updatePreview} style={{ display: 'flex', height: '100vh', maxHeight: '100vh' }}>
-      <Modal top="10%" width={800} transparent={false} isVisible={!!inCodePreview} onBackdropPress={()=>setInCodePreview(undefined)}>
-        {!!inCodePreview && <Render {...inCodePreview}/>}
+      <Modal
+        top="10%"
+        width={800}
+        transparent={false}
+        isVisible={!!inCodePreview}
+        onBackdropPress={() => setInCodePreview(undefined)}
+      >
+        {!!inCodePreview && <Render {...inCodePreview} />}
       </Modal>
       <Modal transparent={false} isVisible={infoIsVisible} onBackdropPress={() => showInfo(false)}>
         <h3>Hotkeys</h3>
@@ -346,33 +348,37 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
         <CodeMirror
           value={initialCode}
           editorDidMount={(i) => {
-          i.getWrapperElement().onmousedown = function(e) {
-              e.preventDefault()
-              e.stopImmediatePropagation()
-              e.stopPropagation()
-              if(!e.ctrlKey) return;
-              const {line} = i.coordsChar({ left: e.clientX, top: e.clientY });
-              const lineContent = i.getLine(line)
+            i.getWrapperElement().onmousedown = function (e) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              e.stopPropagation();
+              if (!e.ctrlKey) return;
+              const { line } = i.coordsChar({ left: e.clientX, top: e.clientY });
+              const lineContent = i.getLine(line);
 
               const idMatcher = /id="([^"]*?)"/gm;
               const nameMatcher = /name="([^"]*?)"/gm;
               const contextMatcher = /context="([^"]*?)"/gm;
 
-              const id = idMatcher.exec(lineContent)?.[1]
-              const name = nameMatcher.exec(lineContent)?.[1]
-              const context = contextMatcher.exec(lineContent)?.[1]
+              const id = idMatcher.exec(lineContent)?.[1];
+              const name = nameMatcher.exec(lineContent)?.[1];
+              const context = contextMatcher.exec(lineContent)?.[1];
 
               if (!id) return;
-              setInCodePreview({id, name, context});
-          }}}
+              setInCodePreview({ id, name, context });
+            };
+          }}
           options={{
             resetSelectionOnContextMenu: false,
             readOnly: !!link,
             tabSize: 2,
             autoCloseTags: true,
-            extraKeys: { 'Ctrl-Space': 'autocomplete', 'Ctrl-LeftClick': function(cm, e) {
+            extraKeys: {
+              'Ctrl-Space': 'autocomplete',
+              'Ctrl-LeftClick': function (cm, e) {
                 // its a redefine
-              }},
+              },
+            },
             mode: 'jsx',
             theme: 'material',
             lineNumbers: true,
