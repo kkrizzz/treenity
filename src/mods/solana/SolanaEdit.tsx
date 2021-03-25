@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/xml/xml';
@@ -12,7 +12,6 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/jsx/jsx';
 import './SolanaEdit.css';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
-import { getFormData } from './utils/getFormData';
 import { restStorageManager } from './rest-storage-manager';
 import { addComponent } from './component-db';
 import { loadScript } from './load-script';
@@ -22,9 +21,9 @@ import { useQuery } from 'react-query';
 import { Icon } from './components/Icon';
 import { Modal } from './components/Modal';
 import { throttle } from './hooks/throttle';
-import { icons } from './components/icons';
 import { key } from './utils/keyCode';
 import { toast } from './utils/toast';
+import useLongPress from './hooks/useLongPress';
 
 const contexts = [
   'react',
@@ -115,6 +114,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
   const [link, setLink] = useState('');
   const [selectedContext, setSelectedContext] = useState(context);
   const [infoIsVisible, showInfo] = useState(false);
+  const renderPreviewLongPress = useLongPress((e) => parseInCodePreview(e), 1500);
 
   const editor = React.useRef<any>();
   const linkInput = React.useRef<any>();
@@ -150,6 +150,22 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
       setLink(view.link);
     }
   }, [_id, isLoading, draftIsLoading]);
+
+  const parseInCodePreview = (e: MouseEvent) => {
+    const { editor: i } = editor.current;
+    const { line } = i.coordsChar({ left: e.clientX, top: e.clientY });
+    const lineContent = i.getLine(line);
+    const matcher = /(\w+)=("[^<>"]*"|'[^<>']*'|\w+)/gi;
+    const targetAtrr: any = {};
+
+    lineContent.match(matcher)?.forEach((attr) => {
+      const splitAttr = attr.split('=');
+      targetAtrr[splitAttr[0]] = splitAttr[1].replace(/"/g, '');
+    });
+    if (!targetAtrr.id) return;
+
+    setInCodePreview(targetAtrr);
+  };
 
   const rewindCodeToOriginal = () => {
     if (view) {
@@ -226,9 +242,15 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
   };
 
   return (
-    <div onKeyUp={updatePreview} style={{ display: 'flex', height: '100vh', maxHeight: '100vh' }}>
-      <Modal top="10%" width={800} transparent={false} isVisible={!!inCodePreview} onBackdropPress={()=>setInCodePreview(undefined)}>
-        {!!inCodePreview && <Render {...inCodePreview}/>}
+    <div onKeyUp={updatePreview} className="solana-edit">
+      <Modal
+        top="10%"
+        width={800}
+        transparent={false}
+        isVisible={!!inCodePreview}
+        onBackdropPress={() => setInCodePreview(undefined)}
+      >
+        {!!inCodePreview && <Render {...inCodePreview} />}
       </Modal>
       <Modal transparent={false} isVisible={infoIsVisible} onBackdropPress={() => showInfo(false)}>
         <h3>Hotkeys</h3>
@@ -331,15 +353,19 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
           </div>
         </div>
         <CodeMirror
+          {...renderPreviewLongPress}
           value={initialCode}
           options={{
             resetSelectionOnContextMenu: false,
             readOnly: !!link,
             tabSize: 2,
             autoCloseTags: true,
-            extraKeys: { 'Ctrl-Space': 'autocomplete', 'Ctrl-LeftClick': function(cm, e) {
+            extraKeys: {
+              'Ctrl-Space': 'autocomplete',
+              'Ctrl-LeftClick': function (cm, e) {
                 // its a redefine
-              }},
+              },
+            },
             mode: 'jsx',
             theme: 'material',
             lineNumbers: true,
@@ -347,6 +373,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
             htmlMode: true,
             hintOptions: { hint: renderTagAutoComplete },
           }}
+          ref={(i) => (editor.current = i)}
           onChange={(editor, change, value) => {
             setEditorValue(value);
             saveDraft(value);
