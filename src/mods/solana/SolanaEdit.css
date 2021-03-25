@@ -1,3 +1,10 @@
+.solana-edit {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    max-height: 100vh;
+}
+
 .solana-edit__toolbar {
     padding: 16px;
     background: #1c3f53;
