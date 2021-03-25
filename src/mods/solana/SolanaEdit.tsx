@@ -21,7 +21,6 @@ import { makeId } from './utils/make-id';
 import { useQuery } from 'react-query';
 import { Icon } from './components/Icon';
 import { Modal } from './components/Modal';
-import { useAsyncDebounce } from './hooks/useAsyncDebounce';
 import { throttle } from './hooks/throttle';
 import { icons } from './components/icons';
 import { key } from './utils/keyCode';
@@ -346,24 +345,22 @@ export default function SolanaEdit({ value, id, name, context }) {
         <CodeMirror
           value={initialCode}
           editorDidMount={(i) => {
-          i.getWrapperElement().onmousedown = function(e) {
+          i.getWrapperElement().ondblclick = function(e) {
               e.preventDefault()
               e.stopImmediatePropagation()
               e.stopPropagation()
-              if(!e.ctrlKey) return;
               const {line} = i.coordsChar({ left: e.clientX, top: e.clientY });
               const lineContent = i.getLine(line)
+              const matcher = /(\w+)=("[^<>"]*"|'[^<>']*'|\w+)/ig;
+              const targetAtrr:any = {};
 
-              const idMatcher = /id="([^"]*?)"/gm;
-              const nameMatcher = /name="([^"]*?)"/gm;
-              const contextMatcher = /context="([^"]*?)"/gm;
+              lineContent.match(matcher)?.forEach(attr => {
+                const splitAttr = attr.split('=');
+                targetAtrr[splitAttr[0]] = splitAttr[1].replace(/"/g, '');
+              });
+              if (!targetAtrr.id) return;
 
-              const id = idMatcher.exec(lineContent)?.[1]
-              const name = nameMatcher.exec(lineContent)?.[1]
-              const context = contextMatcher.exec(lineContent)?.[1]
-
-              if (!id) return;
-              setInCodePreview({id, name, context});
+              setInCodePreview(targetAtrr);
           }}}
           options={{
             resetSelectionOnContextMenu: false,

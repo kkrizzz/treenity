@@ -1,4 +1,5 @@
 import { html } from 'htm/preact';
+import './systemjs-addons/css'
 import * as preact from 'preact/compat';
 import findLastIndex from 'lodash/findLastIndex';
 import { promised } from './promised';
