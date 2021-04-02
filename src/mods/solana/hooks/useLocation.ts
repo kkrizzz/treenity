@@ -1,7 +1,7 @@
 import React from "react";
 
-history.pushState = function pushState(...args) {
-    History.prototype.pushState.apply(history, args);
+history.pushState = function pushState() {
+    History.prototype.pushState.apply(history, arguments);
     window.dispatchEvent(new Event('pushState'));
 };
 
@@ -9,7 +9,8 @@ export default function useLocation() {
     const [location, setLocation] = React.useState(window.location);
 
     const handleHashChange = React.useCallback(() => {
-        setLocation(window.location);
+        // just window.location not worked
+        setLocation(Object.assign({}, window.location));
     }, []);
 
     React.useEffect(() => {
@@ -17,5 +18,5 @@ export default function useLocation() {
         return () => window.removeEventListener("pushState", handleHashChange);
     }, [handleHashChange]);
 
-    return location;
+    return location
 }

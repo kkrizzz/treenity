@@ -1,24 +1,42 @@
+async function compileSass(text) {
+    return await new Promise((resolve, reject) => {
+        globalThis.Sass.compile(text, resolve);
+    }).catch()
+}
+
 (function () {
     const systemPrototype = System.constructor.prototype;
     const originalInstantiate = systemPrototype.instantiate;
 
     systemPrototype.instantiate = function () {
-        // const loader = this;
-        const url = arguments[0];
+        let [prefix, url] = arguments[0].split('^');
+        if(!url) url = prefix;
+
         if (url.slice(-4) === '.css'){
-            return new Promise(function(resolve, reject){
-                if(
-                    document.querySelector('link[href="'+url+'"]') ||
-                    document.querySelector('link[href="'+url.replace(location.protocol+'//'+location.hostname, '')+'"]')
-                ){
-                    reject(Error('Style '+url+' has already been loaded using another way.'));
-                    return;
+            return new Promise(async function(resolve, reject) {
+                const has = document.querySelector(`link[id="${url}"]`)
+                if(has) {
+                    has.remove();
                 }
+                const req = await fetch(url);
+                let css = await req.text();
+                if(prefix !== url) {
+                    css = (await compileSass(`
+                .${prefix} {
+                    ${css}
+                }
+                `)).text;
+                }
+
+                const cssBlob = new Blob([css], {type: 'text/css'})
+                const cssBlobUrl = window.URL.createObjectURL(cssBlob);
+
                 let link = document.createElement('link');
+                link.id = url;
                 link.type = 'text/css';
                 link.rel = 'stylesheet';
-                link.href = url;
-                document.head.appendChild(link);
+                link.href = cssBlobUrl;
+
                 link.onload = function(){
                     // console.log('%c Style '+url+' has been loaded', 'color: green');
                     resolve([[], function (){
@@ -32,7 +50,8 @@
                     }
                     reject(e);
                 };
-            });
+                document.head.appendChild(link);
+            })
         } else {
             return originalInstantiate.apply(this, arguments);
         }

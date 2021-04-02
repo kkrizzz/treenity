@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { addComponent, getComponent } from '../component-db';
 import useAsyncEffect from 'use-async-effect';
 import { makeId } from '../utils/make-id';
@@ -12,6 +12,10 @@ export function useLoadAccountComponent(address: string, name: string, context: 
   if (!addressRegEx.test(address)) throw new Error('bad address');
 
   const [loading, setLoading] = useState(true);
+
+  useEffect(()=>{
+    if(!getComponent(address, name, context)) setLoading(true)
+  }, [address, name, context])
 
   const config = getComponent(address, name, context);
   if (config || !loading) {
