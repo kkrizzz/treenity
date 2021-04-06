@@ -44,7 +44,7 @@ const validateTx = async (app, context: ctx) => {
 };
 
 const checkOwner = async (app, context: ctx, collection) => {
-  const target = await app.service('solana').get(context.id);
+  const target = await app.services[collection].get(context.id);
   if (context.session.pubkey !== target.owner)
     throw new Error(
       `permission denied - \nowner(${target.owner})\neditor(${context.session.pubkey})`
