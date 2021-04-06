@@ -41,7 +41,7 @@ export default function SolanaRoute() {
     return <Render id={id} context={ctx} name={name} />;
   }
 
-  return (
-      <Render {...props} id={id} context={ctx} name={name} />
-  );
+  return <Render id="layout" context={ctx}>
+    <Render {...props} id={id} context={ctx} name={name} />
+  </Render>;
 }
