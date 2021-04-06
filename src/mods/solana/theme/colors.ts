@@ -1,0 +1,1 @@
+export const WALLETS_ERROR_TOAST_COLOR = "#bf9b9b"

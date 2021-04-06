@@ -14,25 +14,17 @@ interface ModalProps {
   top?: number | string,
 }
 
-const defaultProps: ModalProps = {
-    transparent: false,
-    isVisible: false,
-    onBackdropPress: ()=>{},
-    width: 300,
-    height: 'auto',
-    top: '30%'
-}
-
-export const Modal = (props: ModalProps = defaultProps) => {
+export const Modal = (props: ModalProps) => {
   return props.isVisible?(
     <div
       onClick={()=>props.onBackdropPress()}
       style={{
+        top: 0,
         position: 'absolute',
         zIndex: 100500,
         width: '100%',
         height: '100%',
-        background: props.background || 'rgba(69,69,69,0.34)',
+        background: props.transparent? 'transparent': props.background || 'rgba(69,69,69,0.34)',
       }}
     >
       <div
@@ -44,7 +36,7 @@ export const Modal = (props: ModalProps = defaultProps) => {
           width: props.width,
           height: props.height,
           position: 'relative',
-          top: props.top,
+          top: '15%'
         }}
       >
         <Icon

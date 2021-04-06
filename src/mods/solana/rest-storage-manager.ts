@@ -1,5 +1,6 @@
 import { ServiceMethods } from '@feathersjs/feathers';
 import { MONGO_SERVICE_URL } from './config';
+import {Transaction} from "@solana/web3.js";
 
 class RestStorageManager<T> implements ServiceMethods<T> {
   baseUrl: string;
@@ -8,11 +9,12 @@ class RestStorageManager<T> implements ServiceMethods<T> {
     this.baseUrl = baseUrl;
   }
 
-  async create(data: T): Promise<T> {
+  async create(data: T, tx: Transaction): Promise<T> {
     const req = await fetch(this.baseUrl, {
       method: 'POST',
       cache: 'no-cache',
       headers: {
+        tx: JSON.stringify(tx),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
@@ -20,10 +22,11 @@ class RestStorageManager<T> implements ServiceMethods<T> {
     return await req.json() as T;
   }
 
-  async patch(_id: string, data): Promise<T> {
+  async patch(_id: string, data, tx: Transaction): Promise<T> {
     const req = await fetch(`${this.baseUrl}/${_id}`, {
       method: 'PATCH',
       headers: {
+        tx: JSON.stringify(tx),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
@@ -57,5 +60,7 @@ interface Entry {
   _id: string;
   data: string;
   link: string;
+  owner?: string,
 };
+
 export const restStorageManager = new RestStorageManager<Entry>(MONGO_SERVICE_URL);

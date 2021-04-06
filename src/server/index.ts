@@ -28,6 +28,7 @@ import { Node } from '../treenity/tree/node';
 import { AppProvider } from '../treenity/react/useApp';
 import services from './services';
 import {Sysinit} from "../treenity/service/Sysinit";
+import {routesStartup as solareaRoutes} from "./solana/routes-startup";
 
 config.isServer = true;
 
@@ -43,7 +44,6 @@ async function main() {
   app.use(express.urlencoded({ extended: true }));
   app.configure(express.rest());
   app.configure(socketio());
-  authentication(app);
   app.use(express.errorHandler());
 
   const db = await createClientDb(app);
@@ -59,6 +59,7 @@ async function main() {
   collection('changes');
   collection('edges');
   collection('users');
+  collection('session');
   const tree = app.use('tree', new TreeService())
     .service('tree').hooks({
       error: {
@@ -84,7 +85,7 @@ async function main() {
         ],
       },
     });
-
+  solareaRoutes(app);
   app.use('message', new MessageService());
 
   app.use('hello', new HelloService());
