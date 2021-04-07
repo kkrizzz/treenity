@@ -44,11 +44,16 @@ const validateTx = async (app, context: ctx) => {
 };
 
 const checkOwner = async (app, context: ctx, collection) => {
-  const target = await context.service.get(context.id);
-  if (context.session.pubkey !== target.owner)
+  const target = await context.service.get(context.id as string);
+  const isOwner = Array.isArray(target.owner)
+    ? target.owner.includes(context.session.pubkey)
+    : context.session.pubkey === target.owner;
+
+  if (!isOwner) {
     throw new Error(
-      `permission denied - \nowner(${target.owner})\neditor(${context.session.pubkey})`
+      `permission denied - \nowner(${target.owner})\neditor(${context.session.pubkey})`,
     );
+  }
 
   return context;
 };
@@ -71,7 +76,10 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
       app.service(value.baseUrl).hooks({
         before: {
           create: [(ctx) => validateTx(app, ctx)],
-          patch: [(ctx) => validateTx(app, ctx), (ctx) => checkOwner(app, ctx, value.collectionName)],
+          patch: [
+            (ctx) => validateTx(app, ctx),
+            (ctx) => checkOwner(app, ctx, value.collectionName),
+          ],
         },
       });
     });
