@@ -10,6 +10,9 @@ export default function WalletConnect() {
       <div style={{color: 'white'}}>{publicKey}</div>
       <button onClick={connected ? disconnect : connect}>
         {connected ? 'Disconnect' : 'Connect'}
+      </button><b/>
+      <button>
+          <a href="?edit">Edit page</a>
       </button>
     </>
   );
