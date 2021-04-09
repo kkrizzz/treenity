@@ -11,7 +11,6 @@ import './components/SolanaVIew';
 import {SolongWalletAdapter} from "./wallet-adapters/solong";
 import {WalletProvider} from "./utils/wallet";
 import WalletConnect from "./components/WalletConnect";
-import {Popover} from "./components/Popover";
 
 
 config.isClient = true;
@@ -29,9 +28,7 @@ const inject = (comp) => (
 const App = () => {
     return inject(
         <WalletProvider>
-            <Popover>
-                <WalletConnect/>
-            </Popover>
+            <WalletConnect/>
             <SolanaRoute/>
         </WalletProvider>
     );

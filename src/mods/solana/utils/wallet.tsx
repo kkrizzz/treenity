@@ -130,6 +130,8 @@ export function WalletProvider({ children }) {
         >
             {children}
             <Modal
+                closeBtnColor={"white"}
+                modalBackground={"#2d2d2d"}
                 width={400}
                 transparent={false}
                 onBackdropPress={close}
@@ -143,7 +145,7 @@ export function WalletProvider({ children }) {
                     }
                     return (
                         <div className="wallet-select_item" onClick={onClick}>
-                            <img style={{background: '#000000'}} width={50} height={50} src={provider.icon}/>
+                            <img style={{background: 'rgba(255,255,255,0)'}} width={50} height={50} src={provider.icon}/>
                             <div className="wallet-select_item-title">{provider.name}</div>
                         </div>
                     )

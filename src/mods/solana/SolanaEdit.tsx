@@ -123,7 +123,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
   const editor = React.useRef<any>();
   const linkInput = React.useRef<any>();
 
-  if (!transaction) return <div>Signing ...</div>;
+  if (!transaction) return <div style={{textAlign: "center", fontSize: 40, marginTop: "20%"}}>Signing ...</div>;
 
   const _id = makeId(id, name, context);
   const { data: view, isLoading, refetch, ...rest } = useQuery(
@@ -189,6 +189,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
       const draft_id = makeId(id, name + '_draft', selectedContext);
       restStorageManager
         .create({ _id: draft_id, data: editorValue, link: '' }, transaction.serialize())
+        .then(res => console.log('draft created', res))
         .catch();
     }
   }, 2000);

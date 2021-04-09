@@ -12,6 +12,8 @@ interface ModalProps {
   height?: number | string;
   width?: number | string,
   top?: number | string,
+  modalBackground?: string,
+  closeBtnColor?: string,
 }
 
 export const Modal = (props: ModalProps) => {
@@ -32,7 +34,7 @@ export const Modal = (props: ModalProps) => {
           marginRight: 'auto',
           marginLeft: 'auto',
           padding: 16,
-          background: 'white',
+          background: props.modalBackground || 'white',
           width: props.width,
           height: props.height,
           position: 'relative',
@@ -41,7 +43,7 @@ export const Modal = (props: ModalProps) => {
       >
         <Icon
           name="close"
-          style={{width: 'fit-content', marginLeft: 'auto', maxHeight: 10}}
+          style={{marginTop: -4, width: 'fit-content', marginLeft: 'auto', maxHeight: 24, color: props.closeBtnColor || 'black'}}
           onClick={() => props.onBackdropPress()}
         />
         {props.children}

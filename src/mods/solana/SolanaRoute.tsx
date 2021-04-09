@@ -5,15 +5,24 @@ import Render from './Render';
 import SolanaEdit from './SolanaEdit';
 import { useWallet } from './utils/wallet';
 import { useTransaction } from "./hooks/useTransaction";
+
+const SolareaInfo = ({children}) => {
+  return (
+      <div style={{textAlign: "center", fontSize: 40, marginTop: "20%"}}>
+        {children}
+      </div>
+  )
+}
+
 const SolareaEditValidator = ({ id, name, context, children }) => {
   const { wallet, connected } = useWallet();
 
   if (!wallet) {
-    return <div>Log in to edit</div>;
+    return <SolareaInfo>Login to edit</SolareaInfo>;
   }
 
   if (wallet && !connected) {
-    return <div>Connecting to wallet ...</div>;
+    return <SolareaInfo>Connecting to wallet ...</SolareaInfo>;
   }
 
   if (wallet && connected) {

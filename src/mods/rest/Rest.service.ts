@@ -44,7 +44,10 @@ const validateTx = async (app, context: ctx) => {
 };
 
 const checkOwner = async (app, context: ctx, collection) => {
-  const target = await context.service.get(context.id as string);
+  const targetId = context.id as string;
+  const target = await context.service.get(targetId);
+  if(targetId.slice(targetId.length-5)==='draft') return context;
+
   const isOwner = Array.isArray(target.owner)
     ? target.owner.includes(context.session.pubkey)
     : context.session.pubkey === target.owner;

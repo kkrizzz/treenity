@@ -1,0 +1,29 @@
+.wallet-connect {
+    padding: 32px 8px;
+}
+
+.wallet-connect-btn {
+    padding: 16px 0;
+    cursor: pointer;
+    text-align: center;
+    margin: 10px 0;
+    color: black;
+    background: white;
+}
+
+.wallet-connect-btn:hover {
+    background: #e7e7e7;
+}
+
+.wallet-connect-acc {
+    overflow: hidden;
+    color: black;
+}
+
+.wallet-connect-btn a {
+    color: black !important;
+}
+
+.wallet-connect-btn a:visited {
+    color: black !important;
+}
