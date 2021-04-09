@@ -61,6 +61,14 @@ const checkOwner = async (app, context: ctx, collection) => {
   return context;
 };
 
+const checkData = async (app, context: ctx) => {
+  // const target = await context.service.get(context.id as string);
+
+  delete context.data.owner;
+
+  return context;
+};
+
 addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
   const app = useApp();
   const db = createClientDb(app);
@@ -78,10 +86,17 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
 
       app.service(value.baseUrl).hooks({
         before: {
-          create: [(ctx) => validateTx(app, ctx)],
+          create: [
+            (ctx) => validateTx(app, ctx),
+            (ctx) => {
+              ctx.data.owner = [ctx.session.pubkey];
+              return ctx;
+            },
+          ],
           patch: [
             (ctx) => validateTx(app, ctx),
             (ctx) => checkOwner(app, ctx, value.collectionName),
+            (ctx) => checkData(app, ctx),
           ],
         },
       });
