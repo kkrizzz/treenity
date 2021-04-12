@@ -24,19 +24,20 @@ interface ctx extends HookContext {
 }
 
 const validate = async (app, context: ctx) => {
-  const targetId = context.id as string;
-  if(targetId.slice(targetId.length-5)==='draft') return context;
+  const sid = context.params.headers?.session
+  const session = (await app.service('session').find({ query: { sid } }))[0];
+  if(!session || !session.valid) throw new Error('Invalid session');
 
-  await checkOwner(app, context);
+  context.session = session;
+
   return context;
 };
 
 const checkOwner = async (app, context: ctx) => {
-  const sid = context.params.headers?.session
-  const session = (await app.service('session').find({ query: { sid } }))[0];
-  if(!session.valid) throw new Error('Invalid session');
-
   const targetId = context.id as string;
+  if(targetId.slice(targetId.length-5)==='draft') return context;
+
+  const { session } = context;
   const target = await context.service.get(targetId);
 
   const isOwner = Array.isArray(target.owner)
@@ -51,8 +52,6 @@ const checkOwner = async (app, context: ctx) => {
 }
 
 const checkData = async (app, context: ctx) => {
-  // const target = await context.service.get(context.id as string);
-
   delete context.data.owner;
 
   return context;
@@ -78,6 +77,7 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
           create: [(ctx) => validate(app, ctx)],
           patch: [
             (ctx) => validate(app, ctx),
+            (ctx) => checkOwner(app, ctx),
             (ctx) => checkData(app, ctx),
           ],
         },
