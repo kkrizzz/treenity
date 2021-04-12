@@ -3,6 +3,9 @@
 }
 
 .wallet-connect-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 16px 0;
     cursor: pointer;
     text-align: center;

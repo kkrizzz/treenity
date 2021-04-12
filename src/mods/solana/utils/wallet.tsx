@@ -18,10 +18,11 @@ import {toast} from "./toast";
 import { WALLETS_ERROR_TOAST_COLOR } from "../theme/colors";
 import {Modal} from "../components/Modal";
 import {req} from "./req";
-import {AUTH_SERVICE_URL} from "../config";
+import {VALIDATE_SERVICE_URL, SESSION_SERVICE_URL} from "../config";
 import {useSessionStorageState} from "../hooks/useSessionStorageState";
-import {Transaction} from "@solana/web3.js";
+import {AccountMeta, Transaction, TransactionInstruction} from "@solana/web3.js";
 import {transaction} from "mobx";
+import {useLocalStorageState} from "../hooks/useLocalStorageState";
 
 const ASSET_URL =
     'https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets';
@@ -59,29 +60,91 @@ export const WALLET_PROVIDERS = [
     }
 ];
 
-const WalletContext = React.createContext<{transaction: Transaction | undefined, session: string, wallet: any, connected: boolean, select: any, close: any }| null>(null);
+const WalletContext = React.createContext<{signed: boolean, states: any, transaction: Transaction | undefined, session: string, wallet: any, connected: boolean, select: any, close: any }| null>(null);
 
 export function WalletProvider({ children }) {
     const [connected, setConnected] = useState(false);
     const [wallet, setWallet] = useState<WalletAdapter | undefined>(undefined);
-    const [session, setSession] = useSessionStorageState('sessionid')
-    const [transaction, setTransaction] = useState<Transaction>()
+    const [autoConnect, setAutoConnect] = useLocalStorageState('autoconnect');
+    const [autoConnectProvider, setAutoConnectProvider] = useLocalStorageState('autoconnect-provider');
+    const [session, setSession] = useSessionStorageState('sessionid');
+    const [signed, setSigned] = useSessionStorageState('signed');
+    const [transaction, setTransaction] = useState<Transaction | undefined>(undefined);
+
+    useEffect(()=>{
+        if(transaction && !signed) {
+            req.post(VALIDATE_SERVICE_URL, {
+                transaction: transaction.serialize()
+            }).then(res => setSigned(true)).catch(()=>console.log('error'))
+        }
+    }, [transaction, connected])
+
+    useEffect(()=>{
+        const connectWallet = () => {
+            if(!autoConnect) setAutoConnectProvider('');
+            if(autoConnect && autoConnectProvider) {
+                const targetWallet = WALLET_PROVIDERS.find(i => i.name === autoConnectProvider);
+                if(!targetWallet) return;
+
+                const wal = new targetWallet.adapter();
+                wal.connect();
+                setWallet(wal);
+            }
+        }
+
+        if (document.readyState !== 'complete') {
+            // wait to ensure that browser extensions are loaded
+            const listener = () => {
+                connectWallet();
+                window.removeEventListener('load', listener);
+            };
+            window.addEventListener('load', listener);
+            return () => window.removeEventListener('load', listener);
+        } else {
+            connectWallet();
+        }
+    }, [autoConnect, autoConnectProvider])
+
+    useEffect(() => {
+        if (wallet && connected && !signed) {
+            const keys: Array<AccountMeta> = [{isSigner: true, isWritable: false, pubkey: wallet.publicKey}]
+
+            const txi = new TransactionInstruction({
+                keys: keys,
+                programId: wallet.publicKey.toBase58(),
+                data: Buffer.from(session)
+            });
+
+            const tx = new Transaction({
+                recentBlockhash: '5Tx8F3jgSHx21CbtjwmdaKPLM5tWmreWAnPrbqHomSJF',
+                feePayer: keys[0].pubkey
+            });
+
+            tx.add(txi);
+            wallet.signTransaction(tx);
+        }
+    }, [session])
 
     useEffect(() => {
         if (wallet) {
             wallet.on('connect', () => {
                 if (wallet?.publicKey) {
-                    req.post(AUTH_SERVICE_URL, {pubkey: wallet.publicKey.toBase58()}).then(res => {
-                        res.text().then((sid) => {
-                            setConnected(true);
-                            setSession(sid);
-                            toast(
-                                'Connected',
-                                5000,
-                                WALLETS_ERROR_TOAST_COLOR
-                            )
+                    if(session) {
+                        setConnected(true);
+                    }
+                    if(!session) {
+                        req.post(SESSION_SERVICE_URL, {pubkey: wallet.publicKey.toBase58()}).then(res => {
+                            res.text().then((sid) => {
+                                setConnected(true);
+                                setSession(sid);
+                                toast(
+                                    'Connected',
+                                    5000,
+                                    WALLETS_ERROR_TOAST_COLOR
+                                )
+                            })
                         })
-                    })
+                    }
                 }
             });
 
@@ -120,6 +183,13 @@ export function WalletProvider({ children }) {
     return (
         <WalletContext.Provider
             value={{
+                signed,
+                states: {
+                  autoConnect,
+                  setAutoConnect,
+                  autoConnectProvider,
+                  setAutoConnectProvider,
+                },
                 transaction,
                 wallet,
                 connected,
@@ -139,9 +209,14 @@ export function WalletProvider({ children }) {
             >
                 {WALLET_PROVIDERS.map((provider) => {
                     const onClick = () => {
-                        const adapterWalley = new provider.adapter();
-                        adapterWalley.connect();
-                        setWallet(adapterWalley)
+                        const adapterWallet = new provider.adapter();
+
+                        if(autoConnect) setAutoConnectProvider(provider.name);
+                        else setAutoConnectProvider('')
+
+                        adapterWallet.connect();
+                        setWallet(adapterWallet);
+                        setSession('');
                     }
                     return (
                         <div className="wallet-select_item" onClick={onClick}>
@@ -163,6 +238,8 @@ export function useWallet() {
 
     const wallet = context.wallet;
     return {
+        signed: context.signed,
+        states: context.states,
         session: context.session,
         select: context.select,
         close: context.close,

@@ -14,7 +14,7 @@ const SolareaInfo = ({children}) => {
   )
 }
 
-const SolareaEditValidator = ({ id, name, context, children }) => {
+const SolareaEditValidator = ({ children }) => {
   const { wallet, connected } = useWallet();
 
   if (!wallet) {
@@ -34,14 +34,13 @@ const SolareaEditValidator = ({ id, name, context, children }) => {
 
 export default function SolanaRoute() {
   let [id, name, context] = useParams();
-  const { wallet, connected } = useWallet();
 
   const ctx = `react${context && context !== 'react' ? ` ${context}` : ''}`;
 
   const { edit, ...props } = useQueryParams();
   if (edit !== undefined)
     return (
-      <SolareaEditValidator id={id} name={name} context={context}>
+      <SolareaEditValidator>
         <SolanaEdit {...props} value={null} id={id} name={name} context={ctx} />
       </SolareaEditValidator>
     );

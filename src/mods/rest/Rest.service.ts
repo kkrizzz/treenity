@@ -23,43 +23,32 @@ interface ctx extends HookContext {
   session: any;
 }
 
-const validateTx = async (app, context: ctx) => {
-  const { headers }: any = context.params;
+const validate = async (app, context: ctx) => {
+  const targetId = context.id as string;
+  if(targetId.slice(targetId.length-5)==='draft') return context;
 
-  if (headers && !headers.tx) throw new Error('No transaction');
-
-  const tx = JSON.parse(headers.tx);
-  const transaction = Transaction.from(tx.data);
-
-  if (!transaction.feePayer) throw new Error('No fee payer');
-  if (!transaction.verifySignatures()) throw new Error('Validation error');
-  const pubkey = transaction.feePayer.toBase58();
-  const sid = transaction.instructions[0].data.toString();
-  const session = (await app.service('session').find({ query: { pubkey, sid } }))[0];
-
-  if (!session) throw new Error('Something went wrong');
-  context.session = session;
-
+  await checkOwner(app, context);
   return context;
 };
 
-const checkOwner = async (app, context: ctx, collection) => {
+const checkOwner = async (app, context: ctx) => {
+  const sid = context.params.headers?.session
+  const session = (await app.service('session').find({ query: { sid } }))[0];
+  if(!session.valid) throw new Error('Invalid session');
+
   const targetId = context.id as string;
   const target = await context.service.get(targetId);
-  if(targetId.slice(targetId.length-5)==='draft') return context;
 
   const isOwner = Array.isArray(target.owner)
-    ? target.owner.includes(context.session.pubkey)
-    : context.session.pubkey === target.owner;
+      ? target.owner.includes(session.pubkey)
+      : session.pubkey === target.owner;
 
   if (!isOwner) {
     throw new Error(
-      `permission denied - \nowner(${target.owner})\neditor(${context.session.pubkey})`,
+        `permission denied - \nowner(${target.owner})\neditor(${session.pubkey})`,
     );
   }
-
-  return context;
-};
+}
 
 addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
   const app = useApp();
@@ -78,10 +67,9 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
 
       app.service(value.baseUrl).hooks({
         before: {
-          create: [(ctx) => validateTx(app, ctx)],
+          create: [(ctx) => validate(app, ctx)],
           patch: [
-            (ctx) => validateTx(app, ctx),
-            (ctx) => checkOwner(app, ctx, value.collectionName),
+            (ctx) => validate(app, ctx),
           ],
         },
       });

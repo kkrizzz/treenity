@@ -108,8 +108,7 @@ function linkToHref(link: string) {
 }
 
 export default function SolanaEdit({ value, id, name, context, ...params }) {
-  const { wallet } = useWallet();
-  const [transaction, newTransaction] = useTransaction();
+  const { signed, wallet, session } = useWallet();
   const [code, setCode] = useState('');
   const [initialCode, setInitialCode] = useState('');
   const [editorValue, setEditorValue] = useState('');
@@ -123,7 +122,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
   const editor = React.useRef<any>();
   const linkInput = React.useRef<any>();
 
-  if (!transaction) return <div style={{textAlign: "center", fontSize: 40, marginTop: "20%"}}>Signing ...</div>;
+  if (!signed) return <div style={{textAlign: "center", fontSize: 40, marginTop: "20%"}}>Please login</div>;
 
   const _id = makeId(id, name, context);
   const { data: view, isLoading, refetch, ...rest } = useQuery(
@@ -184,11 +183,11 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
 
   const saveDraft = throttle((value) => {
     if (draft) {
-      restStorageManager.patch(draft._id, { data: value }, transaction.serialize()).catch();
+      restStorageManager.patch(draft._id, { data: value }, session).catch();
     } else {
       const draft_id = makeId(id, name + '_draft', selectedContext);
       restStorageManager
-        .create({ _id: draft_id, data: editorValue, link: '' }, transaction.serialize())
+        .create({ _id: draft_id, data: editorValue, link: '' }, session)
         .then(res => console.log('draft created', res))
         .catch();
     }
@@ -202,14 +201,14 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
         .patch(
           view._id,
           { data: editorValue || code, link: linkId, owner: wallet.publicKey.toBase58() },
-          transaction.serialize()
+          session
         ).then(() => toast('Successful saved!')).catch(()=>toast('Permission denied', 5000, "#ea4545"));
     } else {
       const _id = makeId(id, name, selectedContext);
       restStorageManager
         .create(
           { _id, data: editorValue, link: linkId, owner: wallet.publicKey.toBase58() },
-          transaction.serialize()
+            session
         ).then(() => toast('New view was created!'))
         .catch();
     }
