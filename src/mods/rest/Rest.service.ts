@@ -50,6 +50,14 @@ const checkOwner = async (app, context: ctx) => {
   }
 }
 
+const checkData = async (app, context: ctx) => {
+  // const target = await context.service.get(context.id as string);
+
+  delete context.data.owner;
+
+  return context;
+};
+
 addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
   const app = useApp();
   const db = createClientDb(app);
@@ -70,6 +78,7 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
           create: [(ctx) => validate(app, ctx)],
           patch: [
             (ctx) => validate(app, ctx),
+            (ctx) => checkData(app, ctx),
           ],
         },
       });
