@@ -71,13 +71,15 @@ export function WalletProvider({ children }) {
     const [signed, setSigned] = useSessionStorageState('signed');
     const [transaction, setTransaction] = useState<Transaction | undefined>(undefined);
 
+    console.log({session ,signed, connected})
+
     useEffect(()=>{
-        if(transaction && !signed) {
+        if(transaction && connected && !signed) {
             req.post(VALIDATE_SERVICE_URL, {
                 transaction: transaction.serialize()
-            }).then(res => setSigned(true)).catch(()=>console.log('error'))
+            }).then(res => res.text()).then(()=>setSigned(true)).catch(()=>console.log('error'))
         }
-    }, [transaction, connected])
+    }, [transaction, connected, signed])
 
     useEffect(()=>{
         const connectWallet = () => {
@@ -106,7 +108,7 @@ export function WalletProvider({ children }) {
     }, [autoConnect, autoConnectProvider])
 
     useEffect(() => {
-        if (wallet && connected && !signed) {
+        if (wallet && connected && session && !signed) {
             const keys: Array<AccountMeta> = [{isSigner: true, isWritable: false, pubkey: wallet.publicKey}]
 
             const txi = new TransactionInstruction({
@@ -123,7 +125,7 @@ export function WalletProvider({ children }) {
             tx.add(txi);
             wallet.signTransaction(tx);
         }
-    }, [session])
+    }, [session, connected])
 
     useEffect(() => {
         if (wallet) {
@@ -149,9 +151,11 @@ export function WalletProvider({ children }) {
             });
 
             wallet.on('disconnect', () => {
-                setSession(undefined)
+                setSession('');
+                setSigned('');
                 setConnected(false);
-                setWallet(undefined)
+                setWallet(undefined);
+                setTransaction(undefined)
                 toast(
                     'Disconnected',
                     5000,
