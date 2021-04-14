@@ -1,11 +1,11 @@
 [package]
-name = "spl-shared-memory"
+name = "solarea"
 version = "2.0.6"
-description = "Solana Program Library Shared-memory"
-authors = ["Solana Maintainers <maintainers@solana.foundation>"]
-repository = "https://github.com/solana-labs/solana-program-library"
-license = "Apache-2.0"
-edition = "2018"
+description = "Solarea"
+authors = ["Solarea Maintainers"]
+repository = "https://github.com/"
+license = "MIT"
+edition = "2021"
 
 [dependencies]
 arrayref = "0.3.6"
