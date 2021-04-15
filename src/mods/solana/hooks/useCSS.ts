@@ -1,18 +1,33 @@
+import React from 'react';
+
 export const useCSS = (id, css) => {
-    const oldLink = document.querySelector(`link[id="${id}"]`)
+    const [isReady, setIsReady] = React.useState(false);
 
-    if(oldLink) {
-        oldLink.remove();
-    }
+    React.useEffect(() => {
+        setIsReady(false);
 
-    const cssBlob = new Blob([css], {type: 'text/css'})
-    const cssBlobUrl = window.URL.createObjectURL(cssBlob);
+        const oldLink = document.querySelector(`link[id="${id}"]`)
 
-    let link = document.createElement('link');
-    link.id = id;
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    link.href = cssBlobUrl;
+        if(oldLink) {
+            oldLink.remove();
+        }
 
-    document.head.appendChild(link);
+        const cssBlob = new Blob([css], {type: 'text/css'})
+        const cssBlobUrl = window.URL.createObjectURL(cssBlob);
+
+        let link = document.createElement('link');
+        link.id = id;
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = cssBlobUrl;
+
+        document.head.appendChild(link);
+
+        link.onload = function(){
+            setIsReady(true)
+        };
+
+    }, [id, css])
+
+    return isReady;
 }
