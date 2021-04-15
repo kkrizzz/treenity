@@ -4,6 +4,7 @@ import * as preact from 'preact/compat';
 import findLastIndex from 'lodash/findLastIndex';
 import { promised } from './promised';
 import { useBitQuery } from './hooks/useBitQuery';
+import {useCSS} from "./hooks/useCSS";
 
 export const loadedScripts: { [id: string]: any } = {};
 globalThis.__loadedScripts = loadedScripts;
@@ -95,6 +96,7 @@ export function loadScript(id: string, code: string, context) {
       require: (url) => {
         return globalThis.System.import(url);
       },
+      useCSS,
       useBitQuery,
       ...context,
     },
@@ -133,7 +135,7 @@ export function loadScript(id: string, code: string, context) {
   
   (async function() {
   try {
-    const { require, useBitQuery, html, add, Render, preact, ...context } = __ls.context;
+    const { useCSS, require, useBitQuery, html, add, Render, preact, ...context } = __ls.context;
     `}
     ////////////// user code /////////////////
     
