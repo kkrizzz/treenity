@@ -1,20 +1,28 @@
 [package]
 name = "solarea"
-version = "2.0.6"
+version = "0.1.0"
 description = "Solarea"
 authors = ["Solarea Maintainers"]
 repository = "https://github.com/"
-license = "MIT"
-edition = "2021"
+license = "business license"
+edition = "2018"
+
+[features]
+std = []
+test-bpf = []
+
 
 [dependencies]
+byteorder = "1.4.3"
 arrayref = "0.3.6"
 solana-program = "1.6.2"
 
 [dev-dependencies]
 solana-bpf-loader-program = "1.6.2"
+solana-program-test = "1.6.2"
 solana-sdk = "1.6.2"
-solana_rbpf = "0.2"
+solana_rbpf = "0.2.5"
+tokio = { version = "1.5.0", features = ["macros"] }
 
 [lib]
 crate-type = ["cdylib", "lib"]

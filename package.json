@@ -14,6 +14,7 @@
     "sol:serve": "parcel serve --port 3102 src/mods/solarea/index.html --dist-dir dist/solana",
     "sol:watch": "parcel watch src/mods/solarea/index.html --dist-dir dist/solana",
     "sol:deploy": "./scripts/deploy-sol.sh",
+    "sol:test": " ts-node src/mods/solarea/program-api/main.ts",
     "server:build": "NODE_ENV=production parcel build --target node --dist-dir dist/server-prod src/server/index.ts",
     "server:watch": "parcel watch --target node --dist-dir dist/server-dev/ src/server/index.ts",
     "jest": "jest --forceExit",

@@ -5,6 +5,6 @@
 /dist
 /legacy
 node_modules
-yarn-error.txt
+yarn-error.log
 
-
+/src/mods/solarea/program/target/
