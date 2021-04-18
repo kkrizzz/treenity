@@ -11,7 +11,8 @@
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
       "useDefineForClassFields": true,
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "resolveJsonModule": true
     },
     "exclude": [
         "test",

@@ -78,6 +78,7 @@
     "antd": "^4.11.2",
     "assert": "^2.0.0",
     "beautiful-react-diagrams": "git+https://github.com/feddot2517/beautiful-react-diagrams",
+    "bn.js": "^5.2.0",
     "codemirror": "^5.59.4",
     "config": "^3.3.1",
     "cors": "latest",
@@ -118,6 +119,7 @@
     "styled-components": "^5.2.1",
     "toastmaker": "^1.0.9",
     "ts-node": "^9.1.1",
+    "tweetnacl": "^1.0.3",
     "use-async-effect": "^2.2.3",
     "vm2": "^3.9.2",
     "winston": "^3.3.3"

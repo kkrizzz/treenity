@@ -15,6 +15,13 @@ mod test {
     use solana_sdk::signature::{Signer, Keypair};
     use solana_sdk::account::Account;
     use std::str::FromStr;
+    use crate::utils::from_le3_bytes;
+
+    #[tokio::test]
+    async fn unpack_3le_bytes() {
+        let offset = from_le3_bytes(&[96 as u8, 3, 0]);
+        assert_eq!(offset, 864);
+    }
 
     #[tokio::test]
     async fn save() {

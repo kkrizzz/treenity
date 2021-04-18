@@ -10,10 +10,11 @@ use solana_program::{
     program_error::ProgramError,
     pubkey::Pubkey,
     sysvar::Sysvar,
+    msg,
 };
 use solana_program::system_instruction::{create_account};
 
-use crate::utils::{fast_copy};
+use crate::utils::{fast_copy, from_le3_bytes};
 use solana_program::rent::Rent;
 use std::convert::TryInto;
 
@@ -61,17 +62,36 @@ pub fn unpack_data<'a>(user_account: &'a AccountInfo, input: &'a [u8]) -> (&'a [
     return (address, context, name, derived_byte, input);
 }
 
+fn unpack_accounts<'a, 'b>(accounts: &'b [AccountInfo<'a>]) -> Result<(&'b AccountInfo<'a>, &'b AccountInfo<'a>), ProgramError> {
+    let account_info_iter = &mut accounts.iter();
+    let user_account = next_account_info(account_info_iter)?;
+    if !user_account.is_signer {
+        return Err(ProgramError::MissingRequiredSignature.into());
+    }
+
+    let storage_account = next_account_info(account_info_iter)?;
+
+    let owner_pubkey = Pubkey::new_from_array(storage_account.data.borrow()[0..32].try_into().unwrap());
+    if user_account.key != &owner_pubkey {
+        return Err(ProgramError::MissingRequiredSignature.into());
+    }
+
+    Ok((user_account, storage_account))
+}
+
 /// instruction deposit
-pub fn create(program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
+fn create(program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
     let account_info_iter = &mut accounts.iter();
 
     let user_account = next_account_info(account_info_iter)?;
-    let rent = Rent::from_account_info(next_account_info(account_info_iter)?)?;
     let storage_account = next_account_info(account_info_iter)?;
+    let rent = Rent::from_account_info(next_account_info(account_info_iter)?)?;
 
     let (address, context, name, derived_byte, input) = unpack_data(user_account, input);
     let (length_bytes, input) = input.split_at(4);
     let (type_bytes, _) = input.split_at(2);
+
+    // TODO check is address allowd for user
 
     let area_size = u32::from_le_bytes(length_bytes.try_into().unwrap());
     let lamports = rent.minimum_balance(area_size as usize);
@@ -83,6 +103,9 @@ pub fn create(program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> Pr
         &[derived_byte],
     ];
     let storage_address = Pubkey::create_program_address(seed, &program_id).unwrap();
+    if &storage_address != storage_account.key {
+        return Err(ProgramError::InvalidSeeds.into());
+    }
 
     let instruction = create_account(
         &user_account.key,
@@ -111,35 +134,21 @@ pub fn create(program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> Pr
     Ok(())
 }
 
-pub fn store(_program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
-    let account_info_iter = &mut accounts.iter();
-    let user_account = next_account_info(account_info_iter)?;
-    if !user_account.is_signer {
-        return Err(ProgramError::MissingRequiredSignature.into());
-    }
+fn store(_program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> ProgramResult {
+    let (_user_account, storage_account) = unpack_accounts(accounts).unwrap();
 
-    let storage_account = next_account_info(account_info_iter)?;
+    let (offset_bytes, input) = input.split_at(3);
+    let offset = from_le3_bytes(offset_bytes.try_into().unwrap());
+    let chunk_offset = offset + 32 + 2; // owner address + 2 bytes data type
+    let chunk_size = input.len();
 
-    let owner_pubkey = Pubkey::new_from_array(storage_account.data.borrow()[0..32].try_into().unwrap());
-    if user_account.key != &owner_pubkey {
-        return Err(ProgramError::InvalidSeeds.into());
-    }
-
-    let (offset_bytes, input) = input.split_at(4);
-    let offset = u32::from_le_bytes(offset_bytes.try_into().unwrap());
-    // let offset =
-    //     (offset_bytes[0] as u32) << 16 +
-    //     (offset_bytes[1] as u32) << 8 +
-    //     offset_bytes[2];
-    let data_offset = offset + 32 + 2; // owner address + 2 bytes data type
-
-    let area_size = input.len();
+    msg!("size: {}, offset: {}", chunk_size, offset);
 
     // copy input data to account data
     unsafe {
         let account_data = from_raw_parts_mut(
-            storage_account.data.borrow_mut().as_mut_ptr().offset(data_offset as isize),
-            area_size,
+            storage_account.data.borrow_mut().as_mut_ptr().offset(chunk_offset as isize),
+            chunk_size,
         );
         fast_copy(&input.as_ref(), account_data);
     }
@@ -148,18 +157,8 @@ pub fn store(_program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> Pr
 }
 
 /// instruction test withdraw
-pub fn remove(_program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
-    let account_info_iter = &mut accounts.iter();
-    let user_account = next_account_info(account_info_iter)?;
-    if !user_account.is_signer {
-        return Err(ProgramError::MissingRequiredSignature.into());
-    }
-    let storage_account = next_account_info(account_info_iter)?;
-
-    let owner_pubkey = Pubkey::new_from_array(storage_account.data.borrow()[0..32].try_into().unwrap());
-    if user_account.key != &owner_pubkey {
-        return Err(ProgramError::InvalidSeeds.into());
-    }
+fn remove(_program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
+    let (user_account, storage_account) = unpack_accounts(accounts).unwrap();
 
     let lamports = storage_account.lamports();
 

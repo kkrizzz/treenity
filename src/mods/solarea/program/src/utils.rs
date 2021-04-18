@@ -18,12 +18,18 @@ pub fn fast_copy(mut src: &[u8], mut dst: &mut [u8]) {
     }
 }
 
-pub fn unpack_pubkey(input: &[u8]) -> Result<(Pubkey, &[u8]), ProgramError> {
-    if input.len() >= 32 {
-        let (key, rest) = input.split_at(32);
-        let pk = Pubkey::new(key);
-        Ok((pk, rest))
-    } else {
-        Err(ProgramError::InvalidInstructionData.into())
-    }
+// pub fn unpack_pubkey(input: &[u8]) -> Result<(Pubkey, &[u8]), ProgramError> {
+//     if input.len() >= 32 {
+//         let (key, rest) = input.split_at(32);
+//         let pk = Pubkey::new(key);
+//         Ok((pk, rest))
+//     } else {
+//         Err(ProgramError::InvalidInstructionData.into())
+//     }
+// }
+
+pub fn from_le3_bytes(bytes: &[u8; 3]) -> u32 {
+    let offset = (u32::from(bytes[2]) << 16) + (u32::from(bytes[1]) << 8) + bytes[0] as u32;
+
+    offset
 }
