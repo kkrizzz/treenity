@@ -1,5 +1,14 @@
 import React from 'react';
 
+globalThis.useCSSprop = [];
+
+globalThis.removeAlluseCSSprop = () => {
+    globalThis.useCSSprop.forEach((link) => {
+        link.remove();
+    })
+    globalThis.useCSSprop = [];
+}
+
 export const useCSS = (id, css) => {
     const [isReady, setIsReady] = React.useState(false);
 
@@ -22,6 +31,7 @@ export const useCSS = (id, css) => {
         link.href = cssBlobUrl;
 
         document.head.appendChild(link);
+        globalThis.useCSSprop.push(link);
 
         link.onload = function(){
             setIsReady(true)

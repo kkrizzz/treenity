@@ -4,7 +4,7 @@
     width: 0; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 1000; /* Stay on top */
-    top: 0; /* Stay at the top */
+    bottom: 0; /* Stay at the top */
     right: 0;
     background: black;
     color: white;
@@ -15,7 +15,7 @@
 /* Position and style the close button (top right corner) */
 .solarea-drawer-closebtn {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 8px;
     font-size: 36px;
     margin-left: 50px;
@@ -23,7 +23,7 @@
 /* Position and style the close button (top right corner) */
 .solarea-drawer-openbtn {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 8px;
     font-size: 36px;
     margin-left: 50px;
