@@ -4,7 +4,7 @@ export function emailSubscribeRoute(app: Application) {
     app.post('/solarea/subscribe', async (req, res) => {
         try {
             const { email } = req.body;
-            const ip = req.headers['x-real-ip'];
+            const ip = req.headers['x-forwarded-for'];
 
             if(!ip) throw new Error('no ip');
             if(!email) throw new Error('no email');
