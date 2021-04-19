@@ -3,6 +3,7 @@ import React from "react";
 history.pushState = function pushState() {
     History.prototype.pushState.apply(history, arguments);
     window.dispatchEvent(new Event('pushState'));
+    globalThis.removeAlluseCSSprop();
 };
 
 export default function useLocation() {
@@ -15,7 +16,11 @@ export default function useLocation() {
 
     React.useEffect(() => {
         window.addEventListener("pushState", handleHashChange);
-        return () => window.removeEventListener("pushState", handleHashChange);
+        window.addEventListener("popstate", handleHashChange);
+        return () => {
+            window.removeEventListener("pushState", handleHashChange)
+            window.removeEventListener("popstate", handleHashChange)
+        }
     }, [handleHashChange]);
 
     return location
