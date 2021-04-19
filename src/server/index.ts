@@ -60,6 +60,7 @@ async function main() {
   collection('edges');
   collection('users');
   collection('session');
+  collection('mails');
   const tree = app.use('tree', new TreeService())
     .service('tree').hooks({
       error: {
