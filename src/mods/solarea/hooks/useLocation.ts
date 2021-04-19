@@ -2,8 +2,8 @@ import React from "react";
 
 history.pushState = function pushState() {
     History.prototype.pushState.apply(history, arguments);
-    window.dispatchEvent(new Event('pushState'));
     globalThis.removeAlluseCSSprop();
+    window.dispatchEvent(new Event('pushState'));
 };
 
 export default function useLocation() {
