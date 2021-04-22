@@ -3,14 +3,12 @@ import helmet from 'helmet';
 import cors from 'cors';
 import uuid from 'uuid';
 
-
 import feathers from '@feathersjs/feathers';
 import express from '@feathersjs/express';
 import mongoService from 'feathers-mongodb';
 import socketio from '@feathersjs/socketio';
 import configuration from '@feathersjs/configuration';
 import authentication from './authentication';
-
 
 import '../common';
 
@@ -27,8 +25,8 @@ import { Context } from '../treenity/context/meta-context';
 import { Node } from '../treenity/tree/node';
 import { AppProvider } from '../treenity/react/useApp';
 import services from './services';
-import {Sysinit} from "../treenity/service/Sysinit";
-import {routesStartup as solareaRoutes} from "./solana/routes-startup";
+import { Sysinit } from '../treenity/service/Sysinit';
+import { routesStartup as solareaRoutes } from './solana/routes-startup';
 
 config.isServer = true;
 
@@ -47,24 +45,27 @@ async function main() {
   app.use(express.errorHandler());
 
   const db = await createClientDb(app);
-  const collection = (name) => app.use(
-    name,
-    mongoService({
-      Model: db.collection(name),
-      disableObjectify: true
-    }),
-  );
+  const collection = (name) =>
+    app.use(
+      name,
+      mongoService({
+        Model: db.collection(name),
+        disableObjectify: true,
+      }),
+    );
 
   collection('nodes');
   collection('changes');
   collection('edges');
   collection('users');
   collection('session');
-  collection('mails');
-  const tree = app.use('tree', new TreeService())
-    .service('tree').hooks({
+  collection('subscribes');
+  const tree = app
+    .use('tree', new TreeService())
+    .service('tree')
+    .hooks({
       error: {
-        all: [err => console.error(err.stack)],
+        all: [(err) => console.error(err.stack)],
       },
       after: {
         find: [
@@ -110,7 +111,7 @@ async function main() {
       app.on('disconnect', (connection) => {
         app.channel('anonymous').leave(connection);
       });
-    },
+    }
   );
 
   app.configure(services);
