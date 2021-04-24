@@ -8,25 +8,22 @@ import express from '@feathersjs/express';
 import mongoService from 'feathers-mongodb';
 import socketio from '@feathersjs/socketio';
 import configuration from '@feathersjs/configuration';
-import authentication from './authentication';
+// import authentication from './authentication';
+import '../mods/server';
 
 import '../common';
 
 import config from '../config-common';
-import { HelloService } from '../mods/server';
 import createClientDb from '../mods/mongo/mongod';
 import '../treenity/service';
 import { TreeService } from '../treenity/tree/server';
-import MessageService from '../treenity/message/message.service';
-import { render } from '../treenity/react/react-nil';
-import React from 'react';
-import { RenderMeta } from '../treenity/react/render-meta';
-import { Context } from '../treenity/context/meta-context';
+
 import { Node } from '../treenity/tree/node';
-import { AppProvider } from '../treenity/react/useApp';
+
 import services from './services';
-import { Sysinit } from '../treenity/service/Sysinit';
-import { routesStartup as solareaRoutes } from './solana/routes-startup';
+import '../treenity/service/Sysinit';
+import { routesStartup as solareaRoutes } from '../mods/solarea/server/routes-startup';
+import migrate from './migrator';
 
 config.isServer = true;
 
@@ -34,6 +31,20 @@ async function main() {
   const app = express(feathers());
 
   app.configure(configuration());
+
+  const db = await createClientDb(app);
+  (app as any).collection = function collection(name) {
+    return this.use(
+      name,
+      mongoService({
+        Model: db.collection(name),
+        disableObjectify: true,
+      }),
+    );
+  };
+  app.collection('config');
+
+  await migrate(app);
 
   app.use(helmet());
   app.use(cors());
@@ -44,22 +55,11 @@ async function main() {
   app.configure(socketio());
   app.use(express.errorHandler());
 
-  const db = await createClientDb(app);
-  const collection = (name) =>
-    app.use(
-      name,
-      mongoService({
-        Model: db.collection(name),
-        disableObjectify: true,
-      }),
-    );
-
-  collection('nodes');
-  collection('changes');
-  collection('edges');
-  collection('users');
-  collection('session');
-  collection('subscribes');
+  app.collection('nodes');
+  app.collection('changes');
+  app.collection('edges');
+  app.collection('users');
+  app.collection('session');
   const tree = app
     .use('tree', new TreeService())
     .service('tree')
@@ -88,9 +88,9 @@ async function main() {
       },
     });
   solareaRoutes(app);
-  app.use('message', new MessageService());
-
-  app.use('hello', new HelloService());
+  // app.use('message', new MessageService());
+  //
+  // app.use('hello', new HelloService());
 
   const { host, port } = config;
 
@@ -111,7 +111,7 @@ async function main() {
       app.on('disconnect', (connection) => {
         app.channel('anonymous').leave(connection);
       });
-    }
+    },
   );
 
   app.configure(services);

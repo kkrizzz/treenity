@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { types } from 'mobx-state-tree';
 import { addComponent } from '../../treenity/context/context-db';
 import { meta } from '../../treenity/meta/meta.model';
@@ -16,7 +16,7 @@ const RestServiceMeta = meta(
     collectionName: types.string,
     whitelist: types.array(types.string),
     allowedFields: types.array(types.string),
-  })
+  }),
 );
 
 interface ctx extends HookContext {
@@ -24,9 +24,9 @@ interface ctx extends HookContext {
 }
 
 const validate = async (app, context: ctx) => {
-  const sid = context.params.headers?.session
+  const sid = context.params.headers?.session;
   const session = (await app.service('session').find({ query: { sid } }))[0];
-  if(!session || !session.valid) throw new Error('Invalid session');
+  if (!session || !session.valid) throw new Error('Invalid session');
 
   context.session = session;
 
@@ -35,21 +35,19 @@ const validate = async (app, context: ctx) => {
 
 const checkOwner = async (app, context: ctx) => {
   const targetId = context.id as string;
-  if(targetId.slice(targetId.length-5)==='draft') return context;
+  if (targetId.slice(targetId.length - 5) === 'draft') return context;
 
   const { session } = context;
   const target = await context.service.get(targetId);
 
   const isOwner = Array.isArray(target.owner)
-      ? target.owner.includes(session.pubkey)
-      : session.pubkey === target.owner;
+    ? target.owner.includes(session.pubkey)
+    : session.pubkey === target.owner;
 
   if (!isOwner) {
-    throw new Error(
-        `permission denied - \nowner(${target.owner})\neditor(${session.pubkey})`,
-    );
+    throw new Error(`permission denied - \nowner(${target.owner})\neditor(${session.pubkey})`);
   }
-}
+};
 
 const checkData = async (app, context: ctx) => {
   delete context.data.owner;
@@ -59,7 +57,7 @@ const checkData = async (app, context: ctx) => {
 
 addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
   const app = useApp();
-  const db = createClientDb(app);
+  const db = useMemo(() => createClientDb(app), []);
 
   useEffect(() => {
     console.log('starting rest service on', value.baseUrl);
@@ -69,7 +67,7 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
         mongoService({
           Model: db.collection(value.collectionName),
           whitelist: value.whitelist,
-        })
+        }),
       );
 
       app.service(value.baseUrl).hooks({

@@ -1,6 +1,8 @@
 import { Application } from '@feathersjs/express';
 
 export function emailSubscribeRoute(app: Application) {
+  app.collection('subscribes');
+
   app.post('/solarea/subscribe', async (req, res) => {
     try {
       const { email } = req.body;

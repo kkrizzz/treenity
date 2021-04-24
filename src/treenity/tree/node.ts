@@ -43,15 +43,16 @@ const NodeModel = meta(
   'node',
   t.compose(
     Timestamp,
-    t.model({
-      name: t.string,
-      _p: t.string,
-      _pa: t.array(t.string),
-      _r: t.optional(t.number, 0),
-      _m: t.array(UnionMetaType),
-      _re: t.optional(t.string, 'root'), // resolver
-    })
-      .views(self => ({
+    t
+      .model({
+        name: t.string,
+        _p: t.string,
+        _pa: t.array(t.string),
+        _r: t.optional(t.number, 0),
+        _m: t.array(UnionMetaType),
+        _re: t.optional(t.string, 'root'), // resolver
+      })
+      .views((self) => ({
         get metas() {
           return self._m;
         },
@@ -115,6 +116,5 @@ export const Node = addType(
   })),
   true,
 );
-
 
 export type INode = Instance<typeof Node>;

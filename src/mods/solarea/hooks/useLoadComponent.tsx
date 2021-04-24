@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { addComponent, getComponent } from '../component-db';
 import useAsyncEffect from 'use-async-effect';
 import { makeId } from '../utils/make-id';
@@ -8,14 +8,18 @@ import Render from '../Render';
 
 const addressRegEx = /^[A-z0-9:\.]+$/;
 
-export function useLoadAccountComponent(address: string, name: string, context: string): [any, boolean] {
+export function useLoadAccountComponent(
+  address: string,
+  name: string,
+  context: string,
+): [any, boolean] {
   if (!addressRegEx.test(address)) throw new Error('bad address');
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(()=>{
-    if(!getComponent(address, name, context)) setLoading(true)
-  }, [address, name, context])
+  useEffect(() => {
+    if (!getComponent(address, name, context)) setLoading(true);
+  }, [address, name, context]);
 
   const config = getComponent(address, name, context);
   if (config || !loading) {
@@ -43,7 +47,14 @@ export function useLoadAccountComponent(address: string, name: string, context: 
         },
       });
     } catch (err) {
-      addComponent(address, name, context, {}, getComponent('default', 'default', context).component);
+      console.log(err);
+      addComponent(
+        address,
+        name,
+        context,
+        {},
+        getComponent('default', 'default', context).component,
+      );
     }
     setLoading(false);
   }, [address, name, context]);
