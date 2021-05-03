@@ -1,8 +1,6 @@
 import createClientDb from '../../mods/mongo/mongod';
 
-export default async
-
-function _001_renameSolanaIds(app) {
+export default async function _001_renameSolanaIds(app) {
   const db = await createClientDb(app);
   const solana = db.collection('solarea');
 
