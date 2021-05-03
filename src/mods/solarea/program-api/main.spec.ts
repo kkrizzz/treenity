@@ -26,30 +26,30 @@ async function main() {
   data.write('add(() => <div>Hello Solarea!</div>)');
   data.write('!!', 1022);
 
-  const [createInstruction, storageAddress] = solareaApi.createInstruction(
-    wallet.publicKey,
-    address,
-    context,
-    name,
-    data.length,
-    0x1,
-  );
-  const storeInstruction = solareaApi.storeInstruction(wallet.publicKey, storageAddress, data, 0);
-  const removeInstruction = solareaApi.removeInstruction(wallet.publicKey, storageAddress);
+  // const [createInstruction, storageAddress] = solareaApi.createInstruction(
+  //   wallet.publicKey,
+  //   wallet.publicKey.toBuffer(),
+  //   context,
+  //   name,
+  //   data.length,
+  //   0x1,
+  // );
+  // const storeInstruction = solareaApi.storeInstruction(wallet.publicKey, storageAddress, data, 0);
+  // const removeInstruction = solareaApi.removeInstruction(wallet.publicKey, storageAddress);
   //
   // const transaction = new Transaction().add(
   //   createInstruction,
   //   storeInstruction
   //   // removeInstruction,
   // );
-  const transactions = solareaApi.createTransactions(
+  const [transactions, _storageAddress] = solareaApi.createTransactions(
     wallet.publicKey,
-    address,
+    wallet.publicKey.toBuffer(),
     context,
     name,
     data,
     0x1,
-    true,
+    // true,
   );
 
   // await sendAndConfirmTransaction(connection, new Transaction().add(removeInstruction), [wallet], {

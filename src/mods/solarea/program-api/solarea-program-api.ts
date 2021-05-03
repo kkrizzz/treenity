@@ -7,14 +7,14 @@ const {
   SYSVAR_RENT_PUBKEY,
 } = require('@solana/web3.js');
 
-import { findProgramAddress } from './find-program-address';
+import { findProgramAddress, Seed } from './find-program-address';
 import { add } from 'winston';
 
 // first one
 // const SolareaProgramID = new PublicKey('Bc7EqXL6vTZGqojKbDREQThqkP21SA61txidboSyRbi8');
 const SolareaProgramID = new PublicKey('xj2vZrbvct4XkHe54vZrepYVwoXxaPB4BQSfnSxJ7h2');
 
-export function createViewAddress(address: string, context: string, name: string) {
+export function createViewAddress(address: Seed, context: Seed, name: Seed) {
   return findProgramAddress([address, '|', context, '|', name], SolareaProgramID);
 }
 
@@ -37,12 +37,20 @@ function createSolareaInstruction(
 
 const DATA_CHUNK_MAX = 1024;
 
+function writeDynamicString(buf: Buffer, srcBuf: Seed, offset: number) {
+  const len = srcBuf.length;
+  buf.writeUInt8(len, offset);
+  offset += 1;
+  buf.fill(srcBuf, offset, offset + len);
+  return len + 1;
+}
+
 export default class SolareaProgramApi {
   createInstruction(
     walletPub: typeof PublicKey,
-    address: string,
-    context: string,
-    name: string,
+    address: Seed,
+    context: Seed,
+    name: Seed,
     dataLength: number,
     dataType: number,
   ): [typeof TransactionInstruction, typeof PublicKey] {
@@ -52,14 +60,11 @@ export default class SolareaProgramApi {
     const bufSize = 1 + 1 + address.length + 1 + context.length + 1 + 1 + name.length + 4 + 2;
     let offset: number = 0;
     const buf = Buffer.alloc(bufSize); // create_instruction_data
-    buf.writeUInt8(1, offset); // instruction 'create' = 1
-    buf.writeUInt8(address.length, (offset += 1));
-    buf.write(address, (offset += 1));
-    buf.writeUInt8(context.length, (offset += address.length));
-    buf.write(context, (offset += 1));
-    buf.writeUInt8(name.length, (offset += context.length));
-    buf.write(name, (offset += 1));
-    buf.writeUInt8(byte, (offset += name.length));
+    buf.writeUInt8(1, offset++); // instruction 'create' = 1
+    offset += writeDynamicString(buf, address, offset);
+    offset += writeDynamicString(buf, context, offset);
+    offset += writeDynamicString(buf, name, offset);
+    buf.writeUInt8(byte, offset);
     buf.writeUInt32LE(areaSize, (offset += 1));
     buf.writeUInt16LE(dataType, (offset += 4));
 
@@ -80,8 +85,6 @@ export default class SolareaProgramApi {
     dataType: number,
     isUpdate: boolean = false,
   ): [Transaction[], typeof PublicKey] {
-    const instructions: typeof TransactionInstruction[] = [];
-
     const [createInst, storagePub] = this.createInstruction(
       walletPub,
       address,
@@ -90,19 +93,12 @@ export default class SolareaProgramApi {
       data.length,
       dataType,
     );
-
-    if (isUpdate) {
-      const removeInstruction = this.removeInstruction(walletPub, storagePub);
-      instructions.push(removeInstruction);
-    }
-
-    const firstDataSize =
-      1024 - ((isUpdate ? 82 : 82) + address.length + context.length + name.length);
+    const firstDataSize = 1024 - (82 + address.length + context.length + name.length);
 
     const chunk = data.slice(0, firstDataSize);
     const storeInst = this.storeInstruction(walletPub, storagePub, chunk, 0);
 
-    const transactions = [new Transaction().add(...instructions, createInst, storeInst)];
+    const transactions = [new Transaction().add(createInst, storeInst)];
 
     if (isUpdate) {
       transactions.unshift(new Transaction().add(this.removeInstruction(walletPub, storagePub)));

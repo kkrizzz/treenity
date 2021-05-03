@@ -4,6 +4,8 @@ import { Buffer } from 'buffer';
 import crypto from 'crypto';
 import nacl from 'tweetnacl';
 
+export type Seed = string | Buffer;
+
 let sha256 = (buffer, options?: any) => {
   options = {
     outputFormat: 'hex',
@@ -106,8 +108,12 @@ function createProgramAddress(seeds, programId) {
   return new PublicKey(publicKeyBytes);
 }
 
-export function findProgramAddress(seeds: any[], programId: typeof PublicKey): [PublicKey, number] {
+export function findProgramAddress(
+  seeds: Seed[],
+  programId: typeof PublicKey,
+): [PublicKey, number] {
   let nonce = 255;
+  let error;
 
   while (nonce > 0) {
     try {
@@ -116,9 +122,10 @@ export function findProgramAddress(seeds: any[], programId: typeof PublicKey): [
 
       return [address, nonce];
     } catch (err) {
+      error = err;
       nonce--;
     }
   }
 
-  throw new Error(`Unable to find a viable program address nonce`);
+  throw new Error(`Unable to find a viable program address nonce: ${error!.message}`);
 }
