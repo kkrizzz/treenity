@@ -25,7 +25,8 @@ import { key } from './utils/keyCode';
 import { toast } from './utils/toast';
 import useLongPress from './hooks/useLongPress';
 import { useWallet } from './utils/wallet';
-import { useTransaction } from './hooks/useTransaction';
+import { devNetConnection, solareaApi } from './client';
+import { getSolanaRecentBlockhash } from './utils/get-solana-recent-blockhash';
 
 const contexts = [
   'react',
@@ -108,7 +109,7 @@ function linkToHref(link: string) {
 }
 
 export default function SolanaEdit({ value, id, name, context, ...params }) {
-  const { signed, wallet, session } = useWallet();
+  const { signed, wallet, session, connected } = useWallet();
   const [code, setCode] = useState('');
   const [initialCode, setInitialCode] = useState('');
   const [editorValue, setEditorValue] = useState('');
@@ -117,25 +118,27 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
   const [link, setLink] = useState('');
   const [selectedContext, setSelectedContext] = useState(context);
   const [infoIsVisible, showInfo] = useState(false);
+
+  //blockchain loading
+  const [blockChainData, setBlockChainData] = useState<any>(null);
+
   const renderPreviewLongPress = useLongPress((e) => parseInCodePreview(e), 1500);
 
   const editor = React.useRef<any>();
   const linkInput = React.useRef<any>();
 
-  if (!signed) return <div style={{textAlign: "center", fontSize: 40, marginTop: "20%"}}>Please login</div>;
-
   const _id = makeId(id, name, context);
   const { data: view, isLoading, refetch, ...rest } = useQuery(
     _id,
     () => restStorageManager.get(_id),
-    { retry: false }
+    { retry: false },
   );
 
   const draft_id = makeId(id, name + '_draft', context);
   const { data: draft, isLoading: draftIsLoading, refetch: refetchDraft } = useQuery(
     draft_id,
     () => restStorageManager.get(draft_id),
-    { retry: false }
+    { retry: false },
   );
 
   useEffect(() => {
@@ -188,7 +191,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
       const draft_id = makeId(id, name + '_draft', selectedContext);
       restStorageManager
         .create({ _id: draft_id, data: editorValue, link: '' }, session)
-        .then(res => console.log('draft created', res))
+        .then((res) => console.log('draft created', res))
         .catch();
     }
   }, 2000);
@@ -201,19 +204,56 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
         .patch(
           view._id,
           { data: editorValue || code, link: linkId, owner: wallet.publicKey.toBase58() },
-          session
-        ).then(() => toast('Successful saved!')).catch(()=>toast('Permission denied', 5000, "#ea4545"));
+          session,
+        )
+        .then(() => toast('Successful saved!'))
+        .catch(() => toast('Permission denied', 5000, '#ea4545'));
     } else {
       const _id = makeId(id, name, selectedContext);
       restStorageManager
         .create(
           { _id, data: editorValue, link: linkId, owner: wallet.publicKey.toBase58() },
-            session
-        ).then(() => toast('New view was created!'))
+          session,
+        )
+        .then(() => toast('New view was created!'))
         .catch();
     }
-    refetch()
-      .catch(() => toast('Sorry, something wrong :('))
+    refetch().catch(() => toast('Sorry, something wrong :('));
+  };
+
+  const saveToSolana = async () => {
+    if (!wallet || !connected) {
+      return;
+    }
+    const data = Buffer.from(editorValue);
+    const [tx, publicKey] = solareaApi.createTransactions(
+      wallet.publicKey,
+      id,
+      context,
+      name,
+      data,
+      0x1,
+    );
+
+    const recentBlockHash = await getSolanaRecentBlockhash('devnet');
+
+    const transactionsWithBlockhash = tx.map((i) => {
+      i.recentBlockhash = recentBlockHash;
+      i.feePayer = wallet.publicKey;
+      return i;
+    });
+
+    console.log(tx);
+
+    (await wallet.signAllTransactions(transactionsWithBlockhash)).forEach((i) => {
+      const rawTransaction = i.serialize();
+      devNetConnection
+        .sendRawTransaction(rawTransaction, {
+          skipPreflight: true,
+        })
+        .then(() => console.log('data was saved to blockchain!', publicKey.toBase58()))
+        .catch((err) => console.log('Error', err));
+    });
   };
 
   const openView = () => {
@@ -238,7 +278,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
           {
             line,
             ch: targetStr.length,
-          }
+          },
         );
       }
       accept(null);
@@ -257,18 +297,6 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
     setLink(linkId);
     linkInput.current.value = linkId;
   };
-
-  // if(!wallet) {
-  //   return <div>Log in to edit</div>
-  // }
-  //
-  // if(wallet && connected && wallet.publicKey.toBase58() !== id) {
-  //   return <div>You dont have permission to edit this view</div>
-  // }
-  //
-  // if(wallet && !connected) {
-  //   return <div>Connecting ...</div>
-  // }
 
   return (
     <div onKeyUp={updatePreview} className="solana-edit">
@@ -313,6 +341,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
           <div>
             <Icon name="refresh" onClick={() => setCode(editorValue)} />
             <Icon name="save" onClick={() => onSubmit()} />
+            <Icon name="solana" onClick={() => saveToSolana()} />
             <Icon name="play" onClick={() => openView()} />
             <Icon name="rewind" onClick={() => rewindCodeToOriginal()} />
           </div>

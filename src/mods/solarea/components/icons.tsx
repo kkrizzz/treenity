@@ -121,11 +121,82 @@ export const icons = {
       <line x1="12" y1="8" x2="12.01" y2="8"></line>
     </svg>
   ),
-  burger: () =>
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-menu">
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
-      </svg>
+  burger: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-menu"
+    >
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  ),
+  solana: () => (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M17 19H3C2.46957 19 1.96086 18.7893 1.58579 18.4142C1.21071 18.0391 1 17.5304 1 17V3C1 2.46957 1.21071 1.96086 1.58579 1.58579C1.96086 1.21071 2.46957 1 3 1H14L19 6V17C19 17.5304 18.7893 18.0391 18.4142 18.4142C18.0391 18.7893 17.5304 19 17 19Z"
+        stroke="url(#paint0_linear)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M15 19V11H5V19"
+        stroke="url(#paint1_linear)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M5 1V6H13"
+        stroke="url(#paint2_linear)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear"
+          x1="19.5"
+          y1="-1.5"
+          x2="2"
+          y2="22.5"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#DC1FFF" />
+          <stop offset="1" stop-color="#00FFA3" />
+        </linearGradient>
+        <linearGradient
+          id="paint1_linear"
+          x1="16.5"
+          y1="1.5"
+          x2="3.5"
+          y2="23.5"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#DC1FFF" />
+          <stop offset="1" stop-color="#00FFA3" />
+        </linearGradient>
+        <linearGradient
+          id="paint2_linear"
+          x1="14.5"
+          y1="-1.5"
+          x2="3"
+          y2="12.5"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#DC1FFF" />
+          <stop offset="1" stop-color="#00FFA3" />
+        </linearGradient>
+      </defs>
+    </svg>
+  ),
 };

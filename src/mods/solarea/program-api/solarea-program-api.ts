@@ -79,7 +79,7 @@ export default class SolareaProgramApi {
     data: Buffer,
     dataType: number,
     isUpdate: boolean = false,
-  ): Transaction[] {
+  ): [Transaction[], typeof PublicKey] {
     const instructions: typeof TransactionInstruction[] = [];
 
     const [createInst, storagePub] = this.createInstruction(
@@ -120,7 +120,7 @@ export default class SolareaProgramApi {
       offset += DATA_CHUNK_MAX;
     }
 
-    return transactions;
+    return [transactions, storagePub];
   }
 
   storeInstruction(

@@ -11,11 +11,7 @@ import { SolanaWalletValidator } from './wallet/SolanaWalletValidator';
 const idToViewResolvers = [
   (id, name, context, { edit, ...props }) => {
     if (edit !== undefined) {
-      return (
-        <SolanaWalletValidator>
-          <SolanaEdit {...props} value={null} id={id} name={name} context={context} />
-        </SolanaWalletValidator>
-      );
+      return <SolanaEdit {...props} value={null} id={id} name={name} context={context} />;
     }
   },
   (id, name, context, query) => {
