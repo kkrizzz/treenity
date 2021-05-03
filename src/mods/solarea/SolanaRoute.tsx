@@ -34,8 +34,8 @@ const idToViewResolvers = [
   (id, name, context, query) => {
     // all other names
     return (
-      <Render id="root" name="layout" context={context}>
-        <Render {...query} id={id} context={context} name={name} />;
+      <Render id="layout" name="default" context={context}>
+        <Render {...query} id={id} context={context} name={name} />
       </Render>
     );
   },

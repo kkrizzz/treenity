@@ -25,8 +25,16 @@ import { key } from './utils/keyCode';
 import { toast } from './utils/toast';
 import useLongPress from './hooks/useLongPress';
 import { useWallet } from './utils/wallet';
-import { devNetConnection, solareaApi } from './client';
+import { solareaApi } from './client';
 import { getSolanaRecentBlockhash } from './utils/get-solana-recent-blockhash';
+import {
+  sendAndConfirmRawTransaction,
+  sendAndConfirmTransaction,
+  Transaction,
+} from '@solana/web3.js';
+import { promiseSequence } from '../../utils/promise-sequence';
+import { useConnection } from './hooks/useConnection';
+import { createViewAddress } from './program-api/solarea-program-api';
 
 const contexts = [
   'react',
@@ -110,6 +118,7 @@ function linkToHref(link: string) {
 
 export default function SolanaEdit({ value, id, name, context, ...params }) {
   const { signed, wallet, session, connected } = useWallet();
+  const connection = useConnection();
   const [code, setCode] = useState('');
   const [initialCode, setInitialCode] = useState('');
   const [editorValue, setEditorValue] = useState('');
@@ -225,35 +234,47 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
     if (!wallet || !connected) {
       return;
     }
+    const [viewAddress] = createViewAddress(id, context, name);
+    const account = await connection.getAccountInfo(viewAddress);
+    const isUpdate = !!account;
+
     const data = Buffer.from(editorValue);
-    const [tx, publicKey] = solareaApi.createTransactions(
+    const [txs, publicKey] = solareaApi.createTransactions(
       wallet.publicKey,
       id,
       context,
       name,
       data,
       0x1,
+      isUpdate,
     );
 
-    const recentBlockHash = await getSolanaRecentBlockhash('devnet');
+    // const blockhash = await getSolanaRecentBlockhash('devnet');
 
-    const transactionsWithBlockhash = tx.map((i) => {
-      i.recentBlockhash = recentBlockHash;
+    const { blockhash } = await connection.getRecentBlockhash('finalized');
+    txs.forEach((i) => {
+      i.recentBlockhash = blockhash;
       i.feePayer = wallet.publicKey;
-      return i;
     });
 
-    console.log(tx);
+    // console.log(transactions);
 
-    (await wallet.signAllTransactions(transactionsWithBlockhash)).forEach((i) => {
-      const rawTransaction = i.serialize();
-      devNetConnection
-        .sendRawTransaction(rawTransaction, {
-          skipPreflight: true,
-        })
-        .then(() => console.log('data was saved to blockchain!', publicKey.toBase58()))
-        .catch((err) => console.log('Error', err));
-    });
+    const sendTransaction = (t: Transaction) =>
+      sendAndConfirmRawTransaction(connection, t.serialize(), {
+        skipPreflight: true,
+        commitment: 'finalized',
+      });
+
+    try {
+      const transactions = await wallet.signAllTransactions(txs);
+      await promiseSequence(transactions.slice(0, 2).map((t) => () => sendTransaction(t)));
+
+      await Promise.allSettled(transactions.slice(2).map(sendTransaction));
+
+      console.log('data was saved to blockchain!', publicKey.toBase58());
+    } catch (err) {
+      console.error('cant save to solana', err);
+    }
   };
 
   const openView = () => {
@@ -353,9 +374,9 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
       <div style={{ width: '50vw', display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
         <div className="solana-edit_workspace-toolbar">
           <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'row' }}>
-            <div style={{ marginLeft: 4, width: 60, display: 'inline-block' }} htmlFor="username">
+            <label style={{ marginLeft: 4, width: 60, display: 'inline-block' }} htmlFor="username">
               Context
-            </div>
+            </label>
             <select
               style={{ width: 170, height: 38 }}
               onChange={(e) => setSelectedContext(e.target.value)}
@@ -374,7 +395,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
           <div
             style={{ alignItems: 'center', display: 'flex', flexDirection: 'row', width: '100%' }}
           >
-            <div
+            <label
               style={{
                 marginRight: 4,
                 width: 60,
@@ -391,7 +412,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
               ) : (
                 'Link to ID'
               )}
-            </div>
+            </label>
             <input
               ref={linkInput}
               onBlur={onBlurLinkInput}

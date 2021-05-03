@@ -12,10 +12,11 @@ import { add } from 'winston';
 
 // first one
 // const SolareaProgramID = new PublicKey('Bc7EqXL6vTZGqojKbDREQThqkP21SA61txidboSyRbi8');
-const SolareaProgramID = new PublicKey('xj2vZrbvct4XkHe54vZrepYVwoXxaPB4BQSfnSxJ7h2');
+// const SolareaProgramID = new PublicKey('xj2vZrbvct4XkHe54vZrepYVwoXxaPB4BQSfnSxJ7h2');
+const SolareaProgramID = new PublicKey('HLxwJdvLFherjE3wm7Jy5q2PpE49wDdAKxaA2BS7H8AX');
 
 export function createViewAddress(address: Seed, context: Seed, name: Seed) {
-  return findProgramAddress([address, '|', context, '|', name], SolareaProgramID);
+  return findProgramAddress([address, '~', context, '~', name], SolareaProgramID);
 }
 
 function createSolareaInstruction(
@@ -108,7 +109,7 @@ export default class SolareaProgramApi {
     let offset = firstDataSize;
 
     while (remainLength > 0) {
-      const chunk = data.slice(offset, DATA_CHUNK_MAX);
+      const chunk = data.slice(offset, offset + DATA_CHUNK_MAX);
       const storeInst = this.storeInstruction(walletPub, storagePub, chunk, offset);
       transactions.push(new Transaction().add(storeInst));
 
@@ -144,5 +145,13 @@ export default class SolareaProgramApi {
     const buf = Buffer.from([0x3]); // instruction 'remove' = 3
 
     return createSolareaInstruction(walletPub, storagePub, buf);
+  }
+
+  unpackData(accountData: Buffer): { owner: typeof PublicKey; data: Buffer; type: number } {
+    // '0113756e646566696e65642e6c6f63616c686f73740572656163740764656661756c74ff440000000100';
+    const owner = new PublicKey(accountData.slice(0, 32));
+    const type = accountData.readUInt8(32);
+    const data = accountData.slice(34);
+    return { owner, type, data };
   }
 }

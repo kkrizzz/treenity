@@ -44,7 +44,7 @@ async function main() {
   };
   app.collection('config');
 
-  await migrate(app);
+  // await migrate(app);
 
   app.use(helmet());
   app.use(cors());

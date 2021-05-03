@@ -97,8 +97,8 @@ fn create(program_id: &Pubkey, accounts: &[AccountInfo], input: &[u8]) -> Progra
     let lamports = rent.minimum_balance(area_size as usize);
 
     let seed = &[
-        address.as_ref(), b"|",
-        context.as_ref(), b"|",
+        address.as_ref(), b"~",
+        context.as_ref(), b"~",
         name.as_ref(),
         &[derived_byte],
     ];

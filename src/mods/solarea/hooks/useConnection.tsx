@@ -1,14 +1,21 @@
 // @ts-ignore
 import React, { createContext, useContext, useMemo } from 'react';
-import { Connection } from '@solana/web3.js';
+import { Cluster, clusterApiUrl, Connection } from '@solana/web3.js';
 
 const ConnectionContext = createContext<Connection>(null);
-export const ConnectionProvider = ({ children }) => {
+export const ConnectionProvider = ({
+  children,
+  cluster = 'mainnet-beta',
+}: {
+  children: any;
+  cluster: Cluster;
+}) => {
+  const connection = useMemo(() => {
+    const url = clusterApiUrl(cluster);
+    return new Connection(url);
+  }, [cluster]);
 
-  const connection = useMemo(() => new Connection('https://api.mainnet-beta.solana.com'), []);
-  return <ConnectionContext.Provider value={connection}>
-    {children}
-  </ConnectionContext.Provider>;
+  return <ConnectionContext.Provider value={connection}>{children}</ConnectionContext.Provider>;
 };
 
 export function useConnection() {
