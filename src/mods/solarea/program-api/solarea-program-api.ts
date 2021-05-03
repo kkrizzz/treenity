@@ -18,7 +18,7 @@ export function createViewAddress(address: string, context: string, name: string
   return findProgramAddress([address, '|', context, '|', name], SolareaProgramID);
 }
 
-function createSolareInstruction(
+function createSolareaInstruction(
   walletPub: typeof PublicKey,
   storagePub: typeof PublicKey,
   data: Buffer,
@@ -45,7 +45,7 @@ export default class SolareaProgramApi {
     name: string,
     dataLength: number,
     dataType: number,
-  ): typeof TransactionInstruction {
+  ): [typeof TransactionInstruction, typeof PublicKey] {
     const [storagePub, byte] = createViewAddress(address, context, name);
     //////////////////// create account transaction
     const areaSize = 32 + 2 + dataLength;
@@ -63,7 +63,7 @@ export default class SolareaProgramApi {
     buf.writeUInt32LE(areaSize, (offset += 1));
     buf.writeUInt16LE(dataType, (offset += 4));
 
-    const createInstruction = createSolareInstruction(walletPub, storagePub, buf, [
+    const createInstruction = createSolareaInstruction(walletPub, storagePub, buf, [
       SYSVAR_RENT_PUBKEY,
       SystemProgram.programId,
     ]);
@@ -78,7 +78,10 @@ export default class SolareaProgramApi {
     name: string,
     data: Buffer,
     dataType: number,
+    isUpdate: boolean = false,
   ): Transaction[] {
+    const instructions: typeof TransactionInstruction[] = [];
+
     const [createInst, storagePub] = this.createInstruction(
       walletPub,
       address,
@@ -87,12 +90,19 @@ export default class SolareaProgramApi {
       data.length,
       dataType,
     );
-    const firstDataSize = 1024 - (82 + address.length + context.length + name.length);
+
+    if (isUpdate) {
+      const removeInstruction = this.removeInstruction(walletPub, storagePub);
+      instructions.push(removeInstruction);
+    }
+
+    const firstDataSize =
+      1024 - ((isUpdate ? 82 : 82) + address.length + context.length + name.length);
 
     const chunk = data.slice(0, firstDataSize);
     const storeInst = this.storeInstruction(walletPub, storagePub, chunk, 0);
 
-    const transactions = [new Transaction().add(createInst, storeInst)];
+    const transactions = [new Transaction().add(...instructions, createInst, storeInst)];
 
     let remainLength = data.length - firstDataSize;
     let offset = firstDataSize;
@@ -123,7 +133,7 @@ export default class SolareaProgramApi {
     buf.writeUInt32LE(dataOffset, (offset += 1)); // data type = 'react view'
     data.copy(buf, (offset += 3)); // data
 
-    return createSolareInstruction(walletPub, storagePub, buf);
+    return createSolareaInstruction(walletPub, storagePub, buf);
   }
 
   removeInstruction(
@@ -133,6 +143,6 @@ export default class SolareaProgramApi {
     /////////////////// remove
     const buf = Buffer.from([0x3]); // instruction 'remove' = 3
 
-    return createSolareInstruction(walletPub, storagePub, buf);
+    return createSolareaInstruction(walletPub, storagePub, buf);
   }
 }
