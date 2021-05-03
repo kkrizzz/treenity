@@ -104,6 +104,10 @@ export default class SolareaProgramApi {
 
     const transactions = [new Transaction().add(...instructions, createInst, storeInst)];
 
+    if (isUpdate) {
+      transactions.unshift(new Transaction().add(this.removeInstruction(walletPub, storagePub)));
+    }
+
     let remainLength = data.length - firstDataSize;
     let offset = firstDataSize;
 

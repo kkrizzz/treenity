@@ -42,24 +42,25 @@ async function main() {
   //   storeInstruction
   //   // removeInstruction,
   // );
-  const [firstTransaction, ...otherTransaction] = solareaApi.createTransactions(
+  const transactions = solareaApi.createTransactions(
     wallet.publicKey,
     address,
     context,
     name,
     data,
     0x1,
+    true,
   );
 
   // await sendAndConfirmTransaction(connection, new Transaction().add(removeInstruction), [wallet], {
   //   commitment: 'finalized',
   // });
-  await sendAndConfirmTransaction(connection, firstTransaction, [wallet], {
-    commitment: 'finalized',
-  });
-  await sendAndConfirmTransaction(connection, otherTransaction[0], [wallet], {
-    commitment: 'finalized',
-  });
+  for (let i = 0; i < transactions.length; i++) {
+    const transaction = transactions[i];
+    await sendAndConfirmTransaction(connection, transaction, [wallet], {
+      commitment: 'finalized',
+    });
+  }
 
   // console.log('loaded to ', storageAddress.toBase58(), 'sucessfully');
 }
