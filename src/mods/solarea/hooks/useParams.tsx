@@ -9,14 +9,11 @@ export default function useParams() {
   const names = location.hostname.split('.').reverse();
   const paths = location.pathname.split('/').filter((i) => !!i);
 
-  let addr,
-    name,
-    context;
+  let addr, name, context;
 
   // has 2 or more subdomains
   if (names.length >= 4) {
-    let first,
-      second;
+    let first, second;
     [first, second, addr, context] = names;
     addr = `${second}.${first}`;
     context = paths[0];
