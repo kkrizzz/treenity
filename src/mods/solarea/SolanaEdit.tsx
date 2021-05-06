@@ -35,6 +35,10 @@ import {
 import { promiseSequence } from '../../utils/promise-sequence';
 import { useConnection } from './hooks/useConnection';
 import { createViewAddress } from './program-api/solarea-program-api';
+import { UploadFile } from './components/FileUpload';
+import { calcRentFee } from './utils/calcRentFee';
+import { UploadPreview } from './components/Upload/UploadPreview';
+import { mimeTypesData } from './utils/mime-types-data';
 
 const contexts = [
   'react',
@@ -127,6 +131,8 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
   const [link, setLink] = useState('');
   const [selectedContext, setSelectedContext] = useState(context);
   const [infoIsVisible, showInfo] = useState(false);
+
+  const [file, setFile] = useState<{ src: File; binary: string } | null>(null);
 
   //blockchain loading
   const [blockChainData, setBlockChainData] = useState<any>(null);
@@ -230,7 +236,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
     refetch().catch(() => toast('Sorry, something wrong :('));
   };
 
-  const saveToSolana = async () => {
+  const saveToSolana = async (buffer: string, dataType: number) => {
     if (!wallet || !connected) {
       return;
     }
@@ -238,14 +244,14 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
     const account = await connection.getAccountInfo(viewAddress);
     const isUpdate = !!account;
 
-    const data = Buffer.from(editorValue);
+    const data = Buffer.from(buffer);
     const [txs, publicKey] = solareaApi.createTransactions(
       wallet.publicKey,
       id,
       context,
       name,
       data,
-      0x1,
+      dataType,
       isUpdate,
     );
 
@@ -330,6 +336,24 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
       >
         {!!inCodePreview && <Render {...inCodePreview} />}
       </Modal>
+      <Modal
+        width={800}
+        transparent={false}
+        isVisible={!!file}
+        onBackdropPress={() => setFile(null)}
+      >
+        <div>
+          {file && <UploadPreview binary={file!.binary} src={file!.src} />}
+          <button
+            onClick={() => {
+              if (!file) return;
+              saveToSolana(file.binary, mimeTypesData[file.src.type]);
+            }}
+          >
+            Upload to Solana!
+          </button>
+        </div>
+      </Modal>
       <Modal transparent={false} isVisible={infoIsVisible} onBackdropPress={() => showInfo(false)}>
         <h3>Hotkeys</h3>
         <h5>
@@ -362,9 +386,15 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
           <div>
             <Icon name="refresh" onClick={() => setCode(editorValue)} />
             <Icon name="save" onClick={() => onSubmit()} />
-            <Icon name="solana" onClick={() => saveToSolana()} />
+            <Icon name="solana" onClick={() => saveToSolana(editorValue, 0x1)} />
             <Icon name="play" onClick={() => openView()} />
             <Icon name="rewind" onClick={() => rewindCodeToOriginal()} />
+            <UploadFile
+              onChangeFile={(file: File, binary: any) => setFile({ src: file, binary })}
+              returnFormat="binary"
+            >
+              <Icon name="upload" />
+            </UploadFile>
           </div>
           <div>
             <Icon name="info" onClick={() => showInfo(true)} />
