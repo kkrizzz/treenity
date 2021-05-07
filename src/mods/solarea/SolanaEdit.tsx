@@ -37,7 +37,7 @@ import { useConnection } from './hooks/useConnection';
 import { createViewAddress } from './program-api/solarea-program-api';
 import { UploadFile } from './components/FileUpload';
 import { calcRentFee } from './utils/calcRentFee';
-import { UploadPreview } from './components/Upload/UploadPreview';
+import { UploadPreview } from './components/Files/UploadPreview';
 import { mimeTypesData } from './utils/mime-types-data';
 
 const contexts = [

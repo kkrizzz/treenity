@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { addComponent, getComponent } from '../component-db';
+import { addComponent, components, getComponent } from '../component-db';
 import useAsyncEffect from 'use-async-effect';
 import { makeId } from '../utils/make-id';
 import { restStorageManager } from '../rest-storage-manager';
@@ -11,6 +11,8 @@ import { createViewAddress } from '../program-api/solarea-program-api';
 import { PublicKey } from '@solana/web3.js';
 import { useConnection } from './useConnection';
 import { mimeTypesData } from '../utils/mime-types-data';
+import { resolveViewByMime } from '../components/Files/Resolver';
+import React from 'react';
 
 const addressRegEx = /^[A-z0-9:\.\-_]+$/;
 
@@ -59,31 +61,17 @@ export function useLoadAccountComponent(
         const { owner, data, type } = solareaApi.unpackData(solSetttle.value.data);
         viewData = data.toString('utf-8');
 
-        const makeViewData = (component: ReactNode) => {
-          return `add(()=>${component})`;
-        };
+        const mimetype = mimeTypesData.getData(type);
 
-        const mimeType = mimeTypesData.getData(type);
-
-        if (mimeType) {
-          if (mimeType.startsWith('image')) {
-            viewData = makeViewData(
-              `<img src="data:${mimeType};base64,${data.toString('base64')}"></img>`,
-            );
-          } else if (mimeType.startsWith('audio')) {
-            viewData = makeViewData('<div>Audio</div>');
-          } else if (mimeType === 'application/json') {
-            viewData = makeViewData(`'${JSON.stringify(JSON.parse(data.toString('utf-8')))}'`);
-          }
+        if (mimetype) {
+          addComponent(address, name, context, {}, () => resolveViewByMime({ mimetype, data }));
+          return setLoading(false);
         }
       } else if (restSettle.status === 'fulfilled') {
         viewData = restSettle.value!.data;
       } else {
         viewData = 'add(() => "not found")';
       }
-
-      // link = contextConfig.link;
-      // } while (contextConfig.link);
 
       await loadScript(id, viewData, {
         Render,

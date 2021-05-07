@@ -14,6 +14,13 @@ export const mimeTypesData = {
   'audio/mpeg': 32,
   'audio/ogg': 33,
 
+  'text/xml': 40,
+  'text/javascript': 41,
+  'text/plain': 42,
+  'text/ogg': 43,
+  'text/html': 44,
+  'text/markdown': 44,
+
   getData(value: number) {
     return Object.keys(this).find((key) => this[key] === value);
   },
