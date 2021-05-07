@@ -1,5 +1,5 @@
 import { MarkdownView } from './MarkdownView';
-import {JsonView} from "./JsonView";
+import { JsonView } from './JsonView';
 
 export const textResolvers = {
   markdown: MarkdownView,
