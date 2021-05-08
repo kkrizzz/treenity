@@ -4,14 +4,13 @@ import bs58 from 'bs58';
 import useParams from './hooks/useParams';
 import useQueryParams from './hooks/useQueryParams';
 import Render from './Render';
-import SolanaEdit from './SolanaEdit';
 import findMap from '../../utils/find-map';
-import { SolanaWalletValidator } from './wallet/SolanaWalletValidator';
+import SolareaEdit2 from './editor/SolareaEdit2';
 
 const idToViewResolvers = [
-  (id, name, context, { edit, ...props }) => {
+  (id, name, context, { edit, ...query }) => {
     if (edit !== undefined) {
-      return <SolanaEdit {...props} value={null} id={id} name={name} context={context} />;
+      return <SolareaEdit2 {...query} value={null} id={id} name={name} context={context} />;
     }
   },
   (id, name, context, query) => {
@@ -29,6 +28,11 @@ const idToViewResolvers = [
           <Render {...query} entityId={id} id="explorer" context={context} name={exName} />
         </Render>
       );
+    }
+  },
+  (id, name, context, { nolayout, ...query }) => {
+    if (nolayout !== undefined) {
+      return <Render {...query} id={id} context={context} name={name} />;
     }
   },
   (id, name, context, query) => {

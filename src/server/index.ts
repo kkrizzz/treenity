@@ -87,7 +87,8 @@ async function main() {
         ],
       },
     });
-  solareaRoutes(app);
+
+  app.configure(solareaRoutes);
   // app.use('message', new MessageService());
   //
   // app.use('hello', new HelloService());

@@ -3,6 +3,7 @@
     <envs>
       <env name="DEBUG" value="@feathersjs/transport-commons/*" />
       <env name="NODE_ENV" value="development" />
+      <env name="NODE_CONFIG_DIR" value="./config/solarea" />
     </envs>
     <method v="2" />
   </configuration>

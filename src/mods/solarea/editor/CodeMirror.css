@@ -1,0 +1,20 @@
+
+.solarea-editor > .cm-editor {
+    width: 100%;
+}
+
+.solarea-editor .cm-scroller {
+    margin-top: 8px;
+}
+
+.solarea-editor .cm-scroller * {
+    font-family: monospace;
+}
+
+.CodeMirror {
+    height: 100vh !important;
+}
+
+.HUI {
+    width: 100%;
+}

@@ -17,6 +17,7 @@
     "sol:test": " ts-node src/mods/solarea/program-api/main.spec.ts",
     "server:build": "NODE_ENV=production parcel build --target node --dist-dir dist/server-prod src/server/index.ts",
     "server:watch": "parcel watch --target node --dist-dir dist/server-dev/ src/server/index.ts",
+    "clean": "rm -rf .parcel-cache dist",
     "jest": "jest --forceExit",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lg": "parcel watch --target node --public-url ./src/logicEngine/test.ts",

@@ -4,9 +4,9 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ConnectionProvider } from './hooks/useConnection';
 
 import config from '../../config-common';
-import SolanaRoute from './SolanaRoute';
-import './SolanaEdit';
+import SolareaRoute from './SolareaRoute';
 import './components/DefaultComponents';
+import './markup';
 import { WalletProvider } from './utils/wallet';
 import WalletConnect from './components/WalletConnect';
 import SolareaProgramApi from './program-api/solarea-program-api';
@@ -29,7 +29,7 @@ const inject = (comp) => (
 );
 
 const App = () => {
-  return inject(<SolanaRoute />);
+  return inject(<SolareaRoute />);
 };
 
 render(html` <${App} />`, document.getElementById('app'));

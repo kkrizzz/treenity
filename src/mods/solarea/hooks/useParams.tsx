@@ -18,8 +18,12 @@ export default function useParams() {
     addr = `${second}.${first}`;
     context = paths[0];
     // has one subdomain
+  } else if (names[0] === 'work' && names[1] === 'medianet') {
+    addr = paths[0] || names.join('.');
+    name = paths[1];
+    context = paths[2];
   } else if (names.length === 3) {
-    addr = names[0];
+    addr = names[2];
     name = paths[0];
     context = paths[1];
     // just domain name - 'meta.store'

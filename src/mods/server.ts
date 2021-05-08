@@ -1,8 +1,8 @@
-import {Sysinit} from "../treenity/service/Sysinit";
+import '../treenity/service/Sysinit';
 
-export { default as HelloService } from './hello/hello';
+// export { default as HelloService } from './hello/hello';
 // import './zod';
 import './test/Test.meta';
 import './telegram/server';
 import './dataflow/Dataflow.meta';
-import './rest/Rest.service'
+import './rest/Rest.service';

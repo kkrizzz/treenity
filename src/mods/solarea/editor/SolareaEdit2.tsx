@@ -1,44 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/material.css';
-import 'codemirror/mode/xml/xml';
-import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/hint/show-hint.css';
-import 'codemirror/addon/edit/closetag';
-import 'codemirror/addon/search/searchcursor';
-import './codemirror-addons/keyword';
-import 'codemirror/addon/hint/javascript-hint';
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/jsx/jsx';
-import './SolanaEdit.css';
-import { UnControlled as CodeMirror } from 'react-codemirror2';
-import { restStorageManager } from './rest-storage-manager';
-import { addComponent } from './component-db';
-import { loadScript } from './load-script';
-import Render from './Render';
-import { makeId } from './utils/make-id';
+import { restStorageManager } from '../rest-storage-manager';
+import Render from '../Render';
+import { makeId } from '../utils/make-id';
 import { useQuery } from 'react-query';
-import { Icon } from './components/Icon';
-import { Modal } from './components/Modal';
-import { throttle } from './hooks/throttle';
-import { key } from './utils/keyCode';
-import { toast } from './utils/toast';
-import useLongPress from './hooks/useLongPress';
-import { useWallet } from './utils/wallet';
-import { solareaApi } from './client';
-import { getSolanaRecentBlockhash } from './utils/get-solana-recent-blockhash';
-import {
-  sendAndConfirmRawTransaction,
-  sendAndConfirmTransaction,
-  Transaction,
-} from '@solana/web3.js';
-import { promiseSequence } from '../../utils/promise-sequence';
-import { useConnection } from './hooks/useConnection';
-import { createViewAddress } from './program-api/solarea-program-api';
-import { UploadFile } from './components/FileUpload';
-import { calcRentFee } from './utils/calcRentFee';
-import { UploadPreview } from './components/Files/UploadPreview';
-import { mimeTypesData } from './utils/mime-types-data';
+import { Icon } from '../components/Icon';
+import { Modal } from '../components/Modal';
+import { throttle } from '../hooks/throttle';
+import { key } from '../utils/keyCode';
+import { toast } from '../utils/toast';
+import useLongPress from '../hooks/useLongPress';
+import { useWallet } from '../utils/wallet';
+import { solareaApi } from '../client';
+import { sendAndConfirmRawTransaction, Transaction } from '@solana/web3.js';
+import { promiseSequence } from '../../../utils/promise-sequence';
+import { useConnection } from '../hooks/useConnection';
+import { createViewAddress } from '../program-api/solarea-program-api';
+import { UploadFile } from '../components/FileUpload';
+import { UploadPreview } from '../components/Files/UploadPreview';
+import { mimeTypesData } from '../utils/mime-types-data';
+import CodeMirror from './CodeMirror';
+
+import './SolareaEdit.css';
+import { Preview } from './Preview';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 const contexts = [
   'react',
@@ -49,67 +33,6 @@ const contexts = [
   'react thumbnail',
 ];
 
-export class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { error: null };
-  }
-
-  static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI.
-    return { error };
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.children.props.id !== this.props.children?.props?.id)
-      this.setState({ error: null });
-  }
-
-  componentDidCatch(error, errorInfo) {
-    // You can also log the error to an error reporting service
-    // logErrorToMyService(error, errorInfo);
-  }
-
-  render() {
-    const { error } = this.state;
-    if (error) {
-      // You can render any custom fallback UI
-      return <div className="card error">{error.message}</div>;
-    }
-
-    return this.props.children;
-  }
-}
-
-function Preview({ accountData, code, id, name, context, ...params }) {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    loadScript(makeId(id, name, context), code, {
-      Render,
-      add(component) {
-        addComponent(id, name, context, {}, component);
-      },
-      onError(err) {
-        this.add(() => (
-          <div className="card error" style={{ maxWidth: '400px' }}>
-            {err.stack}
-          </div>
-        ));
-      },
-    }).finally(() => setIsLoading(false));
-  }, [code]);
-
-  if (!code) return null;
-  if (isLoading) return <div className="spinner" />;
-
-  return (
-    <ErrorBoundary>
-      <Render {...params} id={id} name={name} context={context || 'react'} />
-    </ErrorBoundary>
-  );
-}
-
 function makeOutLink(link) {
   const [id, context, name] = link.split('_');
   return { id, context, name };
@@ -119,6 +42,53 @@ function linkToHref(link: string) {
   const [id, ctx, name] = link.split('_');
   return `${id}/${name}/${ctx}`;
 }
+
+const saveToSolana = async (buffer: string, dataType: number) => {
+  if (!wallet || !connected) {
+    return;
+  }
+  const [viewAddress] = createViewAddress(id, context, name);
+  const account = await connection.getAccountInfo(viewAddress);
+  const isUpdate = !!account;
+
+  const data = Buffer.from(buffer);
+  const [txs, publicKey] = solareaApi.createTransactions(
+    wallet.publicKey,
+    id,
+    context,
+    name,
+    data,
+    dataType,
+    isUpdate,
+  );
+
+  // const blockhash = await getSolanaRecentBlockhash('devnet');
+
+  const { blockhash } = await connection.getRecentBlockhash('finalized');
+  txs.forEach((i) => {
+    i.recentBlockhash = blockhash;
+    i.feePayer = wallet.publicKey;
+  });
+
+  // console.log(transactions);
+
+  const sendTransaction = (t: Transaction) =>
+    sendAndConfirmRawTransaction(connection, t.serialize(), {
+      skipPreflight: true,
+      commitment: 'finalized',
+    });
+
+  try {
+    const transactions = await wallet.signAllTransactions(txs);
+    await promiseSequence(transactions.slice(0, 2).map((t) => () => sendTransaction(t)));
+
+    await Promise.allSettled(transactions.slice(2).map(sendTransaction));
+
+    console.log('data was saved to blockchain!', publicKey.toBase58());
+  } catch (err) {
+    console.error('cant save to solana', err);
+  }
+};
 
 export default function SolanaEdit({ value, id, name, context, ...params }) {
   const { signed, wallet, session, connected } = useWallet();
@@ -134,9 +104,6 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
 
   const [file, setFile] = useState<{ src: File; binary: string } | null>(null);
 
-  //blockchain loading
-  const [blockChainData, setBlockChainData] = useState<any>(null);
-
   const renderPreviewLongPress = useLongPress((e) => parseInCodePreview(e), 1500);
 
   const editor = React.useRef<any>();
@@ -149,16 +116,17 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
     { retry: false },
   );
 
-  const draft_id = makeId(id, name + '_draft', context);
+  const draftId = makeId(id, name + '_draft', context);
   const { data: draft, isLoading: draftIsLoading, refetch: refetchDraft } = useQuery(
-    draft_id,
-    () => restStorageManager.get(draft_id),
+    draftId,
+    () => restStorageManager.get(draftId),
     { retry: false },
   );
 
   useEffect(() => {
     if (!draftIsLoading && draft && draft.data) {
       setInitialCode(draft.data);
+      setEditorValue(draft.data);
       setCode(draft.data);
       setShowIsDraft(true);
     } else if (
@@ -169,6 +137,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
       (!draft || (draft && !draft.data))
     ) {
       setInitialCode(view.data);
+      setEditorValue(view.data);
       setCode(view.data);
       setLink(view.link);
     }
@@ -236,53 +205,6 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
     refetch().catch(() => toast('Sorry, something wrong :('));
   };
 
-  const saveToSolana = async (buffer: string, dataType: number) => {
-    if (!wallet || !connected) {
-      return;
-    }
-    const [viewAddress] = createViewAddress(id, context, name);
-    const account = await connection.getAccountInfo(viewAddress);
-    const isUpdate = !!account;
-
-    const data = Buffer.from(buffer);
-    const [txs, publicKey] = solareaApi.createTransactions(
-      wallet.publicKey,
-      id,
-      context,
-      name,
-      data,
-      dataType,
-      isUpdate,
-    );
-
-    // const blockhash = await getSolanaRecentBlockhash('devnet');
-
-    const { blockhash } = await connection.getRecentBlockhash('finalized');
-    txs.forEach((i) => {
-      i.recentBlockhash = blockhash;
-      i.feePayer = wallet.publicKey;
-    });
-
-    // console.log(transactions);
-
-    const sendTransaction = (t: Transaction) =>
-      sendAndConfirmRawTransaction(connection, t.serialize(), {
-        skipPreflight: true,
-        commitment: 'finalized',
-      });
-
-    try {
-      const transactions = await wallet.signAllTransactions(txs);
-      await promiseSequence(transactions.slice(0, 2).map((t) => () => sendTransaction(t)));
-
-      await Promise.allSettled(transactions.slice(2).map(sendTransaction));
-
-      console.log('data was saved to blockchain!', publicKey.toBase58());
-    } catch (err) {
-      console.error('cant save to solana', err);
-    }
-  };
-
   const openView = () => {
     window.open(`/${id}/${name}`, '_blank');
   };
@@ -326,7 +248,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
   };
 
   return (
-    <div onKeyUp={updatePreview} className="solana-edit">
+    <div onKeyUp={updatePreview} className="solarea-edit">
       <Modal
         top="10%"
         width={800}
@@ -381,8 +303,8 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
           to get original
         </span>
       )}
-      <div className="solana-edit__toolbar min">
-        <div className="solana-edit__toolbar-controls">
+      <div className="solarea-edit__toolbar min">
+        <div className="solarea-edit__toolbar-controls">
           <div>
             <Icon name="refresh" onClick={() => setCode(editorValue)} />
             <Icon name="save" onClick={() => onSubmit()} />
@@ -402,7 +324,7 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
         </div>
       </div>
       <div style={{ width: '50vw', display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
-        <div className="solana-edit_workspace-toolbar">
+        <div className="solarea-edit_workspace-toolbar">
           <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'row' }}>
             <label style={{ marginLeft: 4, width: 60, display: 'inline-block' }} htmlFor="username">
               Context
@@ -463,26 +385,26 @@ export default function SolanaEdit({ value, id, name, context, ...params }) {
         </div>
         <CodeMirror
           {...renderPreviewLongPress}
-          value={initialCode}
-          options={{
-            resetSelectionOnContextMenu: false,
-            readOnly: !!link,
-            tabSize: 2,
-            autoCloseTags: true,
-            extraKeys: {
-              'Ctrl-Space': 'autocomplete',
-              'Ctrl-LeftClick': function (cm, e) {
-                // its a redefine
-              },
-            },
-            mode: 'jsx',
-            theme: 'material',
-            lineNumbers: true,
-            lineWrapping: false,
-            htmlMode: true,
-            hintOptions: { hint: renderTagAutoComplete },
-          }}
-          ref={(i) => (editor.current = i)}
+          value={editorValue}
+          // options={{
+          //   resetSelectionOnContextMenu: false,
+          //   readOnly: !!link,
+          //   tabSize: 2,
+          //   autoCloseTags: true,
+          //   extraKeys: {
+          //     'Ctrl-Space': 'autocomplete',
+          //     'Ctrl-LeftClick': function (cm, e) {
+          //       // its a redefine
+          //     },
+          //   },
+          //   mode: 'jsx',
+          //   theme: 'material',
+          //   lineNumbers: true,
+          //   lineWrapping: false,
+          //   htmlMode: true,
+          //   hintOptions: { hint: renderTagAutoComplete },
+          // }}
+          // forwardRef={(i) => (editor.current = i)}
           onChange={(editor, change, value) => {
             setEditorValue(value);
             saveDraft(value);
