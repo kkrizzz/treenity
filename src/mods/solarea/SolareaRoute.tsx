@@ -45,7 +45,7 @@ function resolveView(id: string, name: string, context: string, query) {
   return findMap(idToViewResolvers, (resolver) => resolver(id, name, context, query));
 }
 
-export default function SolanaRoute() {
+export default function SolareaRoute() {
   let [id, name, context] = useParams();
   const query = useQueryParams();
 
