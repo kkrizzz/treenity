@@ -1,0 +1,13 @@
+
+.markup {
+  &-wr {
+    display: flex;
+    align-items: stretch;
+
+    .solarea-editor {
+      max-width: 680px;
+      width: 100%;
+      flex: none;
+    }
+  }
+}
