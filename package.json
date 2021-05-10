@@ -135,6 +135,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@parcel/transformer-sass": "2.0.0-nightly.638",
     "@types/event-emitter": "^0.3.3",
     "@types/jest": "^26.0.14",
     "@types/lodash": "^4.14.165",

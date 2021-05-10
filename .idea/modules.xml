@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/treenity-exp.iml" filepath="$PROJECT_DIR$/.idea/treenity-exp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/treenity.iml" filepath="$PROJECT_DIR$/.idea/treenity.iml" />
     </modules>
   </component>
 </project>
