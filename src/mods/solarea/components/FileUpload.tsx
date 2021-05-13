@@ -5,6 +5,7 @@ import './FileUpload.css';
 interface UploadFileDefault {
   onChangeFile: (file: File, formatted?: string | ArrayBuffer) => any;
   returnFormat: 'file' | 'base64' | 'binary';
+  className?: any;
 }
 
 export const UploadFile = (props: PropsWithChildren<UploadFileDefault>) => {
@@ -39,7 +40,7 @@ export const UploadFile = (props: PropsWithChildren<UploadFileDefault>) => {
   };
 
   return (
-    <div>
+    <div className={props.className}>
       <input id="file-upload-button" type="file" onChange={(e) => handleChange(e)} />
 
       <div

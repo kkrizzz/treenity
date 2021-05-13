@@ -8,7 +8,7 @@ const WIDTH = 300;
 export const Drawer = ({ children }) => {
   const [width, setWidth] = React.useState(0);
   const toggleDrawer = useCallback(() => setWidth((width) => (width > 0 ? 0 : WIDTH)), [setWidth]);
-  useHotkeys('/', toggleDrawer);
+  // useHotkeys('/', toggleDrawer);
 
   return (
     <>

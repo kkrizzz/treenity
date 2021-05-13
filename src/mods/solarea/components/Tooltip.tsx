@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import './Tooltip.scss';
 
 export default function Tooltip(props: {
-  wrapperClassName: string;
+  wrapperClassName?: string;
   children: ReactNode;
   title: string;
   position: 'left' | 'right' | 'top' | 'bottom';

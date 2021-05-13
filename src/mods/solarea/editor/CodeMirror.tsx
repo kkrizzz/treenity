@@ -19,6 +19,11 @@ export default function CodeMirror({ value, onChange }) {
         extensions: [
           basicSetup,
           oneDark,
+          EditorView.updateListener.of((viewUpdate) => {
+            if (viewUpdate.docChanged) {
+              onChange(viewUpdate.state.doc.toString());
+            }
+          }),
           keymap.of([defaultTabBinding]),
           javascript({ jsx: true, typescript: false }),
         ],

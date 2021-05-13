@@ -12,7 +12,7 @@ export class ErrorBoundary extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.children.props.id !== this.props.children?.props?.id) {
+    if (prevProps.children.props?.id !== this.props.children?.props?.id) {
       this.setState({ error: null });
     }
   }

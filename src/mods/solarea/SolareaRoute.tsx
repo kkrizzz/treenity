@@ -5,12 +5,12 @@ import useParams from './hooks/useParams';
 import useQueryParams from './hooks/useQueryParams';
 import Render from './Render';
 import findMap from '../../utils/find-map';
-import SolareaEdit2 from './editor/SolareaEdit2';
+import { SolareaEdit } from './editor/NewEditor/SolareaEdit3';
 
 const idToViewResolvers = [
   (id, name, context, { edit, ...query }) => {
     if (edit !== undefined) {
-      return <SolareaEdit2 {...query} value={null} id={id} name={name} context={context} />;
+      return <SolareaEdit {...query} value={null} id={id} name={name} context={context} />;
     }
   },
   (id, name, context, query) => {

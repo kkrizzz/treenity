@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { icons } from './icons';
 
-export const Icon = ({ name, ...props }) => {
-  return (
-    <div {...props} className="custom-solarea-icon">
-      {icons[name]()}
-    </div>
-  );
+type IconProps = {
+  name: keyof typeof icons;
+  onClick?: () => void;
+  className?: string;
+  style?: CSSProperties;
+};
+
+export const Icon = (props: IconProps) => {
+  try {
+    return (
+      <div {...props} className="custom-solarea-icon">
+        {icons[props.name]()}
+      </div>
+    );
+  } catch (e) {
+    console.log(e, name);
+    return null;
+  }
 };
