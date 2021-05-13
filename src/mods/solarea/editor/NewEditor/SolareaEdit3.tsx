@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CodeMirror from '../CodeMirror';
 import { DeviceScaleFrame } from '../DeviceScaleFrame';
 import { Preview } from '../Preview';
@@ -9,7 +9,7 @@ import { UploadFile } from '../../components/FileUpload';
 import { Tooltip } from './Tooltip';
 
 import useEditorStore from '../../stores/editor-store';
-import { Accordion, AccordionTab } from '../../components/Accordion';
+import { Accordion } from '../../components/Accordion';
 
 const EditorWidthController = () => {
   const [editorMaxWidth, setEditorMaxWidth] = useEditorStore((state) => [
@@ -97,11 +97,16 @@ const SolareaEditPreview = ({ value, id, name, context, ...params }) => {
 };
 
 export const SolareaEdit = ({ value, id, name, context, ...params }) => {
-  const [setEditorValue, editorMaxWidth] = useEditorStore((state) => [
+  const [setEditorValue, editorMaxWidth, initialCode, loadInitialCode] = useEditorStore((state) => [
     state.setEditorValue,
     state.editorMaxWidth,
+    state.initialCode,
+    state.loadInitialCode,
   ]);
-  const [initialCode, setInitialCode] = useState('');
+
+  useEffect(() => {
+    loadInitialCode(id, name, context);
+  }, []);
 
   return (
     <div className="sol-markup-wr">
