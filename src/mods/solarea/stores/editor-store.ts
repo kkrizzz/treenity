@@ -109,7 +109,11 @@ const useEditorStore = create<IEditorStore>((set) => ({
         ...state,
         initialCode: viewData,
         link: viewLink,
-        view: { _id, fromMongo: solSettle.status !== 'fulfilled', hasFile: false },
+        view: {
+          _id,
+          fromMongo: solSettle.status !== 'fulfilled' || solSettle.value === null,
+          hasFile: false,
+        },
       }));
     } catch (e) {
       console.log(`error loading view ${_id}`);

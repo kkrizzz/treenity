@@ -102,9 +102,8 @@ const EditorWidthController = () => {
   // const [width, setWidth] = React.useState(680);
   const toggleEditor = useCallback(() => {
     setEditorMaxWidth(editorMaxWidth ? 0 : 680);
-    console.log(editorMaxWidth);
   }, [editorMaxWidth, setEditorMaxWidth]);
-  useHotkeys('alt+q', toggleEditor);
+  useHotkeys('cmd+alt+/,ctrl+alt+/', toggleEditor, [toggleEditor]);
   //
   // useEffect(() => {
   //   setEditorMaxWidth(width);
@@ -347,6 +346,7 @@ export const SolareaEdit = ({ value, id, name, context, ...params }) => {
           maxWidth: editorMaxWidth,
           width: '100%',
           transition: 'max-width 0.5s ease-in-out',
+          backgroundColor: '#282c33',
         }}
       >
         <CodeMirror
