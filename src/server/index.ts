@@ -24,6 +24,7 @@ import services from './services';
 import '../treenity/service/Sysinit';
 import { routesStartup as solareaRoutes } from '../mods/solarea/server/routes-startup';
 import migrate from './migrator';
+import { sessionIdRoute } from '../mods/solarea/server/session-id';
 
 config.isServer = true;
 
@@ -89,6 +90,7 @@ async function main() {
     });
 
   app.configure(solareaRoutes);
+  sessionIdRoute(app);
   // app.use('message', new MessageService());
   //
   // app.use('hello', new HelloService());

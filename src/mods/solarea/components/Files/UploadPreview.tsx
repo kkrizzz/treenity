@@ -13,18 +13,26 @@ export const UploadPreview = (props: { src: File; binary: string }) => {
   const { src, binary } = props;
   const { size } = src;
 
+  const Resolver = useMemo(
+    () => resolveViewByMime({ mimetype: src.type, data: new Buffer(binary, 'binary') }),
+    [src, binary],
+  );
+
+  if (!Resolver) {
+    return <div>sorry. file resolver not found :(</div>;
+  }
+
   return (
-    <div>
+    <div style={{ padding: 8 }}>
       {binary && src && (
         <>
           <div
             style={{
-              padding: 8,
               maxHeight: 400,
               overflow: 'auto',
             }}
           >
-            {resolveViewByMime({ mimetype: src.type, data: new Buffer(binary, 'binary') })}
+            {Resolver}
           </div>
           <div>File size: {size} bytes</div>
           <div>Store price: {calcRentFee(size).toFixed(6)} SOL</div>

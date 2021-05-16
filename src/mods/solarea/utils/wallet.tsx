@@ -54,6 +54,7 @@ export const WALLET_PROVIDERS = [
 ];
 
 const WalletContext = React.createContext<{
+  authorizeWithTx: any;
   signed: boolean;
   states: any;
   transaction: Transaction | undefined;
@@ -75,24 +76,10 @@ export function WalletProvider({ children }) {
   const [signed, setSigned] = useSessionStorageState('signed');
   const [transaction, setTransaction] = useState<Transaction | undefined>(undefined);
 
-  console.log({ session, signed, connected });
-
-  useEffect(() => {
-    if (transaction && connected && !signed) {
-      req
-        .post(VALIDATE_SERVICE_URL, {
-          transaction: transaction.serialize(),
-        })
-        .then((res) => res.text())
-        .then(() => setSigned(true))
-        .catch(() => console.log('error'));
-    }
-  }, [transaction, connected, signed]);
-
   useEffect(() => {
     const connectWallet = () => {
       if (!autoConnect) setAutoConnectProvider('');
-      if (false && autoConnect && autoConnectProvider) {
+      if (autoConnect && autoConnectProvider) {
         const targetWallet = WALLET_PROVIDERS.find((i) => i.name === autoConnectProvider);
         if (!targetWallet) return;
 
@@ -116,28 +103,6 @@ export function WalletProvider({ children }) {
   }, [autoConnect, autoConnectProvider]);
 
   useEffect(() => {
-    if (wallet && connected && session && !signed) {
-      const keys: Array<AccountMeta> = [
-        { isSigner: true, isWritable: false, pubkey: wallet.publicKey },
-      ];
-
-      const txi = new TransactionInstruction({
-        keys: keys,
-        programId: wallet.publicKey.toBase58(),
-        data: Buffer.from(session),
-      });
-
-      const tx = new Transaction({
-        recentBlockhash: '5Tx8F3jgSHx21CbtjwmdaKPLM5tWmreWAnPrbqHomSJF',
-        feePayer: keys[0].pubkey,
-      });
-
-      tx.add(txi);
-      wallet.signTransaction(tx);
-    }
-  }, [session, connected]);
-
-  useEffect(() => {
     if (wallet) {
       wallet.on('connect', () => {
         if (wallet?.publicKey) {
@@ -149,10 +114,12 @@ export function WalletProvider({ children }) {
               res.text().then((sid) => {
                 setConnected(true);
                 setSession(sid);
-                toast('Connected', 5000, WALLETS_ERROR_TOAST_COLOR);
+                // toast('Connected', 5000, WALLETS_ERROR_TOAST_COLOR);
+                close();
               });
             });
           }
+          toast('Wallet connected');
         }
       });
 
@@ -163,12 +130,6 @@ export function WalletProvider({ children }) {
         setWallet(undefined);
         setTransaction(undefined);
         toast('Disconnected', 5000, WALLETS_ERROR_TOAST_COLOR);
-      });
-      wallet.on('signTransaction', (tx: Transaction) => {
-        setTransaction(tx);
-      });
-      wallet.on('newTransaction', (tx: Transaction) => {
-        setTransaction(undefined);
       });
     }
 
@@ -186,6 +147,34 @@ export function WalletProvider({ children }) {
   const select = useCallback(() => setIsModalVisible(true), []);
   const close = useCallback(() => setIsModalVisible(false), []);
 
+  const authorizeWithTx = async () => {
+    if (!wallet || !connected || signed) throw new Error('');
+
+    const keys: Array<AccountMeta> = [
+      { isSigner: true, isWritable: false, pubkey: wallet.publicKey },
+    ];
+
+    const txi = new TransactionInstruction({
+      keys: keys,
+      programId: wallet.publicKey.toBase58(),
+      data: Buffer.from(session),
+    });
+
+    const tx = new Transaction({
+      recentBlockhash: '5Tx8F3jgSHx21CbtjwmdaKPLM5tWmreWAnPrbqHomSJF',
+      feePayer: keys[0].pubkey,
+    });
+
+    tx.add(txi);
+    await wallet.signTransaction(tx);
+
+    await req.post(VALIDATE_SERVICE_URL, {
+      transaction: tx.serialize(),
+    });
+
+    setSigned(true);
+  };
+
   return (
     <WalletContext.Provider
       value={{
@@ -196,6 +185,7 @@ export function WalletProvider({ children }) {
           autoConnectProvider,
           setAutoConnectProvider,
         },
+        authorizeWithTx,
         transaction,
         wallet,
         connected,
@@ -249,6 +239,7 @@ export function useWallet() {
 
   const wallet = context.wallet;
   return {
+    authorizeWithTx: context.authorizeWithTx,
     signed: context.signed,
     states: context.states,
     session: context.session,

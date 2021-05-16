@@ -1,7 +1,6 @@
 .accordion {
     margin: 2rem auto;
 }
-
 .accordion-title {
     font-size: 14px;
     display: flex;
@@ -16,12 +15,12 @@
     background-color: #52586d;
 }
 
-.accordion-title,
-.accordion-content {
+.accordion-title {
     padding: 8px;
 }
 
 .accordion-content {
+    padding-left: 12px;
     background-color: #292d3e;
 }
 

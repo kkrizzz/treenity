@@ -18,8 +18,8 @@ export const mimeTypesData = {
   'text/javascript': 41,
   'text/plain': 42,
   'text/ogg': 43,
-  'text/html': 44,
   'text/markdown': 44,
+  'text/html': 45,
 
   getData(value: number) {
     return Object.keys(this).find((key) => this[key] === value);

@@ -19,11 +19,11 @@ export const resolveViewByMime = ({
     case 'image':
       return <ImageView mime={mimetype} data={data} />;
     case 'application':
-      return applicationResolvers[format]({ mimetype, data });
+      return applicationResolvers[format]?.({ mimetype, data });
     case 'audio':
       return <AudioView />;
     case 'text':
-      return textResolvers[format]({ mimetype, data });
+      return textResolvers[format]?.({ mimetype, data });
     default:
       return <div>File resolver not found</div>;
   }

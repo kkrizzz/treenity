@@ -1,6 +1,11 @@
 import React from 'react';
 
 export const icons = {
+  chevronRight: () => (
+    <svg width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0.485283 1L4.97057 5.48528L0.485283 9.97057" stroke="#CCDDEE" />
+    </svg>
+  ),
   forward: () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -116,6 +121,24 @@ export const icons = {
       <polyline points="6 9 12 15 18 9"></polyline>
     </svg>
   ),
+  squareClose: () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="icon icon-tabler icon-tabler-square-x"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+      <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+      <path d="M10 10l4 4m0 -4l-4 4"></path>
+    </svg>
+  ),
   chevronUp: () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -151,12 +174,22 @@ export const icons = {
     </svg>
   ),
   info: () => (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-      <path
-        d="M10 10V14M10 6.20001V5.20001M10 1C15 1 19 5 19 10C19 15 15 19 10 19C5 19 1 15 1 10C1 5 5 1 10 1Z"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="icon icon-tabler icon-tabler-info-circle"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+      <circle cx="12" cy="12" r="9"></circle>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      <polyline points="11 12 12 12 12 16 13 16"></polyline>
     </svg>
   ),
   burger: () => (
