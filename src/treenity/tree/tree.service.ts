@@ -1,10 +1,17 @@
-import { Application, Id, NullableId, Paginated, Params, Service, ServiceMethods } from '@feathersjs/feathers';
+import {
+  Application,
+  Id,
+  NullableId,
+  Paginated,
+  Params,
+  Service,
+  ServiceMethods,
+} from '@feathersjs/feathers';
 import { each, some } from 'lodash';
 import Oplog from 'mongo-oplog';
 import sift from 'sift';
 import { toJS } from 'mobx';
 import { isStateTreeNode } from 'mobx-state-tree';
-
 
 import { makeUpdateFromActions } from '../model/make-patch-update';
 import { Node, UnionMetaType } from './node';
@@ -13,18 +20,21 @@ import { randomId } from '../../common/random-id';
 import assert from 'assert';
 import { Instance, SnapshotIn } from 'mobx-state-tree';
 import { check } from '../../utils/check';
-import { Channel, RealTimeConnection } from '@feathersjs/transport-commons/lib/channels/channel/base';
+import {
+  Channel,
+  RealTimeConnection,
+} from '@feathersjs/transport-commons/lib/channels/channel/base';
 import { getTypeContextConfig } from '../context/context-db';
 import { applyResolver } from './collection-resolver';
 
 const cache = {};
 const subscriptions: {
   [cookie: string]: {
-    ids: { [_id: string]: number },
-    queries: { [subId: string]: any },
-    subs: { [subId: string]: { [_id: string]: boolean } }
-    connection: RealTimeConnection,
-  }
+    ids: { [_id: string]: number };
+    queries: { [subId: string]: any };
+    subs: { [subId: string]: { [_id: string]: boolean } };
+    connection: RealTimeConnection;
+  };
 } = {};
 
 type InNode = SnapshotIn<typeof Node>;
@@ -36,7 +46,7 @@ export default class TreeService implements ServiceMethods<InNode> {
 
   oplogQueue: string[] = [];
 
-  setup(app: Application, path: string) {
+  async setup(app: Application, path: string) {
     this.app = app;
     this.collection = app.service('nodes');
     this.changes = app.service('changes');
@@ -48,15 +58,14 @@ export default class TreeService implements ServiceMethods<InNode> {
     const oplogUrl = mongoUrl.slice(0, lastSlash) + '/local';
     const dbName = mongoUrl.slice(lastSlash + 1);
 
-
     this.oplog = Oplog(oplogUrl, { ns: `${dbName}\.nodes` });
-    this.oplog.on('insert', doc => {
+    this.oplog.on('insert', (doc) => {
       if (this.oplogQueue.remove(doc.o._id) >= 0) return;
       this.checkObject(doc.o, true);
       this.emit('created', doc.o);
     });
-    this.oplog.on('delete', doc => this.emit('removed', doc.o._id));
-    this.oplog.on('update', async doc => {
+    this.oplog.on('delete', (doc) => this.emit('removed', doc.o._id));
+    this.oplog.on('update', async (doc) => {
       const _id = doc.o2._id;
       if (this.oplogQueue.remove(_id) >= 0) return;
       const obj = await this.collection.get(_id);
@@ -64,7 +73,6 @@ export default class TreeService implements ServiceMethods<InNode> {
       this.emit('updated', obj);
     });
     this.oplog.tail();
-
 
     service.publish('created', (data, { channel }) => {
       return channel || app.channel(data._id);
@@ -96,9 +104,11 @@ export default class TreeService implements ServiceMethods<InNode> {
     service.hooks({
       after: {
         create: [disableEvent],
-        patch: [(ctx) => {
-          if (!ctx.result) ctx.event = null;
-        }],
+        patch: [
+          (ctx) => {
+            if (!ctx.result) ctx.event = null;
+          },
+        ],
         update: [disableEvent],
         remove: [disableEvent],
       },
@@ -107,7 +117,12 @@ export default class TreeService implements ServiceMethods<InNode> {
 
   subscribe(connection: RealTimeConnection, objects: InNode[], subId: string = randomId(), query) {
     const { cookie } = connection.headers;
-    const { ids, queries } = (subscriptions[cookie] ||= { ids: {}, subs: {}, queries: {}, connection });
+    const { ids, queries } = (subscriptions[cookie] ||= {
+      ids: {},
+      subs: {},
+      queries: {},
+      connection,
+    });
     (queries[subId] ||= []).push(query);
 
     // create optimizedd tree matcher, maybe in Rust to fast-filter queries
@@ -132,7 +147,7 @@ export default class TreeService implements ServiceMethods<InNode> {
     each(subscriptions, ({ queries, ids, connection }, cookie) => {
       const _id = obj._id;
       const onClient = !isCreate && !!ids[_id];
-      const matched = some(queries, (qs) => qs.find(query => sift(query)(obj)));
+      const matched = some(queries, (qs) => qs.find((query) => sift(query)(obj)));
       if (matched === onClient) return;
       if (matched) {
         ids[_id] = 1;
@@ -183,7 +198,9 @@ export default class TreeService implements ServiceMethods<InNode> {
   }
 
   async find(params: Params): Promise<InNode | InNode[] | Paginated<InNode> | null> {
-    let { query: { subscribe, resolver, subId, ...query } } = params;
+    let {
+      query: { subscribe, resolver, subId, ...query },
+    } = params;
 
     console.log('find', params.query);
 

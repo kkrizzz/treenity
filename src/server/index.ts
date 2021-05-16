@@ -117,6 +117,7 @@ async function main() {
     },
   );
 
+  await app.setup();
   app.configure(services);
 }
 
