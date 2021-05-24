@@ -117,13 +117,13 @@ export default class TreeService implements ServiceMethods<InNode> {
 
   subscribe(connection: RealTimeConnection, objects: InNode[], subId: string = randomId(), query) {
     const { cookie } = connection.headers;
-    const { ids, queries } = (subscriptions[cookie] ||= {
+    const { ids, queries } = (subscriptions[cookie] = subscriptions[cookie] || {
       ids: {},
       subs: {},
       queries: {},
       connection,
     });
-    (queries[subId] ||= []).push(query);
+    (queries[subId] = queries[subId] || []).push(query);
 
     // create optimizedd tree matcher, maybe in Rust to fast-filter queries
     // all subscription queries making a tree, soo ony tree matched, and all the same aueries batched to one

@@ -1,12 +1,14 @@
 import { useEffect, useMemo } from 'react';
 import { types } from 'mobx-state-tree';
+import { HookContext } from '@feathersjs/feathers';
+import { Forbidden } from '@feathersjs/errors';
+
 import { addComponent } from '../../treenity/context/context-db';
 import { meta } from '../../treenity/meta/meta.model';
 import { useApp } from '../../treenity/react/useApp';
 import mongoService from 'feathers-mongodb';
 import search from 'feathers-mongodb-fuzzy-search';
 import createClientDb from '../mongo/mongod';
-import { HookContext } from '@feathersjs/feathers';
 import { Transaction } from '@solana/web3.js';
 
 const RestServiceMeta = meta(
@@ -45,7 +47,7 @@ const checkOwner = async (app, context: ctx) => {
     : session.pubkey === target.owner;
 
   if (!isOwner) {
-    throw new Error(`permission denied - \nowner(${target.owner})\neditor(${session.pubkey})`);
+    throw new Forbidden(`permission denied - \nowner(${target.owner})\neditor(${session.pubkey})`);
   }
 };
 

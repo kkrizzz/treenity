@@ -8,7 +8,6 @@ const {
 } = require('@solana/web3.js');
 
 import { findProgramAddress, Seed } from './find-program-address';
-import { add } from 'winston';
 
 // first one
 // const SolareaProgramID = new PublicKey('Bc7EqXL6vTZGqojKbDREQThqkP21SA61txidboSyRbi8');

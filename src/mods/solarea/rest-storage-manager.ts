@@ -1,6 +1,15 @@
 import { ServiceMethods } from '@feathersjs/feathers';
+import { FeathersError, errors } from '@feathersjs/errors';
 import { MONGO_SERVICE_URL } from './config';
-import {Transaction} from "@solana/web3.js";
+import { Transaction } from '@solana/web3.js';
+import { Request } from 'express';
+
+function checkError(req: any) {
+  if (req.status !== 200) {
+    if (errors[req.status]) throw new errors[req.status]();
+    throw new FeathersError(req.statusText, 'Error', req.status, '', {});
+  }
+}
 
 class RestStorageManager<T> implements ServiceMethods<T> {
   baseUrl: string;
@@ -19,7 +28,8 @@ class RestStorageManager<T> implements ServiceMethods<T> {
       },
       body: JSON.stringify(data),
     });
-    return await req.json() as T;
+    checkError(req);
+    return (await req.json()) as T;
   }
 
   async patch(_id: string, data, session: string): Promise<T> {
@@ -31,13 +41,15 @@ class RestStorageManager<T> implements ServiceMethods<T> {
       },
       body: JSON.stringify(data),
     });
-    return await req.json() as T;
+    checkError(req);
+    return (await req.json()) as T;
   }
 
   async get(id: string): Promise<T> {
     const req = await fetch(`${this.baseUrl}/${id}`);
+    checkError(req);
     const json = await req.json();
-    return (json as T);
+    return json as T;
   }
 
   async find(): Promise<any> {
@@ -53,14 +65,13 @@ class RestStorageManager<T> implements ServiceMethods<T> {
   }
 }
 
-
 export default RestStorageManager;
 
 interface Entry {
   _id: string;
   data: string;
   link: string;
-  owner?: string,
-};
+  owner?: string;
+}
 
 export const restStorageManager = new RestStorageManager<Entry>(MONGO_SERVICE_URL);

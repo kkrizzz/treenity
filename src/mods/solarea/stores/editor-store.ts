@@ -116,7 +116,7 @@ const useEditorStore = create<IEditorStore>((set) => ({
         },
       }));
     } catch (e) {
-      console.log(`error loading view ${_id}`);
+      console.log(`error loading view ${_id}`, e.code);
     }
   },
   // ---------

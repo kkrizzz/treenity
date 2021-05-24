@@ -15,7 +15,7 @@ import { UploadPreview } from '../../components/Files/UploadPreview';
 import { Snippets } from './Snippets';
 import { makeId } from '../../utils/make-id';
 import { restStorageManager } from '../../rest-storage-manager';
-import { toast } from '../../utils/toast';
+import { error, toast } from '../../utils/toast';
 import { useWallet } from '../../utils/wallet';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
 import Render from '../../Render';
@@ -165,26 +165,26 @@ const SolareaEditMenu = ({ id, name }) => {
 
     const linkId = !link || link.includes('~') ? link : makeId(link, 'default', 'react');
 
-    if (view && view.fromMongo) {
-      await restStorageManager.patch(
-        view._id,
-        { data: editorValue || code, link: linkId, owner: wallet.publicKey.toBase58() },
-        session,
-      );
-    } else {
-      const _id = makeId(id, name, selectedContext);
-      await restStorageManager.create(
-        { _id, data: editorValue, link: linkId, owner: wallet.publicKey.toBase58() },
-        session,
-      );
+    try {
+      if (view && view.fromMongo) {
+        await restStorageManager.patch(
+          view._id,
+          { data: editorValue || code, link: linkId, owner: wallet.publicKey.toBase58() },
+          session,
+        );
+      } else {
+        const _id = makeId(id, name, selectedContext);
+        await restStorageManager.create(
+          { _id, data: editorValue, link: linkId, owner: wallet.publicKey.toBase58() },
+          session,
+        );
+      }
+      await loadInitialCode(id, name, selectedContext);
+      toast('Successful saved');
+    } catch (err) {
+      console.dir(err);
+      error(`Cant save: ${err.message} ${err.code || ''}`);
     }
-    loadInitialCode(id, name, selectedContext)
-      .catch((e) => {
-        console.log(e);
-      })
-      .then(() => {
-        toast('Successful saved');
-      });
   };
 
   const saveToSolana = async (buffer: string, dataType: number, callback?: () => void) => {
