@@ -7,6 +7,7 @@ import config from '../../config-common';
 import SolareaRoute from './SolareaRoute';
 import './components/DefaultComponents';
 import './markup';
+import './presentation';
 import { WalletProvider } from './utils/wallet';
 import WalletConnect from './components/WalletConnect';
 import SolareaProgramApi from './program-api/solarea-program-api';
