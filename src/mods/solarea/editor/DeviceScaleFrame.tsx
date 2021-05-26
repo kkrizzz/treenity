@@ -97,8 +97,8 @@ export const DeviceScaleFrame = ({ children }) => {
         }}
       >
         <Frame
-          initialContent='<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body><div id="mountHere"></div></body></html>'
-          mountTarget="#mountHere"
+          initialContent='<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body><div id="root"></div></body></html>'
+          mountTarget="#root"
           style={{
             ...iFrameBodyViewport.styles,
             border:

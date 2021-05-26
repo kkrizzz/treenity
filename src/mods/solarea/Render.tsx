@@ -39,6 +39,7 @@ function Render({ id, name = 'default', context = 'react', children, ...more }: 
       <Component {...more} {...props} id={id} context={context} name={name} children={children} />
     );
   } catch (e) {
+    console.error('Render', id, context, name, e);
     return null;
   }
 }

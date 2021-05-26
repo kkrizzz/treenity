@@ -1,17 +1,13 @@
 import { Accordion } from '../../components/Accordion';
 import React from 'react';
-import useEditorStore from '../../stores/editor-store';
+import { useEditorSelect } from '../../stores/editor-store';
 import { key } from '../../utils/keyCode';
 import { makeId } from '../../utils/make-id';
 
 import './Snippets.scss';
 
 const LinkSelector = () => {
-  const [link, setLink, editorValue] = useEditorStore((state) => [
-    state.link,
-    state.setLink,
-    state.editorValue,
-  ]);
+  const [link, setLink, editorValue] = useEditorSelect('link', 'setLink', 'editorValue');
 
   const onBlurLinkInput = (e) => {
     const { value } = e.target;
@@ -44,19 +40,15 @@ const LinkSelector = () => {
   );
 };
 
+const availableContexts = ['', 'cell', 'transaction', 'list', 'card', 'thumbnail'].map((c) =>
+  c ? `react ${c}` : c,
+);
+
 const ContextSelector = () => {
-  const [selectedContext, setSelectedContext] = useEditorStore((state) => [
-    state.selectedContext,
-    state.setSelectedContext,
-  ]);
-  const availableContexts = [
-    'react',
-    'react cell',
-    'react transaction',
-    'react list',
-    'react card',
-    'react thumbnail',
-  ];
+  const [selectedContext, setSelectedContext] = useEditorSelect(
+    'selectedContext',
+    'setSelectedContext',
+  );
   return (
     <select
       style={{ width: 170, height: 38 }}
@@ -72,6 +64,20 @@ const ContextSelector = () => {
     </select>
   );
 };
+const CurrentAddressSelector = () => {
+  const [currentAddress, setCurrentAddress] = useEditorSelect(
+    'currentAddress',
+    'setCurrentAddress',
+  );
+  return (
+    <input
+      style={{ width: 170, height: 38 }}
+      onChange={(e) => setCurrentAddress(e.target.value)}
+      value={currentAddress}
+      placeholder="current address"
+    />
+  );
+};
 
 export const Snippets = () => {
   return (
@@ -81,6 +87,7 @@ export const Snippets = () => {
       </Accordion>
       <Accordion title="settings">
         <ContextSelector />
+        <CurrentAddressSelector />
       </Accordion>
     </div>
   );

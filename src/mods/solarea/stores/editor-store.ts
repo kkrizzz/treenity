@@ -9,6 +9,17 @@ import { mimeTypesData } from '../utils/mime-types-data';
 import { addComponent } from '../component-db';
 import { resolveViewByMime } from '../components/Files/Resolver';
 
+const doSet = (set, name: string, transform = (...x) => x[0]) => (...values) =>
+  set((state) => ({
+    ...state,
+    [name]: transform(...values),
+  }));
+const doToggle = (set, name: string) => (value) =>
+  set((state) => ({
+    ...state,
+    [name]: !value,
+  }));
+
 interface IEditorStore {
   code: string;
   setCode: any;
@@ -31,28 +42,16 @@ interface IEditorStore {
 
 const useEditorStore = create<IEditorStore>((set) => ({
   showHotkeys: false,
-  toggleShowHotkeys: () =>
-    set((state) => {
-      return { ...state, showHotkeys: !state.showHotkeys };
-    }),
+  toggleShowHotkeys: doToggle(set, 'showHotkeys'),
   selectedContext: 'react',
-  setSelectedContext: (newSelectedContext) =>
-    set((state) => ({ ...state, selectedContext: newSelectedContext })),
+  setSelectedContext: doSet(set, 'selectedContext'),
   link: '',
-  setLink: (newLink) => set((state) => ({ ...state, link: newLink })),
+  setLink: doSet(set, 'link'),
   file: { src: null, binary: '' },
-  setFile: (newFile, binary) =>
-    set((state) => ({
-      ...state,
-      file: { src: newFile, binary: binary },
-    })),
+  setFile: doSet(set, 'file', (src, binary) => ({ src, binary })),
   // ----------------
   editorMaxWidth: 680,
-  setEditorMaxWidth: (newWidth) =>
-    set((state) => ({
-      ...state,
-      editorMaxWidth: newWidth,
-    })),
+  setEditorMaxWidth: doSet(set, 'editorMaxWidth'),
   // ------
   view: null,
   // ------
@@ -96,8 +95,11 @@ const useEditorStore = create<IEditorStore>((set) => ({
           }));
         }
 
-        if (dataToUtf8.includes('~')) viewLink = dataToUtf8;
-        else viewData = dataToUtf8;
+        if (dataToUtf8.includes('~')) {
+          viewLink = dataToUtf8;
+        } else {
+          viewData = dataToUtf8;
+        }
       } else if (restSettle.status === 'fulfilled') {
         viewData = restSettle.value!.data;
         viewLink = restSettle.value!.link;
@@ -122,19 +124,17 @@ const useEditorStore = create<IEditorStore>((set) => ({
   // ---------
 
   editorValue: '',
-  setEditorValue: (newValue) =>
-    set((state) => ({
-      ...state,
-      editorValue: newValue,
-    })),
+  setEditorValue: doSet(set, 'editorValue'),
   // ---------
 
   code: '',
-  setCode: (newCode) =>
-    set((state) => ({
-      ...state,
-      code: newCode,
-    })),
+  setCode: doSet(set, 'code'),
+
+  currentAddress: '',
+  setCurrentAddress: doSet(set, 'currentAddress'),
 }));
+
+export const useEditorSelect = (...names) =>
+  useEditorStore((state) => names.map((name) => state[name]));
 
 export default useEditorStore;
