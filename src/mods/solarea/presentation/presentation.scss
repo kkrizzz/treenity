@@ -188,9 +188,9 @@
   0% {
     height: auto; }
   10% {
-    transform: scale(0.75) translate(-150px, 50px) }
+    transform: scaleY(0.75) translate(-100px, 50px) }
   20% {
-    transform: scale(1) translate(0, 0);
+    transform: scaleY(1) translate(0, 0);
   }
   100% {
     height: auto;
