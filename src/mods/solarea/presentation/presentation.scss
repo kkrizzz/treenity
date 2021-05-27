@@ -1,6 +1,8 @@
 
 .sol-pres {
   &-wr {
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
     position: relative;
     color: #ffffff;
@@ -37,7 +39,12 @@
       line-height: 40px;
 
       + p {
-        margin-top: 40px;
+        margin-top: 4vh;
+      }
+
+      @media screen and (max-width: 1366px) {
+        font-size: 28px;
+        line-height: 1.17;
       }
     }
 
@@ -64,6 +71,9 @@
   }
 
   &-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     position: relative;
     z-index: 3;
     padding: 44px 90px;
@@ -75,8 +85,32 @@
     z-index: 2;
   }
 
+  &-title-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    p {
+      font-weight: 900;
+      font-size: 72px;
+
+    }
+    span {
+      line-height: 1.1;
+      display: inline-block;
+      border-bottom: 1px solid #ffffff;
+      //text-decoration: underline;
+    }
+  }
+
   &-schedule {
-    margin-top: 30px;
+    margin-top: 3vh;
+
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 
     img {
       width: 100%;
@@ -87,6 +121,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    .title-m {
+      white-space: nowrap;
+    }
 
     .sol-pres-info {
       width: 100%;
@@ -101,6 +139,40 @@
         width: 100%;
         position: relative;
         right: -90px;
+      }
+    }
+
+  }
+  &-wr.page4 {
+    .sol-pres-row {
+      flex: 1;
+      margin-top: 2vh;
+    }
+
+    .sol-pres-list-ul {
+      li {
+        + li {
+          margin-top: 4vh;
+        }
+      }
+    }
+    .sol-pres-info {
+      max-width: calc(100% - 480px);
+    }
+
+    .sol-pres-img {
+      max-width: 480px;
+    }
+  }
+
+  &-special-color {
+    color: #FF9305;
+  }
+  
+  &-link {
+    span {
+      &:last-child {
+        text-decoration: underline;
       }
     }
   }
@@ -124,4 +196,10 @@
 
 .mb30 {
   margin-bottom: 30px !important;
+}
+
+.sign {
+  &:empty {
+    display: none;
+  }
 }

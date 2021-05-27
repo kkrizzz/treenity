@@ -15,18 +15,21 @@
   &__b {
     right: 0;
     top: 0;
+    z-index: 3;
   }
 
   &__m {
     max-width: 360px;
     top: 25%;
     left: 0%;
+    z-index: 2;
   }
 
   &__s {
     max-width: 170px;
     right: 10%;
     bottom: 5%;
+    z-index: 1;
   }
 }
 

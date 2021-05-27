@@ -5,20 +5,24 @@ import List from '../components/List';
 
 import '../presentation.scss';
 
-const listPresent = [
+const listPresentPage3 = [
   {
     txt:
       'cheap transactions and fast execution - more than 50k tps, 0.4 s/block. Visa does around 1,700 transactions per second on average (based on a calculation derived from the official claim of over 150 million transactions per day)',
+    rowClass: '',
   },
   {
     txt: 'great developers and a broad community',
+    rowClass: '',
   },
   {
     txt: 'high market capitalization, $12,286M. 17th at Coinmarketcap',
+    rowClass: '',
   },
   {
     txt:
       'Solana’s crypto-economic system, Storage Rent Economics, perfectly matches our project architecture.',
+    rowClass: '',
   },
 ];
 
@@ -37,29 +41,42 @@ export default function Page3() {
             <h2 className="sol-pres-list-title">Solana advantages:</h2>
 
             <ul className="sol-pres-list-ul">
-              {listPresent.map((i, idx) => {
+              {listPresentPage3.map((i, idx) => {
                 return (
                   <li>
-                    <List txt={i.txt} key={idx} />
+                    <List txt={i.txt} key={idx} rowClass={i.rowClass} />
                   </li>
                 );
               })}
             </ul>
           </div>
           <div className="sol-pres-img">
-            <img
-              src="/img/presentation/build-screen.png"
-              className="build-screen"
-              alt="build screen"
-            />
+            <a href="https://docs.solana.com/" target="_blank">
+              <img
+                src="/img/presentation/build-screen.png"
+                className="build-screen"
+                alt="build screen"
+                usemap="#workmap"
+              />
+            </a>
+            {/*<map name="workmap">
+              <area
+                shape="rect"
+                coords="124,395,446,440"
+                alt="Computer"
+                href="https://docs.solana.com/"
+                target="_blank"
+              />
+            </map>*/}
           </div>
         </div>
         <p className="mt30">
+          *&nbsp;&nbsp;
           <a
             href="https://www.coindesk.com/solana-development-growth-strategic-investment-funds"
             target="_blank"
           >
-            * https://www.coindesk.com/solana-development-growth-strategic-investment-funds
+            https://www.coindesk.com/solana-development-growth-strategic-investment-funds
           </a>
         </p>
       </div>
