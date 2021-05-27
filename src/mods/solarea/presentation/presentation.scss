@@ -88,7 +88,7 @@
   &-title-block {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
 
     p {
       font-weight: 900;
@@ -162,6 +162,12 @@
 
     .sol-pres-img {
       max-width: 480px;
+
+      img {
+        transition: 7.5s all;
+        animation: jump 8s;
+        animation-iteration-count: 2;
+      }
     }
   }
 
@@ -175,6 +181,20 @@
         text-decoration: underline;
       }
     }
+  }
+}
+
+@keyframes jump {
+  0% {
+    height: auto; }
+  10% {
+    transform: scale(0.75) translate(-150px, 50px) }
+  20% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    height: auto;
+    transform: translate(800px, -1000px);
   }
 }
 
