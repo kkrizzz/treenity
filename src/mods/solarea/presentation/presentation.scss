@@ -1,22 +1,68 @@
 
-.sol-pres-wr {
-  min-height: 100vh;
-  position: relative;
+.sol-pres {
+  &-wr {
+    min-height: 100vh;
+    position: relative;
+    color: #ffffff;
+    overflow: hidden;
+    background: radial-gradient(46.89% 50.49% at 52.78% 0%, #2A2E45 0%, #191C2C 100%), radial-gradient(28.19% 72.18% at 100% 0%, #2E334A 0%, #191C2C 100%), #191C2C;
 
-  background: radial-gradient(46.89% 50.49% at 52.78% 0%, #2A2E45 0%, #191C2C 100%), radial-gradient(28.19% 72.18% at 100% 0%, #2E334A 0%, #191C2C 100%), #191C2C;
+    .title{
+      &-x {
+        font-weight: bold;
+        font-size: 50px;
+        line-height: 80px;
+        position: relative;
+        z-index: 3;
+      }
+
+      &-m {
+        font-weight: 900;
+        font-size: 60px;
+        line-height: 80px;
+      }
+
+      &-icon {
+        position: relative;
+        top: 16px;
+        margin-left: 15px;
+      }
+    }
+
+    p {
+      font-weight: 400;
+      font-size: 30px;
+      line-height: 40px;
+
+      + p {
+        margin-top: 40px;
+      }
+    }
+  }
+
+  &-content {
+    position: relative;
+    z-index: 3;
+    padding: 60px 90px;
+  }
+
+  &-logo-block {
+    margin-bottom: 12vh;
+    position: relative;
+    z-index: 2;
+  }
 }
+
 
 .text-center {
   text-align: center;
 }
 
-.logo-block {
-  margin-bottom: 12vh;
-  position: relative;
-  z-index: 2;
-}
-
 .overflow-h {
   overflow: hidden;
+}
+
+.bold {
+  font-weight: 900 !important;
 }
 

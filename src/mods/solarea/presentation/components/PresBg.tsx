@@ -35,7 +35,7 @@ export function PresBg({}: Props) {
         }
         ball2.style.left = rand3 + 'px';
         ball2.style.top = rand4 + 'px';
-      }, 10000);
+      }, 5000);
       setInterval(function () {
         let rand5 = Math.floor(Math.random() * 1000);
         let rand6 = Math.floor(Math.random() * 1000);
@@ -48,8 +48,8 @@ export function PresBg({}: Props) {
           rand6 = box.clientHeight - 170;
         }
         ball3.style.right = rand5 + 'px';
-        ball3.style.top = rand6 + 'px';
-      }, 7500);
+        ball3.style.bottom = rand6 + 'px';
+      }, 500);
     })();
   });
 

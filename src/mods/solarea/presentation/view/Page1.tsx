@@ -6,10 +6,18 @@ import '../presentation.scss';
 
 export default function Page1() {
   return (
-    <div className="sol-pres-wr overflow-h">
+    <div className="sol-pres-wr">
       <PresBg />
-      <div className="logo-block text-center">
-        <img src="/img/presentation/logo.svg" className="logo" alt="SOLAREA" />
+      <div className="sol-pres-content text-center">
+        <div className="sol-pres-logo-block">
+          <img src="/img/presentation/logo.svg" className="logo" alt="SOLAREA" />
+        </div>
+        <h1 className="title-x">
+          Decentralized apps composer and <br />
+          Community Driven Blockchain Explorer <br />
+          based on Solana
+          <img src="/img/presentation/sol-icon.svg" className="title-icon" alt="icon" />
+        </h1>
       </div>
     </div>
   );
