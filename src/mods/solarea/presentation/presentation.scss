@@ -14,12 +14,14 @@
         line-height: 80px;
         position: relative;
         z-index: 3;
+        margin-bottom: 30px;
       }
 
       &-m {
         font-weight: 900;
         font-size: 60px;
         line-height: 80px;
+        margin-bottom: 30px;
       }
 
       &-icon {
@@ -38,12 +40,33 @@
         margin-top: 40px;
       }
     }
+
+    h1, h2, h3, h4, h5, h6, p, span {
+      padding: 0;
+      margin: 0;
+    }
+
+    .sol-pres-list-title {
+      margin: 30px 0;
+    }
+
+    p {
+      a {
+        color: #ffffff;
+        text-decoration: underline;
+
+        &:hover {
+          color: #c747e3;
+          text-decoration: none;
+        }
+      }
+    }
   }
 
   &-content {
     position: relative;
     z-index: 3;
-    padding: 60px 90px;
+    padding: 44px 90px;
   }
 
   &-logo-block {
@@ -51,8 +74,37 @@
     position: relative;
     z-index: 2;
   }
-}
 
+  &-schedule {
+    margin-top: 30px;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  &-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .sol-pres-info {
+      width: 100%;
+      max-width: 55%;
+    }
+
+    .sol-pres-img {
+      width: 100%;
+      max-width: 45%;
+
+      img {
+        width: 100%;
+        position: relative;
+        right: -90px;
+      }
+    }
+  }
+}
 
 .text-center {
   text-align: center;
@@ -66,3 +118,10 @@
   font-weight: 900 !important;
 }
 
+.mt30 {
+  margin-top: 30px !important;
+}
+
+.mb30 {
+  margin-bottom: 30px !important;
+}
