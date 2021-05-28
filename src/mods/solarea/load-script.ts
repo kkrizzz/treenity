@@ -1,10 +1,10 @@
 import { html } from 'htm/preact';
-import './systemjs-addons/css'
+import './systemjs-addons/css';
 import * as preact from 'preact/compat';
 import findLastIndex from 'lodash/findLastIndex';
 import { promised } from './promised';
 import { useBitQuery } from './hooks/useBitQuery';
-import {useCSS} from "./hooks/useCSS";
+import { useCSS } from './hooks/useCSS';
 
 export const loadedScripts: { [id: string]: any } = {};
 globalThis.__loadedScripts = loadedScripts;

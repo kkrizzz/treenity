@@ -38,6 +38,7 @@ interface IEditorStore {
   setSelectedContext: any;
   showHotkeys: boolean;
   toggleShowHotkeys: any;
+  setCurrentAddress;
 }
 
 const useEditorStore = create<IEditorStore>((set) => ({

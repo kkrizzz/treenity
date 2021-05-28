@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { loadScript } from '../load-script';
+import { loadedScripts, loadScript } from '../load-script';
 import { makeId } from '../utils/make-id';
 import Render from '../Render';
-import { addComponent } from '../component-db';
+import { addComponent, getComponent } from '../component-db';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useEditorSelect } from '../stores/editor-store';
 
@@ -11,22 +11,26 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
   const [currentAddress] = useEditorSelect('currentAddress');
 
   useEffect(() => {
-    loadScript(makeId(id, name, context), code, {
-      Render,
-      add(component) {
-        addComponent(currentAddress || id, name, context, {}, component);
-      },
-      onError(err) {
-        this.add(() => (
-          <div className="card error" style={{ maxWidth: '400px' }}>
-            {err.stack}
-          </div>
-        ));
-      },
-    }).finally(() => setIsLoading(false));
+    (async () => {
+      setIsLoading(true);
+      await loadScript(makeId(currentAddress || id, name, context), code, {
+        Render,
+        add(component) {
+          addComponent(currentAddress || id, name, context, {}, component);
+        },
+        onError(err) {
+          this.add(() => (
+            <div className="card error" style={{ maxWidth: '400px' }}>
+              {err.stack}
+            </div>
+          ));
+        },
+      });
+      setIsLoading(false);
+    })();
   }, [code, currentAddress]);
 
-  if (!code) return null;
+  if (!code && !currentAddress) return null;
   if (isLoading) return <div className="spinner" />;
 
   return (

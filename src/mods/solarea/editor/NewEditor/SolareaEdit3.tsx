@@ -134,6 +134,7 @@ const SolareaEditMenu = ({ id, name }) => {
     selectedContext,
     showHotkeys,
     toggleShowHotkeys,
+    setCurrentAddress,
   ] = useEditorStore((state) => [
     state.code,
     state.setCode,
@@ -146,6 +147,7 @@ const SolareaEditMenu = ({ id, name }) => {
     state.selectedContext,
     state.showHotkeys,
     state.toggleShowHotkeys,
+    state.setCurrentAddress,
   ]);
 
   const [uploadingToSolana, setUploadingToSolana] = useState(false);
@@ -245,7 +247,14 @@ const SolareaEditMenu = ({ id, name }) => {
   return (
     <div className="sol-menu-markup">
       <div className="sol-menu-markup-list">
-        <MenuItem onClick={() => setCode(editorValue)} icon="refresh" title="Update preview" />
+        <MenuItem
+          onClick={() => {
+            setCode(editorValue);
+            setCurrentAddress('');
+          }}
+          icon="refresh"
+          title="Update preview"
+        />
         <MenuItem onClick={saveToMongo} icon="save" title="Store" />
         <MenuItem
           onClick={() => saveToSolana(editorValue, 0x1)}
@@ -308,17 +317,15 @@ const SolareaEditPreview = ({ value, id, name, ...params }) => {
             <Render {...params} key={makeOutLink(link).id} {...makeOutLink(link)} />
           </ErrorBoundary>
         ) : (
-          code && (
-            <Preview
-              {...params}
-              key={code}
-              accountData={value}
-              code={code}
-              id={id}
-              name={name}
-              context={selectedContext}
-            />
-          )
+          <Preview
+            {...params}
+            key={code}
+            accountData={value}
+            code={code}
+            id={id}
+            name={name}
+            context={selectedContext}
+          />
         )}
       </DeviceScaleFrame>
     </div>

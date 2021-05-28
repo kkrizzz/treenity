@@ -51,7 +51,7 @@ const ContextSelector = () => {
   );
   return (
     <select
-      style={{ width: 170, height: 38 }}
+      style={{ width: '90%', height: 38 }}
       onChange={(e) => setSelectedContext(e.target.value)}
       value={selectedContext}
       placeholder="context"
@@ -69,13 +69,33 @@ const CurrentAddressSelector = () => {
     'currentAddress',
     'setCurrentAddress',
   );
+
+  const onBlurCurrentAddressSelector = (e) => {
+    setCurrentAddress(e.target.value);
+  };
+
   return (
-    <input
-      style={{ width: 170, height: 38 }}
-      onChange={(e) => setCurrentAddress(e.target.value)}
-      value={currentAddress}
-      placeholder="current address"
-    />
+    <div>
+      <label className="solarea-snippets-input">
+        <input
+          className="solarea-snippets-input__field"
+          value={currentAddress}
+          onBlur={onBlurCurrentAddressSelector}
+          onKeyUp={(e) => {
+            if (key.isEnter(e)) {
+              onBlurCurrentAddressSelector(e);
+              e.stopPropagation();
+            }
+          }}
+          style={{ width: '100%', height: 38 }}
+          name="currentAddress"
+          type="text"
+          id="currentAddress"
+          placeholder="current address"
+        />
+        <span className="solarea-snippets-input__label">view id</span>
+      </label>
+    </div>
   );
 };
 
