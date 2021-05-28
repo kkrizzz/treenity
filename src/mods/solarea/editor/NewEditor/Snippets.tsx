@@ -87,7 +87,7 @@ const CurrentAddressSelector = () => {
               e.stopPropagation();
             }
           }}
-          style={{ width: '100%', height: 38 }}
+          style={{ width: '100%', height: 38, fontSize: 11 }}
           name="currentAddress"
           type="text"
           id="currentAddress"

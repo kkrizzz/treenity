@@ -107,9 +107,9 @@ const useEditorStore = create<IEditorStore>((set) => ({
       } else {
         throw new Error();
       }
-
       return set((state) => ({
         ...state,
+        code: viewData,
         initialCode: viewData,
         link: viewLink,
         view: {

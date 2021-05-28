@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { Icon } from '../components/Icon';
 
@@ -34,6 +34,8 @@ export const MINIMAL_VIEWPORTS = {
 export const DeviceScaleFrame = ({ children }) => {
   const [iFrameBodyViewport, setIframeBodyViewport] = useState(MINIMAL_VIEWPORTS['mobile']);
 
+  const frameRef = useRef<any>();
+
   const updateViewport = (viewport) => {
     viewport.styles.transformOrigin = 'top left';
     setIframeBodyViewport(viewport);
@@ -52,6 +54,14 @@ export const DeviceScaleFrame = ({ children }) => {
     });
     return null;
   };
+
+  useLayoutEffect(() => {
+    if (!frameRef.current) return;
+    const context = frameRef.current.node.contentWindow;
+    console.log(globalThis.System);
+    globalThis.System.onload = () =>
+      updateIframe({ iframeDocument: context.document, iframeWindow: context });
+  }, [frameRef.current]);
 
   return (
     <>
@@ -97,6 +107,7 @@ export const DeviceScaleFrame = ({ children }) => {
         }}
       >
         <Frame
+          ref={(ref) => (frameRef.current = ref)}
           initialContent='<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body><div id="root"></div></body></html>'
           mountTarget="#root"
           style={{

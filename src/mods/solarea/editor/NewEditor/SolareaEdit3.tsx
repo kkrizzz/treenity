@@ -250,7 +250,6 @@ const SolareaEditMenu = ({ id, name }) => {
         <MenuItem
           onClick={() => {
             setCode(editorValue);
-            setCurrentAddress('');
           }}
           icon="refresh"
           title="Update preview"
@@ -317,15 +316,17 @@ const SolareaEditPreview = ({ value, id, name, ...params }) => {
             <Render {...params} key={makeOutLink(link).id} {...makeOutLink(link)} />
           </ErrorBoundary>
         ) : (
-          <Preview
-            {...params}
-            key={code}
-            accountData={value}
-            code={code}
-            id={id}
-            name={name}
-            context={selectedContext}
-          />
+          code && (
+            <Preview
+              {...params}
+              key={code}
+              accountData={value}
+              code={code}
+              id={id}
+              name={name}
+              context={selectedContext}
+            />
+          )
         )}
       </DeviceScaleFrame>
     </div>
