@@ -15,6 +15,13 @@
 
 }
 
+.snippets-markup .solarea-snippets-select {
+  &__field {
+    background: #292D3E !important;
+    padding: 8px 4px !important;
+  }
+}
+
 .snippets-markup .solarea-snippets-input {
   position: relative;
 

@@ -50,18 +50,26 @@ const ContextSelector = () => {
     'setSelectedContext',
   );
   return (
-    <select
-      style={{ width: '90%', height: 38 }}
-      onChange={(e) => setSelectedContext(e.target.value)}
-      value={selectedContext}
-      placeholder="context"
-    >
-      {availableContexts.map((context) => (
-        <option selected={selectedContext === context} value={context}>
-          {context}
-        </option>
-      ))}
-    </select>
+    <div>
+      <label className="solarea-snippets-input">
+        <select
+          className="solarea-snippets-input__field solarea-snippets-select__field"
+          onChange={(e) => setSelectedContext(e.target.value)}
+          value={selectedContext}
+          defaultValue={''}
+          placeholder="context"
+        >
+          {availableContexts.map((context) => (
+            <option selected={selectedContext === context} value={context}>
+              {context ? context : 'react'}
+            </option>
+          ))}
+        </select>
+        <span className="solarea-snippets-input__label solarea-snippets-select__label">
+          view id
+        </span>
+      </label>
+    </div>
   );
 };
 const CurrentAddressSelector = () => {

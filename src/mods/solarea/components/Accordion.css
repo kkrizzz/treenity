@@ -20,7 +20,8 @@
 }
 
 .accordion-content {
-    padding-left: 12px;
+    padding-left: 8px;
+    padding-right: 8px;
     background-color: #292d3e;
 }
 

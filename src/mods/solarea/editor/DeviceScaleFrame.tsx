@@ -58,7 +58,6 @@ export const DeviceScaleFrame = ({ children }) => {
   useLayoutEffect(() => {
     if (!frameRef.current) return;
     const context = frameRef.current.node.contentWindow;
-    console.log(globalThis.System);
     globalThis.System.onload = () =>
       updateIframe({ iframeDocument: context.document, iframeWindow: context });
   }, [frameRef.current]);
