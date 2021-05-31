@@ -1,5 +1,6 @@
+import { types as t } from 'mobx-state-tree';
 import { meta, Meta } from '../meta/meta.model';
-import { addType, registeredTypes, t } from '../';
+import { addType, registeredTypes } from '../';
 import { getEnv, getSnapshot, IAnyType, Instance, isStateTreeNode } from 'mobx-state-tree';
 import { Edge, Link } from '../edge';
 import config from '../../config-common';
