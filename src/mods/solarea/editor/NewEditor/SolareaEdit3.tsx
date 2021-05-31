@@ -171,7 +171,7 @@ const SolareaEditMenu = ({ id, name }) => {
       if (view && view.fromMongo) {
         await restStorageManager.patch(
           view._id,
-          { data: editorValue || code, link: linkId, owner: wallet.publicKey.toBase58() },
+          { data: editorValue, link: linkId, owner: wallet.publicKey.toBase58() },
           session,
         );
       } else {
