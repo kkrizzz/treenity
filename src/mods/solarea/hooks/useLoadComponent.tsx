@@ -1,20 +1,57 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { addComponent, components, getComponent } from '../component-db';
+import React, { useEffect, useState } from 'react';
 import useAsyncEffect from 'use-async-effect';
+import memoize from 'lodash/memoize';
+import { Connection, PublicKey } from '@solana/web3.js';
+
+import { getMultipleAccounts } from '../utils/get-multiple-accounts';
+import { mimeTypesData } from '../utils/mime-types-data';
+import { sleep } from '../utils/sleep';
 import { makeId } from '../utils/make-id';
+import { addComponent, getComponent } from '../component-db';
 import { restStorageManager } from '../rest-storage-manager';
 import { loadScript } from '../load-script';
 import Render from '../Render';
-import { connection } from '@feathersjs/authentication/lib/hooks';
 import { solareaApi } from '../client';
 import { createViewAddress } from '../program-api/solarea-program-api';
-import { PublicKey } from '@solana/web3.js';
 import { useConnection } from './useConnection';
-import { mimeTypesData } from '../utils/mime-types-data';
 import { resolveViewByMime } from '../components/Files/Resolver';
-import React from 'react';
 
 const addressRegEx = /^[A-z0-9:\.\-_]+$/;
+
+let currentAddrs: PublicKey[] = [];
+let currentCachesPromise: Promise<any> | null = null;
+
+/**
+ * Collect accounts loading for some time, and then load all at once
+ */
+const loadSolanaAccount = memoize(
+  async (connection: Connection, address: PublicKey) => {
+    // if not yet waiting - create new waiting promise
+    let prom = currentCachesPromise;
+    if (!prom) {
+      const loadAllAccounts = () => {
+        const addrs = currentAddrs;
+        currentAddrs = [];
+        currentCachesPromise = null;
+        return getMultipleAccounts(connection, addrs, 'recent');
+      };
+      // wait 50ms to collect more accounts
+      prom = currentCachesPromise = sleep(50).then(loadAllAccounts);
+    }
+
+    const loadAccount = async () => {
+      const idx = currentAddrs.length;
+      // add account to current wait promise
+      currentAddrs.push(address);
+      const accounts = await prom;
+      const value = accounts.value[idx];
+      return value && new Buffer(value.data[0], 'base64');
+    };
+
+    return loadAccount();
+  },
+  (conn, pubkey) => pubkey.toBase58(),
+);
 
 export function useLoadAccountComponent(
   address: string,
@@ -51,14 +88,14 @@ export function useLoadAccountComponent(
       const [storageAddress] = createViewAddress(viewAddress, context, name);
       // do {
       const [solSetttle, restSettle] = await Promise.allSettled([
-        connection.getAccountInfo(storageAddress),
+        loadSolanaAccount(connection, storageAddress),
         restStorageManager.get(contextConfig?.link || id),
       ]);
 
       let viewData;
 
       if (solSetttle.status === 'fulfilled' && solSetttle.value) {
-        const { owner, data, type } = solareaApi.unpackData(solSetttle.value.data);
+        const { owner, data, type } = solareaApi.unpackData(solSetttle.value);
         viewData = data.toString('utf-8');
 
         const mimetype = mimeTypesData.getData(type);
@@ -76,6 +113,7 @@ export function useLoadAccountComponent(
       await loadScript(id, viewData, {
         Render,
         add(component, options = {}): void {
+          component.displayName = id;
           addComponent(address, name, context, options, component);
         },
       });

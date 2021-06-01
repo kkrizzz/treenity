@@ -81,7 +81,7 @@ export function loadScript(id: string, code: string, context) {
   let loaded = loadedScripts[id];
   if (loaded) {
     if (loaded.code === code) {
-      return Promise.resolve(loaded);
+      return loaded.prom || Promise.resolve(loaded);
     } else {
       unload(id);
     }
@@ -136,10 +136,12 @@ export function loadScript(id: string, code: string, context) {
 
   const loader = `${imports} ${minify`
   const __ls = window.__loadedScripts['${id}'];
-  
+
   (async function() {
   try {
     const { useAccount, useAccountTransactions, useCSS, require, useBitQuery, html, add, Render, preact, ...context } = __ls.context;
+    globalThis.React = preact;
+    globalThis.ReactDOM = preact;
     `}
     ////////////// user code /////////////////
     
