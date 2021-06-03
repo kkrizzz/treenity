@@ -1,5 +1,5 @@
 import { Transaction } from '@solana/web3.js';
-
+import bs58 from 'bs58';
 const {
   SystemProgram,
   PublicKey,
@@ -15,7 +15,8 @@ import { findProgramAddress, Seed } from './find-program-address';
 const SolareaProgramID = new PublicKey('HLxwJdvLFherjE3wm7Jy5q2PpE49wDdAKxaA2BS7H8AX');
 
 export function createViewAddress(address: Seed, context: Seed, name: Seed) {
-  return findProgramAddress([address, '~', context, '~', name], SolareaProgramID);
+  const targetViewAddress = address.length > 32 ? new PublicKey(address).toBuffer() : address;
+  return findProgramAddress([targetViewAddress, '~', context, '~', name], SolareaProgramID);
 }
 
 function createSolareaInstruction(

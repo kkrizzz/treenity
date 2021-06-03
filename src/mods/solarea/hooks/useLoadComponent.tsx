@@ -46,9 +46,7 @@ export function useLoadAccountComponent(
     try {
       let link = id;
       let contextConfig;
-
-      const viewAddress = address.length > 32 ? new PublicKey(address).toBuffer() : address;
-      const [storageAddress] = createViewAddress(viewAddress, context, name);
+      const [storageAddress] = createViewAddress(address, context, name);
       // do {
       const [solSetttle, restSettle] = await Promise.allSettled([
         connection.getAccountInfo(storageAddress),
