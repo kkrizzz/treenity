@@ -1,5 +1,5 @@
 import { Transaction } from '@solana/web3.js';
-import bs58 from 'bs58';
+
 const {
   SystemProgram,
   PublicKey,
@@ -14,9 +14,12 @@ import { findProgramAddress, Seed } from './find-program-address';
 // const SolareaProgramID = new PublicKey('xj2vZrbvct4XkHe54vZrepYVwoXxaPB4BQSfnSxJ7h2');
 const SolareaProgramID = new PublicKey('HLxwJdvLFherjE3wm7Jy5q2PpE49wDdAKxaA2BS7H8AX');
 
+function addrToBuffer(address: Seed): Seed {
+  return address.length > 32 ? new PublicKey(address).toBuffer() : address;
+}
+
 export function createViewAddress(address: Seed, context: Seed, name: Seed) {
-  const targetViewAddress = address.length > 32 ? new PublicKey(address).toBuffer() : address;
-  return findProgramAddress([targetViewAddress, '~', context, '~', name], SolareaProgramID);
+  return findProgramAddress([addrToBuffer(address), '~', context, '~', name], SolareaProgramID);
 }
 
 function createSolareaInstruction(
@@ -57,12 +60,13 @@ export default class SolareaProgramApi {
   ): [typeof TransactionInstruction, typeof PublicKey] {
     const [storagePub, byte] = createViewAddress(address, context, name);
     //////////////////// create account transaction
+    const targetAddress = addrToBuffer(address);
     const areaSize = 32 + 2 + dataLength;
-    const bufSize = 1 + 1 + address.length + 1 + context.length + 1 + 1 + name.length + 4 + 2;
+    const bufSize = 1 + 1 + targetAddress.length + 1 + context.length + 1 + 1 + name.length + 4 + 2;
     let offset: number = 0;
     const buf = Buffer.alloc(bufSize); // create_instruction_data
     buf.writeUInt8(1, offset++); // instruction 'create' = 1
-    offset += writeDynamicString(buf, address, offset);
+    offset += writeDynamicString(buf, targetAddress, offset);
     offset += writeDynamicString(buf, context, offset);
     offset += writeDynamicString(buf, name, offset);
     buf.writeUInt8(byte, offset);
@@ -94,7 +98,7 @@ export default class SolareaProgramApi {
       data.length,
       dataType,
     );
-    const firstDataSize = 1024 - (82 + address.length + context.length + name.length);
+    const firstDataSize = 1024 - (82 + addrToBuffer(address).length + context.length + name.length);
 
     const chunk = data.slice(0, firstDataSize);
     const storeInst = this.storeInstruction(walletPub, storagePub, chunk, 0);
