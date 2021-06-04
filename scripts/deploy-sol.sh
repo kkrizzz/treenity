@@ -12,13 +12,14 @@ SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $SSH_PR
 SSH="ssh $SSH_OPTS"
 SCP="scp $SSH_OPTS"
 
-RSYNC="rsync -avzh \
+run_rsync() {
+  rsync -avzh \
   --no-perms --no-owner --no-group \
-  -e "$SSH" --rsync-path="sudo rsync" \
-  --delete --progress "
+  -e "$SSH" \
+  --progress "$@"
+}
 
-
-$RSYNC --delete dist/solarea-prod/  $F1:/var/www/sol.treenity.pro/
-$RSYNC dist/server-prod/ config package.json $F1:~/solarea/
+run_rsync --delete dist/solarea-prod/ $F1:/var/www/sol.treenity.pro/
+run_rsync dist/server-prod/ config package.json $F1:~/solarea/
 
 $SSH $F1 ". .nvm/nvm.sh  && pm2 restart solarea"
