@@ -28,6 +28,7 @@ jobs:
       # If you are using yarn instead npm, remove the line above and uncomment the two lines below.
       - node/install-packages:
           pkg-manager: yarn 
+      - run: apt install rsync
       - run:
           name: Run deploy
           command: yarn sol:deploy
