@@ -1,0 +1,67 @@
+.sol-markup {
+  &-wr {
+    display: flex;
+    align-items: stretch;
+
+    .solarea-editor {
+      max-width: 680px;
+      width: 100%;
+      flex: none;
+    }
+  }
+  &-preview {
+    flex: 1
+  }
+}
+
+.sol-menu-markup {
+  padding: 8px 0;
+  background: #353A51;
+  flex: 1 0 auto;
+  max-width: 44px;
+  width: 100%;
+  padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 4;
+
+  &-list {
+    flex: 1;
+  }
+}
+
+.sol-menu-item {
+  width: 100%;
+  cursor: pointer;
+  color: #e8e8e8;
+  padding: 8px 0;
+  &:hover {
+
+    svg {
+      color: #ffffff;
+      transform: rotate(5deg) scale(1.1);
+    }
+  }
+}
+
+.custom-solarea-icon {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.sol-editor-width-controller {
+  color: white;
+  background: #282c34;
+  font-size: 32px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

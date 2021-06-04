@@ -1,0 +1,17 @@
+.wallet-select_item {
+    color: white;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    background: #444444;
+    margin-bottom: 8px;
+}
+
+.wallet-select_item:hover {
+    cursor: pointer;
+    background: #727272;
+}
+
+.wallet-select_item-title {
+    margin-left: 8px;
+}

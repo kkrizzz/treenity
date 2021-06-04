@@ -1,13 +1,20 @@
 import React from 'react';
-import { List } from 'antd';
+import { Button, List } from 'antd';
 
 import { addComponent } from '../../treenity/context/context-db';
-import { ITestLayoutMeta, ITestMeta, TestLayoutMeta, TestMeta } from './Test.meta';
-import { getParent, Instance } from 'mobx-state-tree';
+import { ITestLayoutMeta, TestLayoutMeta, TestMeta } from './Test.meta';
+import { Instance } from 'mobx-state-tree';
 import { Meta } from '../../treenity/meta/meta.model';
+import { randomId } from '../../common/random-id';
+import { useObserver } from 'mobx-react-lite';
 
-addComponent(TestMeta, 'react', {}, ({ value }: { value: ITestMeta }) => {
-  return <span>Im test meta: {value.name}</span>;
+addComponent(TestMeta, 'react', {}, ({ value, onChange }) => {
+  const setName = onChange(value => value.set({ name: `newName${randomId()}` }));
+
+  return useObserver(() => <span>
+    Im test meta: {value.name}
+    <Button onClick={setName} block>Rename</Button>
+  </span>);
 });
 
 addComponent(TestLayoutMeta, 'react layout', {}, ({ value }: { value: ITestLayoutMeta }) => {

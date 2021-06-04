@@ -1,0 +1,57 @@
+
+.sol-tooltip {
+  position: absolute;
+  left: calc(50% + 20px);
+  padding: 2px 4px 2px 6px;
+  border-radius: 3px;
+  color: #CCDDEE;
+  background-color: #000;
+  line-height: 1.17;
+  font-size: 12px;
+  visibility: hidden;
+  opacity: 0;
+  transition: .17s all;
+  transform: translateX(-8px);
+
+  &.right {
+    &:before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      padding-left: 3px;
+      width: 0;
+      height: 0;
+      transform: translateY(-50%) translateX(8px);
+      border-right: solid 5px #000000;
+      border-bottom: solid 5px transparent;
+      border-top: solid 5px transparent;
+      visibility: hidden;
+      opacity: 0;
+      transition: .25s all;
+    }
+  }
+}
+
+.sol-tooltip-wr {
+  position: relative;
+
+  &:hover {
+    .sol-tooltip {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(0);
+
+      &:before {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    .right {
+      &:before {
+        transform: translateY(-50%) translateX(0);
+      }
+    }
+  }
+}

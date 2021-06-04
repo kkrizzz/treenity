@@ -19,12 +19,12 @@ const { LocalStrategy } = require('@feathersjs/authentication-local');
 // }
 
 export default app => {
-  const authentication = new AuthenticationService(app);
-
-  // authentication.register('jwt', new JWTStrategy());
-  authentication.register('local', new LocalStrategy());
-  // authentication.register('github', new GitHubStrategy());
-
-  app.use('/authentication', authentication);
+  // const authentication = new AuthenticationService(app);
+  //
+  // // authentication.register('jwt', new JWTStrategy());
+  // authentication.register('local', new LocalStrategy());
+  // // authentication.register('github', new GitHubStrategy());
+  //
+  // app.use('/authentication', authentication);
   // app.configure(expressOauth());
 };

@@ -1,0 +1,60 @@
+.solarea-edit {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    max-height: 100vh;
+}
+
+.solarea-edit__toolbar {
+    padding: 16px;
+    background: #1c3f53;
+    color: white;
+    width: 3vw;
+}
+
+.solarea-edit_workspace-toolbar {
+    align-items: center;
+    display: flex;
+    height: 6vh;
+    padding: 4px;
+    min-width: calc(50vw - 8px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    min-height: 46px;
+    color: white;
+    background: #263238;
+}
+
+.custom-solarea-icon {
+    vertical-align: center;
+    padding: 8px 0;
+    cursor: pointer;
+}
+
+.solarea-edit__toolbar-controls {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.react-codemirror2 {
+    font-family: monospace !important;
+    width: 100%;
+    flex: 1;
+    height: 100vh;
+}
+
+a:visited {
+    color: #2cc5d2 !important;
+}
+
+.cm-render-highlight {
+    color: #66eefd !important;
+    cursor: pointer;
+}
+
+.CodeMirror {
+    height: 100vh !important;
+}
