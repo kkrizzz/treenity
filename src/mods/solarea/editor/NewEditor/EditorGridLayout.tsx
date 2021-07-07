@@ -28,6 +28,8 @@ export type LayoutItem = {
 
 interface EditorLayoutItem {
   id: string; // i in LayoutItem
+  name: string;
+  context: string;
   props: any;
 }
 
@@ -37,23 +39,22 @@ type IEditorGridLayout = {
   layout: Array<LayoutItem>;
 };
 
-export const EditorGridLayout = ({ id, name, context }) => {
-  const viewId = useMemo(() => {
-    return makeId(id, name, context);
-  }, [id, name, context]);
-
+export function useEditorGridLayout(
+  viewId: string,
+): [IEditorGridLayout, any, (targetId: string, name: string, context: string, props: any) => void] {
   const [gridLayout, updateGridLayout] = useLocalStorageState<IEditorGridLayout>(
     `editorGridLayout~${viewId}`,
     { layout: [], additionalLayoutInfo: [], viewId },
   );
-  const [targetId, setTargetId] = React.useState('');
 
-  const handleAddItem = () => {
+  const handleAddItem = (targetId: string, name: string, context: string, props) => {
     updateGridLayout((prevState) => {
       const newState = Object.assign({}, prevState);
       newState.additionalLayoutInfo.push({
         id: targetId,
-        props: {},
+        name,
+        context,
+        props,
       });
 
       newState.layout.push({
@@ -65,7 +66,22 @@ export const EditorGridLayout = ({ id, name, context }) => {
       });
       return newState;
     });
+  };
 
+  return [gridLayout, updateGridLayout, handleAddItem];
+}
+
+export const EditorGridLayout = ({ id, name, context }) => {
+  const viewId = useMemo(() => {
+    return makeId(id, name, context);
+  }, [id, name, context]);
+
+  const [targetId, setTargetId] = React.useState('');
+
+  const [gridLayout, updateGridLayout, addGridItem] = useEditorGridLayout(viewId);
+
+  const handleAddItem = () => {
+    addGridItem(targetId, 'default', 'react', {});
     setTargetId('');
   };
 
@@ -118,7 +134,7 @@ export const EditorGridLayout = ({ id, name, context }) => {
               >
                 <Icon name="rewind" />
               </div>
-              <Render id={i.id} />
+              <Render {...i.props} id={i.id} context={i.context} name={i.name} />
             </div>
           );
         })}
