@@ -68,9 +68,10 @@ const WalletContext = React.createContext<{
 export function WalletProvider({ children }) {
   const [connected, setConnected] = useState(false);
   const [wallet, setWallet] = useState<WalletAdapter | undefined>(undefined);
-  const [autoConnect, setAutoConnect] = useLocalStorageState('autoconnect');
+  const [autoConnect, setAutoConnect] = useLocalStorageState('autoconnect', false);
   const [autoConnectProvider, setAutoConnectProvider] = useLocalStorageState(
     'autoconnect-provider',
+    '',
   );
   const [session, setSession] = useSessionStorageState('sessionid');
   const [signed, setSigned] = useSessionStorageState('signed');
