@@ -6,10 +6,14 @@ import useQueryParams from './hooks/useQueryParams';
 import Render from './Render';
 import findMap from '../../utils/find-map';
 import { SolareaEdit } from './editor/NewEditor/SolareaEdit3';
+import { EditorGridLayout } from './editor/NewEditor/EditorGridLayout';
 
 const idToViewResolvers = [
   (id, name, context, { edit, ...query }) => {
     if (edit !== undefined) {
+      if (query.grid !== undefined) {
+        return <EditorGridLayout {...query} id={id} name={name} context={context} />;
+      }
       return <SolareaEdit {...query} value={null} id={id} name={name} context={context} />;
     }
   },
