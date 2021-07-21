@@ -53,7 +53,7 @@ export const WALLET_PROVIDERS = [
   },
 ];
 
-const WalletContext = React.createContext<{
+export interface WalletAdapterInterface {
   authorizeWithTx: any;
   signed: boolean;
   states: any;
@@ -63,7 +63,9 @@ const WalletContext = React.createContext<{
   connected: boolean;
   select: any;
   close: any;
-} | null>(null);
+}
+
+const WalletContext = React.createContext<WalletAdapterInterface | null>(null);
 
 export function WalletProvider({ children }) {
   const [connected, setConnected] = useState(false);

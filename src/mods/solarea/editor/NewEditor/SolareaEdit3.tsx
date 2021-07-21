@@ -27,6 +27,7 @@ import { useConnection } from '../../hooks/useConnection';
 import { calcRentFee } from '../../utils/calcRentFee';
 import { mimeTypesData } from '../../utils/mime-types-data';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
 
 function makeOutLink(link) {
   const [id, context, name] = link.split('~');
@@ -73,7 +74,7 @@ const FileUploaderWithPreview = ({ saveFn, uploadToSolanaStarted }) => {
       <button
         onClick={() => {
           if (!file) return;
-          saveFn(file.binary, mimeTypesData[file.src!.type], () => {
+          saveFn(file.binary, mimeTypesData[file.src!.type]).finally(() => {
             setFile(null);
           });
         }}
@@ -189,54 +190,21 @@ const SolareaEditMenu = ({ id, name }) => {
     }
   };
 
-  const saveToSolana = async (buffer: string, dataType: number, callback?: () => void) => {
-    if (!wallet || !connected || !session) {
-      select();
-      return toast('Please connect wallet');
-    }
-
-    const [viewAddress] = createViewAddress(id, selectedContext, name);
-    const account = await connection.getAccountInfo(viewAddress);
-    const isUpdate = !!account;
-    const data = Buffer.from(buffer);
-    const [txs, storageAddress] = solareaApi.createTransactions(
-      wallet.publicKey,
-      id,
-      selectedContext,
-      name,
-      data,
-      dataType,
-      isUpdate,
-    );
-    // const blockhash = await getSolanaRecentBlockhash('devnet');
-    const { blockhash } = await connection.getRecentBlockhash('finalized');
-    txs.forEach((i) => {
-      i.recentBlockhash = blockhash;
-      i.feePayer = wallet.publicKey;
-    });
-    const sendTransaction = (t: Transaction) =>
-      sendAndConfirmRawTransaction(connection, t.serialize(), {
-        skipPreflight: true,
-        commitment: 'finalized',
-      });
+  const saveToSolana = async (buffer: string, dataType: number) => {
     try {
       setUploadingToSolana(true);
-      const transactions = await wallet.signAllTransactions(txs);
-
       setUploadToSolanaStarted(true);
-      await promiseSequence(transactions.slice(0, 2).map((t) => () => sendTransaction(t)));
-      await Promise.allSettled(transactions.slice(2).map(sendTransaction));
+
+      await solanaProvider
+        .save(new SolareaViewId(id, name, selectedContext), dataType, buffer)
+        .finally(() => {
+          setUploadingToSolana(false);
+          setUploadToSolanaStarted(false);
+        });
+
       await loadInitialCode(id, name, selectedContext);
-      toast('Code was saved to blockchain!');
-      console.log('storageAddress - ', storageAddress);
-      setUploadingToSolana(false);
-      setUploadToSolanaStarted(false);
-      callback?.();
     } catch (err) {
-      toast('Sorry, something went wrong :(', 5000, '#ea4545');
-      setUploadingToSolana(false);
-      setUploadToSolanaStarted(false);
-      callback?.();
+      return toast('Sorry, something went wrong', 5000, '#f1224b');
     }
   };
 
