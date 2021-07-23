@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { restStorageManager } from '../rest-storage-manager';
+import { restStorageManager } from '../storage-adapters/rest-storage-manager';
 import { makeId } from '../utils/make-id';
 import { useQuery } from 'react-query';
 import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';

@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import CodeMirror from '../CodeMirror';
-import { DeviceScaleFrame } from '../DeviceScaleFrame';
-import { Preview } from '../Preview';
 import { Icon } from '../../components/Icon';
 import './SolareaEdit.scss';
 import { MenuItem } from './EditorMenu';
@@ -9,30 +7,17 @@ import { UploadFile } from '../../components/FileUpload';
 import { Tooltip } from './Tooltip';
 
 import useEditorStore from '../../stores/editor-store';
-import { Accordion } from '../../components/Accordion';
 import { Modal } from '../../components/Modal/Modal';
 import { UploadPreview } from '../../components/Files/UploadPreview';
 import { Snippets } from './Snippets';
-import { makeId } from '../../utils/make-id';
-import { restStorageManager } from '../../rest-storage-manager';
 import { error, toast } from '../../utils/toast';
-import { useWallet } from '../../utils/wallet';
-import { ErrorBoundary } from '../../components/ErrorBoundary';
-import Render from '../../Render';
-import { createViewAddress } from '../../program-api/solarea-program-api';
-import { solareaApi } from '../../client';
-import { sendAndConfirmRawTransaction, Transaction } from '@solana/web3.js';
-import { promiseSequence } from '../../../../utils/promise-sequence';
-import { useConnection } from '../../hooks/useConnection';
 import { calcRentFee } from '../../utils/calcRentFee';
 import { mimeTypesData } from '../../utils/mime-types-data';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
-
-function makeOutLink(link) {
-  const [id, context, name] = link.split('~');
-  return { id, context, name };
-}
+import { SolareaEditPreview } from './Preview';
+import { useSolanaStorage, useRestStorage } from '../../storage-adapters/SolanaStorageProvider';
+import { SolareaLinkData, SolareaViewData } from '../../storage-adapters/IStorageAdapter';
 
 const CodeUploaderWithPreview = ({ view, editorValue, uploadToSolanaStarted }) => {
   return (
@@ -153,54 +138,45 @@ const SolareaEditMenu = ({ id, name }) => {
 
   const [uploadingToSolana, setUploadingToSolana] = useState(false);
   const [uploadToSolanaStarted, setUploadToSolanaStarted] = useState(false);
-  const { session, signed, connected, wallet, select, authorizeWithTx } = useWallet();
-  const connection = useConnection();
+
+  const restStorage = useRestStorage();
+  const solanaStorage = useSolanaStorage();
+
+  // const { session, signed, connected, wallet, select, authorizeWithTx } = useWallet();
+  // const connection = useConnection();
+
+  const getSaveData = () => {
+    const linkId = link && link.includes('~') ? SolareaViewId.fromString(link) : undefined;
+
+    const viewId = new SolareaViewId(id, name, selectedContext);
+    const viewData = linkId
+      ? new SolareaLinkData(viewId, linkId)
+      : new SolareaViewData(viewId, mimeTypesData['solarea/jsx'], Buffer.from(editorValue));
+
+    return viewData;
+  };
 
   const saveToMongo = async () => {
-    if (!wallet || !connected || !session) {
-      select();
-      return toast('Please connect wallet');
-    }
-
     try {
-      await authorizeWithTx();
-    } catch (e) {}
+      await restStorage.save(getSaveData());
 
-    const linkId = !link || link.includes('~') ? link : makeId(link, 'default', 'react');
-
-    try {
-      if (view && view.fromMongo) {
-        await restStorageManager.patch(
-          view._id,
-          { data: editorValue, link: linkId, owner: wallet.publicKey.toBase58() },
-          session,
-        );
-      } else {
-        const _id = makeId(id, name, selectedContext);
-        await restStorageManager.create(
-          { _id, data: editorValue, link: linkId, owner: wallet.publicKey.toBase58() },
-          session,
-        );
-      }
       await loadInitialCode(id, name, selectedContext);
-      toast('Successful saved');
+      toast('Successfully saved');
     } catch (err) {
       console.dir(err);
       error(`Cant save: ${err.message} ${err.code || ''}`);
     }
   };
 
-  const saveToSolana = async (buffer: string, dataType: number) => {
+  const saveToSolana = async () => {
     try {
       setUploadingToSolana(true);
       setUploadToSolanaStarted(true);
 
-      await solanaProvider
-        .save(new SolareaViewId(id, name, selectedContext), dataType, buffer)
-        .finally(() => {
-          setUploadingToSolana(false);
-          setUploadToSolanaStarted(false);
-        });
+      await solanaStorage.save(getSaveData()).finally(() => {
+        setUploadingToSolana(false);
+        setUploadToSolanaStarted(false);
+      });
 
       await loadInitialCode(id, name, selectedContext);
     } catch (err) {
@@ -223,11 +199,7 @@ const SolareaEditMenu = ({ id, name }) => {
           title="Update preview"
         />
         <MenuItem onClick={saveToMongo} icon="save" title="Store" />
-        <MenuItem
-          onClick={() => saveToSolana(editorValue, 0x1)}
-          icon="solana"
-          title="Store onchain"
-        />
+        <MenuItem onClick={() => saveToSolana()} icon="solana" title="Store onchain" />
 
         <MenuItem onClick={openView} icon="play" title="Open view" />
 
@@ -265,38 +237,6 @@ const SolareaEditMenu = ({ id, name }) => {
           />
         </Modal>
       </div>
-    </div>
-  );
-};
-
-const SolareaEditPreview = ({ value, id, name, ...params }) => {
-  const [code, link, selectedContext] = useEditorStore((state) => [
-    state.code,
-    state.link,
-    state.selectedContext,
-  ]);
-
-  return (
-    <div className="sol-markup-preview">
-      <DeviceScaleFrame>
-        {link ? (
-          <ErrorBoundary>
-            <Render {...params} key={makeOutLink(link).id} {...makeOutLink(link)} />
-          </ErrorBoundary>
-        ) : (
-          code && (
-            <Preview
-              {...params}
-              key={code}
-              accountData={value}
-              code={code}
-              id={id}
-              name={name}
-              context={selectedContext}
-            />
-          )
-        )}
-      </DeviceScaleFrame>
     </div>
   );
 };

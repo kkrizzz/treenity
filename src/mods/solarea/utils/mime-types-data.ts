@@ -1,4 +1,7 @@
 export const mimeTypesData = {
+  'solarea/jsx': 1,
+  'solarea/link': 2,
+
   'application/json': 10,
   'application/xml': 11,
   'application/msword': 12,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { restStorageManager } from '../rest-storage-manager';
+import { restStorageManager } from '../storage-adapters/rest-storage-manager';
 import Render from '../Render';
 import { makeId } from '../utils/make-id';
 import { useQuery } from 'react-query';

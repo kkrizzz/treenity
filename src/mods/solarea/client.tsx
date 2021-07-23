@@ -10,6 +10,7 @@ import './markup';
 import { WalletProvider } from './utils/wallet';
 import WalletConnect from './components/WalletConnect';
 import SolareaProgramApi from './program-api/solarea-program-api';
+import { SolanaStorageProvider } from './storage-adapters/SolanaStorageProvider';
 
 config.isClient = true;
 
@@ -22,7 +23,7 @@ const inject = (comp) => (
     <ConnectionProvider cluster="devnet">
       <WalletProvider>
         <WalletConnect />
-        {comp}
+        <SolanaStorageProvider>{comp}</SolanaStorageProvider>
       </WalletProvider>
     </ConnectionProvider>
   </QueryClientProvider>
