@@ -5,17 +5,15 @@ import { SolareaViewId } from './SolareaViewId';
 import { createViewAddress } from '../program-api/solarea-program-api';
 import { solareaApi } from '../client';
 import { promiseSequence } from '../../../utils/promise-sequence';
-import { IStorageAdapter, SolareaLinkData, SolareaViewData } from './IStorageAdapter';
+import {
+  IGetStorageOptions,
+  IStorageAdapter,
+  SolareaLinkData,
+  SolareaViewData,
+} from './IStorageAdapter';
 import { getMultipleAccounts } from '../utils/get-multiple-accounts';
 import { sleep } from '../utils/sleep';
 import { mimeTypesData } from '../utils/mime-types-data';
-
-function createAddress(id: SolareaViewId) {
-  const { address, context, name } = id;
-
-  const [storageAdderess] = createViewAddress(address, context, name);
-  return storageAdderess;
-}
 
 const sendTransaction = (connection: Connection, t: Transaction) =>
   sendAndConfirmRawTransaction(connection, t.serialize(), {
@@ -69,8 +67,8 @@ export class SolanaStorageAdapter implements IStorageAdapter {
     return true;
   }
 
-  async get(id: SolareaViewId): Promise<SolareaViewData> {
-    const storageAddress = createAddress(id);
+  async _loadViewData(id: SolareaViewId): Promise<SolareaViewData> {
+    const [storageAddress] = id.storageAddress;
 
     const accountData = await loadSolanaAccount(this.connection, storageAddress);
     if (!accountData) throw new Error('not_found');
@@ -81,7 +79,21 @@ export class SolanaStorageAdapter implements IStorageAdapter {
       return new SolareaLinkData(id, SolareaViewId.fromString(data.toString('utf-8')), [owner]);
     }
 
-    return new SolareaViewData(id, type, data, [owner]);
+    const viewData = new SolareaViewData(id, type, data, [owner]);
+    viewData.dataSource = 'solana';
+    return viewData;
+  }
+
+  async get(id: SolareaViewId, opts?: IGetStorageOptions): Promise<SolareaViewData> {
+    let viewData = await this._loadViewData(id);
+
+    if (opts?.resolveLinks) {
+      while (viewData.type === mimeTypesData['solarea/link']) {
+        viewData = await this._loadViewData((viewData as SolareaLinkData).linkTo);
+      }
+    }
+
+    return viewData;
   }
 
   async save(data: SolareaViewData): Promise<void> {
@@ -89,10 +101,10 @@ export class SolanaStorageAdapter implements IStorageAdapter {
 
     const { address, context, name } = data.id;
 
-    const [storageAdderess] = createViewAddress(address, context, name);
-    const account = await this.connection.getAccountInfo(storageAdderess);
+    const [storageAddress] = data.id.storageAddress;
+    const account = await this.connection.getAccountInfo(storageAddress);
     const isUpdate = !!account;
-    const [txs, storageAddress] = solareaApi.createTransactions(
+    const [txs, _storageAddress] = solareaApi.createTransactions(
       this.walletConnection.wallet.publicKey,
       address,
       context,
@@ -119,7 +131,7 @@ export class SolanaStorageAdapter implements IStorageAdapter {
 
   async remove(id: SolareaViewId): Promise<void> {
     const walletPub = this.walletConnection.wallet.publicKey;
-    const storageAddress = createAddress(id);
+    const [storageAddress] = id.storageAddress;
 
     const transaction = new Transaction().add(
       solareaApi.removeInstruction(walletPub, storageAddress),

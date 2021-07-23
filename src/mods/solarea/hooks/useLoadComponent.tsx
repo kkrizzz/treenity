@@ -44,8 +44,8 @@ export function useLoadAccountComponent(
     try {
       // do {
       const [solSettle, restSettle] = await Promise.allSettled([
-        solanaStorage.get(id),
-        restStorage.get(id),
+        solanaStorage.get(id, { resolveLinks: true }),
+        restStorage.get(id, { resolveLinks: true }),
       ]);
 
       const viewData =
@@ -53,7 +53,7 @@ export function useLoadAccountComponent(
         (restSettle.status === 'fulfilled' && restSettle.value) ||
         makeDefaultData(id);
 
-      const mimetype = mimeTypesData.getData(viewData.type);
+      const mimetype = mimeTypesData.getMime(viewData.type);
 
       if (viewData.type === mimeTypesData['solarea/jsx']) {
         const viewCode = viewData.data.toString('utf-8');

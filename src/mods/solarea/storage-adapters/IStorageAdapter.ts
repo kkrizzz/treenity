@@ -40,8 +40,12 @@ export class SolareaLinkData extends SolareaViewData {
   }
 }
 
+export interface IGetStorageOptions {
+  resolveLinks?: boolean;
+}
+
 export interface IStorageAdapter {
-  get(id: SolareaViewId): Promise<SolareaViewData>;
+  get(id: SolareaViewId, opts?: IGetStorageOptions): Promise<SolareaViewData>;
   save(data: SolareaViewData): Promise<void>;
   remove(id: SolareaViewId): Promise<void>;
 }

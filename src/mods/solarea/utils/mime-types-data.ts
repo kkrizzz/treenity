@@ -24,7 +24,7 @@ export const mimeTypesData = {
   'text/markdown': 44,
   'text/html': 45,
 
-  getData(value: number) {
+  getMime(value: number) {
     return Object.keys(this).find((key) => this[key] === value);
   },
 };

@@ -160,7 +160,7 @@ const SolareaEditMenu = ({ id, name }) => {
     try {
       await restStorage.save(getSaveData());
 
-      await loadInitialCode(id, name, selectedContext);
+      await loadInitialCode(solanaStorage, restStorage, id);
       toast('Successfully saved');
     } catch (err) {
       console.dir(err);
@@ -178,7 +178,7 @@ const SolareaEditMenu = ({ id, name }) => {
         setUploadToSolanaStarted(false);
       });
 
-      await loadInitialCode(id, name, selectedContext);
+      await loadInitialCode(solanaStorage, restStorage, id);
     } catch (err) {
       return toast('Sorry, something went wrong', 5000, '#f1224b');
     }
@@ -249,8 +249,12 @@ export const SolareaEdit = ({ value, id, name, context, ...params }) => {
     state.loadInitialCode,
   ]);
 
+  const solanaStorage = useSolanaStorage();
+  const restStorage = useRestStorage();
+
   useEffect(() => {
-    loadInitialCode(id, name, context);
+    const viewId = new SolareaViewId(id, name, context);
+    loadInitialCode(solanaStorage, restStorage, viewId);
   }, []);
 
   return (

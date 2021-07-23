@@ -1,4 +1,9 @@
-import { IStorageAdapter, SolareaLinkData, SolareaViewData } from './IStorageAdapter';
+import {
+  IGetStorageOptions,
+  IStorageAdapter,
+  SolareaLinkData,
+  SolareaViewData,
+} from './IStorageAdapter';
 import RestStorageManager from './rest-storage-manager';
 import { MONGO_SERVICE_URL } from '../config';
 import { mimeTypesData } from '../utils/mime-types-data';
@@ -16,20 +21,21 @@ interface Entry {
 function jsonToViewData(json: Entry): SolareaViewData {
   const owners = json.owner?.map((owner) => new PublicKey(owner));
 
-  if (json.type === mimeTypesData['solarea/link']) {
-    return new SolareaLinkData(
-      SolareaViewId.fromString(json._id),
-      SolareaViewId.fromString(json.data),
-      owners,
-    );
-  }
-
-  return new SolareaViewData(
-    SolareaViewId.fromString(json._id),
-    json.type,
-    Buffer.from(json.data, 'binary'),
-    owners,
-  );
+  const data =
+    json.type === mimeTypesData['solarea/link']
+      ? new SolareaLinkData(
+          SolareaViewId.fromString(json._id),
+          SolareaViewId.fromString(json.data),
+          owners,
+        )
+      : new SolareaViewData(
+          SolareaViewId.fromString(json._id),
+          json.type,
+          Buffer.from(json.data, 'binary'),
+          owners,
+        );
+  data.dataSource = 'rest';
+  return data;
 }
 
 export class RestStorageAdapter implements IStorageAdapter {
@@ -55,8 +61,14 @@ export class RestStorageAdapter implements IStorageAdapter {
     );
   }
 
-  get(id: SolareaViewId): Promise<SolareaViewData> {
-    return this.restManager.get(id.id);
+  async get(id: SolareaViewId, opts?: IGetStorageOptions): Promise<SolareaViewData> {
+    let viewData = await this.restManager.get(id.id);
+    if (opts?.resolveLinks) {
+      while (viewData.type === mimeTypesData['solarea/link']) {
+        viewData = await this.restManager.get((viewData as SolareaLinkData).linkTo.id);
+      }
+    }
+    return viewData;
   }
 
   async remove(id: SolareaViewId): Promise<void> {

@@ -1,4 +1,5 @@
 import { makeId } from '../utils/make-id';
+import { createViewAddress } from '../program-api/solarea-program-api';
 
 export class SolareaViewId {
   readonly address: string;
@@ -17,5 +18,9 @@ export class SolareaViewId {
   static fromString(id: string): SolareaViewId {
     const [address, context, name] = id.split('~');
     return new SolareaViewId(address, name, context);
+  }
+
+  get storageAddress() {
+    return createViewAddress(this.address, this.context, this.name);
   }
 }

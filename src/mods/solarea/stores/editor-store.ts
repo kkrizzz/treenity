@@ -1,13 +1,7 @@
 import create from 'zustand';
-import { restStorageManager } from '../storage-adapters/rest-storage-manager';
-import { makeId } from '../utils/make-id';
-import { useQuery } from 'react-query';
-import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
-import { createViewAddress } from '../program-api/solarea-program-api';
-import { solareaApi } from '../client';
 import { mimeTypesData } from '../utils/mime-types-data';
-import { addComponent } from '../component-db';
-import { resolveViewByMime } from '../components/Files/Resolver';
+import { SolareaViewId } from '../storage-adapters/SolareaViewId';
+import { IStorageAdapter, SolareaLinkData, SolareaViewData } from '../storage-adapters/IStorageAdapter';
 
 const doSet = (set, name: string, transform = (...x) => x[0]) => (...values) =>
   set((state) => ({
@@ -29,11 +23,11 @@ interface IEditorStore {
   setEditorMaxWidth: any;
   initialCode: string;
   loadInitialCode: any;
-  file: { src: File | null; binary: string };
+  file: { src: File | null; binary: Buffer };
   setFile: any;
   link: string;
   setLink: any;
-  view: { _id: string; fromMongo: boolean | undefined } | null;
+  view: SolareaViewData | null;
   selectedContext: string;
   setSelectedContext: any;
   showHotkeys: boolean;
@@ -48,7 +42,7 @@ const useEditorStore = create<IEditorStore>((set) => ({
   setSelectedContext: doSet(set, 'selectedContext'),
   link: '',
   setLink: doSet(set, 'link'),
-  file: { src: null, binary: '' },
+  file: { src: null, binary: Buffer.from('') },
   setFile: doSet(set, 'file', (src, binary) => ({ src, binary })),
   // ----------------
   editorMaxWidth: 680,
@@ -57,69 +51,52 @@ const useEditorStore = create<IEditorStore>((set) => ({
   view: null,
   // ------
   initialCode: '',
-  loadInitialCode: async (id, name, context) => {
-    const _id = makeId(id, name, context);
+  loadInitialCode: async (
+    solanaStorage: IStorageAdapter,
+    restStorage: IStorageAdapter,
+    id: SolareaViewId,
+  ) => {
     try {
-      const url = clusterApiUrl('devnet');
-      const connection = new Connection(url);
-
-      const viewAddress = id.length > 32 ? new PublicKey(id).toBuffer() : id;
-      const [storageAddress] = createViewAddress(viewAddress, context, name);
-
       const [solSettle, restSettle] = await Promise.allSettled([
-        connection.getAccountInfo(storageAddress),
-        restStorageManager.get(_id),
+        solanaStorage.get(id),
+        restStorage.get(id),
       ]);
 
-      let viewData;
-      let viewLink;
+      const viewData =
+        (solSettle.status === 'fulfilled' && solSettle.value) ||
+        (restSettle.status === 'fulfilled' && restSettle.value);
 
-      if (solSettle.status === 'fulfilled' && solSettle.value) {
-        const { data, type } = solareaApi.unpackData(solSettle.value.data);
-        const dataToUtf8 = data.toString('utf-8');
+      if (!viewData) throw new Error('not_found');
 
-        const mimetype = mimeTypesData.getData(type);
-
-        if (mimetype) {
-          const binaryStr = data.toString('binary');
-          const array: Array<number> = [];
-          for (let i = 0; i < binaryStr.length; i++) {
-            array.push(binaryStr.charCodeAt(i));
-          }
-          return set((state) => ({
-            ...state,
-            file: {
-              src: new File([new Uint8Array(array)], 'file', { type: mimetype }),
-              binary: binaryStr,
-            },
-            view: { hasFile: true, fromMongo: false, _id },
-          }));
-        }
-
-        if (dataToUtf8.includes('~')) {
-          viewLink = dataToUtf8;
-        } else {
-          viewData = dataToUtf8;
-        }
-      } else if (restSettle.status === 'fulfilled') {
-        viewData = restSettle.value!.data;
-        viewLink = restSettle.value!.link;
+      if (viewData.type === mimeTypesData['solarea/jsx']) {
+        const code = viewData.data.toString('utf-8');
+        set((state) => ({
+          ...state,
+          code,
+          initialCode: code,
+          view: viewData,
+        }));
+      } else if (viewData.type === mimeTypesData['solarea/link']) {
+        const linkTo = (viewData as SolareaLinkData).linkTo;
+        set((state) => ({
+          ...state,
+          link: linkTo.id,
+          selectedContext: linkTo.context,
+          name: linkTo.name,
+        }));
       } else {
-        throw new Error();
+        const mimetype = mimeTypesData.getMime(viewData.type);
+        return set((state) => ({
+          ...state,
+          file: {
+            src: new File([viewData.data], 'file', { type: mimetype }),
+            binary: viewData.data,
+          },
+          view: viewData,
+        }));
       }
-      return set((state) => ({
-        ...state,
-        code: viewData,
-        initialCode: viewData,
-        link: viewLink,
-        view: {
-          _id,
-          fromMongo: solSettle.status !== 'fulfilled' || solSettle.value === null,
-          hasFile: false,
-        },
-      }));
     } catch (e) {
-      console.log(`error loading view ${_id}`, e.code);
+      console.error(`error loading view ${id}`, e);
     }
   },
   // ---------

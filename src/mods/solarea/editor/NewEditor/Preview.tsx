@@ -20,7 +20,13 @@ export const SolareaEditPreview = ({ value, id, name, ...params }) => {
       <DeviceScaleFrame>
         {link ? (
           <ErrorBoundary>
-            <Render {...params} key={linkObj.address} {...linkObj} />
+            <Render
+              {...params}
+              key={linkObj.address}
+              id={linkObj.address}
+              name={linkObj.name}
+              context={linkObj.context}
+            />
           </ErrorBoundary>
         ) : (
           code && (
