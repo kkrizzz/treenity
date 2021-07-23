@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { types } from 'mobx-state-tree';
 import { HookContext } from '@feathersjs/feathers';
 import { Forbidden } from '@feathersjs/errors';
-
+import fs from 'fs';
 import { addComponent } from '../../treenity/context/context-db';
 import { meta } from '../../treenity/meta/meta.model';
 import { useApp } from '../../treenity/react/useApp';
@@ -14,6 +14,7 @@ import { Transaction } from '@solana/web3.js';
 const RestServiceMeta = meta(
   'rest.service',
   types.model({
+    fileSystem: types.string,
     baseUrl: types.string,
     collectionName: types.string,
     whitelist: types.array(types.string),
@@ -24,6 +25,23 @@ const RestServiceMeta = meta(
 interface ctx extends HookContext {
   session: any;
 }
+
+const loadFromFs = async (app, context: ctx, value: any) => {
+  try {
+    if (!value.fileSystem) throw new Error('no filesystem');
+    const checkInFs = fs.readFileSync(value.fileSystem + '/' + context.id + '.jsx', {
+      encoding: 'utf-8',
+    });
+    if (checkInFs)
+      context.result = {
+        data: checkInFs,
+        owner: [],
+        type: 1,
+        _id: context.id,
+      };
+  } catch (e) {}
+  return context;
+};
 
 const validate = async (app, context: ctx) => {
   const sid = context.params.headers?.session;
@@ -80,6 +98,7 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
 
       app.service(value.baseUrl).hooks({
         before: {
+          get: [(ctx) => loadFromFs(app, ctx, value)],
           create: [(ctx) => validate(app, ctx), (ctx) => setOwner(app, ctx)],
           patch: [
             (ctx) => validate(app, ctx),
