@@ -42,6 +42,7 @@ export class RestStorageAdapter implements IStorageAdapter {
     }
     if (!this.walletConnection.session) {
       this.walletConnection.authorizeWithTx();
+      return false;
     }
     return true;
   }
@@ -65,7 +66,7 @@ export class RestStorageAdapter implements IStorageAdapter {
   async save(data: SolareaViewData): Promise<void> {
     if (!this.validateWallet()) return;
 
-    const obj = await this.get(data.id);
+    const obj = await this.get(data.id).catch(() => null);
     if (obj) {
       await this.restManager.patch(data.id.id, data);
     } else {
