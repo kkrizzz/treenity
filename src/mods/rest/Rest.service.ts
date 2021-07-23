@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { types } from 'mobx-state-tree';
 import { HookContext } from '@feathersjs/feathers';
 import { Forbidden } from '@feathersjs/errors';
-import fs from 'fs';
+import fs from 'fs/promises';
 import { addComponent } from '../../treenity/context/context-db';
 import { meta } from '../../treenity/meta/meta.model';
 import { useApp } from '../../treenity/react/useApp';
@@ -29,9 +29,11 @@ interface ctx extends HookContext {
 const loadFromFs = async (app, context: ctx, value: any) => {
   try {
     if (!value.fileSystem) throw new Error('no filesystem');
-    const checkInFs = fs.readFileSync(value.fileSystem + '/' + context.id + '.jsx', {
-      encoding: 'utf-8',
-    });
+    const checkInFs = await fs
+      .readFile(`${value.fileSystem}/${context.id}.jsx`, 'utf-8')
+      .catch(() =>
+        fs.readFile(`${value.fileSystem}/${context.id.replace(/~/g, '/')}.jsx`, 'utf-8'),
+      );
     if (checkInFs)
       context.result = {
         data: checkInFs,
