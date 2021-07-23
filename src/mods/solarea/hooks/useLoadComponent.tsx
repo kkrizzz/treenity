@@ -1,24 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import useAsyncEffect from 'use-async-effect';
-import memoize from 'lodash/memoize';
-import { Connection, PublicKey } from '@solana/web3.js';
-
-import { getMultipleAccounts } from '../utils/get-multiple-accounts';
 import { mimeTypesData } from '../utils/mime-types-data';
-import { sleep } from '../utils/sleep';
-import { makeId } from '../utils/make-id';
 import { addComponent, getComponent } from '../component-db';
-import { restStorageManager } from '../storage-adapters/rest-storage-manager';
 import { loadScript } from '../load-script';
 import Render from '../Render';
-import { solareaApi } from '../client';
-import { createViewAddress } from '../program-api/solarea-program-api';
-import { useConnection } from './useConnection';
 import { resolveViewByMime } from '../components/Files/Resolver';
-import { useSolanaStorage, useRestStorage } from '../storage-adapters/SolanaStorageProvider';
+import { useRestStorage, useSolanaStorage } from '../storage-adapters/SolanaStorageProvider';
 import { SolareaViewId } from '../storage-adapters/SolareaViewId';
+import { SolareaViewData } from '../storage-adapters/IStorageAdapter';
 
 const addressRegEx = /^[A-z0-9:\.\-_]+$/;
+
+const makeDefaultData = (id) => new SolareaViewData(id, 0x1, Buffer.from('add(() => "not found")'));
 
 export function useLoadAccountComponent(
   address: string,
@@ -49,39 +42,36 @@ export function useLoadAccountComponent(
   useAsyncEffect(async () => {
     const id = new SolareaViewId(address, name, context);
     try {
-      let link = id;
-      let contextConfig;
       // do {
-      const [solSetttle, restSettle] = await Promise.allSettled([
+      const [solSettle, restSettle] = await Promise.allSettled([
         solanaStorage.get(id),
         restStorage.get(id),
       ]);
 
-      let viewData;
+      const viewData =
+        (solSettle.status === 'fulfilled' && solSettle.value) ||
+        (restSettle.status === 'fulfilled' && restSettle.value) ||
+        makeDefaultData(id);
 
-      if (solSetttle.status === 'fulfilled' && solSetttle.value) {
-        const { owner, data, type } = solSetttle.value;
-        viewData = data.toString('utf-8');
+      const mimetype = mimeTypesData.getData(viewData.type);
 
-        const mimetype = mimeTypesData.getData(type);
+      if (viewData.type === mimeTypesData['solarea/jsx']) {
+        const viewCode = viewData.data.toString('utf-8');
 
-        if (mimetype) {
-          addComponent(address, name, context, {}, () => resolveViewByMime({ mimetype, data }));
-          return setLoading(false);
-        }
-      } else if (restSettle.status === 'fulfilled') {
-        viewData = restSettle.value!.data;
+        await loadScript(id.id, viewCode, {
+          Render,
+          add(component, options = {}): void {
+            component.displayName = id.id;
+            addComponent(address, name, context, options, component);
+          },
+        });
+      } else if (mimetype) {
+        addComponent(address, name, context, {}, () =>
+          resolveViewByMime({ mimetype, data: viewData.data }),
+        );
       } else {
-        viewData = 'add(() => "not found")';
+        throw new Error(`mimetype not resolved ${viewData.type}`);
       }
-
-      await loadScript(id, viewData, {
-        Render,
-        add(component, options = {}): void {
-          component.displayName = id;
-          addComponent(address, name, context, options, component);
-        },
-      });
     } catch (err) {
       console.log(err);
       addComponent(
