@@ -4,7 +4,7 @@ import { MONGO_SERVICE_URL } from '../config';
 import { SolareaViewData } from './IStorageAdapter';
 
 function checkError(req: any) {
-  if (req.status !== 200) {
+  if (req.status >= 300) {
     if (errors[req.status]) throw new errors[req.status]();
     throw new FeathersError(req.statusText, 'Error', req.status, '', {});
   }

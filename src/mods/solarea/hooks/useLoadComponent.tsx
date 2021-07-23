@@ -5,7 +5,7 @@ import { addComponent, getComponent } from '../component-db';
 import { loadScript } from '../load-script';
 import Render from '../Render';
 import { resolveViewByMime } from '../components/Files/Resolver';
-import { useRestStorage, useSolanaStorage } from '../storage-adapters/SolanaStorageProvider';
+import { useRestStorage, useSolanaStorage } from '../storage-adapters/StorageProvider';
 import { SolareaViewId } from '../storage-adapters/SolareaViewId';
 import { SolareaViewData } from '../storage-adapters/IStorageAdapter';
 

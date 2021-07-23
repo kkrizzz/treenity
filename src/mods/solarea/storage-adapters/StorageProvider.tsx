@@ -7,14 +7,12 @@ import { RestStorageAdapter } from './RestStorageAdapter';
 const SolanaStorageContext = createContext<SolanaStorageAdapter | null>(null);
 const RestStorageContext = createContext<RestStorageAdapter | null>(null);
 
-export function SolanaStorageProvider({ children }) {
+export function StorageProvider({ children }) {
   const connection = useConnection();
   const wallet = useWallet();
-  const provider = useMemo(() => new SolanaStorageAdapter(wallet, connection), [
-    wallet,
-    connection,
-  ]);
-  const restProvider = useMemo(() => new RestStorageAdapter(wallet), [wallet.session]);
+  const deps = [wallet.connected, wallet.session, wallet.signed, connection];
+  const provider = useMemo(() => new SolanaStorageAdapter(wallet, connection), deps);
+  const restProvider = useMemo(() => new RestStorageAdapter(wallet), deps);
 
   return (
     <RestStorageContext.Provider value={restProvider}>

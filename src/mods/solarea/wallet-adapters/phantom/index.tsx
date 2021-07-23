@@ -1,15 +1,10 @@
-import { EventEmitter } from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types';
-import {toast} from "../../utils/toast";
-import {WALLETS_ERROR_TOAST_COLOR} from "../../theme/colors";
+import { toast } from '../../utils/toast';
 
 type PhantomEvent = 'disconnect' | 'connect';
-type PhantomRequestMethod =
-  | 'connect'
-  | 'disconnect'
-  | 'signTransaction'
-  | 'signAllTransactions';
+type PhantomRequestMethod = 'connect' | 'disconnect' | 'signTransaction' | 'signAllTransactions';
 
 interface PhantomProvider {
   publicKey?: PublicKey;
@@ -21,21 +16,13 @@ interface PhantomProvider {
   disconnect: () => Promise<void>;
   on: (event: PhantomEvent, handler: (args: any) => void) => void;
   request: (method: PhantomRequestMethod, params: any) => Promise<any>;
+  listeners: (event: PhantomEvent) => (() => void)[];
 }
 
-const SUPPORTED_PHANTOM_EVENTS: PhantomEvent[] = ['connect', 'disconnect'];
-
-export class PhantomWalletAdapter
-  extends EventEmitter
-  implements WalletAdapter {
+export class PhantomWalletAdapter extends EventEmitter implements WalletAdapter {
   constructor() {
     super();
     this.connect = this.connect.bind(this);
-    window.onload = () => {
-      for (const event of SUPPORTED_PHANTOM_EVENTS) {
-        this._provider?.on(event, (...args) => this.emit(event, ...args));
-      }
-    };
   }
 
   private get _provider(): PhantomProvider | undefined {
@@ -45,6 +32,14 @@ export class PhantomWalletAdapter
     return undefined;
   }
 
+  private _handleConnect = (...args) => {
+    this.emit('connect', ...args);
+  };
+
+  private _handleDisconnect = (...args) => {
+    this.emit('disconnect', ...args);
+  };
+
   get connected() {
     return this._provider?.isConnected || false;
   }
@@ -53,9 +48,7 @@ export class PhantomWalletAdapter
     return this._provider?.autoApprove || false;
   }
 
-  async signAllTransactions(
-    transactions: Transaction[],
-  ): Promise<Transaction[]> {
+  async signAllTransactions(transactions: Transaction[]): Promise<Transaction[]> {
     if (!this._provider) {
       return transactions;
     }
@@ -78,14 +71,15 @@ export class PhantomWalletAdapter
   connect() {
     if (!this._provider) {
       window.open('https://phantom.app/', '_blank');
-      toast(
-          'Phantom Error',
-          5000,
-          WALLETS_ERROR_TOAST_COLOR
-      )
+      toast('Connection Error: Please install Phantom wallet');
       return;
     }
-
+    if (!this._provider.listeners('connect').length) {
+      this._provider?.on('connect', this._handleConnect);
+    }
+    if (!this._provider.listeners('disconnect').length) {
+      this._provider?.on('disconnect', this._handleDisconnect);
+    }
     return this._provider?.connect();
   }
 

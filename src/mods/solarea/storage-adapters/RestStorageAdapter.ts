@@ -40,7 +40,7 @@ export class RestStorageAdapter implements IStorageAdapter {
       this.walletConnection.select();
       return false;
     }
-    if (!this.walletConnection.session) {
+    if (!this.walletConnection.session || !this.walletConnection.signed) {
       this.walletConnection.authorizeWithTx();
       return false;
     }

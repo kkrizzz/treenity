@@ -242,15 +242,8 @@ export function useWallet() {
 
   const wallet = context.wallet;
   return {
-    authorizeWithTx: context.authorizeWithTx,
-    signed: context.signed,
-    states: context.states,
-    session: context.session,
-    select: context.select,
-    close: context.close,
-    transaction: context.transaction,
-    connected: context.connected,
-    wallet: wallet,
+    ...context,
+    wallet,
     connect() {
       wallet ? wallet.connect() : context.select();
     },

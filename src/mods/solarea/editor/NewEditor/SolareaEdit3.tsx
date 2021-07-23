@@ -16,7 +16,7 @@ import { mimeTypesData } from '../../utils/mime-types-data';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
 import { SolareaEditPreview } from './Preview';
-import { useSolanaStorage, useRestStorage } from '../../storage-adapters/SolanaStorageProvider';
+import { useSolanaStorage, useRestStorage } from '../../storage-adapters/StorageProvider';
 import { SolareaLinkData, SolareaViewData } from '../../storage-adapters/IStorageAdapter';
 
 const CodeUploaderWithPreview = ({ view, editorValue, uploadToSolanaStarted }) => {

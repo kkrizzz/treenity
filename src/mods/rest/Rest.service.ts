@@ -31,6 +31,7 @@ const validate = async (app, context: ctx) => {
   if (!session || !session.valid) throw new Error('Invalid session');
 
   context.session = session;
+  context.data = { ...context.data };
 
   return context;
 };
@@ -49,6 +50,11 @@ const checkOwner = async (app, context: ctx) => {
   if (!isOwner) {
     throw new Forbidden(`permission denied - \nowner(${target.owner})\neditor(${session.pubkey})`);
   }
+};
+
+const setOwner = async (app, context: ctx) => {
+  context.data.owner = [context.session.pubkey];
+  return context;
 };
 
 const checkData = async (app, context: ctx) => {
@@ -74,7 +80,7 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
 
       app.service(value.baseUrl).hooks({
         before: {
-          create: [(ctx) => validate(app, ctx)],
+          create: [(ctx) => validate(app, ctx), (ctx) => setOwner(app, ctx)],
           patch: [
             (ctx) => validate(app, ctx),
             (ctx) => checkOwner(app, ctx),
