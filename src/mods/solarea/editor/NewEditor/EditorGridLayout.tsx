@@ -142,3 +142,5 @@ export const EditorGridLayout = ({ id, name, context }) => {
     </div>
   );
 };
+
+export default EditorGridLayout;

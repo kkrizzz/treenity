@@ -20,7 +20,7 @@ export const UploadFile = (props: PropsWithChildren<UploadFileDefault>) => {
 
       reader.onloadend = () => {
         if (!reader.result) return;
-        onChangeFile(targetFile, reader.result!);
+        onChangeFile(targetFile, Buffer.from(reader.result! as string));
       };
 
       switch (returnFormat) {

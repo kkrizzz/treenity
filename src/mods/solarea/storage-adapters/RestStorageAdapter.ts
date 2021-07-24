@@ -10,6 +10,7 @@ import { mimeTypesData } from '../utils/mime-types-data';
 import { SolareaViewId } from './SolareaViewId';
 import { WalletAdapterInterface } from '../utils/wallet';
 import { PublicKey } from '@solana/web3.js';
+import memoize from 'lodash/memoize';
 
 interface Entry {
   _id: string;
@@ -61,15 +62,18 @@ export class RestStorageAdapter implements IStorageAdapter {
     );
   }
 
-  async get(id: SolareaViewId, opts?: IGetStorageOptions): Promise<SolareaViewData> {
-    let viewData = await this.restManager.get(id.id);
-    if (opts?.resolveLinks) {
-      while (viewData.type === mimeTypesData['solarea/link']) {
-        viewData = await this.restManager.get((viewData as SolareaLinkData).linkTo.id);
+  get = memoize(
+    async (id: SolareaViewId, opts?: IGetStorageOptions): Promise<SolareaViewData> => {
+      let viewData = await this.restManager.get(id.id);
+      if (opts?.resolveLinks) {
+        while (viewData.type === mimeTypesData['solarea/link']) {
+          viewData = await this.restManager.get((viewData as SolareaLinkData).linkTo.id);
+        }
       }
-    }
-    return viewData;
-  }
+      return viewData;
+    },
+    (id, opts) => `${id.id}${opts?.resolveLinks}`,
+  );
 
   async remove(id: SolareaViewId): Promise<void> {
     await this.restManager.remove(id.id);

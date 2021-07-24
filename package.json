@@ -15,6 +15,7 @@
     "sol:watch": "parcel watch src/mods/solarea/index.html --dist-dir dist/solarea",
     "sol:deploy": "yarn clean && ./scripts/deploy-sol.sh",
     "sol:test": " ts-node src/mods/solarea/program-api/main.spec.ts",
+    "sol:analyze": "yarn sol:build --reporter @parcel/reporter-bundle-analyzer",
     "server:build": "NODE_ENV=production parcel build --target node --dist-dir dist/server-prod src/server/index.ts",
     "server:watch": "parcel watch --target node --dist-dir dist/server-dev/ src/server/index.ts",
     "clean": "rm -rf .parcel-cache dist",
@@ -138,8 +139,12 @@
     "vm2": "^3.9.2",
     "zustand": "^3.5.1"
   },
+  "resolutions": {
+    "bn.js": "5.2.0",
+    "elliptic": "6.5.4"
+  },
   "devDependencies": {
-    "@parcel/reporter-bundle-analyzer": "^2.0.0-nightly.1694",
+    "@parcel/reporter-bundle-analyzer": "2.0.0-beta.3.1",
     "@parcel/transformer-less": "2.0.0-beta.3.1",
     "@parcel/transformer-sass": "2.0.0-beta.3.1",
     "@types/event-emitter": "^0.3.3",

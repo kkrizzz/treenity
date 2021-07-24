@@ -7,6 +7,7 @@ import { useBitQuery } from './hooks/useBitQuery';
 import { useCSS } from './hooks/useCSS';
 import { useAccount } from './hooks/useAccount';
 import { useAccountTransactions } from './hooks/useAccountTransactions';
+import './global-imports';
 
 export const loadedScripts: { [id: string]: any } = {};
 globalThis.__loadedScripts = loadedScripts;
@@ -140,8 +141,6 @@ export function loadScript(id: string, code: string, context) {
   (async function() {
   try {
     const { useAccount, useAccountTransactions, useCSS, require, useBitQuery, html, add, Render, preact, ...context } = __ls.context;
-    globalThis.React = preact;
-    globalThis.ReactDOM = preact;
     `}
     ////////////// user code /////////////////
     

@@ -15,7 +15,6 @@ import { req } from './req';
 import { VALIDATE_SERVICE_URL, SESSION_SERVICE_URL } from '../config';
 import { useSessionStorageState } from '../hooks/useSessionStorageState';
 import { AccountMeta, Transaction, TransactionInstruction } from '@solana/web3.js';
-import { transaction } from 'mobx';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 
 const ASSET_URL = 'https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets';

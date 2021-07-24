@@ -5,8 +5,11 @@ import useParams from './hooks/useParams';
 import useQueryParams from './hooks/useQueryParams';
 import Render from './Render';
 import findMap from '../../utils/find-map';
-import { SolareaEdit } from './editor/NewEditor/SolareaEdit3';
-import { EditorGridLayout } from './editor/NewEditor/EditorGridLayout';
+
+import SolareaEdit from './editor/NewEditor/SolareaEdit3';
+import EditorGridLayout from './editor/NewEditor/EditorGridLayout';
+// const EditorGridLayout = React.lazy(() => import('./editor/NewEditor/EditorGridLayout'));
+// const SolareaEdit = React.lazy(() => import('./editor/NewEditor/SolareaEdit3'));
 
 const idToViewResolvers = [
   (id, name, context, { edit, grid, ...query }) => {
@@ -20,18 +23,10 @@ const idToViewResolvers = [
     }
   },
   (id, name, context, query) => {
-    if (name !== 'default') return;
-    let exName = '';
-    // transaction
-    if (id.length >= 64 && bs58.decodeUnsafe(id)?.length === 64) {
-      exName = 'tx';
-    } else if (id.length >= 32 && bs58.decode(id)?.length === 32) {
-      exName = 'account';
-    } else if (!Number.isNaN(parseInt(id))) exName = 'block';
-    if (exName) {
+    if (['address', 'tx', 'block'].includes(id)) {
       return (
         <Render id="explorer" name="layout" context={context}>
-          <Render {...query} entityId={id} id="explorer" context={context} name={exName} />
+          <Render {...query} entityId={name} id="explorer" context={context} name={id} />
         </Render>
       );
     }

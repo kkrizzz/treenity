@@ -9,15 +9,15 @@ export interface IResolverView {
   style?: CSSProperties;
 }
 
-export const UploadPreview = (props: { src: File; binary: string }) => {
-  const { src, binary } = props;
+export const UploadPreview = ({ src, binary }: { src: File; binary: Buffer }) => {
   const { size } = src;
 
-  const Resolver = useMemo(
-    () => resolveViewByMime({ mimetype: src.type, data: new Buffer(binary, 'binary') }),
-    [src, binary],
-  );
+  const Resolver = useMemo(() => resolveViewByMime({ mimetype: src.type, data: binary }), [
+    src,
+    binary,
+  ]);
 
+  debugger;
   if (!Resolver) {
     return <div>sorry. file resolver not found :(</div>;
   }

@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 
-history.pushState = function pushState() {
-  History.prototype.pushState.apply(history, arguments);
-  if (arguments[4]) globalThis.removeAlluseCSSprop();
+history.pushState = function pushState(data, title, url, resetCss) {
+  History.prototype.pushState.call(history, data, title, url);
+  if (resetCss) globalThis.removeAlluseCSSprop();
   window.dispatchEvent(new Event('pushState'));
 };
 

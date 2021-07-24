@@ -2,7 +2,7 @@ import React from 'react';
 import { useWallet } from '../utils/wallet';
 import { Drawer } from './Drawer';
 import './WalletConnect.css';
-import {useLocalStorageState} from "../hooks/useLocalStorageState";
+import { useLocalStorageState } from '../hooks/useLocalStorageState';
 
 export default function WalletConnect() {
   const { connected, wallet, select, connect, disconnect, states } = useWallet();
@@ -21,7 +21,13 @@ export default function WalletConnect() {
           <a href="?edit">Edit page</a>
         </div>
         <div className="wallet-connect-btn">
-          Autoconnect <input checked={autoConnect as boolean} onChange={()=>setAutoConnect(!autoConnect)} type="checkbox"/>
+          Autoconnect{' '}
+          <input
+            className="checkbox"
+            checked={autoConnect as boolean}
+            onChange={() => setAutoConnect(!autoConnect)}
+            type="checkbox"
+          />
         </div>
       </div>
     </Drawer>

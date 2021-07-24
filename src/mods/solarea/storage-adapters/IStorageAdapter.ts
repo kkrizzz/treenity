@@ -8,7 +8,7 @@ export class SolareaViewData {
   public data: Buffer;
 
   public owner?: PublicKey[];
-  public dataSource?: string;
+  public dataSource?: 'rest' | 'solana';
 
   constructor(id: SolareaViewId, type: number, data: Buffer, owner?: PublicKey[]) {
     this.id = id;

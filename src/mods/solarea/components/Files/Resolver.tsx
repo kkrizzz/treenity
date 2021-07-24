@@ -17,7 +17,7 @@ export const resolveViewByMime = ({
 
   switch (mime) {
     case 'image':
-      return <ImageView mime={mimetype} data={data} />;
+      return <ImageView mime={mimetype} data={data} style={{ width: 200 }} />;
     case 'application':
       return applicationResolvers[format]?.({ mimetype, data });
     case 'audio':

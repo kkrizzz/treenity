@@ -23,8 +23,7 @@ const CodeUploaderWithPreview = ({ view, editorValue, uploadToSolanaStarted }) =
   return (
     <div>
       <div>
-        {view &&
-          !view.fromMongo &&
+        {view?.dataSource === 'solana' &&
           'Code with this id now stored on Solana.\n Remove transaction fee price is 0.00005 SOL'}
       </div>
       <div>File size: {editorValue.length} bytes</div>
@@ -33,7 +32,7 @@ const CodeUploaderWithPreview = ({ view, editorValue, uploadToSolanaStarted }) =
         Solana fee:{' '}
         {(
           Math.ceil(editorValue.length / 1024) * 0.000005 +
-          (view && view.fromMongo ? 0 : view && view.fromMongo != undefined ? 0.000005 : 0)
+          (view?.dataSource === 'rest' ? 0 : 0.000005)
         ).toFixed(6)}{' '}
         SOL
       </div>
@@ -51,11 +50,11 @@ const CodeUploaderWithPreview = ({ view, editorValue, uploadToSolanaStarted }) =
 };
 
 const FileUploaderWithPreview = ({ saveFn, uploadToSolanaStarted }) => {
-  const [file, setFile, view] = useEditorStore((state) => [state.file, state.setFile, state.view]);
+  const [file, setFile] = useEditorStore((state) => [state.file, state.setFile]);
   if (!file || !file.src) return null;
   return (
     <div>
-      {file.binary && file.src && <UploadPreview binary={file!.binary} src={file!.src!} />}
+      {file.binary && file.src && <UploadPreview binary={file.binary} src={file.src} />}
       <button
         onClick={() => {
           if (!file) return;
@@ -142,23 +141,24 @@ const SolareaEditMenu = ({ id, name }) => {
   const restStorage = useRestStorage();
   const solanaStorage = useSolanaStorage();
 
-  // const { session, signed, connected, wallet, select, authorizeWithTx } = useWallet();
-  // const connection = useConnection();
-
-  const getSaveData = () => {
+  const getSaveData = (data?: Buffer, type?: number) => {
     const linkId = link && link.includes('~') ? SolareaViewId.fromString(link) : undefined;
 
     const viewId = new SolareaViewId(id, name, selectedContext);
     const viewData = linkId
       ? new SolareaLinkData(viewId, linkId)
-      : new SolareaViewData(viewId, mimeTypesData['solarea/jsx'], Buffer.from(editorValue));
+      : new SolareaViewData(
+          viewId,
+          type || mimeTypesData['solarea/jsx'],
+          data || Buffer.from(editorValue),
+        );
 
     return viewData;
   };
 
-  const saveToMongo = async () => {
+  const saveToMongo = async (data?: Buffer, type?: number) => {
     try {
-      await restStorage.save(getSaveData());
+      await restStorage.save(getSaveData(data, type));
 
       await loadInitialCode(solanaStorage, restStorage, id);
       toast('Successfully saved');
@@ -168,12 +168,12 @@ const SolareaEditMenu = ({ id, name }) => {
     }
   };
 
-  const saveToSolana = async () => {
+  const saveToSolana = async (data?: Buffer, type?: number) => {
     try {
       setUploadingToSolana(true);
       setUploadToSolanaStarted(true);
 
-      await solanaStorage.save(getSaveData()).finally(() => {
+      await solanaStorage.save(getSaveData(data, type)).finally(() => {
         setUploadingToSolana(false);
         setUploadToSolanaStarted(false);
       });
@@ -198,7 +198,7 @@ const SolareaEditMenu = ({ id, name }) => {
           icon="refresh"
           title="Update preview"
         />
-        <MenuItem onClick={saveToMongo} icon="save" title="Store" />
+        <MenuItem onClick={() => saveToMongo()} icon="save" title="Store" />
         <MenuItem onClick={() => saveToSolana()} icon="solana" title="Store onchain" />
 
         <MenuItem onClick={openView} icon="play" title="Open view" />
@@ -241,7 +241,7 @@ const SolareaEditMenu = ({ id, name }) => {
   );
 };
 
-export const SolareaEdit = ({ value, id, name, context, ...params }) => {
+const SolareaEdit = ({ value, id, name, context, ...params }) => {
   const [setEditorValue, editorMaxWidth, initialCode, loadInitialCode] = useEditorStore((state) => [
     state.setEditorValue,
     state.editorMaxWidth,
@@ -281,3 +281,5 @@ export const SolareaEdit = ({ value, id, name, context, ...params }) => {
     </div>
   );
 };
+
+export default SolareaEdit;

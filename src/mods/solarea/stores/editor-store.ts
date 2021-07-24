@@ -1,7 +1,11 @@
 import create from 'zustand';
 import { mimeTypesData } from '../utils/mime-types-data';
 import { SolareaViewId } from '../storage-adapters/SolareaViewId';
-import { IStorageAdapter, SolareaLinkData, SolareaViewData } from '../storage-adapters/IStorageAdapter';
+import {
+  IStorageAdapter,
+  SolareaLinkData,
+  SolareaViewData,
+} from '../storage-adapters/IStorageAdapter';
 
 const doSet = (set, name: string, transform = (...x) => x[0]) => (...values) =>
   set((state) => ({
@@ -23,7 +27,7 @@ interface IEditorStore {
   setEditorMaxWidth: any;
   initialCode: string;
   loadInitialCode: any;
-  file: { src: File | null; binary: Buffer };
+  file: { src: File | null; binary: Buffer | null };
   setFile: any;
   link: string;
   setLink: any;
@@ -42,7 +46,7 @@ const useEditorStore = create<IEditorStore>((set) => ({
   setSelectedContext: doSet(set, 'selectedContext'),
   link: '',
   setLink: doSet(set, 'link'),
-  file: { src: null, binary: Buffer.from('') },
+  file: { src: null, binary: null },
   setFile: doSet(set, 'file', (src, binary) => ({ src, binary })),
   // ----------------
   editorMaxWidth: 680,
