@@ -1,29 +1,5 @@
 import { useBlock, useTransaction, useAccount } from 'https://unpkg.com/solarea-utils';
 
-const Badge = ({ success }) => {
-  useCSS(
-    'solarea-tx-badge.css',
-    `
-   .solarea-tx-badge {
-     width: fit-content;
-     background: red;
-     color: white;
-   }
-   .solarea-tx-badge-success {
-     background: green;
-     width: fit-content;
-     color: white;
-   }
-  `,
-  );
-
-  return (
-    <div className={`solarea-tx-badge${success ? '-success' : ''}`}>
-      {success ? 'Success' : 'Error'}
-    </div>
-  );
-};
-
 const TwoColumn = ({ first, second, is = 4, link: lk }) => {
   useCSS(
     'two-column.css',
@@ -86,10 +62,9 @@ add(({ entityId }) => {
         <div class="columns" style={{ overflowY: 'auto' }}>
           <div class="column">
             <TwoColumn first="Slot" second={entityId} />
-            <TwoColumn first="Blockhash" second={'GUwaXGqH6aL1HMmh5ufbhJXby9hiyXaG2LZHgwG2JxM5'} />
-            <TwoColumn first="Parent slot" second={''} />
-            <TwoColumn first="Processed transactions" second={''} />
-            <TwoColumn first="Successful transactions" second={''} />
+            <TwoColumn first="Blockhash" second={block.blockhash} />
+            <TwoColumn first="Parent slot" second={block.parentSlot} />
+            <TwoColumn first="Processed transactions" second={block.transactions.length} />
           </div>
         </div>
       </Render>
@@ -97,7 +72,7 @@ add(({ entityId }) => {
         <div style={{ overflowY: 'auto' }}>
           <TwoColumn is={10} first="Signature" second={'Result'} />
 
-          {block.transactions.map((t) => (
+          {block.transactions.slice(0, 10).map((t) => (
             <Render id="explorer" name="transaction" context="react-table" transaction={t}></Render>
           ))}
         </div>

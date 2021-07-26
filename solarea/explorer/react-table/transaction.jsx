@@ -1,5 +1,8 @@
-function shortenSignature(sign, max) {
-
+function shortString(str) {
+  if (str.length > 60) {
+    return str.substr(0, 30) + '...' + str.substr(str.length - 30, str.length);
+  }
+  return str;
 }
 
 add(({ transaction, entityId }) => {
@@ -7,27 +10,14 @@ add(({ transaction, entityId }) => {
   if (!transaction) {
     [transaction, loading] = useTransaction(entityId);
   }
-
-  useCSS(
-    'two-column.css',
-    `
-   .link {
-     font-family: monospace;
-     color: #0790d4;
-     cursor: pointer;
-   }
-   .link:hover {
-     color: #006ba0;
-   }
-  `,
-  );
-  const handleClick = () => {
-    window.history.pushState({}, {}, `/${lk}`);
-  };
   return (
-    <div class="columns is-mobile">
-      Sign: {transaction.transaction.signatures[0]}
-      Result: {transaction.meta.err ? 'error' : 'success'}
-    </div>
+    <Render
+      id="dev"
+      name="two-column"
+      is={10}
+      link={'/'}
+      first={transaction.transaction.signatures[0]}
+      second={<Render id="dev" name={'success-badge'} success={!transaction.meta.err}></Render>}
+    ></Render>
   );
 });
