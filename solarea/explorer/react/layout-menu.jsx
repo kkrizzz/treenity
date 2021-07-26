@@ -1,8 +1,16 @@
-function NavLink({ to, className }) {
-  window.location.
+// NavLink
+function NavLink({ to, children, className = '' }) {
+  const active = window.location.href.endsWith(to);
+  const go = (env) => {
+    env.preventDefault();
+    window.history.pushState({}, '', to);
+  };
 
-  return <a className="navbar-item is-tab">Supply</a>
-
+  return (
+    <a onClick={go} href={to} className={className + (active ? ' is-active' : '')}>
+      {children}
+    </a>
+  );
 }
 
 add(() => {
@@ -29,9 +37,12 @@ add(() => {
 
         <div id="navbarBasicExample" className="navbar-menu">
           <div className="navbar-end">
-            <a className="navbar-item is-tab">Cluster stats</a>
-
-            <a className="navbar-item is-tab">Supply</a>
+            <NavLink className="navbar-item is-tab" to="/explorer/cluster">
+              Cluster stats
+            </NavLink>
+            <NavLink className="navbar-item is-tab" to="/explorer/supply">
+              Supply
+            </NavLink>
 
             <div className="navbar-item has-dropdown is-hoverable">
               <div className="buttons">
@@ -39,9 +50,9 @@ add(() => {
                   <strong>Mainnet</strong>
                 </a>
                 <div className="navbar-dropdown">
-                  <a className="navbar-item">About</a>
-                  <a className="navbar-item">Jobs</a>
-                  <a className="navbar-item">Contact</a>
+                  <a className="navbar-item">Mainnet</a>
+                  <a className="navbar-item">Testnet</a>
+                  <a className="navbar-item">Devnet</a>
                   <hr className="navbar-divider">
                     <a className="navbar-item">Report an issue</a>
                   </hr>

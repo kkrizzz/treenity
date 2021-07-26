@@ -1,8 +1,8 @@
 diff --git a/node_modules/@solana/web3.js/lib/index.browser.esm.js b/node_modules/@solana/web3.js/lib/index.browser.esm.js
-index b3048de..880d4fc 100644
+index 8b39556..5c49e6c 100644
 --- a/node_modules/@solana/web3.js/lib/index.browser.esm.js
 +++ b/node_modules/@solana/web3.js/lib/index.browser.esm.js
-@@ -4376,7 +4376,7 @@ function createRpcClient(url, useHttps, httpHeaders, fetchMiddleware) {
+@@ -2622,7 +2622,7 @@ function createRpcClient(url, useHttps, httpHeaders, fetchMiddleware, disableRet
        return new Promise((resolve, reject) => {
          fetchMiddleware(url, options, async (url, options) => {
            try {
@@ -11,7 +11,7 @@ index b3048de..880d4fc 100644
            } catch (error) {
              reject(error);
            }
-@@ -4405,7 +4405,7 @@ function createRpcClient(url, useHttps, httpHeaders, fetchMiddleware) {
+@@ -2651,7 +2651,7 @@ function createRpcClient(url, useHttps, httpHeaders, fetchMiddleware, disableRet
          if (fetchWithMiddleware) {
            res = await fetchWithMiddleware(url, options);
          } else {

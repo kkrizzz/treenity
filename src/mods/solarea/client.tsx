@@ -33,4 +33,8 @@ const App = () => {
   return inject(<SolareaRoute />);
 };
 
+navigator.serviceWorker.register('/solarea-worker.js').then(() => {
+  console.log("Install succeeded with the default scope '/js/'.");
+});
+
 render(html` <${App} />`, document.getElementById('app'));
