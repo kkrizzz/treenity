@@ -29,7 +29,7 @@ export const ConnectionProvider = ({
     } catch (err) {
       url = cluster;
     }
-    return [new Connection(url), currentCluster, setCluster];
+    return [new Connection(url, {}), currentCluster, setCluster];
   }, [currentCluster]);
 
   return <ConnectionContext.Provider value={value}>{children}</ConnectionContext.Provider>;

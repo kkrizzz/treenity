@@ -5,7 +5,7 @@ add(() => {
    html { 
     padding: 0;
     margin: 0;
-    background:#1c1d31;
+    background: #1c1d31 !important;
    }
   .container {
     padding: 0;

@@ -6,7 +6,6 @@ import { useBitQuery } from './hooks/useBitQuery';
 import { useCSS } from './hooks/useCSS';
 import { useAccount } from './hooks/useAccount';
 import { useAccountTransactions } from './hooks/useAccountTransactions';
-// import './global-imports';
 
 export const loadedScripts: { [id: string]: any } = {};
 globalThis.__loadedScripts = loadedScripts;
@@ -47,7 +46,7 @@ export function reactToHtmPreact(execCode: string) {
   for (let i = 0; i < execCode.length; i++) {
     const c = execCode[i];
     const c2 = execCode[i + 1];
-    if (c === '<' && c2 !== '/') {
+    if (c === '<' && c2 !== '/' && !['<', '=', ' '].includes(c2)) {
       tags.push(i);
     } else if ((c === '<' && c2 === '/') || (c === '/' && c2 === '>')) {
       const start = tags.pop()!;

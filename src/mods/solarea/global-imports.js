@@ -1,4 +1,4 @@
-import * as preact from 'preact/compat';
+import preact from 'preact/compat';
 import bs58 from 'bs58';
 import { useTransaction } from './hooks/useTransaction';
 import { useBlock } from './hooks/useBlock';

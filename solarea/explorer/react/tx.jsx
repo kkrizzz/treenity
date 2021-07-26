@@ -1,7 +1,5 @@
 import { useTransaction } from 'https://unpkg.com/solarea-utils';
 
-globalThis.React = preact;
-
 const navigate = (tab) => {
   window.history.pushState({}, {}, '/' + tab);
 };
@@ -59,13 +57,19 @@ const TwoColumn = ({ ft, sc, is, lk }) => {
   `,
   );
   const handleClick = () => {
-    window.history.pushState({}, '', `/${lk}`);
+    window.history.pushState({}, '', `${lk}`);
   };
   return (
     <div class="columns is-mobile">
       <div class={`column is-${is} text-overflow`}>{ft}</div>
-      <div onClick={lk ? handleClick : () => {}} class={`column ${lk ? 'link' : ''}`}>
-        {sc}
+      <div className={`column`}>
+        {lk ? (
+          <Render id="dev" name="link" className="link" to={lk}>
+            {sc}
+          </Render>
+        ) : (
+          sc
+        )}
       </div>
     </div>
   );
@@ -103,7 +107,7 @@ add((props) => {
           ) : (
             <div class="column">
               <TwoColumn ft="Signature" sc={tx.entityId} />
-              <TwoColumn ft="Block" sc={tx.slot} lk={tx.slot} />
+              <TwoColumn ft="Block" sc={tx.slot} lk={`/block/${tx.slot}`} />
               <TwoColumn ft="Result" sc={tx.meta.err ? 'Error' : 'Success'} />
               <TwoColumn ft="Timestamp" sc={new Date(tx.blockTime * 1000).toLocaleString()} />
               <TwoColumn ft="Fee" sc={`${lpsRound(tx.meta.fee)} SOL`} />

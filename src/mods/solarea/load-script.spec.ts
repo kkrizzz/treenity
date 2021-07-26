@@ -44,5 +44,34 @@ describe('load-script', () => {
 
       expect(htmlText).toBe(`html\`<div/>\``);
     });
+
+    it('compile shift operation', () => {
+      const htmlText = reactToHtmPreact(`
+      a = 5 << 10;
+      return <div />;
+      `);
+
+      console.log(htmlText);
+
+      expect(htmlText).toBe(`
+      a = 5 << 10;
+      return html\`<div />\`;
+      `);
+    });
+    it('compile inner ternary ?:', () => {
+      const htmlText = reactToHtmPreact(`
+      <Render id="dev" name="bulma-card" header="Account Inputs">
+        {isLoading ? <span class="spinner"></span> : <AccountInputs tx={tx}></AccountInputs>}
+      </Render>
+      `);
+
+      console.log(htmlText);
+
+      expect(htmlText).toBe(`
+      html\`<\${Render} id="dev" name="bulma-card" header="Account Inputs">
+        \${isLoading ? html\`<span class="spinner"></span>\` : html\`<\${AccountInputs} tx=\${tx}></AccountInputs>\`}
+      </Render>\`
+      `);
+    });
   });
 });

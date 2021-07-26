@@ -50,8 +50,9 @@ export function useLoadAccountComponent(
 
       const viewData =
         (solSettle.status === 'fulfilled' && solSettle.value) ||
-        (restSettle.status === 'fulfilled' && restSettle.value) ||
-        makeDefaultData(id);
+        (restSettle.status === 'fulfilled' && restSettle.value);
+
+      if (!viewData) return;
 
       const mimetype = mimeTypesData.getMime(viewData.type);
 
@@ -74,15 +75,10 @@ export function useLoadAccountComponent(
       }
     } catch (err) {
       console.log(err);
-      addComponent(
-        address,
-        name,
-        context,
-        {},
-        getComponent('default', 'default', context).component,
-      );
+      // addComponent(address, name, context, {}, getComponent('default', 'default', context).component,);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [address, name, context]);
 
   return [null, loading];

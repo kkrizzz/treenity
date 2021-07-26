@@ -38,6 +38,7 @@ const lpsRound = (lamports) => {
 
 add(({ entityId }) => {
   const [block, loading] = useBlock(entityId);
+  const [showAmount, setShowAmount] = React.useState(10);
 
   if (loading) {
     return (
@@ -69,13 +70,25 @@ add(({ entityId }) => {
         </div>
       </Render>
       <Render id="dev" name="bulma-card" header="Block transactions">
-        <div style={{ overflowY: 'auto' }}>
+        <div>
           <TwoColumn is={10} first="Signature" second={'Result'} />
 
-          {block.transactions.slice(0, 10).map((t) => (
-            <Render id="explorer" name="transaction" context="react-table" transaction={t}></Render>
+          {block.transactions.slice(0, showAmount).map((t, i) => (
+            <Render
+              key={i}
+              id="explorer"
+              name="transaction"
+              context="react-table"
+              transaction={t}
+            />
           ))}
         </div>
+        <button
+          class="button is-outlined is-fullwidth is-primary"
+          onClick={() => setShowAmount((am) => am + 10)}
+        >
+          Load more...
+        </button>
       </Render>
       <Render id="dev" name="bulma-card" header="Block rewards">
         <div className="columns is-mobile">

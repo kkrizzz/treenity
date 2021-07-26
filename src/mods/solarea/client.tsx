@@ -3,6 +3,10 @@ import { html, render } from 'htm/preact';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ConnectionProvider } from './hooks/useConnection';
 
+// XXX global imports
+import './systemjs-addons/css';
+import './global-imports';
+
 import config from '../../config-common';
 import SolareaRoute from './SolareaRoute';
 import './components/DefaultComponents';
@@ -33,8 +37,8 @@ const App = () => {
   return inject(<SolareaRoute />);
 };
 
-navigator.serviceWorker.register('/solarea-worker.js').then(() => {
-  console.log("Install succeeded with the default scope '/js/'.");
-});
+// navigator.serviceWorker.register('./solarea-worker').then(() => {
+//   console.log("Install succeeded with the default scope '/'.");
+// });
 
 render(html` <${App} />`, document.getElementById('app'));
