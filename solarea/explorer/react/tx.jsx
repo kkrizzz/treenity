@@ -4,17 +4,20 @@ const navigate = (tab) => {
   window.history.pushState({}, {}, '/' + tab);
 };
 
+const InstructionDefault = ({ tx }) => {
+
+};
+
 const TransactionInstruction = ({ tx }) => {
-  return tx.transaction.message.instructions.map((tx, index) => (
-    <div className="solarea-tx-default_program-viewport">
-      <Render
-        instruction={tx}
-        transaction={tx.transaction}
-        id={tx.programId}
-        name="explorer"
-        context="react-table"
-      />
-    </div>
+  return tx.transaction.message.instructions.map((inst, index) => (
+    <Render
+      id={inst.programId}
+      name="instruction"
+      context="react-list"
+      instruction={inst}
+      transaction={inst.transaction}
+      fallback={<InstructionDefault tx={inst} />}
+    />
   ));
 };
 
@@ -87,6 +90,25 @@ const DEFAULT_ENTITY =
 add((props) => {
   if (!props.entityId) props.entityId = DEFAULT_ENTITY;
   const [tx, isLoading] = useTransaction(props.entityId);
+
+  if (isLoading) {
+    return (
+      <div className="container is-max-desktop">
+        <Render id="explorer" name="acc-css" />
+        <Render
+          id="dev"
+          name="bulma-card"
+          header={
+            <div class="flex-between">
+              Solana transaction Loading...
+              <img src="https://explorer.solana.com/favicon.ico" />
+            </div>
+          }
+        />
+      </div>
+    );
+  }
+
   return (
     <div class="container is-max-desktop">
       <Render id="explorer" name="acc-css" />
@@ -102,28 +124,20 @@ add((props) => {
       />
       <Render id="dev" name="bulma-card" header="Overview">
         <div class="columns" style={{ overflowY: 'auto' }}>
-          {isLoading ? (
-            <span class="spinner"></span>
-          ) : (
-            <div class="column">
-              <TwoColumn ft="Signature" sc={tx.entityId} />
-              <TwoColumn ft="Block" sc={tx.slot} lk={`/block/${tx.slot}`} />
-              <TwoColumn ft="Result" sc={tx.meta.err ? 'Error' : 'Success'} />
-              <TwoColumn ft="Timestamp" sc={new Date(tx.blockTime * 1000).toLocaleString()} />
-              <TwoColumn ft="Fee" sc={`${lpsRound(tx.meta.fee)} SOL`} />
-            </div>
-          )}
+          <div class="column">
+            <TwoColumn ft="Signature" sc={tx.entityId} />
+            <TwoColumn ft="Block" sc={tx.slot} lk={`/block/${tx.slot}`} />
+            <TwoColumn ft="Result" sc={tx.meta.err ? 'Error' : 'Success'} />
+            <TwoColumn ft="Timestamp" sc={new Date(tx.blockTime * 1000).toLocaleString()} />
+            <TwoColumn ft="Fee" sc={`${lpsRound(tx.meta.fee)} SOL`} />
+          </div>
         </div>
       </Render>
       <Render id="dev" name="bulma-card" header="Account Inputs">
-        {isLoading ? <span class="spinner"></span> : <AccountInputs tx={tx}></AccountInputs>}
+        <AccountInputs tx={tx}></AccountInputs>
       </Render>
       <Render id="dev" name="bulma-card" header="Instructions">
-        {isLoading ? (
-          <span class="spinner"></span>
-        ) : (
-          <TransactionInstruction tx={tx}></TransactionInstruction>
-        )}
+        <TransactionInstruction tx={tx}></TransactionInstruction>
       </Render>
     </div>
   );
