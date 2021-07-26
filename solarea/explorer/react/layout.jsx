@@ -32,6 +32,7 @@ add(({ children }) => {
     flex: 0.05;
     text-align: center;
     min-width: 48px;
+    margin-left: 4px;
    }
   `,
   );
@@ -48,7 +49,7 @@ add(({ children }) => {
           class="input is-primary explorer-layout-input"
           placeholder="Search for accounts, transactions, blocks..."
         />
-        <div onClick={() => search(input.current.value)} class="explorer-layout-button">
+        <div onClick={() => search(input.current.value)} class="button explorer-layout-button">
           <Render id="icons" name="search" />
         </div>
       </div>

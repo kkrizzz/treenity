@@ -15,7 +15,7 @@ function NavLink({ to, children, className = '' }) {
 
 add(() => {
   return (
-    <nav className="navbar m-t-8" role="navigation" aria-label="main navigation">
+    <nav className="navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
       <div class="container is-max-desktop">
         <div className="navbar-brand">
           <a className="navbar-item" href="https://explorer.velas.com">

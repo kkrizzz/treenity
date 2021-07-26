@@ -45,16 +45,7 @@ add((props) => {
   return (
     <div class="container is-max-desktop">
       <Render id="explorer" name="acc-css" />
-      <Render
-        id="dev"
-        name="bulma-card"
-        header={
-          <div class="flex-between">
-            Solana account
-            <img src="https://explorer.solana.com/favicon.ico" />
-          </div>
-        }
-      />
+      <Render id="dev" name="bulma-card" header={<div class="flex-between">Account</div>} />
       {defaultView && defaultView.type != '() => "not found"' && (
         <Render id="dev" name="bulma-card" header="View">
           <Render id={props.entityId}></Render>
