@@ -36,7 +36,13 @@ describe('load-script', () => {
        )}
       </div>\`
       `);
+    });
+    it('compile self-closing-tag', () => {
+      const htmlText = reactToHtmPreact(`<div/>`);
+
       console.log(htmlText);
+
+      expect(htmlText).toBe(`html\`<div/>\``);
     });
   });
 });

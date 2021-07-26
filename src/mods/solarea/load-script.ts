@@ -1,5 +1,4 @@
 import { html } from 'htm/preact';
-import './systemjs-addons/css';
 import * as preact from 'preact/compat';
 import findLastIndex from 'lodash/findLastIndex';
 import { promised } from './promised';
@@ -7,7 +6,7 @@ import { useBitQuery } from './hooks/useBitQuery';
 import { useCSS } from './hooks/useCSS';
 import { useAccount } from './hooks/useAccount';
 import { useAccountTransactions } from './hooks/useAccountTransactions';
-import './global-imports';
+// import './global-imports';
 
 export const loadedScripts: { [id: string]: any } = {};
 globalThis.__loadedScripts = loadedScripts;
@@ -52,7 +51,7 @@ export function reactToHtmPreact(execCode: string) {
       tags.push(i);
     } else if ((c === '<' && c2 === '/') || (c === '/' && c2 === '>')) {
       const start = tags.pop()!;
-      const end = c === '<' ? execCode.indexOf('>', i) + 1 : i + 1;
+      const end = c === '<' ? execCode.indexOf('>', i) + 1 : i + 2;
       if (!tags.length) {
         fixedCode += execCode.slice(prev, start);
         fixedCode +=
