@@ -133,7 +133,7 @@ export function loadScript(id: string, code: string, context) {
   const execCode = codeLines.slice(importsIdx + 1).join('\n');
   const fixedCode = reactToHtmPreact(execCode);
 
-  console.log(fixedCode);
+  // console.log(fixedCode);
 
   const loader = `${imports} ${minify`
   const __ls = window.__loadedScripts['${id}'];
