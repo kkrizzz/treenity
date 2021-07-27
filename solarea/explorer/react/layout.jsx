@@ -1,4 +1,4 @@
-await require('https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css');
+await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 
 const { bs58 } = solarea;
 
@@ -42,14 +42,14 @@ add(({ children }) => {
   return (
     <div>
       <Render id="explorer" name="layout-menu" />
-      <div class="container is-max-desktop explorer-layout m-b-16 m-t-16">
+      <div class="bu-container bu-is-max-desktop explorer-layout m-b-16 m-t-16">
         <input
           ref={input}
           id="exp-l-id"
-          class="input is-primary explorer-layout-input"
+          class="bu-input bu-is-primary explorer-layout-input"
           placeholder="Search for accounts, transactions, blocks..."
         />
-        <div onClick={() => search(input.current.value)} class="button explorer-layout-button">
+        <div onClick={() => search(input.current.value)} class="bu-button explorer-layout-button">
           <Render id="icons" name="search" />
         </div>
       </div>

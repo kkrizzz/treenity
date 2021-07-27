@@ -13,21 +13,21 @@ const SystemInstructionType = [
   'transferWithSeed',
 ];
 
-add(async ({ instruction }) => {
-  const instNo = solarea.bs58.decode(instruction.data)[0];
+add(({ instruction }) => {
+  console.log(instruction);
+  const instNo = instruction.data[0];
 
   return (
-    <Render
-      id="dev"
-      name="bulma-card"
-      header={<span>{SystemInstructionType[instNo]}</span>}
-    >
-      <table>
-
+    <Render id="dev" name="bulma-card" header={<span>{SystemInstructionType[instNo]}</span>}>
+      <table class="tablebul">
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
       </table>
     </Render>
   );
 
-
-  <div class="tag is-black">System: {SystemInstructionType[instNo]}</div>;
+  // <div class="tag is-black">System: {SystemInstructionType[instNo]}</div>;
 });

@@ -9,33 +9,34 @@ function shortString(str, max) {
 add(({ transaction, entityId }) => {
   let loading = false;
   if (!transaction) {
-    [transaction, loading] = useTransaction(entityId);
+    [transaction, loading] = solarea.useTransaction(entityId);
   }
 
-  const resolveKey = (id) => transaction.transaction.message.accountKeys[id];
-
-  const instructions = transaction.transaction.message.instructions.map((i) => (
+  const instructions = transaction.transaction.instructions.map((i) => (
     <Render
-      id={resolveKey(i.programIdIndex)}
-      context="react-badge"
+      id={i.programId.toBase58()}
+      context="react-text"
       name="instruction"
       instruction={i}
-      fallback={<div class="tag is-light is-danger">unknown</div>}
+      render={(elem) => <div className="bu-tag bu-is-black">{elem}</div>}
+      fallback={<div class="bu-tag bu-is-light bu-is-danger">unknown</div>}
     />
   ));
 
-  const signature = transaction.transaction.signatures[0];
+  const signature = solarea.bs58.encode(transaction.transaction.signatures[0].signature);
   return (
-    <div class="columns is-mobile">
-      <div class="column is-4 text-overflow is-code">
+    <div class="bu-columns bu-is-mobile">
+      <div class="bu-column bu-is-4 text-overflow bu-is-code">
         <span style={{ fontFamily: 'monospace' }}>
           <Render id="dev" name="link" className="link" to={`/tx/${signature}`}>
             {shortString(signature, 20)}
           </Render>
         </span>
       </div>
-      <div class="column is-6 is-mobile tags">{instructions}</div>
-      <div class="column is-mobile">
+      <div class="bu-column bu-is-6 bu-is-mobile" style={{ display: 'flex', gap: 4 }}>
+        {instructions}
+      </div>
+      <div class="bu-column bu-is-mobile">
         <Render id="dev" name="success-badge" success={!transaction.meta.err} />
       </div>
     </div>

@@ -16,8 +16,8 @@ const SERUM_CODE_LOOKUP = {
 };
 
 add(({ instruction }) => {
-  const data = solarea.bs58.decode(instruction.data);
+  const data = instruction.data;
   const instNo = (data[0] << 8) | data[1];
 
-  return <div class="tag is-black">Serum V3: {SERUM_CODE_LOOKUP[instNo]}</div>;
+  return `Serum V3: ${SERUM_CODE_LOOKUP[instNo]}`;
 });

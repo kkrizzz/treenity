@@ -10,34 +10,34 @@ add(() => {
   .container {
     padding: 0;
   }
-  .card {
+  .bu-card {
     color: white;
     background: #282945;
     padding: 8px;
     box-shadow: none !important;
     width: inherit !important;
   }
-  .card-header-title {
+  .bu-card-header-title {
     color: white;
   }
-  .card-header {
+  .bu-card-header {
       color: white;
       box-shadow: none !important; 
   }
-  .card:before {
+  .bu-card:before {
     border-color: transparent transparent transparent #1c1d31;
     border-width: 1rem 0 0 1rem;
     bottom: 0;
     left: 0;
   }
-  .card:after, .card:before {
+  .bu-card:after, .bu-card:before {
     border-style: solid;
     content: "";
     height: 0;
     position: absolute;
     width: 0;
  }
-.card:after {
+.bu-card:after {
     border-color: transparent #1c1d31 transparent transparent;
     border-width: 0 1rem 1rem 0;
     right: 0;
@@ -76,7 +76,9 @@ add(() => {
   .m-t-16 {
     margin-top: 16px !important;
   }
-    
+  .m-r-16 {
+    margin-right: 16px !important;
+  }  
   .p-t-16 {
     padding-top: 16px !important;
   }    

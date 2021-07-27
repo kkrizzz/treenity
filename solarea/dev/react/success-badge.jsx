@@ -1,6 +1,6 @@
 add(({ success }) => {
   return (
-    <div className={`tag is-${success ? 'success' : 'warning'}`}>
+    <div className={`bu-tag bu-is-${success ? 'success' : 'danger'}`}>
       {success ? 'Success' : 'Error'}
     </div>
   );

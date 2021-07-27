@@ -3,12 +3,13 @@ import { useConnection } from '../hooks/useConnection';
 import { useWallet } from '../utils/wallet';
 import { SolanaStorageAdapter } from './SolanaStorageAdapter';
 import { RestStorageAdapter } from './RestStorageAdapter';
+import { clusterApiUrl, Connection } from '@solana/web3.js';
 
 const SolanaStorageContext = createContext<SolanaStorageAdapter | null>(null);
 const RestStorageContext = createContext<RestStorageAdapter | null>(null);
 
 export function StorageProvider({ children }) {
-  const connection = useConnection();
+  const connection = useMemo(() => new Connection(clusterApiUrl('devnet')), []);
   const wallet = useWallet();
   const deps = [wallet.connected, wallet.session, wallet.signed, connection];
   const provider = useMemo(() => new SolanaStorageAdapter(wallet, connection), deps);

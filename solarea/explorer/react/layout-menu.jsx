@@ -15,16 +15,16 @@ function NavLink({ to, children, className = '' }) {
 
 add(() => {
   return (
-    <nav className="navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
-      <div class="container is-max-desktop">
-        <div className="navbar-brand">
-          <a className="navbar-item" href="https://explorer.velas.com">
+    <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
+      <div class="bu-container bu-is-max-desktop">
+        <div className="bu-navbar-brand">
+          <a className="bu-navbar-item" href="https://explorer.velas.com">
             <Render id="velas" name="logo" />
           </a>
 
           <a
             role="button"
-            className="navbar-burger"
+            className="bu-navbar-burger"
             aria-label="menu"
             aria-expanded="false"
             data-target="navbarBasicExample"
@@ -35,26 +35,26 @@ add(() => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-end">
-            <NavLink className="navbar-item is-tab" to="/explorer/cluster">
+        <div id="navbarBasicExample" className="bu-navbar-menu">
+          <div className="bu-navbar-end">
+            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/cluster">
               Cluster stats
             </NavLink>
-            <NavLink className="navbar-item is-tab" to="/explorer/supply">
+            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/supply">
               Supply
             </NavLink>
 
-            <div className="navbar-item has-dropdown is-hoverable">
-              <div className="buttons">
-                <a className="button is-primary">
+            <div className="bu-navbar-item bu-has-dropdown bu-is-hoverable">
+              <div className="bu-buttons">
+                <a className="bu-button bu-is-primary">
                   <strong>Mainnet</strong>
                 </a>
-                <div className="navbar-dropdown">
-                  <a className="navbar-item">Mainnet</a>
-                  <a className="navbar-item">Testnet</a>
-                  <a className="navbar-item">Devnet</a>
-                  <hr className="navbar-divider">
-                    <a className="navbar-item">Report an issue</a>
+                <div className="bu-navbar-dropdown">
+                  <a className="bu-navbar-item">Mainnet</a>
+                  <a className="bu-navbar-item">Testnet</a>
+                  <a className="bu-navbar-item">Devnet</a>
+                  <hr className="bu-navbar-divider">
+                    <a className="bu-navbar-item">Report an issue</a>
                   </hr>
                 </div>
               </div>

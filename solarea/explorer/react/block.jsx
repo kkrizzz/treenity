@@ -1,4 +1,4 @@
-import { useBlock, useTransaction, useAccount } from 'https://unpkg.com/solarea-utils';
+const { useBlock } = solarea;
 
 const TwoColumn = ({ first, second, is = 4, link: lk }) => {
   useCSS(
@@ -18,14 +18,14 @@ const TwoColumn = ({ first, second, is = 4, link: lk }) => {
     window.history.pushState({}, {}, `/${lk}`);
   };
   return (
-    <div class="columns is-mobile">
+    <div class="bu-columns bu-is-mobile">
       <div
         onClick={lk ? handleClick : () => {}}
-        class={`column is-${is} text-overflow ${lk ? 'link' : ''}`}
+        class={`bu-column bu-is-${is} text-overflow ${lk ? 'link' : ''}`}
       >
         {first}
       </div>
-      <div class="column is-mobile">{second}</div>
+      <div class="bu-column bu-is-mobile">{second}</div>
     </div>
   );
 };
@@ -37,17 +37,24 @@ const lpsRound = (lamports) => {
 };
 
 add(({ entityId }) => {
-  const [block, loading] = useBlock(entityId);
+  const [block, loading] = useBlock(+entityId);
   const [showAmount, setShowAmount] = React.useState(10);
 
   if (loading) {
     return (
-      <div className="container is-max-desktop">
+      <div className="bu-container bu-is-max-desktop">
         <Render id="explorer" name="acc-css" />
         <Render
           id="dev"
           name="bulma-card"
-          header={<div className="flex-between">Block loading...</div>}
+          header={
+            <div className="flex-between">
+              <div class="m-r-16">Block </div>
+              <progress className="bu-progress bu-is-small bu-is-success" max="100">
+                100%
+              </progress>
+            </div>
+          }
         />
       </div>
     );
@@ -56,12 +63,12 @@ add(({ entityId }) => {
   console.log(block);
 
   return (
-    <div class="container is-max-desktop">
+    <div class="bu-container bu-is-max-desktop">
       <Render id="explorer" name="acc-css" />
       <Render id="dev" name="bulma-card" header={<div class="flex-between">Block</div>} />
       <Render id="dev" name="bulma-card" header="Overview">
-        <div class="columns" style={{ overflowY: 'auto' }}>
-          <div class="column">
+        <div class="bu-columns" style={{ overflowY: 'auto' }}>
+          <div class="bu-column">
             <TwoColumn first="Slot" second={entityId} />
             <TwoColumn first="Blockhash" second={block.blockhash} />
             <TwoColumn first="Parent slot" second={block.parentSlot} />
@@ -77,25 +84,25 @@ add(({ entityId }) => {
             <Render
               key={i}
               id="explorer"
-              name="transaction"
               context="react-table"
+              name="transaction"
               transaction={t}
             />
           ))}
         </div>
         <button
-          class="button is-outlined is-fullwidth is-primary"
+          class="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
           onClick={() => setShowAmount((am) => am + 10)}
         >
           Load more...
         </button>
       </Render>
       <Render id="dev" name="bulma-card" header="Block rewards">
-        <div className="columns is-mobile">
-          <div className="column is-5">Address</div>
-          <div className="column is-2">Type</div>
-          <div className="column is-3">Amount</div>
-          <div className="column is-2">New balance</div>
+        <div className="bu-columns bu-is-mobile">
+          <div className="bu-column bu-is-5">Address</div>
+          <div className="bu-column bu-is-2">Type</div>
+          <div className="bu-column bu-is-3">Amount</div>
+          <div className="bu-column bu-is-2">New balance</div>
         </div>
       </Render>
     </div>

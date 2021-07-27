@@ -38,6 +38,7 @@ function Render({
   context = 'react',
   children,
   fallback,
+  render,
   ...more
 }: RenderProps) {
   console.log('rendering', id, name, context);
@@ -49,11 +50,12 @@ function Render({
     return 'not found';
   }
 
+  let result: JSX.Element | null = null;
   try {
     const { component: Component, props, needAccount } = componentInfo;
 
     if (more.addable === true) {
-      return (
+      result = (
         <ComponentWrapper id={id} context={context} name={name} props={props} more={more}>
           <Component
             {...more}
@@ -65,14 +67,12 @@ function Render({
           />
         </ComponentWrapper>
       );
-    }
-
-    if (needAccount) {
+    } else if (needAccount) {
       const [accountInfo, isAccLoading] = useAccount(id);
       if (isAccLoading) {
         return <div className="spinner" />;
       }
-      return (
+      result = (
         <Component
           {...more}
           {...props}
@@ -83,15 +83,18 @@ function Render({
           children={children}
         />
       );
+    } else {
+      result = (
+        <Component {...more} {...props} id={id} context={context} name={name} children={children} />
+      );
     }
-
-    return (
-      <Component {...more} {...props} id={id} context={context} name={name} children={children} />
-    );
   } catch (e) {
     console.error('Render', id, context, name, e);
-    return null;
   }
+
+  if (render) return render(result);
+
+  return result;
 }
 
 export default Render;

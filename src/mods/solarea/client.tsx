@@ -24,7 +24,7 @@ export const solareaApi = new SolareaProgramApi();
 
 const inject = (comp) => (
   <QueryClientProvider client={queryClient}>
-    <ConnectionProvider cluster="devnet">
+    <ConnectionProvider cluster="mainnet-beta">
       <WalletProvider>
         <WalletConnect />
         <StorageProvider>{comp}</StorageProvider>

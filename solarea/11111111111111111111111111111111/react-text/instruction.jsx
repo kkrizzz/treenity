@@ -14,7 +14,6 @@ const SystemInstructionType = [
 ];
 
 add(({ instruction }) => {
-  const instNo = solarea.bs58.decode(instruction.data)[0];
-
-  return <div class="tag is-black">System: {SystemInstructionType[instNo]}</div>;
+  const instNo = instruction.data[0];
+  return `System: ${SystemInstructionType[instNo]}`;
 });

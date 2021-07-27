@@ -16,11 +16,9 @@ const ConnectionContext = createContext<ContextType>(null!);
 export const ConnectionProvider = ({
   children,
   cluster = 'mainnet-beta',
-  customRPC,
 }: {
   children: any;
-  cluster?: Cluster;
-  customRPC?: string;
+  cluster: Cluster;
 }) => {
   const [currentCluster, setCluster] = useState(cluster as string);
 
@@ -31,7 +29,7 @@ export const ConnectionProvider = ({
     } catch (err) {
       url = cluster;
     }
-    return [new Connection(customRPC || url, {}), currentCluster, setCluster];
+    return [new Connection(url, {}), currentCluster, setCluster];
   }, [currentCluster]);
 
   return <ConnectionContext.Provider value={value}>{children}</ConnectionContext.Provider>;

@@ -19,14 +19,14 @@ const TwoColumn = ({ ft, sc, is, lk }) => {
     window.history.pushState({}, {}, `/${lk}`);
   };
   return (
-    <div class="columns is-mobile">
+    <div class="bu-columns bu-is-mobile">
       <div
         onClick={lk ? handleClick : () => {}}
-        class={`column is-${is} text-overflow ${lk ? 'link' : ''}`}
+        class={`bu-column bu-is-${is} text-overflow ${lk ? 'link' : ''}`}
       >
         {ft}
       </div>
-      <div class="column is-mobile">{sc}</div>
+      <div class="bu-column bu-is-mobile">{sc}</div>
     </div>
   );
 };
@@ -43,7 +43,7 @@ add((props) => {
   const [txs, isTxLoading] = useAccountTransactions(props.entityId);
   const defaultView = Render({ id: props.entityId });
   return (
-    <div class="container is-max-desktop">
+    <div class="bu-container bu-is-max-desktop">
       <Render id="explorer" name="acc-css" />
       <Render id="dev" name="bulma-card" header={<div class="flex-between">Account</div>} />
       {defaultView && defaultView.type != '() => "not found"' && (
@@ -52,11 +52,11 @@ add((props) => {
         </Render>
       )}
       <Render id="dev" name="bulma-card" header="Overview">
-        <div class="columns" style={{ overflowY: 'auto' }}>
+        <div class="bu-columns" style={{ overflowY: 'auto' }}>
           {isLoading ? (
             <span class="spinner"></span>
           ) : (
-            <div class="column">
+            <div class="bu-column">
               <TwoColumn ft="Address" sc={props.entityId} />
               <TwoColumn ft="Data" sc={`${acc ? acc.data.length : 0} bytes`} />
               <TwoColumn ft="Balance" sc={`${lpsRound(acc ? acc.lamports : 0)} SOL`} />
@@ -65,29 +65,21 @@ add((props) => {
         </div>
       </Render>
       <Render id="dev" name="bulma-card" header="Transactions">
-        <div class="columns">
-          <div class="column text-overflow">
+        <div class="bu-columns">
+          <div class="bu-column text-overflow">
             <TwoColumn is={8} ft="Signature" sc="Age" />
             {isTxLoading ? (
-              <span class="spinner"></span>
+              <span class="spinner" />
             ) : (
               txs &&
-              txs.map((tx) => {
-                return (
-                  <TwoColumn
-                    lk={tx.signature}
-                    is={8}
-                    ft={tx.signature}
-                    sc={
-                      <Render
-                        id="dev"
-                        name="time-ago"
-                        date={new Date(tx.blockTime * 1000)}
-                      ></Render>
-                    }
-                  ></TwoColumn>
-                );
-              })
+              txs.map((tx) => (
+                <TwoColumn
+                  lk={tx.signature}
+                  is={8}
+                  ft={tx.signature}
+                  sc={<Render id="dev" name="time-ago" date={new Date(tx.blockTime * 1000)} />}
+                />
+              ))
             )}
           </div>
         </div>
