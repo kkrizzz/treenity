@@ -9,5 +9,10 @@ export function useTransaction(signature: string): [ConfirmedTransaction | null,
   const { data: transaction, isLoading } = useQuery(`transaction_${signature}`, () =>
     connection.getConfirmedTransaction(signature),
   );
+
+  if (!isLoading) {
+    transaction.transaction.message = transaction.transaction.compileMessage();
+  }
+
   return [transaction || null, isLoading];
 }

@@ -15,16 +15,12 @@ const TwoColumn = ({ ft, sc, is, lk }) => {
    }
   `,
   );
-  const handleClick = () => {
-    window.history.pushState({}, {}, `/${lk}`);
-  };
   return (
     <div class="bu-columns bu-is-mobile">
-      <div
-        onClick={lk ? handleClick : () => {}}
-        class={`bu-column bu-is-${is} text-overflow ${lk ? 'link' : ''}`}
-      >
-        {ft}
+      <div class={`bu-column bu-is-${is} text-overflow ${lk ? 'link' : ''}`}>
+        <Render id="dev" name="link" to={`/tx/${lk}`}>
+          {ft}
+        </Render>
       </div>
       <div class="bu-column bu-is-mobile">{sc}</div>
     </div>

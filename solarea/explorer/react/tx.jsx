@@ -9,7 +9,7 @@ const InstructionDefault = ({ tx }) => {};
 const TransactionInstruction = ({ tx }) => {
   return tx.transaction.message.instructions.map((inst, index) => (
     <Render
-      id={inst.programId}
+      id={tx.transaction.message.accountKeys[inst.programIdIndex].toBase58()}
       name="instruction"
       context="react-list"
       instruction={inst}
@@ -27,20 +27,24 @@ const AccountInputs = ({ tx }) => {
         <div className="bu-column bu-is-3">Change</div>
         <div className="bu-column bu-is-3">Post</div>
       </div>
-      {tx.transaction.message.accountKeys.map((key, index) => (
-        <div className="bu-columns bu-is-mobile">
-          <div
-            className="bu-column bu-is-6 text-overflow link"
-            onClick={() => navigate(key.pubkey)}
-          >
-            {key.pubkey === SYSTEM_PROGRAM ? 'System program' : key.pubkey}
+      {tx.transaction.message.accountKeys.map((key, index) => {
+        let publicKey = key.toBase58();
+        return (
+          <div className="bu-columns bu-is-mobile">
+            <div className="bu-column bu-is-6 text-overflow link">
+              <Render id="dev" name="link" to={`/address/${publicKey}`}>
+                {publicKey}
+              </Render>
+            </div>
+            <div className="bu-column bu-is-3">
+              {((tx.meta.postBalances[index] - tx.meta.preBalances[index]) * LPS).toFixed(6)}
+            </div>
+            <div className="bu-column bu-is-3">
+              {(tx.meta.postBalances[index] * LPS).toFixed(6)}
+            </div>
           </div>
-          <div className="bu-column bu-is-3">
-            {((tx.meta.postBalances[index] - tx.meta.preBalances[index]) * LPS).toFixed(6)}
-          </div>
-          <div className="bu-column bu-is-3">{(tx.meta.postBalances[index] * LPS).toFixed(6)}</div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
