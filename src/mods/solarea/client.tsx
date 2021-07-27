@@ -6,6 +6,7 @@ import { ConnectionProvider } from './hooks/useConnection';
 // XXX global imports
 import './systemjs-addons/css';
 import './global-imports';
+import './index.css';
 
 import config from '../../config-common';
 import SolareaRoute from './SolareaRoute';
