@@ -4,9 +4,7 @@ const navigate = (tab) => {
   window.history.pushState({}, {}, '/' + tab);
 };
 
-const InstructionDefault = ({ tx }) => {
-
-};
+const InstructionDefault = ({ tx }) => {};
 
 const TransactionInstruction = ({ tx }) => {
   return tx.transaction.message.instructions.map((inst, index) => (
@@ -98,12 +96,7 @@ add((props) => {
         <Render
           id="dev"
           name="bulma-card"
-          header={
-            <div class="flex-between">
-              Solana transaction Loading...
-              <img src="https://explorer.solana.com/favicon.ico" />
-            </div>
-          }
+          header={<div class="flex-between">Loading transaction . . .</div>}
         />
       </div>
     );
@@ -112,20 +105,11 @@ add((props) => {
   return (
     <div class="container is-max-desktop">
       <Render id="explorer" name="acc-css" />
-      <Render
-        id="dev"
-        name="bulma-card"
-        header={
-          <div class="flex-between">
-            Solana transaction
-            <img src="https://explorer.solana.com/favicon.ico" />
-          </div>
-        }
-      />
+      <Render id="dev" name="bulma-card" header={<div class="flex-between">Transaction</div>} />
       <Render id="dev" name="bulma-card" header="Overview">
         <div class="columns" style={{ overflowY: 'auto' }}>
           <div class="column">
-            <TwoColumn ft="Signature" sc={tx.entityId} />
+            <TwoColumn ft="Signature" sc={tx.transaction.signatures[0]} />
             <TwoColumn ft="Block" sc={tx.slot} lk={`/block/${tx.slot}`} />
             <TwoColumn ft="Result" sc={tx.meta.err ? 'Error' : 'Success'} />
             <TwoColumn ft="Timestamp" sc={new Date(tx.blockTime * 1000).toLocaleString()} />
