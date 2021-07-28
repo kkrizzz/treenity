@@ -95,7 +95,8 @@ async function main() {
   //
   // app.use('hello', new HelloService());
 
-  const { host, port } = config;
+  const host = app.get('host');
+  const port = app.get('port');
 
   app.listen(
     {
