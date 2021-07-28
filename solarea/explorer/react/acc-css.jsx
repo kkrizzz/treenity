@@ -82,8 +82,17 @@ add(() => {
   .m-t-16 {
     margin-top: 16px !important;
   }
+  .m-r-8 {
+    margin-right: 8px !important;
+  }  
   .m-r-16 {
     margin-right: 16px !important;
+  }  
+  .m-l-8 {
+    margin-left: 8px !important;
+  }  
+  .m-l-16 {
+    margin-left: 16px !important;
   }  
   .p-t-16 {
     padding-top: 16px !important;

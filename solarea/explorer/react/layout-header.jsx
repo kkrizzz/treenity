@@ -1,4 +1,5 @@
 // NavLink
+// const { toast } = await require('solarea://explorer/toast/code');
 
 function NavLink({ to, children, className = '' }) {
   const active = window.location.href.endsWith(to);
@@ -16,8 +17,17 @@ function NavLink({ to, children, className = '' }) {
 
 add(() => {
   const [, clusterUrl, setCluster] = solarea.useCluster();
-
   const setNetwork = (url) => () => setCluster(url);
+
+  const custom = preact.useRef();
+  const setCustomUrl = () => {
+    const url = custom.current.value;
+    if (url.startsWith('http')) {
+      setCluster(url);
+    } else {
+      // toast('Wrong cluster url format, start from `http`')
+    }
+  };
 
   return (
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
@@ -54,16 +64,8 @@ add(() => {
                 <a className="bu-button bu-is-primary">
                   <strong>{clusterUrl}</strong>
                 </a>
+
                 <div className="bu-navbar-dropdown">
-                  <a onClick={setNetwork('mainnet-beta')} className="bu-navbar-item">
-                    Mainnet
-                  </a>
-                  <a onClick={setNetwork('testnet')} className="bu-navbar-item">
-                    Testnet
-                  </a>
-                  <a onClick={setNetwork('devnet')} className="bu-navbar-item">
-                    Devnet
-                  </a>
                   <a
                     onClick={setNetwork('https://mainnet.velas.com/rpc')}
                     className="bu-navbar-item"
@@ -76,6 +78,31 @@ add(() => {
                   >
                     Velas Testnet
                   </a>
+                  <a onClick={setNetwork('mainnet-beta')} className="bu-navbar-item">
+                    Solana Mainnet
+                  </a>
+                  <a onClick={setNetwork('testnet')} className="bu-navbar-item">
+                    Solana Testnet
+                  </a>
+                  <a onClick={setNetwork('devnet')} className="bu-navbar-item">
+                    Solana Devnet
+                  </a>
+                  <div className="bu-navbar-item bu-is-align-items-center">
+                    <input
+                      id="cluster-url-input"
+                      class="bu-input bu-is-small m-r-8"
+                      style={{ minWidth: 200 }}
+                      placeholder="Custom url"
+                      ref={custom}
+                    />
+                    <a
+                      class="bu-button bu-is-small bu-is-primary"
+                      style={{ marginBottom: 0 }}
+                      onClick={setCustomUrl}
+                    >
+                      Set
+                    </a>
+                  </div>
                   <hr className="bu-navbar-divider">
                     <a className="bu-navbar-item">Report an issue</a>
                   </hr>

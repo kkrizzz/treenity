@@ -12,12 +12,16 @@ export function StorageProvider({ children }) {
   const connection = useMemo(() => new Connection(clusterApiUrl('devnet')), []);
   const wallet = useWallet();
   const deps = [wallet.connected, wallet.session, wallet.signed, connection];
-  const provider = useMemo(() => new SolanaStorageAdapter(wallet, connection), deps);
+  const solanaProvider = useMemo(() => new SolanaStorageAdapter(wallet, connection), deps);
   const restProvider = useMemo(() => new RestStorageAdapter(wallet), deps);
+
+  // XXX
+  globalThis.solarea.solanaStorage = solanaProvider;
+  globalThis.solarea.restStorage = restProvider;
 
   return (
     <RestStorageContext.Provider value={restProvider}>
-      <SolanaStorageContext.Provider value={provider} children={children} />
+      <SolanaStorageContext.Provider value={solanaProvider} children={children} />
     </RestStorageContext.Provider>
   );
 }
