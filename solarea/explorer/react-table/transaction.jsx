@@ -19,7 +19,7 @@ add(({ transaction, entityId }) => {
       name="instruction"
       instruction={i}
       render={(elem) => <div className="bu-tag bu-is-black">{elem}</div>}
-      fallback={<div class="bu-tag bu-is-light bu-is-danger">unknown</div>}
+      fallback={() => <div class="bu-tag bu-is-light bu-is-danger">unknown</div>}
     />
   ));
 

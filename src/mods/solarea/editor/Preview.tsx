@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { loadedScripts, loadScript } from '../load-script';
 import { makeId } from '../utils/make-id';
-import Render from '../Render';
+import Render, { render } from '../Render';
 import { addComponent, getComponent } from '../component-db';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useEditorSelect } from '../stores/editor-store';
@@ -15,6 +15,7 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
       setIsLoading(true);
       await loadScript(makeId(currentAddress || id, name, context), code, {
         Render,
+        render,
         add(component) {
           addComponent(currentAddress || id, name, context, {}, component);
         },

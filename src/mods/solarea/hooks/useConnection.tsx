@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { Cluster, clusterApiUrl, Connection } from '@solana/web3.js';
+import { useLocalStorageState } from './useLocalStorageState';
 
 type SetState<T> = Dispatch<SetStateAction<T>>;
 type ContextType = [Connection, string, SetState<string>];
@@ -20,14 +21,14 @@ export const ConnectionProvider = ({
   children: any;
   cluster: Cluster;
 }) => {
-  const [currentCluster, setCluster] = useState(cluster as string);
+  const [currentCluster, setCluster] = useLocalStorageState('clusterUrl', cluster as string);
 
   const value = useMemo<ContextType>(() => {
     let url;
     try {
-      url = clusterApiUrl(cluster);
+      url = clusterApiUrl(currentCluster as Cluster);
     } catch (err) {
-      url = cluster;
+      url = currentCluster;
     }
     return [new Connection(url, {}), currentCluster, setCluster];
   }, [currentCluster]);
@@ -40,6 +41,5 @@ export function useConnection() {
 }
 
 export function useCluster() {
-  const [conn, currentCluster, setCluster] = useContext(ConnectionContext);
-  return [currentCluster, setCluster];
+  return useContext(ConnectionContext);
 }

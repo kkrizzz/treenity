@@ -1,4 +1,5 @@
 // NavLink
+
 function NavLink({ to, children, className = '' }) {
   const active = window.location.href.endsWith(to);
   const go = (env) => {
@@ -14,6 +15,10 @@ function NavLink({ to, children, className = '' }) {
 }
 
 add(() => {
+  const [, clusterUrl, setCluster] = solarea.useCluster();
+
+  const setNetwork = (url) => () => setCluster(url);
+
   return (
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
       <div class="bu-container bu-is-max-desktop">
@@ -47,12 +52,30 @@ add(() => {
             <div className="bu-navbar-item bu-has-dropdown bu-is-hoverable">
               <div className="bu-buttons">
                 <a className="bu-button bu-is-primary">
-                  <strong>Mainnet</strong>
+                  <strong>{clusterUrl}</strong>
                 </a>
                 <div className="bu-navbar-dropdown">
-                  <a className="bu-navbar-item">Mainnet</a>
-                  <a className="bu-navbar-item">Testnet</a>
-                  <a className="bu-navbar-item">Devnet</a>
+                  <a onClick={setNetwork('mainnet-beta')} className="bu-navbar-item">
+                    Mainnet
+                  </a>
+                  <a onClick={setNetwork('testnet')} className="bu-navbar-item">
+                    Testnet
+                  </a>
+                  <a onClick={setNetwork('devnet')} className="bu-navbar-item">
+                    Devnet
+                  </a>
+                  <a
+                    onClick={setNetwork('https://mainnet.velas.com/rpc')}
+                    className="bu-navbar-item"
+                  >
+                    Velas
+                  </a>
+                  <a
+                    onClick={setNetwork('https://testnet.velas.com/rpc')}
+                    className="bu-navbar-item"
+                  >
+                    Velas Testnet
+                  </a>
                   <hr className="bu-navbar-divider">
                     <a className="bu-navbar-item">Report an issue</a>
                   </hr>

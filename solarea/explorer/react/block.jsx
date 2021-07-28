@@ -43,7 +43,6 @@ add(({ entityId }) => {
   if (loading) {
     return (
       <div className="bu-container bu-is-max-desktop">
-        <Render id="explorer" name="acc-css" />
         <Render
           id="dev"
           name="bulma-card"
@@ -64,7 +63,6 @@ add(({ entityId }) => {
 
   return (
     <div class="bu-container bu-is-max-desktop">
-      <Render id="explorer" name="acc-css" />
       <Render id="dev" name="bulma-card" header={<div class="flex-between">Block</div>} />
       <Render id="dev" name="bulma-card" header="Overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
@@ -90,12 +88,14 @@ add(({ entityId }) => {
             />
           ))}
         </div>
-        <button
-          class="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
-          onClick={() => setShowAmount((am) => am + 10)}
-        >
-          Load more...
-        </button>
+        {showAmount < block.transactions.length && (
+          <button
+            class="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+            onClick={() => setShowAmount((am) => am + 10)}
+          >
+            Load more...
+          </button>
+        )}
       </Render>
       <Render id="dev" name="bulma-card" header="Block rewards">
         <div className="bu-columns bu-is-mobile">

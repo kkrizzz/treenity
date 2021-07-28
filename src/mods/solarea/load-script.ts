@@ -138,7 +138,7 @@ export function loadScript(id: string, code: string, context) {
 
   (async function() {
   try {
-    const { useAccount, useAccountTransactions, useCSS, require, useBitQuery, html, add, Render, preact, ...context } = __ls.context;
+    const { useAccount, useAccountTransactions, useCSS, require, useBitQuery, html, add, Render, render, preact, ...context } = __ls.context;
     `}
     ////////////// user code /////////////////
     

@@ -49,6 +49,12 @@ add(() => {
     align-items: center;
     justify-content: space-between;
   }
+  
+  .overflow-auto {
+    overflow: auto;
+    white-space: nowrap;
+  }
+  
   .text-overflow {
     overflow: hidden;
     text-overflow: ellipsis;

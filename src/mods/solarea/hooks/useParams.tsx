@@ -18,7 +18,7 @@ export default function useParams() {
     addr = `${second}.${first}`;
     context = paths[0];
     // has one subdomain
-  } else if (names[0] === 'work' && names[1] === 'medianet') {
+  } else if ((names[0] === 'work' && names[1] === 'medianet') || ['velas'].includes(names[2])) {
     addr = paths[0] || names.join('.');
     name = paths[1];
     context = paths[2];

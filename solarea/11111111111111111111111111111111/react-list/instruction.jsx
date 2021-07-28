@@ -13,12 +13,13 @@ const SystemInstructionType = [
   'transferWithSeed',
 ];
 
-add(({ instruction }) => {
-  console.log(instruction);
-  const instNo = instruction.data[0];
-
+add(({ id, instruction }) => {
   return (
-    <Render id="dev" name="bulma-card" header={<span>{SystemInstructionType[instNo]}</span>}>
+    <Render
+      id="dev"
+      name="bulma-card"
+      header={<Render id={id} name="instruction" context="react-text" instruction={instruction} />}
+    >
       <table class="tablebul">
         <tr>
           <td></td>

@@ -40,7 +40,6 @@ add((props) => {
   const defaultView = Render({ id: props.entityId });
   return (
     <div class="bu-container bu-is-max-desktop">
-      <Render id="explorer" name="acc-css" />
       <Render id="dev" name="bulma-card" header={<div class="flex-between">Account</div>} />
       {defaultView && defaultView.type != '() => "not found"' && (
         <Render id="dev" name="bulma-card" header="View">

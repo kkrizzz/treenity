@@ -4,17 +4,21 @@ const navigate = (tab) => {
   window.history.pushState({}, {}, '/' + tab);
 };
 
-const InstructionDefault = ({ tx }) => {};
+const BulmaCard = render('dev', 'bulma-card');
 
-const TransactionInstruction = ({ tx }) => {
-  return tx.transaction.message.instructions.map((inst, index) => (
-    <Render
-      id={tx.transaction.message.accountKeys[inst.programIdIndex].toBase58()}
-      name="instruction"
-      context="react-list"
+const InstructionDefault = ({ instruction }) => {
+  return <BulmaCard header={'Default: ' + instruction.programId.toBase58()} />;
+};
+
+const Instruction = render('', 'instruction', 'react-list');
+
+const TransactionInstructions = ({ tx }) => {
+  return tx.transaction.instructions.map((inst, index) => (
+    <Instruction
+      id={inst.programId.toBase58()}
       instruction={inst}
-      transaction={inst.transaction}
-      fallback={<InstructionDefault tx={inst} />}
+      transaction={tx}
+      fallback={() => <InstructionDefault instruction={inst} />}
     />
   ));
 };
@@ -30,10 +34,15 @@ const AccountInputs = ({ tx }) => {
       {tx.transaction.message.accountKeys.map((key, index) => {
         let publicKey = key.toBase58();
         return (
-          <div className="bu-columns bu-is-mobile">
+          <div className="bu-columns bu-is-mobile overflow-auto">
             <div className="bu-column bu-is-6 text-overflow link">
               <Render id="dev" name="link" to={`/address/${publicKey}`}>
-                {publicKey}
+                <Render
+                  id={publicKey}
+                  name="name"
+                  context="react-text"
+                  fallback={() => publicKey}
+                />
               </Render>
             </div>
             <div className="bu-column bu-is-3">
@@ -96,12 +105,14 @@ add((props) => {
   if (isLoading) {
     return (
       <div className="bu-container bu-is-max-desktop">
-        <Render id="explorer" name="acc-css" />
-        <Render
-          id="dev"
-          name="bulma-card"
-          header={<div class="flex-between">Loading transaction . . .</div>}
-        />
+        <BulmaCard header="Loading transaction" />
+      </div>
+    );
+  }
+  if (!tx) {
+    return (
+      <div className="bu-container bu-is-max-desktop">
+        <BulmaCard header="Transaction not found" />
       </div>
     );
   }
@@ -109,9 +120,8 @@ add((props) => {
   const signature = bs58.encode(tx.transaction.signatures[0].signature);
   return (
     <div class="bu-container bu-is-max-desktop">
-      <Render id="explorer" name="acc-css" />
-      <Render id="dev" name="bulma-card" header={<div class="flex-between">Transaction</div>} />
-      <Render id="dev" name="bulma-card" header="Overview">
+      <BulmaCard header={<div class="flex-between">Transaction</div>} />
+      <BulmaCard header="Overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
             <TwoColumn ft="Signature" sc={signature} />
@@ -121,13 +131,12 @@ add((props) => {
             <TwoColumn ft="Fee" sc={`${lpsRound(tx.meta.fee)} SOL`} />
           </div>
         </div>
-      </Render>
-      <Render id="dev" name="bulma-card" header="Account Inputs">
+      </BulmaCard>
+      <BulmaCard header="Account Inputs">
         <AccountInputs tx={tx} />
-      </Render>
-      <Render id="dev" name="bulma-card" header="Instructions">
-        <TransactionInstruction tx={tx} />
-      </Render>
+      </BulmaCard>
+      <BulmaCard header="Instructions" />
+      <TransactionInstructions tx={tx} />
     </div>
   );
 });

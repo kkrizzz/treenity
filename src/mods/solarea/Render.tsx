@@ -46,7 +46,7 @@ function Render({
   if (isLoading) return <div className="spinner" />;
 
   if (!componentInfo) {
-    if (fallback !== undefined) return fallback;
+    if (fallback !== undefined) return fallback();
     return 'not found';
   }
 
@@ -70,7 +70,7 @@ function Render({
     } else if (needAccount) {
       const [accountInfo, isAccLoading] = useAccount(id);
       if (isAccLoading) {
-        return <div className="spinner" />;
+        return <div className="bu-spinner" />;
       }
       result = (
         <Component
@@ -96,5 +96,8 @@ function Render({
 
   return result;
 }
+
+export const render = (id: string, name: string, context: string) => (props) =>
+  Render({ id, name, context, ...props });
 
 export default Render;

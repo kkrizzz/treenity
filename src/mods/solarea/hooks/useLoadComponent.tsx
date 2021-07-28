@@ -3,7 +3,7 @@ import useAsyncEffect from 'use-async-effect';
 import { mimeTypesData } from '../utils/mime-types-data';
 import { addComponent, getComponent } from '../component-db';
 import { loadScript } from '../load-script';
-import Render from '../Render';
+import Render, { render } from '../Render';
 import { resolveViewByMime } from '../components/Files/Resolver';
 import { useRestStorage, useSolanaStorage } from '../storage-adapters/StorageProvider';
 import { SolareaViewId } from '../storage-adapters/SolareaViewId';
@@ -61,6 +61,7 @@ export function useLoadAccountComponent(
 
         await loadScript(id.id, viewCode, {
           Render,
+          render,
           add(component, options = {}): void {
             component.displayName = id.id;
             addComponent(address, name, context, options, component);

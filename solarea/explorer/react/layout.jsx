@@ -41,7 +41,8 @@ add(({ children }) => {
 
   return (
     <div>
-      <Render id="explorer" name="layout-menu" />
+      <Render id="explorer" name="acc-css" />
+      <Render id="explorer" name="layout-header" />
       <div class="bu-container bu-is-max-desktop explorer-layout m-b-16 m-t-16">
         <input
           ref={input}
