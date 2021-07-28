@@ -1,3 +1,13 @@
-exports = () => {
-  return 'Toast';
+const toastmaker = await require('https://unpkg.com/toastmaker@1.0.9/dist/toastmaker.js');
+
+console.log(toastmaker);
+
+const toast = (text, timeOut = 5000, backgroundColor = '#5d7b44') => {
+  return toastmaker(text, 5000, {
+    styles: { fontSize: '18px', backgroundColor },
+    valign: 'top',
+  });
 };
+
+exports.toast = toast;
+exports.error = (text, timeOut = 5000) => toast(text, timeOut, 'red');
