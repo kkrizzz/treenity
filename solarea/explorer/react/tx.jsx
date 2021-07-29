@@ -7,7 +7,7 @@ const navigate = (tab) => {
 const BulmaCard = render('dev', 'bulma-card');
 const Instruction = render('', 'instruction', 'react-list');
 const InstructionName = render('', 'instruction', 'react-text');
-const ProgramName = render('', 'name', 'react-text');
+const AccountName = render('', 'name', 'react-text');
 
 const InstructionDefault = ({ instruction }) => {
   const programPubkey = instruction.programId.toBase58();
@@ -15,7 +15,7 @@ const InstructionDefault = ({ instruction }) => {
     <div>
       <TwoColumn
         ft="Program"
-        sc={<ProgramName id={programPubkey} fallback={() => programPubkey} />}
+        sc={<AccountName id={programPubkey} fallback={() => programPubkey} />}
         lk={`/address/${programPubkey}`}
       />
       {instruction.keys.map((key, index) => {
@@ -23,7 +23,7 @@ const InstructionDefault = ({ instruction }) => {
         return (
           <TwoColumn
             ft={`Account #${index + 1}`}
-            sc={<ProgramName id={accountPubkey} fallback={() => accountPubkey} />}
+            sc={<AccountName id={accountPubkey} fallback={() => accountPubkey} />}
             lk={`/address/${accountPubkey}`}
           />
         );
@@ -159,24 +159,18 @@ const lpsRound = (lamports) => {
   return (lamports * LPS).toFixed(6);
 };
 
+const InfoCard = (t) => (
+  <div className="bu-container bu-is-max-desktop">
+    <BulmaCard header={t} />
+  </div>
+);
+
 add((props) => {
-  if (!props.entityId) return <div>Transaction not specified</div>;
+  if (!props.entityId) return InfoCard('Transaction not specified');
   const [tx, isLoading] = useTransaction(props.entityId);
 
-  if (isLoading) {
-    return (
-      <div className="bu-container bu-is-max-desktop">
-        <BulmaCard header="Loading transaction" />
-      </div>
-    );
-  }
-  if (!tx) {
-    return (
-      <div className="bu-container bu-is-max-desktop">
-        <BulmaCard header="Transaction not found" />
-      </div>
-    );
-  }
+  if (isLoading) return InfoCard('Loading transaction');
+  if (!tx) return InfoCard('Transaction not found');
 
   const signature = bs58.encode(tx.transaction.signatures[0].signature);
   return (

@@ -1,5 +1,7 @@
 {
   "/solarea": {
-    "target": "http://localhost:3100/"
+    "target": "http://localhost:3100/",
+    "_target": "https://solarea.io/",
+    "_changeOrigin": true
   }
 }

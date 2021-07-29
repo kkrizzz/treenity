@@ -31,8 +31,9 @@ const loadFromFs = async (app, context: ctx, value: any) => {
     if (!value.fileSystem) throw new Error('no filesystem');
     const checkInFs = await fs
       .readFile(`${value.fileSystem}/${context.id}.jsx`, 'utf-8')
+      .catch(() => fs.readFile(`${value.fileSystem}/${context.id.replace(/~/g, '/')}.jsx`, 'utf-8'))
       .catch(() =>
-        fs.readFile(`${value.fileSystem}/${context.id.replace(/~/g, '/')}.jsx`, 'utf-8'),
+        fs.readFile(`${value.fileSystem}/-/${context.id.replace(/~/g, '/')}.jsx`, 'utf-8'),
       );
     if (checkInFs)
       context.result = {
