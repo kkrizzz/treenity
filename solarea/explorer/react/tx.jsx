@@ -5,22 +5,40 @@ const navigate = (tab) => {
 };
 
 const BulmaCard = render('dev', 'bulma-card');
+const Instruction = render('', 'instruction', 'react-list');
+const InstructionName = render('', 'instruction', 'react-text');
 
 const InstructionDefault = ({ instruction }) => {
   return <BulmaCard header={'Default: ' + instruction.programId.toBase58()} />;
 };
-
-const Instruction = render('', 'instruction', 'react-list');
+const InstructionDefaultText = ({ instruction }) => {
+  return 'Default: ' + instruction.programId.toBase58();
+};
 
 const TransactionInstructions = ({ tx }) => {
-  return tx.transaction.instructions.map((inst, index) => (
-    <Instruction
-      id={inst.programId.toBase58()}
-      instruction={inst}
-      transaction={tx}
-      fallback={() => <InstructionDefault instruction={inst} />}
-    />
-  ));
+  return (
+    <div>
+      <BulmaCard header="Instructions" />
+      {tx.transaction.instructions.map((inst, index) => (
+        <BulmaCard
+          header={
+            <InstructionName
+              id={inst.programId.toBase58()}
+              instruction={inst}
+              fallback={() => <InstructionDefaultText instruction={inst} />}
+            />
+          }
+        >
+          <Instruction
+            id={inst.programId.toBase58()}
+            instruction={inst}
+            transaction={tx}
+            fallback={() => <InstructionDefault instruction={inst} />}
+          />
+        </BulmaCard>
+      ))}
+    </div>
+  );
 };
 
 const AccountInputs = ({ tx }) => {
@@ -35,7 +53,7 @@ const AccountInputs = ({ tx }) => {
         let publicKey = key.toBase58();
         return (
           <div className="bu-columns bu-is-mobile overflow-auto">
-            <div className="bu-column bu-is-6 text-overflow link">
+            <div className="bu-column bu-is-6 text-overflow tc-link">
               <Render id="dev" name="link" to={`/address/${publicKey}`}>
                 <Render
                   id={publicKey}
@@ -45,10 +63,10 @@ const AccountInputs = ({ tx }) => {
                 />
               </Render>
             </div>
-            <div className="bu-column bu-is-3">
+            <div className="bu-column bu-is-3 tc-monospace">
               {((tx.meta.postBalances[index] - tx.meta.preBalances[index]) * LPS).toFixed(6)}
             </div>
-            <div className="bu-column bu-is-3">
+            <div className="bu-column bu-is-3 tc-monospace">
               {(tx.meta.postBalances[index] * LPS).toFixed(6)}
             </div>
           </div>
@@ -58,30 +76,41 @@ const AccountInputs = ({ tx }) => {
   );
 };
 
-const TwoColumn = ({ ft, sc, is, lk }) => {
-  if (!is) is = 4;
+const TransactionLog = ({ tx }) => {
+  return (
+    <BulmaCard header="Log messages">
+      <div class="bu-notification tc-monospace" style={{ background: '#232323', margin: '-1rem' }}>
+        {tx.meta.logMessages.map((text) => (
+          <div>{text}</div>
+        ))}
+      </div>
+    </BulmaCard>
+  );
+};
+
+const TwoColumn = ({ ft, sc, is = 4, lk }) => {
   useCSS(
     'two-column.css',
     `
-   .link {
+   .tc-link {
      font-family: monospace;
      color: #0790d4;
      cursor: pointer;
    }
-   .link:hover {
+   .tc-link:hover {
      color: #006ba0;
+   }
+   .tc-monospace {
+     font-family: monospace;
    }
   `,
   );
-  const handleClick = () => {
-    window.history.pushState({}, '', `${lk}`);
-  };
   return (
     <div class="bu-columns bu-is-mobile">
       <div class={`bu-column bu-is-${is} text-overflow`}>{ft}</div>
-      <div className="bu-column">
+      <div className="bu-column tc-monospace">
         {lk ? (
-          <Render id="dev" name="link" className="link" to={lk}>
+          <Render id="dev" name="link" className="tc-link" to={lk}>
             {sc}
           </Render>
         ) : (
@@ -93,13 +122,12 @@ const TwoColumn = ({ ft, sc, is, lk }) => {
 };
 
 const LPS = 0.000000001;
-const SYSTEM_PROGRAM = '11111111111111111111111111111111';
 const lpsRound = (lamports) => {
   return (lamports * LPS).toFixed(6);
 };
 
 add((props) => {
-  if (!props.entityId) return <div>Transaction not found</div>;
+  if (!props.entityId) return <div>Transaction not specified</div>;
   const [tx, isLoading] = useTransaction(props.entityId);
 
   if (isLoading) {
@@ -124,19 +152,19 @@ add((props) => {
       <BulmaCard header="Overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
-            <TwoColumn ft="Signature" sc={signature} />
-            <TwoColumn ft="Block" sc={tx.slot} lk={`/block/${tx.slot}`} />
-            <TwoColumn ft="Result" sc={tx.meta.err ? 'Error' : 'Success'} />
-            <TwoColumn ft="Timestamp" sc={new Date(tx.blockTime * 1000).toLocaleString()} />
-            <TwoColumn ft="Fee" sc={`${lpsRound(tx.meta.fee)} SOL`} />
+            <TwoColumn is={2} ft="Signature" sc={signature} />
+            <TwoColumn is={2} ft="Block" sc={tx.slot} lk={`/block/${tx.slot}`} />
+            <TwoColumn is={2} ft="Result" sc={tx.meta.err ? 'Error' : 'Success'} />
+            <TwoColumn is={2} ft="Timestamp" sc={new Date(tx.blockTime * 1000).toLocaleString()} />
+            <TwoColumn is={2} ft="Fee" sc={`${lpsRound(tx.meta.fee)} SOL`} />
           </div>
         </div>
       </BulmaCard>
       <BulmaCard header="Account Inputs">
         <AccountInputs tx={tx} />
       </BulmaCard>
-      <BulmaCard header="Instructions" />
       <TransactionInstructions tx={tx} />
+      <TransactionLog tx={tx} />
     </div>
   );
 });
