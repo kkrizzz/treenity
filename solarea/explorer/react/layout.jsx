@@ -1,9 +1,5 @@
 require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 
-const { toast } = await require('solarea://dev/toast');
-
-console.log('toast', toast());
-
 const { bs58 } = solarea;
 
 const search = (id) => {

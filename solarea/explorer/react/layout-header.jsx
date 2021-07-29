@@ -1,5 +1,5 @@
 // NavLink
-// const { toast } = await require('solarea://explorer/toast/code');
+const { toast } = await require('solarea://dev/toast');
 
 function NavLink({ to, children, className = '' }) {
   const active = window.location.href.endsWith(to);
@@ -25,7 +25,7 @@ add(() => {
     if (url.startsWith('http')) {
       setCluster(url);
     } else {
-      // toast('Wrong cluster url format, start from `http`')
+      toast('Wrong cluster url format, should start with `http`', 3000, '#f14668');
     }
   };
 
