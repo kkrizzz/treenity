@@ -1,1 +1,1 @@
-add(({ id }) => `Serum V3: ${id}`);
+add(({ id }) => `Serum V3`);

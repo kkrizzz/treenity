@@ -33,7 +33,10 @@ add(({ transaction, entityId }) => {
           </Render>
         </span>
       </div>
-      <div class="bu-column bu-is-6 bu-is-mobile" style={{ display: 'flex', gap: 4 }}>
+      <div
+        class="bu-column bu-is-6 bu-is-mobile tags"
+        style={{ display: 'flex', gap: 4, overflow: 'auto' }}
+      >
         {instructions}
       </div>
       <div class="bu-column bu-is-mobile">

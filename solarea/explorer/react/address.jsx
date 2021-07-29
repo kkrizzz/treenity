@@ -1,5 +1,7 @@
 const DEFAULT_ENTITY = 'EoQH6QBC8Jjww5DGd1W5h7q3ccMh8LVEXHvMkrHkkce7';
 
+const AccountName = render('', 'name', 'react-text');
+
 const TwoColumn = ({ ft, sc, is, lk }) => {
   if (!is) is = 4;
   useCSS(
@@ -52,6 +54,7 @@ add((props) => {
             <span class="spinner"></span>
           ) : (
             <div class="bu-column">
+              <TwoColumn ft="Label" sc={<AccountName id={props.entityId} />} />
               <TwoColumn ft="Address" sc={props.entityId} />
               <TwoColumn ft="Data" sc={`${acc ? acc.data.length : 0} bytes`} />
               <TwoColumn ft="Balance" sc={`${lpsRound(acc ? acc.lamports : 0)} SOL`} />
