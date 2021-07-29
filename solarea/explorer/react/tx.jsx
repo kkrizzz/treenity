@@ -7,12 +7,45 @@ const navigate = (tab) => {
 const BulmaCard = render('dev', 'bulma-card');
 const Instruction = render('', 'instruction', 'react-list');
 const InstructionName = render('', 'instruction', 'react-text');
+const ProgramName = render('', 'name', 'react-text');
 
 const InstructionDefault = ({ instruction }) => {
-  return <BulmaCard header={'Default: ' + instruction.programId.toBase58()} />;
+  const programPubkey = instruction.programId.toBase58();
+  return (
+    <div>
+      <TwoColumn
+        ft="Program"
+        sc={<ProgramName id={programPubkey} fallback={() => programPubkey} />}
+        lk={`/address/${programPubkey}`}
+      />
+      {instruction.keys.map((key, index) => {
+        const accountPubkey = key.pubkey.toBase58();
+        return (
+          <TwoColumn
+            ft={`Account #${index + 1}`}
+            sc={<ProgramName id={accountPubkey} fallback={() => accountPubkey} />}
+            lk={`/address/${accountPubkey}`}
+          />
+        );
+      })}
+      <div className="bu-columns bu-is-mobile" style={{ justifyContent: 'space-between' }}>
+        <div className={`bu-column bu-is-4 text-overflow`}>Data</div>
+        <div
+          className="bu-column tc-monospace"
+          style={{
+            overflowWrap: 'anywhere',
+            background: '#232323',
+            maxWidth: 440,
+          }}
+        >
+          {instruction.data.toString('hex')}
+        </div>
+      </div>
+    </div>
+  );
 };
 const InstructionDefaultText = ({ instruction }) => {
-  return 'Default: ' + instruction.programId.toBase58();
+  return 'Unknown intruction';
 };
 
 const TransactionInstructions = ({ tx }) => {
@@ -108,7 +141,7 @@ const TwoColumn = ({ ft, sc, is = 4, lk }) => {
   return (
     <div class="bu-columns bu-is-mobile">
       <div class={`bu-column bu-is-${is} text-overflow`}>{ft}</div>
-      <div className="bu-column tc-monospace">
+      <div className="bu-column tc-monospace bu-has-text-right">
         {lk ? (
           <Render id="dev" name="link" className="tc-link" to={lk}>
             {sc}
