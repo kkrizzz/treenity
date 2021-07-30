@@ -4,6 +4,7 @@ import { useCluster, useConnection } from './hooks/useConnection';
 import { useTransaction } from './hooks/useTransaction';
 import { useBlock } from './hooks/useBlock';
 import { useLocalStorageState } from './hooks/useLocalStorageState';
+import { useSolanaRpc } from './hooks/useSolanaRpc';
 
 globalThis.React = preact;
 globalThis.ReactDOM = preact;
@@ -14,4 +15,5 @@ globalThis.solarea = {
   useLocalStorageState,
   useCluster,
   useConnection,
+  useSolanaRpc,
 };
