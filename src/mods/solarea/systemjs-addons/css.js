@@ -15,10 +15,10 @@ hook('instantiate', function (next, loadUrl) {
   }
 
   return new Promise(async function (resolve, reject) {
-    const has = document.querySelector(`link[id="${url}"]`);
-    if (has) {
-      has.remove();
-    }
+    // const has = document.querySelector(`link[id="${url}"]`);
+    // if (has) {
+    //   has.remove();
+    // }
     const req = await fetch(url);
     let css = await req.text();
     if (prefix !== url) {

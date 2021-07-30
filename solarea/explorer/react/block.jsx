@@ -1,9 +1,8 @@
-const { lpsRound } = await require('solarea://explorer/utils');
 const { useBlock } = solarea;
 
 const BulmaCard = render('dev', 'bulma-card', 'react');
 const TwoColumn = render('dev', 'two-column');
-const TransactionRow = render('explorer', 'react-table', 'transaction');
+const TransactionRow = render('explorer', 'transaction', 'react-table');
 
 add(({ entityId }) => {
   const [block, loading] = useBlock(+entityId);

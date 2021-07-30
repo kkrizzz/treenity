@@ -14,6 +14,7 @@ function NavLink({ to, children, className = '' }) {
     </a>
   );
 }
+const Link = render('dev', 'link');
 
 add(() => {
   const [, clusterUrl, setCluster] = solarea.useCluster();
@@ -33,9 +34,9 @@ add(() => {
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
       <div class="bu-container bu-is-max-desktop">
         <div className="bu-navbar-brand">
-          <a className="bu-navbar-item" href="https://explorer.velas.com">
+          <Link className="bu-navbar-item" to="/explorer">
             <Render id="velas" name="logo" />
-          </a>
+          </Link>
 
           <a
             role="button"

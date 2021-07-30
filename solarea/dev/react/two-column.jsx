@@ -18,7 +18,7 @@ add(({ first, second, is = 4, link: lk }) => {
   return (
     <div class="bu-columns bu-is-mobile">
       <div class={`bu-column bu-is-${is} text-overflow`}>{first}</div>
-      <div className="bu-column tc-monospace bu-has-text-right">
+      <div className="bu-column tc-monospace bu-has-text-right overflow-hidden">
         {lk ? (
           <Render id="dev" name="link" className="tc-link" to={lk}>
             {second}

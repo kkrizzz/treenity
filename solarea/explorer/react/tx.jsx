@@ -11,6 +11,7 @@ const TwoColumn = render('dev', 'two-column');
 const Instruction = render('', 'instruction', 'react-list');
 const InstructionName = render('', 'instruction', 'react-text');
 const AccountName = render('', 'name', 'react-text');
+const SuccessBadge = render('dev', 'success-badge', 'react');
 
 const InstructionDefault = ({ instruction }) => {
   const programPubkey = instruction.programId.toBase58();
@@ -100,10 +101,10 @@ const AccountInputs = ({ tx }) => {
               </Render>
             </div>
             <div className="bu-column bu-is-3 tc-monospace">
-              {((tx.meta.postBalances[index] - tx.meta.preBalances[index]) * LPS).toFixed(6)}
+              {lpsRound(tx.meta.postBalances[index] - tx.meta.preBalances[index], 6)}
             </div>
             <div className="bu-column bu-is-3 tc-monospace">
-              {(tx.meta.postBalances[index] * LPS).toFixed(6)}
+              {lpsRound(tx.meta.postBalances[index], 6)}
             </div>
           </div>
         );
@@ -142,17 +143,21 @@ add((props) => {
     <div class="bu-container bu-is-max-desktop">
       <BulmaCard header={<div class="flex-between">Transaction</div>} />
       <BulmaCard header="Overview">
-        <div class="bu-columns" style={{ overflowY: 'auto' }}>
-          <div class="bu-column">
-            <TwoColumn is={2} first="Signature" second={signature} />
+        <div class="bu-columns">
+          <div class="bu-column overflow-hidden">
+            <TwoColumn
+              is={2}
+              first="Signature"
+              second={<div class="text-overflow">{signature}</div>}
+            />
             <TwoColumn is={2} first="Block" second={tx.slot} lk={`/block/${tx.slot}`} />
-            <TwoColumn is={2} first="Result" second={tx.meta.err ? 'Error' : 'Success'} />
+            <TwoColumn is={2} first="Result" second={<SuccessBadge success={!tx.meta?.err} />} />
             <TwoColumn
               is={2}
               first="Timestamp"
               second={new Date(tx.blockTime * 1000).toLocaleString()}
             />
-            <TwoColumn is={2} first="Fee" second={`${lpsRound(tx.meta.fee, 6)} SOL`} />
+            <TwoColumn is={2} first="Fee" second={`${lpsRound(tx.meta?.fee || 0, 6)} SOL`} />
           </div>
         </div>
       </BulmaCard>

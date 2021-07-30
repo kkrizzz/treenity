@@ -42,7 +42,7 @@ add(({ transaction, signature }) => {
         {instructions}
       </div>
       <div class="bu-column bu-is-mobile">
-        <Render id="dev" name="success-badge" success={!transaction.meta.err} />
+        <Render id="dev" name="success-badge" success={!transaction.meta?.err} />
       </div>
     </div>
   );

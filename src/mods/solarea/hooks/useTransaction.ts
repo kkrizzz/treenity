@@ -6,8 +6,10 @@ import { ConfirmedTransaction } from '@solana/web3.js';
 export function useTransaction(signature: string): [ConfirmedTransaction | null, boolean] {
   const [connection, clusterUrl] = useCluster();
 
-  const { data: transaction, isLoading } = useQuery(`transaction_${signature}_${clusterUrl}`, () =>
-    connection.getConfirmedTransaction(signature),
+  const { data: transaction, isLoading } = useQuery(
+    `transaction_${signature}_${clusterUrl}`,
+    () => connection.getConfirmedTransaction(signature),
+    { cacheTime: 15 * 60 * 1000, refetchOnWindowFocus: false, staleTime: 30 * 60 * 1000 },
   );
 
   useMemo(() => {

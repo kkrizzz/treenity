@@ -38,6 +38,9 @@ add(({ children }) => {
   );
 
   const input = React.useRef();
+  const setSearch = () => {
+    search(input.current.value);
+  };
 
   return (
     <div>
@@ -49,8 +52,9 @@ add(({ children }) => {
           id="exp-l-id"
           class="bu-input bu-is-primary explorer-layout-input"
           placeholder="Search for accounts, transactions, blocks..."
+          onKeyPress={(evt) => evt.code === 'Enter' && setSearch()}
         />
-        <div onClick={() => search(input.current.value)} class="bu-button explorer-layout-button">
+        <div onClick={setSearch} class="bu-button explorer-layout-button">
           <Render id="icons" name="search" />
         </div>
       </div>

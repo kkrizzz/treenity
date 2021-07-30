@@ -21,10 +21,10 @@ function humanizeFormatter(num, digits) {
   return item ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol : '0';
 }
 
-const ProgressBar = () => {
+const ProgressBar = ({ percent = '100' }) => {
   return (
-    <progress className="bu-progress bu-is-small bu-is-success" max="100">
-      100%
+    <progress className="bu-progress bu-is-small bu-is-success" value={percent} max="100">
+      {percent}%
     </progress>
   );
 };
@@ -121,16 +121,15 @@ const SupplyStats = ({ currentSupply }) => {
   );
 };
 
+const { useSolanaWeb3 } = solarea;
+
 add(() => {
-  const [currentSupply, isSupplyLoading] = solarea.useSolanaRpc('getSupply', 'finalized');
-  const [epochInfo, isEpochInfoLoading] = solarea.useSolanaRpc('getEpochInfo');
-  const [recentPerformance, isRecentPerformanceLoading] = solarea.useSolanaRpc(
+  const [currentSupply, isSupplyLoading] = useSolanaWeb3('getSupply', 'finalized');
+  const [epochInfo, isEpochInfoLoading] = useSolanaWeb3('getEpochInfo');
+  const [recentPerformance, isRecentPerformanceLoading] = useSolanaWeb3(
     'getRecentPerformanceSamples',
   );
-  const [voteAccounts, isVoteAccountsLoading] = solarea.useSolanaRpc(
-    'getVoteAccounts',
-    'finalized',
-  );
+  const [voteAccounts, isVoteAccountsLoading] = useSolanaWeb3('getVoteAccounts', 'finalized');
 
   const { data: coinData, isLoading: isSolanaDataLoading } = solarea.useQuery(
     'solana_coin_data',
@@ -140,6 +139,7 @@ add(() => {
   const cards = [SupplyStats, StakeStats, PriceStats];
 
   const isLoading = isSupplyLoading || isVoteAccountsLoading || isSolanaDataLoading;
+  const epochProgress = !isEpochInfoLoading && (epochInfo.slotIndex / epochInfo.slotsInEpoch) * 100;
   return (
     <Render id="explorer" name="layout">
       <div className="bu-container bu-is-max-desktop">
@@ -178,7 +178,12 @@ add(() => {
               <TwoColumn first="Epoch" second={epochInfo.epoch} />
               <TwoColumn
                 first="Epoch progress"
-                second={((epochInfo.slotIndex / epochInfo.slotsInEpoch) * 100).toFixed(1) + '%'}
+                second={
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div class="m-r-8">{epochProgress.toFixed(1) + '%'}</div>
+                    <ProgressBar percent={epochProgress.toFixed(1)} />
+                  </div>
+                }
               />
             </div>
           )}

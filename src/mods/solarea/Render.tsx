@@ -41,8 +41,8 @@ function Render({
   render,
   ...more
 }: RenderProps) {
-  console.log('rendering', id, name, context);
   const [componentInfo, isLoading] = useLoadAccountComponent(id, name, context);
+  console.log('rendering', id, name, context, isLoading);
   if (isLoading) return <div className="spinner" />;
 
   if (!componentInfo) {

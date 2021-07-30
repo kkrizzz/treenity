@@ -18,13 +18,14 @@ export function useLoadAccountComponent(
 ): [any, boolean] {
   if (!addressRegEx.test(address)) throw new Error('bad address');
 
-  const [loading, setLoading] = useState(true);
+  const config = getComponent(address, name, context);
+
+  const [loading, setLoading] = useState(!config);
 
   useEffect(() => {
     if (!getComponent(address, name, context)) setLoading(true);
   }, [address, name, context]);
 
-  const config = getComponent(address, name, context);
   if (config || !loading) {
     // need this one empty to match next one
     useAsyncEffect(async () => {

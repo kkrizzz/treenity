@@ -11,10 +11,33 @@ const InfoCard = (t) => (
   </div>
 );
 
+const useLoadSignaturesInfinite = (entityId, limit = 10) => {
+  const connection = solarea.useConnection();
+  const { data: txsData, isLoading: isTxLoading, fetchNextPage } = solarea.useInfiniteQuery(
+    ['accountSignatures', entityId],
+    ({ pageParam }) => {
+      console.log(pageParam, 'pageParam');
+      return connection.getConfirmedSignaturesForAddress2(
+        { toBase58: () => entityId },
+        {
+          limit,
+          before: pageParam,
+        },
+      );
+    },
+    {
+      getNextPageParam: (lastPage, pages) => lastPage[lastPage.length - 1].signature,
+    },
+  );
+  return [txsData?.pages.flat(), isTxLoading, () => fetchNextPage()];
+};
+
 add(({ entityId }) => {
   if (!entityId) return InfoCard('Address not specified');
   const [acc, isLoading] = useAccount(entityId);
-  const [txs, isTxLoading] = useAccountTransactions(entityId);
+
+  // const [txs, isTxLoading] = useAccountTransactions(entityId);
+  const [txs, isTxLoading, txFetchNext] = useLoadSignaturesInfinite(entityId, 10);
 
   if (isLoading) return InfoCard('Account loading . . .');
 
@@ -51,6 +74,12 @@ add(({ entityId }) => {
             ) : (
               txs && txs.map((tx) => <TransactionRow signature={tx.signature} />)
             )}
+            <button
+              className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+              onClick={txFetchNext}
+            >
+              Load more...
+            </button>
           </div>
         </div>
       </BulmaCard>

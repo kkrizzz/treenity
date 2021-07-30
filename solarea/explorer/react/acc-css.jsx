@@ -55,6 +55,10 @@ add(() => {
     white-space: nowrap;
   }
   
+  .overflow-hidden {
+    overflow: hidden;
+  }
+  
   .text-overflow {
     overflow: hidden;
     text-overflow: ellipsis;

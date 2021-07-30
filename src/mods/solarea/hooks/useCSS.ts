@@ -2,22 +2,16 @@ import React from 'react';
 
 globalThis.useCSSprop = [];
 
-globalThis.removeAlluseCSSprop = () => {
-  globalThis.useCSSprop.forEach((link) => link.remove());
-  globalThis.useCSSprop = [];
-};
+// globalThis.removeAlluseCSSprop = () => {
+//   globalThis.useCSSprop.forEach((link) => link.remove());
+//   globalThis.useCSSprop = [];
+// };
 
 export const useCSS = (id, css) => {
   const [isReady, setIsReady] = React.useState(false);
 
   React.useLayoutEffect(() => {
     setIsReady(false);
-
-    const oldLink = document.querySelector(`link[id="${id}"]`);
-
-    if (oldLink) {
-      oldLink.remove();
-    }
 
     const cssBlob = new Blob([css], { type: 'text/css' });
     const cssBlobUrl = window.URL.createObjectURL(cssBlob);
