@@ -1,7 +1,5 @@
 import { ServiceMethods } from '@feathersjs/feathers';
 import { errors, FeathersError } from '@feathersjs/errors';
-import { MONGO_SERVICE_URL } from '../config';
-import { SolareaViewData } from './IStorageAdapter';
 
 function checkError(req: any) {
   if (req.status >= 300) {

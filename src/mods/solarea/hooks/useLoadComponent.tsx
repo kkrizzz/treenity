@@ -11,8 +11,6 @@ import { SolareaViewData } from '../storage-adapters/IStorageAdapter';
 
 const addressRegEx = /^[A-z0-9:\.\-_]+$/;
 
-const makeDefaultData = (id) => new SolareaViewData(id, 0x1, Buffer.from('add(() => "not found")'));
-
 export function useLoadAccountComponent(
   address: string,
   name: string,

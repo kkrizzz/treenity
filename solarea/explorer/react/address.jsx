@@ -1,87 +1,59 @@
-const DEFAULT_ENTITY = 'EoQH6QBC8Jjww5DGd1W5h7q3ccMh8LVEXHvMkrHkkce7';
+const { lpsRound } = await require('solarea://explorer/utils');
 
 const AccountName = render('', 'name', 'react-text');
+const BulmaCard = render('dev', 'bulma-card', 'react');
+const TwoColumn = render('dev', 'two-column');
+const TransactionRow = render('explorer', 'transaction', 'react-table');
 
-const TwoColumn = ({ ft, sc, is, lk }) => {
-  if (!is) is = 4;
-  useCSS(
-    'two-column.css',
-    `
-   .link {
-     font-family: monospace;
-     color: #0790d4;
-     cursor: pointer;
-   }
-   .link:hover {
-     color: #006ba0;
-   }
-  `,
-  );
-  return (
-    <div class="bu-columns bu-is-mobile">
-      <div class={`bu-column bu-is-${is} text-overflow ${lk ? 'link' : ''}`}>
-        <Render id="dev" name="link" to={`/tx/${lk}`}>
-          {ft}
-        </Render>
-      </div>
-      <div class="bu-column bu-is-mobile">{sc}</div>
-    </div>
-  );
-};
+const InfoCard = (t) => (
+  <div class="bu-container bu-is-max-desktop">
+    <BulmaCard header={t} />
+  </div>
+);
 
-const LPS = 0.000000001;
+add(({ entityId }) => {
+  if (!entityId) return InfoCard('Address not specified');
+  const [acc, isLoading] = useAccount(entityId);
+  const [txs, isTxLoading] = useAccountTransactions(entityId);
 
-const lpsRound = (lamports) => {
-  return (lamports * LPS).toFixed(4);
-};
+  if (isLoading) return InfoCard('Account loading . . .');
 
-add((props) => {
-  if (!props.entityId) props.entityId = DEFAULT_ENTITY;
-  const [acc, isLoading] = useAccount(props.entityId);
-  const [txs, isTxLoading] = useAccountTransactions(props.entityId);
-  const defaultView = Render({ id: props.entityId });
   return (
     <div class="bu-container bu-is-max-desktop">
-      <Render id="dev" name="bulma-card" header={<div class="flex-between">Account</div>} />
-      {defaultView && defaultView.type != '() => "not found"' && (
-        <Render id="dev" name="bulma-card" header="View">
-          <Render id={props.entityId}></Render>
-        </Render>
-      )}
-      <Render id="dev" name="bulma-card" header="Overview">
+      <BulmaCard header={<div class="flex-between">Account</div>} />
+      <Render
+        id={entityId}
+        render={(item) => <BulmaCard header="View">{item}</BulmaCard>}
+        fallback={() => null}
+      />
+      <BulmaCard header="Overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
-          {isLoading ? (
-            <span class="spinner"></span>
-          ) : (
-            <div class="bu-column">
-              <TwoColumn ft="Label" sc={<AccountName id={props.entityId} />} />
-              <TwoColumn ft="Address" sc={props.entityId} />
-              <TwoColumn ft="Data" sc={`${acc ? acc.data.length : 0} bytes`} />
-              <TwoColumn ft="Balance" sc={`${lpsRound(acc ? acc.lamports : 0)} SOL`} />
-            </div>
-          )}
+          <div class="bu-column">
+            <TwoColumn first="Label" second={<AccountName id={entityId} />} />
+            <TwoColumn first="Address" second={entityId} />
+            <TwoColumn first="Data" second={`${acc ? acc.data.length : 0} bytes`} />
+            <TwoColumn first="Balance" second={`${lpsRound(acc ? acc.lamports : 0)} SOL`} />
+          </div>
         </div>
-      </Render>
-      <Render id="dev" name="bulma-card" header="Transactions">
+      </BulmaCard>
+      <BulmaCard header="Transactions">
         <div class="bu-columns">
           <div class="bu-column text-overflow">
-            <TwoColumn is={8} ft="Signature" sc="Age" />
+            <div class="bu-columns bu-is-mobile">
+              <div class="bu-column bu-is-4 text-overflow bu-is-code">Signature</div>
+              <div class="bu-column bu-is-6 bu-is-mobile">Instruction</div>
+              <div class="bu-column bu-is-mobile">Age</div>
+            </div>
             {isTxLoading ? (
-              <span class="spinner" />
+              <progress class="bu-progress bu-is-small bu-is-success" max="100">
+                100%
+              </progress>
             ) : (
-              txs &&
-              txs.map((tx) => (
-                <TwoColumn
-                  lk={tx.signature}
-                  is={8}
-                  ft={tx.signature}
-                  sc={<Render id="dev" name="time-ago" date={new Date(tx.blockTime * 1000)} />}
-                />
-              ))
+              txs && txs.map((tx) => <TransactionRow signature={tx.signature} />)
             )}
           </div>
         </div>
-      </Render>
+      </BulmaCard>
     </div>
   );
 });

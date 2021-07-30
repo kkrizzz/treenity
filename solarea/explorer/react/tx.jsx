@@ -1,3 +1,5 @@
+const { lpsRound } = await require('solarea://explorer/utils');
+
 const { useTransaction, bs58 } = solarea;
 
 const navigate = (tab) => {
@@ -5,6 +7,7 @@ const navigate = (tab) => {
 };
 
 const BulmaCard = render('dev', 'bulma-card');
+const TwoColumn = render('dev', 'two-column');
 const Instruction = render('', 'instruction', 'react-list');
 const InstructionName = render('', 'instruction', 'react-text');
 const AccountName = render('', 'name', 'react-text');
@@ -14,16 +17,16 @@ const InstructionDefault = ({ instruction }) => {
   return (
     <div>
       <TwoColumn
-        ft="Program"
-        sc={<AccountName id={programPubkey} fallback={() => programPubkey} />}
+        first="Program"
+        second={<AccountName id={programPubkey} fallback={() => programPubkey} />}
         lk={`/address/${programPubkey}`}
       />
       {instruction.keys.map((key, index) => {
         const accountPubkey = key.pubkey.toBase58();
         return (
           <TwoColumn
-            ft={`Account #${index + 1}`}
-            sc={<AccountName id={accountPubkey} fallback={() => accountPubkey} />}
+            first={`Account #${index + 1}`}
+            second={<AccountName id={accountPubkey} fallback={() => accountPubkey} />}
             lk={`/address/${accountPubkey}`}
           />
         );
@@ -121,44 +124,6 @@ const TransactionLog = ({ tx }) => {
   );
 };
 
-const TwoColumn = ({ ft, sc, is = 4, lk }) => {
-  useCSS(
-    'two-column.css',
-    `
-   .tc-link {
-     font-family: monospace;
-     color: #0790d4;
-     cursor: pointer;
-   }
-   .tc-link:hover {
-     color: #006ba0;
-   }
-   .tc-monospace {
-     font-family: monospace;
-   }
-  `,
-  );
-  return (
-    <div class="bu-columns bu-is-mobile">
-      <div class={`bu-column bu-is-${is} text-overflow`}>{ft}</div>
-      <div className="bu-column tc-monospace bu-has-text-right">
-        {lk ? (
-          <Render id="dev" name="link" className="tc-link" to={lk}>
-            {sc}
-          </Render>
-        ) : (
-          sc
-        )}
-      </div>
-    </div>
-  );
-};
-
-const LPS = 0.000000001;
-const lpsRound = (lamports) => {
-  return (lamports * LPS).toFixed(6);
-};
-
 const InfoCard = (t) => (
   <div className="bu-container bu-is-max-desktop">
     <BulmaCard header={t} />
@@ -179,11 +144,15 @@ add((props) => {
       <BulmaCard header="Overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
-            <TwoColumn is={2} ft="Signature" sc={signature} />
-            <TwoColumn is={2} ft="Block" sc={tx.slot} lk={`/block/${tx.slot}`} />
-            <TwoColumn is={2} ft="Result" sc={tx.meta.err ? 'Error' : 'Success'} />
-            <TwoColumn is={2} ft="Timestamp" sc={new Date(tx.blockTime * 1000).toLocaleString()} />
-            <TwoColumn is={2} ft="Fee" sc={`${lpsRound(tx.meta.fee)} SOL`} />
+            <TwoColumn is={2} first="Signature" second={signature} />
+            <TwoColumn is={2} first="Block" second={tx.slot} lk={`/block/${tx.slot}`} />
+            <TwoColumn is={2} first="Result" second={tx.meta.err ? 'Error' : 'Success'} />
+            <TwoColumn
+              is={2}
+              first="Timestamp"
+              second={new Date(tx.blockTime * 1000).toLocaleString()}
+            />
+            <TwoColumn is={2} first="Fee" second={`${lpsRound(tx.meta.fee, 6)} SOL`} />
           </div>
         </div>
       </BulmaCard>

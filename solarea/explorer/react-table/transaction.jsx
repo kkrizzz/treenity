@@ -6,11 +6,13 @@ function shortString(str, max) {
   return str;
 }
 
-add(({ transaction, entityId }) => {
+add(({ transaction, signature }) => {
   let loading = false;
   if (!transaction) {
-    [transaction, loading] = solarea.useTransaction(entityId);
+    [transaction, loading] = solarea.useTransaction(signature);
   }
+
+  if (loading) return 'loading...';
 
   const instructions = transaction.transaction.instructions.map((i) => (
     <Render
@@ -23,7 +25,7 @@ add(({ transaction, entityId }) => {
     />
   ));
 
-  const signature = solarea.bs58.encode(transaction.transaction.signatures[0].signature);
+  signature = signature || solarea.bs58.encode(transaction.transaction.signatures[0].signature);
   return (
     <div class="bu-columns bu-is-mobile">
       <div class="bu-column bu-is-4 text-overflow bu-is-code">
