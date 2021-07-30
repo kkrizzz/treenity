@@ -32,7 +32,7 @@ function jsonToViewData(json: Entry): SolareaViewData {
       : new SolareaViewData(
           SolareaViewId.fromString(json._id),
           json.type,
-          Buffer.from(json.data, 'binary'),
+          Buffer.from(json.data, 'utf-8'),
           owners,
         );
   data.dataSource = 'rest';

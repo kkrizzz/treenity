@@ -57,6 +57,31 @@ const StakeStats = ({ voteAccounts, currentSupply }) => {
   );
 };
 
+const PriceStats = ({ coinData }) => {
+  const marketData = coinData.market_data;
+  const priceChangePercentage24h = marketData.price_change_percentage_24h;
+  return (
+    <div>
+      <div className="bu-is-size-5 bu-has-text-black">Price</div>
+      <div>
+        <div className="bu-is-size-3 bu-has-text-primary">
+          ${marketData.current_price.usd}
+          <span className="bu-is-size-5 bu-has-text-black">
+            {priceChangePercentage24h >= 0 ? '↑' : '↓'}
+          </span>
+          <span className="bu-is-size-5 bu-has-text-black">
+            {priceChangePercentage24h.toFixed(2)}%
+          </span>
+        </div>
+      </div>
+      <div className="bu-is-size-5 bu-has-text-primary">
+        <span className="bu-is-size-5 bu-has-text-black">24h Vol $</span>
+        {humanizeFormatter(marketData.total_volume.usd, 1)}
+      </div>
+    </div>
+  );
+};
+
 const SupplyStats = ({ currentSupply }) => {
   const { circulating, total: totalSupply } = currentSupply.value;
   return (
@@ -85,15 +110,11 @@ add(() => {
     'getVoteAccounts',
     'finalized',
   );
-  // try {
-  //   const [solanaData, isSolanaDataLoading] = solarea.useQuery('solana_coin_data', () => {
-  //     console.log('wqeqwe');
-  //   });
-  // } catch (e) {
-  //   console.log(e);
-  // }
 
-  //console.log('solanaData', solanaData);
+  const { data: coinData, isLoading: isSolanaDataLoading } = solarea.useQuery(
+    'solana_coin_data',
+    () => fetch('https://api.coingecko.com/api/v3/coins/solana').then((res) => res.json()),
+  );
 
   const isLoading = isSupplyLoading || isVoteAccountsLoading;
   return (
@@ -120,7 +141,7 @@ add(() => {
               </div>
               <div className="bu-column">
                 <div className="bu-box bu-is-primary">
-                  <SupplyStats currentSupply={currentSupply} />
+                  <PriceStats coinData={coinData} />
                 </div>
               </div>
             </div>
