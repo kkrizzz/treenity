@@ -119,7 +119,6 @@ add(() => {
   const isLoading = isSupplyLoading || isVoteAccountsLoading;
   return (
     <Render id="explorer" name="layout">
-      <Render id="explorer" name="test" />
       <div className="bu-container bu-is-max-desktop">
         <BulmaCard>
           {isLoading ? (
