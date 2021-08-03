@@ -10,6 +10,20 @@ add(() => {
   .container {
     padding: 0;
   }
+  .bu-tabs a { 
+    font-weight: 900;
+    color: white;
+    padding: 0.5em 0;
+    margin-right: 2em
+  }
+  .bu-tabs a:hover {
+    border-bottom-color: #755cfd !important;
+    color: #755cfd !important;
+  }
+  .bu-tabs li.bu-is-active a {
+    border-bottom-color: #00d1b2 !important;
+    color: #00d1b2 !important;
+  }
   .bu-card {
     color: white;
     background: #282945;
