@@ -56,10 +56,10 @@ add(() => {
             <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/tokens">
               Tokens
             </NavLink>
-            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/blocks">
+            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/blocks?chain=evm">
               Blocks
             </NavLink>
-            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/blocks">
+            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/transactions">
               Transactions
             </NavLink>
             <div className="bu-navbar-item bu-has-dropdown bu-is-hoverable">
