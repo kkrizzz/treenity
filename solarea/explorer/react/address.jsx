@@ -32,8 +32,36 @@ const useLoadSignaturesInfinite = (entityId, limit = 10) => {
   return [txsData?.pages.flat(), isTxLoading, () => fetchNextPage()];
 };
 
-add(({ entityId }) => {
-  if (!entityId) return InfoCard('Address not specified');
+const LPS = 0.000000000000000001;
+
+const EthereumAddressView = ({ entityId }) => {
+  const [balance, isLoading] = solarea.useWeb3Rpc('eth_getBalance', entityId, 'latest');
+
+  const [transactionCount, isTransactionCountLoading] = solarea.useWeb3Rpc(
+    'eth_getTransactionCount',
+    entityId,
+    'latest',
+  );
+
+  if (isLoading || isTransactionCountLoading) return InfoCard('Account loading . . .');
+
+  return (
+    <div className="bu-container bu-is-max-desktop">
+      <BulmaCard header="Overview">
+        <TwoColumn first="Address" second={entityId} />
+        <TwoColumn first="Transaction count" second={parseInt(transactionCount.result, 16)} />
+        <TwoColumn
+          first="Balance"
+          second={`${(parseInt(balance.result, 16) * LPS).toFixed(8)} VLX`}
+        />
+      </BulmaCard>
+      <BulmaCard header="Transactions"></BulmaCard>
+      <BulmaCard header="Token holdings"></BulmaCard>
+    </div>
+  );
+};
+
+const SolanaAddressView = ({ entityId }) => {
   const [acc, isLoading] = useAccount(entityId);
 
   // const [txs, isTxLoading] = useAccountTransactions(entityId);
@@ -85,4 +113,16 @@ add(({ entityId }) => {
       </BulmaCard>
     </div>
   );
+};
+
+const EntityTypes = {
+  solana: SolanaAddressView,
+  ethereum: EthereumAddressView,
+};
+
+add(({ entityId, entityType }) => {
+  entityType = entityId.startsWith('0x') ? 'ethereum' : 'solana';
+  if (!entityId || !entityType) return InfoCard('Address not specified');
+
+  return EntityTypes[entityType]({ entityId, entityType });
 });

@@ -20,7 +20,7 @@ const InstructionDefault = ({ instruction }) => {
       <TwoColumn
         first="Program"
         second={<AccountName id={programPubkey} fallback={() => programPubkey} />}
-        lk={`/address/${programPubkey}`}
+        link={`/address/${programPubkey}`}
       />
       {instruction.keys.map((key, index) => {
         const accountPubkey = key.pubkey.toBase58();
@@ -28,7 +28,7 @@ const InstructionDefault = ({ instruction }) => {
           <TwoColumn
             first={`Account #${index + 1}`}
             second={<AccountName id={accountPubkey} fallback={() => accountPubkey} />}
-            lk={`/address/${accountPubkey}`}
+            link={`/address/${accountPubkey}`}
           />
         );
       })}

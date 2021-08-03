@@ -53,13 +53,15 @@ add(() => {
 
         <div id="navbarBasicExample" className="bu-navbar-menu">
           <div className="bu-navbar-end">
-            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/cluster">
-              Cluster stats
+            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/tokens">
+              Tokens
             </NavLink>
-            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/supply">
-              Supply
+            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/blocks">
+              Blocks
             </NavLink>
-
+            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/blocks">
+              Transactions
+            </NavLink>
             <div className="bu-navbar-item bu-has-dropdown bu-is-hoverable">
               <div className="bu-buttons">
                 <a className="bu-button bu-is-primary">

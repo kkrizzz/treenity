@@ -7,6 +7,7 @@ import { useLocalStorageState } from './hooks/useLocalStorageState';
 import { useSolanaRpc, useSolanaWeb3 } from './hooks/useSolanaRpc';
 import { useQuery, useInfiniteQuery } from 'react-query';
 import { PublicKey } from '@solana/web3.js';
+import { useWeb3Rpc } from './hooks/useWeb3Rpc';
 
 globalThis.React = preact;
 globalThis.ReactDOM = preact;
@@ -21,6 +22,7 @@ globalThis.solarea = {
   useSolanaWeb3,
   useQuery,
   useInfiniteQuery,
+  useWeb3Rpc,
 };
 
 globalThis.solanaWeb3 = {

@@ -4,12 +4,18 @@ const { bs58 } = solarea;
 
 const search = (id) => {
   let exName;
+  let exType;
+
+  const has0x = id.startsWith('0x');
+  const isEthAddress = id.length === 42 && has0x;
 
   if (id.length >= 64 && bs58.decodeUnsafe(id)?.length === 64) {
     exName = 'tx';
-  } else if (id.length >= 32 && bs58.decode(id)?.length === 32) {
+  } else if ((id.length >= 32 && bs58.decodeUnsafe(id)?.length === 32) || isEthAddress) {
     exName = 'address';
-  } else if (!Number.isNaN(parseInt(id))) exName = 'block';
+  } else if (!Number.isNaN(parseInt(id, 10))) {
+    exName = 'block';
+  }
 
   if (exName) window.history.pushState({}, '', `/${exName}/${id}`);
 };
