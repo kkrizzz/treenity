@@ -42,7 +42,7 @@ exports.tokenRegExp = new RegExp(`  <td class="stakes-td">
   <td class="stakes-td">
     <span class="mr-4">
       <span data-test="transaction_count">
-.*
+(.*)
     <\\/span>
   <\\/td>
 <\\/tr>`);
