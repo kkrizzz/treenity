@@ -15,10 +15,12 @@ function NavLink({ to, children, className = '' }) {
   );
 }
 const Link = render('dev', 'link');
+const Switch = render('dev', 'switch');
 
 add(() => {
   const [, clusterUrl, setCluster] = solarea.useCluster();
   const setNetwork = (url) => () => setCluster(url);
+  const [isDarkTheme, setIsDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
 
   const custom = preact.useRef();
   const setCustomUrl = () => {
@@ -53,6 +55,9 @@ add(() => {
 
         <div id="navbarBasicExample" className="bu-navbar-menu">
           <div className="bu-navbar-end">
+            <Switch value={isDarkTheme} onChange={setIsDarkTheme}>
+              {isDarkTheme ? '🌙' : '☀'}️
+            </Switch>
             <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/tokens">
               Tokens
             </NavLink>
