@@ -30,7 +30,7 @@ export const useCSS = (id, css) => {
     };
 
     return () => {
-      link.remove();
+      setTimeout(() => link.remove(), 0);
     };
   }, [id, css]);
 

@@ -23,7 +23,6 @@ const lightThemeCss = `
     width: inherit !important;
   }
   .bu-card-header {
-      color: white;
       box-shadow: none !important; 
   }
 `;
@@ -59,7 +58,6 @@ html {
     color: white;
   }
   .bu-card-header {
-      color: white;
       box-shadow: none !important; 
   }
   .bu-card:before {
@@ -87,6 +85,11 @@ add(() => {
   useCSS(
     'bulma-overrides.css',
     `
+    *, *::before, *::after {
+      transition-property: background-color, color;
+      transition-duration: 500ms, 100ms;
+    }
+    
   .container {
     padding: 0;
   }

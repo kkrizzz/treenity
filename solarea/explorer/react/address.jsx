@@ -26,7 +26,7 @@ const useLoadSignaturesInfinite = (entityId, limit = 10) => {
       );
     },
     {
-      getNextPageParam: (lastPage, pages) => lastPage[lastPage.length - 1].signature,
+      getNextPageParam: (lastPage, pages) => lastPage[lastPage.length - 1]?.signature,
     },
   );
   return [txsData?.pages.flat(), isTxLoading, () => fetchNextPage()];
@@ -84,6 +84,7 @@ const SolanaAddressView = ({ entityId }) => {
             <TwoColumn first="Address" second={entityId} />
             <TwoColumn first="Data" second={`${acc ? acc.data.length : 0} bytes`} />
             <TwoColumn first="Balance" second={`${lpsRound(acc ? acc.lamports : 0)} SOL`} />
+            <TwoColumn first="Owner" second={acc.owner.toString()} />
           </div>
         </div>
       </BulmaCard>

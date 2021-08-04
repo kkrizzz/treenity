@@ -11,7 +11,10 @@ const search = (id) => {
 
   if (id.length >= 64 && bs58.decodeUnsafe(id)?.length === 64) {
     exName = 'tx';
-  } else if ((id.length >= 32 && bs58.decodeUnsafe(id)?.length === 32) || isEthAddress) {
+  } else if (
+    (id.length >= 32 && (bs58.decodeUnsafe(id)?.length === 32 || id.length === 43)) ||
+    isEthAddress
+  ) {
     exName = 'address';
   } else if (!Number.isNaN(parseInt(id, 10))) {
     exName = 'block';
