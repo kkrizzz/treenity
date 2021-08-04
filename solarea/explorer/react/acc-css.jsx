@@ -6,7 +6,7 @@ const lightThemeCss = `
    }
 .bu-tabs a { 
     font-weight: 900;
-    color: white;
+    color: black;
     padding: 0.5em 0;
     margin-right: 2em
   }
@@ -36,7 +36,7 @@ html {
 }
 .bu-tabs a { 
     font-weight: 900;
-    color: black;
+    color: white;
     padding: 0.5em 0;
     margin-right: 2em
   }
