@@ -1,18 +1,42 @@
-add(() => {
-  useCSS(
-    'bulma-overrides.css',
-    `
+const lightThemeCss = `
    html { 
     padding: 0;
     margin: 0;
-    background: #1c1d31 !important;
+    background: #white !important;
    }
-  .container {
-    padding: 0;
-  }
-  .bu-tabs a { 
+.bu-tabs a { 
     font-weight: 900;
     color: white;
+    padding: 0.5em 0;
+    margin-right: 2em
+  }
+  .bu-tabs a:hover {
+    border-bottom-color: #755cfd !important;
+    color: #755cfd !important;
+  }
+  .bu-tabs li.bu-is-active a {
+    border-bottom-color: #00d1b2 !important;
+    color: #00d1b2 !important;
+  }
+  .bu-card {
+    padding: 8px;
+    width: inherit !important;
+  }
+  .bu-card-header {
+      color: white;
+      box-shadow: none !important; 
+  }
+`;
+
+const darkThemeCss = `
+html { 
+ padding: 0;
+ margin: 0;
+ background: #1c1d31 !important;
+}
+.bu-tabs a { 
+    font-weight: 900;
+    color: black;
     padding: 0.5em 0;
     margin-right: 2em
   }
@@ -56,13 +80,25 @@ add(() => {
     border-width: 0 1rem 1rem 0;
     right: 0;
     top: 0;
-}
+}`;
+
+add(() => {
+  const [isDarkTheme, setIsDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
+  useCSS(
+    'bulma-overrides.css',
+    `
+  .container {
+    padding: 0;
+  }
+  
   .flex-between {
     flex:1;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
+  
+  ${isDarkTheme ? darkThemeCss : lightThemeCss}
   
   .overflow-auto {
     overflow: auto;
