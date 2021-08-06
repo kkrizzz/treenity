@@ -131,7 +131,7 @@ const InfoCard = (t) => (
   </div>
 );
 
-add((props) => {
+const SolanaTxView = (props) => {
   if (!props.entityId) return InfoCard('Transaction not specified');
   const [tx, isLoading] = useTransaction(props.entityId);
 
@@ -141,7 +141,7 @@ add((props) => {
   const signature = bs58.encode(tx.transaction.signatures[0].signature);
   return (
     <div class="bu-container bu-is-max-desktop">
-      <BulmaCard header={<div class="flex-between">Transaction</div>} />
+      <BulmaCard header="Transaction" />
       <BulmaCard header="Overview">
         <div class="bu-columns">
           <div class="bu-column overflow-hidden">
@@ -168,4 +168,50 @@ add((props) => {
       <TransactionLog tx={tx} />
     </div>
   );
+};
+
+const LPS = 0.000000000000000001;
+
+const EthereumTxView = ({ entityId }) => {
+  const [tx, isLoading] = solarea.useWeb3Rpc('eth_getTransactionByHash', entityId);
+
+  if (isLoading) return InfoCard('Loading transaction');
+  if (!tx || !tx.result) return InfoCard('Transaction not found');
+
+  const { hash, from, to, blockNumber, nonce, value } = tx.result;
+
+  const parsedBlockNumber = parseInt(blockNumber, 16);
+  const parsedNonce = parseInt(nonce, 16);
+  return (
+    <div className="bu-container bu-is-max-desktop">
+      <BulmaCard header="Transaction" />
+      <BulmaCard>
+        <div className="bu-column overflow-hidden">
+          <TwoColumn is={2} first="Hash" second={<div className="text-overflow">{hash}</div>} />
+          <TwoColumn
+            is={2}
+            first="Block"
+            link={`/block/${parsedBlockNumber}?chain=evm`}
+            second={parsedBlockNumber}
+          />
+          <TwoColumn is={2} first="From" link={`/address/${from}`} second={from} />
+          <TwoColumn is={2} first="To" link={`/address/${to}`} second={to} />
+          <TwoColumn is={2} first="Value" second={(parseInt(value, 16) * LPS).toFixed(16)} />
+          <TwoColumn is={2} first="Nonce" second={parsedNonce} />
+        </div>
+      </BulmaCard>
+    </div>
+  );
+};
+
+const EntityTypes = {
+  sol: SolanaTxView,
+  evm: EthereumTxView,
+};
+
+add((props) => {
+  const entityType = props.entityId.startsWith('0x') ? 'evm' : 'sol';
+  if (!props.entityId) return InfoCard('Address not specified');
+
+  return EntityTypes[entityType](props);
 });

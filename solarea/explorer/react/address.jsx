@@ -117,12 +117,12 @@ const SolanaAddressView = ({ entityId }) => {
 };
 
 const EntityTypes = {
-  solana: SolanaAddressView,
-  ethereum: EthereumAddressView,
+  sol: SolanaAddressView,
+  evm: EthereumAddressView,
 };
 
 add(({ entityId, entityType }) => {
-  entityType = entityId.startsWith('0x') ? 'ethereum' : 'solana';
+  entityType = entityId.startsWith('0x') ? 'evm' : 'sol';
   if (!entityId || !entityType) return InfoCard('Address not specified');
 
   return EntityTypes[entityType]({ entityId, entityType });
