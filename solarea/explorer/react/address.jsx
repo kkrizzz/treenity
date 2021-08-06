@@ -68,6 +68,7 @@ const SolanaAddressView = ({ entityId }) => {
   const [txs, isTxLoading, txFetchNext] = useLoadSignaturesInfinite(entityId, 10);
 
   if (isLoading) return InfoCard('Account loading . . .');
+  if (!acc) return InfoCard('Account not found');
 
   return (
     <div class="bu-container bu-is-max-desktop">
@@ -82,8 +83,8 @@ const SolanaAddressView = ({ entityId }) => {
           <div class="bu-column">
             <TwoColumn first="Label" second={<AccountName id={entityId} />} />
             <TwoColumn first="Address" second={entityId} />
-            <TwoColumn first="Data" second={`${acc ? acc.data.length : 0} bytes`} />
-            <TwoColumn first="Balance" second={`${lpsRound(acc ? acc.lamports : 0)} SOL`} />
+            <TwoColumn first="Data" second={`${acc.data.length} bytes`} />
+            <TwoColumn first="Balance" second={`${lpsRound(acc.lamports)} SOL`} />
             <TwoColumn first="Owner" second={acc.owner.toString()} />
           </div>
         </div>
