@@ -17,6 +17,14 @@ function NavLink({ to, children, className = '' }) {
 const Link = render('dev', 'link');
 const Switch = render('dev', 'switch');
 
+const NETWORKS = [
+  ['Velas', 'https://mainnet.velas.com/rpc'],
+  ['Velas Testnet', 'https://testnet.velas.com/rpc'],
+  ['Solana Mainnet', 'mainnet-beta'],
+  ['Solana Testnet', 'testnet'],
+  ['Solana Devnet', 'devnet'],
+];
+
 add(() => {
   const [, clusterUrl, setCluster] = solarea.useCluster();
   const setNetwork = (url) => () => setCluster(url);
@@ -74,27 +82,11 @@ add(() => {
                 </a>
 
                 <div className="bu-navbar-dropdown">
-                  <a
-                    onClick={setNetwork('https://mainnet.velas.com/rpc')}
-                    className="bu-navbar-item"
-                  >
-                    Velas
-                  </a>
-                  <a
-                    onClick={setNetwork('https://testnet.velas.com/rpc')}
-                    className="bu-navbar-item"
-                  >
-                    Velas Testnet
-                  </a>
-                  <a onClick={setNetwork('mainnet-beta')} className="bu-navbar-item">
-                    Solana Mainnet
-                  </a>
-                  <a onClick={setNetwork('testnet')} className="bu-navbar-item">
-                    Solana Testnet
-                  </a>
-                  <a onClick={setNetwork('devnet')} className="bu-navbar-item">
-                    Solana Devnet
-                  </a>
+                  {NETWORKS.map(([name, url]) => (
+                    <a onClick={setNetwork(url)} className="bu-navbar-item">
+                      {name}
+                    </a>
+                  ))}
                   <div className="bu-navbar-item bu-is-align-items-center">
                     <input
                       id="cluster-url-input"

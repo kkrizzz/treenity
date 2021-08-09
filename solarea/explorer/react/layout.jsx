@@ -8,8 +8,9 @@ const search = (id) => {
 
   const has0x = id.startsWith('0x');
   const isEthAddress = id.length === 42 && has0x;
+  const isEthTx = id.length === 66 && has0x;
 
-  if (id.length >= 64 && bs58.decodeUnsafe(id)?.length === 64) {
+  if ((id.length >= 64 && bs58.decodeUnsafe(id)?.length === 64) || isEthTx) {
     exName = 'tx';
   } else if (
     (id.length >= 32 && (bs58.decodeUnsafe(id)?.length === 32 || id.length === 43)) ||
@@ -21,6 +22,28 @@ const search = (id) => {
   }
 
   if (exName) window.history.pushState({}, '', `/${exName}/${id}`);
+};
+
+const Search = ({ onChange }) => {
+  const input = React.useRef();
+  const setSearch = () => {
+    onChange(input.current.value);
+  };
+
+  return (
+    <>
+      <input
+        ref={input}
+        id="exp-l-id"
+        className="bu-input bu-is-primary explorer-layout-input"
+        placeholder="Search for accounts, transactions, blocks..."
+        onKeyPress={(evt) => evt.code === 'Enter' && setSearch()}
+      />
+      <div onClick={setSearch} className="bu-button explorer-layout-button">
+        <Render id="icons" name="search" />
+      </div>
+    </>
+  );
 };
 
 add(({ children }) => {
@@ -46,26 +69,12 @@ add(({ children }) => {
   `,
   );
 
-  const input = React.useRef();
-  const setSearch = () => {
-    search(input.current.value);
-  };
-
   return (
     <div>
       <Render id="explorer" name="acc-css" />
       <Render id="explorer" name="layout-header" />
       <div class="bu-container bu-is-max-desktop explorer-layout m-b-16 m-t-16">
-        <input
-          ref={input}
-          id="exp-l-id"
-          class="bu-input bu-is-primary explorer-layout-input"
-          placeholder="Search for accounts, transactions, blocks..."
-          onKeyPress={(evt) => evt.code === 'Enter' && setSearch()}
-        />
-        <div onClick={setSearch} class="bu-button explorer-layout-button">
-          <Render id="icons" name="search" />
-        </div>
+        <Search onChange={search} />
       </div>
       {children}
     </div>
