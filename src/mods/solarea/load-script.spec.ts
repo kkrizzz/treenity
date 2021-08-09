@@ -73,5 +73,26 @@ describe('load-script', () => {
       </Render>\`
       `);
     });
+    it('compile fragment', () => {
+      const htmlText = reactToHtmPreact(`
+      <>
+        <Render id="dev" name="bulma-card" header="Account Inputs">
+          {isLoading ? <span class="spinner"></span> : <AccountInputs tx={tx}></AccountInputs>}
+        </Render>
+        <div />
+      </>
+      `);
+
+      console.log(htmlText);
+
+      expect(htmlText).toBe(`
+      html\`
+        <\${Render} id="dev" name="bulma-card" header="Account Inputs">
+          \${isLoading ? html\`<span class="spinner"></span>\` : html\`<\${AccountInputs} tx=\${tx}></AccountInputs>\`}
+        </Render>
+        <div />
+      \`
+      `);
+    });
   });
 });

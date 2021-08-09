@@ -39,6 +39,14 @@ function fixHtmlInnerCode(code: string) {
   return fixedCode;
 }
 
+function fixFragments(jsxText: string) {
+  if (jsxText.startsWith('<>') && jsxText.endsWith('</>')) {
+    jsxText = jsxText.slice(2, -3);
+  }
+
+  return jsxText;
+}
+
 export function reactToHtmPreact(execCode: string) {
   const tags: number[] = [];
   let prev = 0;
@@ -52,13 +60,13 @@ export function reactToHtmPreact(execCode: string) {
       const start = tags.pop()!;
       const end = c === '<' ? execCode.indexOf('>', i) + 1 : i + 2;
       if (!tags.length) {
+        let jsxText = fixHtmlInnerCode(execCode.slice(start, end).trim())
+          // .replace(/\{(.*?)\}/g, '${$1}')
+          .replace(/<([A-Z][\w\d_]*)/g, '<${$1}');
+        jsxText = fixFragments(jsxText);
+
         fixedCode += execCode.slice(prev, start);
-        fixedCode +=
-          'html`' +
-          fixHtmlInnerCode(execCode.slice(start, end))
-            // .replace(/\{(.*?)\}/g, '${$1}')
-            .replace(/<([A-Z][\w\d_]*)/g, '<${$1}') +
-          '`';
+        fixedCode += 'html`' + jsxText + '`';
         prev = end;
         i = prev;
       }
