@@ -32,15 +32,8 @@ function ComponentWrapper({ id, name, context, children, props, more }) {
   );
 }
 
-function Render({
-  id,
-  name = 'default',
-  context = 'react',
-  children,
-  fallback,
-  render,
-  ...more
-}: RenderProps) {
+function Render(props: RenderProps) {
+  const { id, name = 'default', context = 'react', children, fallback, render, ...more } = props;
   const [componentInfo, isLoading] = useLoadAccountComponent(id, name, context);
   console.log('rendering', id, name, context, isLoading);
   if (isLoading) return <div className="spinner" />;
@@ -97,7 +90,7 @@ function Render({
   return result;
 }
 
-export const render = (id: string, name: string, context: string) => (props) =>
-  Render({ id, name, context, ...props });
+export const render = (id: string, name: string, context: string, defProps) => (props) =>
+  Render({ id, name, context, ...defProps, ...props });
 
 export default Render;

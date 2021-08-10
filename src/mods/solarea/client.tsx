@@ -20,7 +20,13 @@ import { StorageProvider } from './storage-adapters/StorageProvider';
 
 config.isClient = true;
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export const solareaApi = new SolareaProgramApi();
 

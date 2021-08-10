@@ -62,13 +62,13 @@ const EthereumAddressView = ({ entityId }) => {
 };
 
 const SolanaAddressView = ({ entityId }) => {
-  const [acc, isLoading] = useAccount(entityId);
+  const [account, isLoading] = useAccount(entityId);
 
   // const [txs, isTxLoading] = useAccountTransactions(entityId);
   const [txs, isTxLoading, txFetchNext] = useLoadSignaturesInfinite(entityId, 10);
 
   if (isLoading) return InfoCard('Account loading . . .');
-  if (!acc) return InfoCard('Account not found');
+  if (!account) return InfoCard('Account not found');
 
   return (
     <div class="bu-container bu-is-max-desktop">
@@ -78,14 +78,22 @@ const SolanaAddressView = ({ entityId }) => {
         render={(item) => <BulmaCard header="View">{item}</BulmaCard>}
         fallback={() => null}
       />
+      <Render
+        id={account.owner.toString()}
+        name="owner-program"
+        account={account}
+        entityId={entityId}
+        render={(item) => <BulmaCard header="By owner">{item}</BulmaCard>}
+        fallback={() => null}
+      />
       <BulmaCard header="Overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
             <TwoColumn first="Label" second={<AccountName id={entityId} />} />
             <TwoColumn first="Address" second={entityId} />
-            <TwoColumn first="Data" second={`${acc.data.length} bytes`} />
-            <TwoColumn first="Balance" second={`${lpsRound(acc.lamports)} SOL`} />
-            <TwoColumn first="Owner" second={acc.owner.toString()} />
+            <TwoColumn first="Data" second={`${account.data.length} bytes`} />
+            <TwoColumn first="Balance" second={`${lpsRound(account.lamports)} SOL`} />
+            <TwoColumn first="Owner" second={<AccountName id={account.owner.toString()} />} />
           </div>
         </div>
       </BulmaCard>

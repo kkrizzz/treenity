@@ -9,7 +9,6 @@ import { useApp } from '../../treenity/react/useApp';
 import mongoService from 'feathers-mongodb';
 import search from 'feathers-mongodb-fuzzy-search';
 import createClientDb from '../mongo/mongod';
-import { Transaction } from '@solana/web3.js';
 
 const RestServiceMeta = meta(
   'rest.service',
