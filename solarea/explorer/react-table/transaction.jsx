@@ -36,12 +36,15 @@ add(({ transaction, signature }) => {
         </span>
       </div>
       <div
-        class="bu-column bu-is-6 bu-is-mobile tags"
+        class="bu-column bu-is-4 bu-is-mobile tags"
         style={{ display: 'flex', gap: 4, overflow: 'auto' }}
       >
         {instructions}
       </div>
-      <div class="bu-column bu-is-mobile">
+      <div className="bu-column bu-is-2 bu-is-mobile">
+        <Render id="dev" name="time-ago" date={new Date(transaction.blockTime * 1000)} />
+      </div>
+      <div class="bu-column bu-is-2 bu-is-mobile">
         <Render id="dev" name="success-badge" success={!transaction.meta?.err} />
       </div>
     </div>

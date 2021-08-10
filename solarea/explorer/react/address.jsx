@@ -101,8 +101,9 @@ const SolanaAddressView = ({ entityId }) => {
           <div class="bu-column text-overflow">
             <div class="bu-columns bu-is-mobile">
               <div class="bu-column bu-is-4 text-overflow bu-is-code">Signature</div>
-              <div class="bu-column bu-is-6 bu-is-mobile">Instruction</div>
-              <div class="bu-column bu-is-mobile">Age</div>
+              <div class="bu-column bu-is-4 bu-is-mobile">Instruction</div>
+              <div class="bu-column bu-is-2 bu-is-mobile">Age</div>
+              <div class="bu-column bu-is-mobile">Result</div>
             </div>
             {isTxLoading ? (
               <progress class="bu-progress bu-is-small bu-is-success" max="100">
