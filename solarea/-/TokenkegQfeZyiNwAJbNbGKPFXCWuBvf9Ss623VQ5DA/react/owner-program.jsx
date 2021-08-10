@@ -11,7 +11,9 @@ const MintLayout = BufferLayout.struct([
 ]);
 
 const TwoColumn = render('dev', 'two-column');
-const AccountName = render('', 'name', 'react-text');
+const AccountName = render('', 'name', 'react-text', {
+  fallback: ({ id }) => id,
+});
 
 add(({ account, entityId }) => {
   const decoded = MintLayout.decode(account.data);
@@ -41,10 +43,9 @@ add(({ account, entityId }) => {
       <TwoColumn first="mintAuthority" second={<AccountName id={decoded.mintAuthority} />} />
       <TwoColumn first="freezeAuthority" second={<AccountName id={decoded.freezeAuthority} />} />
       <TwoColumn first="Decimals" second={decoded.decimals} />
-      {['mintAuthority', 'freezeAuthority'].map((name) => (
-        <TwoColumn first={name} second={decoded[name].toString()} />
-      ))}
-      {tokensInfo && <TwoColumn first="Logo" second={<img src={tokensInfo.logoURI} />} />}
+      {tokensInfo && (
+        <TwoColumn first="Logo" second={<img src={tokensInfo.logoURI} width={64} height={64} />} />
+      )}
       {tokensInfo &&
         ['name', 'symbol'].map((name) => (
           <TwoColumn first={name} second={tokensInfo[name].toString()} />

@@ -39,7 +39,7 @@ function Render(props: RenderProps) {
   if (isLoading) return <div className="spinner" />;
 
   if (!componentInfo) {
-    if (fallback !== undefined) return fallback();
+    if (fallback !== undefined) return fallback(props);
     return 'not found';
   }
 
@@ -85,7 +85,7 @@ function Render(props: RenderProps) {
     console.error('Render', id, context, name, e);
   }
 
-  if (render) return render(result);
+  if (render) return render(result, props);
 
   return result;
 }
