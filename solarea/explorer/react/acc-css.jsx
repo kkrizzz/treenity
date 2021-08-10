@@ -78,6 +78,13 @@ html {
     border-width: 0 1rem 1rem 0;
     right: 0;
     top: 0;
+}
+
+.bu-title {
+   color: white;
+}
+.bu-subtitle {
+   color: white;
 }`;
 
 add(() => {

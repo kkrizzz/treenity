@@ -1,5 +1,7 @@
 const { BufferLayout, SolanaLayout } = solarea;
 
+const BulmaCard = render('dev', 'bulma-card');
+
 const MintLayout = BufferLayout.struct([
   BufferLayout.u32('mintAuthorityOption'),
   SolanaLayout.publicKeyString('mintAuthority'),
@@ -17,7 +19,8 @@ const AccountName = render('', 'name', 'react-text', {
 
 add(({ account, entityId }) => {
   const decoded = MintLayout.decode(account.data);
-  console.log(decoded);
+  const [viewMore, setViewMore] = React.useState(false);
+
   const [tokensData, isTokenLoading] = solarea.useGraphQL(
     '/solana/tokens',
     `{
@@ -36,20 +39,57 @@ add(({ account, entityId }) => {
   const tokensInfo = tokensData?.data.allTokens?.[0];
 
   return (
-    <div>
-      <TwoColumn first="Name" second="Value" />
+    <BulmaCard>
+      {tokensInfo && (
+        <div className="bu-media">
+          <div className="bu-media-left">
+            <figure className="bu-image bu-is-48x48">
+              <img src={tokensInfo.logoURI} alt="Placeholder image" />
+            </figure>
+          </div>
+          <div className="bu-media-content">
+            <p className="bu-title bu-is-4">
+              {tokensInfo.name.toString()}
+              <div className="m-l-8 bu-tag bu-is-light">{tokensInfo.symbol}</div>
+            </p>
+            <p className="bu-subtitle bu-is-6">Token</p>
+          </div>
+          <div className="bu-media-right">
+            <div
+              onClick={() => setViewMore(!viewMore)}
+              style={{ cursor: 'pointer' }}
+              className="bu-tag bu-is-link"
+            >
+              {viewMore ? 'Hide ↑' : 'More ↓'}
+            </div>
+          </div>
+        </div>
+      )}
       <TwoColumn first="Supply" second={decoded.supply / Math.pow(10, decoded.decimals)} />
       <TwoColumn first="Decimals" second={decoded.decimals} />
-      <TwoColumn first="mintAuthority" second={<AccountName id={decoded.mintAuthority} />} />
-      <TwoColumn first="freezeAuthority" second={<AccountName id={decoded.freezeAuthority} />} />
-      <TwoColumn first="Decimals" second={decoded.decimals} />
-      {tokensInfo && (
-        <TwoColumn first="Logo" second={<img src={tokensInfo.logoURI} width={64} height={64} />} />
+      {tokensInfo && tokensInfo.extensions?.website && (
+        <TwoColumn
+          first="Website"
+          second={
+            <a target="_blank" href={tokensInfo.extensions.website}>
+              {tokensInfo.extensions.website}
+            </a>
+          }
+        />
       )}
-      {tokensInfo &&
-        ['name', 'symbol'].map((name) => (
-          <TwoColumn first={name} second={tokensInfo[name].toString()} />
-        ))}
-    </div>
+      {viewMore && (
+        <div>
+          <TwoColumn
+            first="Mint Authority"
+            link={`/address/${decoded.mintAuthority}`}
+            second={<AccountName id={decoded.mintAuthority} />}
+          />
+          <TwoColumn
+            first="Freeze Authority"
+            second={<AccountName id={decoded.freezeAuthority} />}
+          />
+        </div>
+      )}
+    </BulmaCard>
   );
 });

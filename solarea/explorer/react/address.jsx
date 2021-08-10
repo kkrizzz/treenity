@@ -83,7 +83,6 @@ const SolanaAddressView = ({ entityId }) => {
         name="owner-program"
         account={account}
         entityId={entityId}
-        render={(item) => <BulmaCard header="By owner">{item}</BulmaCard>}
         fallback={() => null}
       />
       <BulmaCard header="Overview">
