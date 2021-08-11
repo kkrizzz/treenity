@@ -61,6 +61,9 @@ const EthereumAddressView = ({ entityId }) => {
   );
 };
 
+const TokenBalances = render('explorer', 'address-tokens');
+const Tabs = render('dev', 'tabs');
+
 const SolanaAddressView = ({ entityId }) => {
   const [account, isLoading] = useAccount(entityId);
 
@@ -69,6 +72,41 @@ const SolanaAddressView = ({ entityId }) => {
 
   if (isLoading) return InfoCard('Account loading . . .');
   if (!account) return InfoCard('Account not found');
+
+  const tabs = [
+    {
+      name: 'Transactions',
+      content: () => (
+        <div className="bu-columns">
+          <div className="bu-column text-overflow">
+            <div className="bu-columns bu-is-mobile">
+              <div className="bu-column bu-is-4 text-overflow bu-is-code">Signature</div>
+              <div className="bu-column bu-is-4 bu-is-mobile">Instruction</div>
+              <div className="bu-column bu-is-2 bu-is-mobile">Age</div>
+              <div className="bu-column bu-is-mobile">Result</div>
+            </div>
+            {isTxLoading ? (
+              <progress className="bu-progress bu-is-small bu-is-success" max="100">
+                100%
+              </progress>
+            ) : (
+              txs && txs.map((tx) => <TransactionRow signature={tx.signature} />)
+            )}
+            <button
+              className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+              onClick={txFetchNext}
+            >
+              Load more...
+            </button>
+          </div>
+        </div>
+      ),
+    },
+    {
+      name: 'Tokens',
+      content: () => <TokenBalances entityId={entityId} />,
+    },
+  ];
 
   return (
     <div class="bu-container bu-is-max-desktop">
@@ -96,29 +134,9 @@ const SolanaAddressView = ({ entityId }) => {
           </div>
         </div>
       </BulmaCard>
-      <BulmaCard header="Transactions">
-        <div class="bu-columns">
-          <div class="bu-column text-overflow">
-            <div class="bu-columns bu-is-mobile">
-              <div class="bu-column bu-is-4 text-overflow bu-is-code">Signature</div>
-              <div class="bu-column bu-is-4 bu-is-mobile">Instruction</div>
-              <div class="bu-column bu-is-2 bu-is-mobile">Age</div>
-              <div class="bu-column bu-is-mobile">Result</div>
-            </div>
-            {isTxLoading ? (
-              <progress class="bu-progress bu-is-small bu-is-success" max="100">
-                100%
-              </progress>
-            ) : (
-              txs && txs.map((tx) => <TransactionRow signature={tx.signature} />)
-            )}
-            <button
-              className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
-              onClick={txFetchNext}
-            >
-              Load more...
-            </button>
-          </div>
+      <BulmaCard>
+        <div style={{ marginTop: -16 }}>
+          <Tabs tabs={tabs} />
         </div>
       </BulmaCard>
     </div>

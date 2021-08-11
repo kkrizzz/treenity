@@ -1,11 +1,11 @@
 const lightThemeCss = `
-   html { 
+  html { 
     padding: 0;
     margin: 0;
     background: #white !important;
-   }
-.bu-tabs a { 
-    font-weight: 900;
+  }
+  .bu-tabs a { 
+    font-weight: 500;
     color: black;
     padding: 0.5em 0;
     margin-right: 2em
@@ -34,7 +34,7 @@ html {
  background: #1c1d31 !important;
 }
 .bu-tabs a { 
-    font-weight: 900;
+    font-weight: 500;
     color: white;
     padding: 0.5em 0;
     margin-right: 2em

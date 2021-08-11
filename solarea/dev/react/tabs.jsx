@@ -1,5 +1,5 @@
 const Component = ({ tabs }) => {
-  const [currentTab, setCurrentTab] = React.useState(tabs[0]);
+  const [currentName, setCurrentName] = React.useState(tabs[0].name);
 
   return (
     <div>
@@ -7,17 +7,16 @@ const Component = ({ tabs }) => {
         <ul>
           {tabs.map((tab) => (
             <li
-              onClick={() => setCurrentTab(tab)}
-              className={`${
-                currentTab.name === tab.name ? 'bu-is-active bu-has-text-primary' : ''
-              }`}
+              key={tab.name}
+              onClick={() => setCurrentName(tab.name)}
+              className={currentName === tab.name ? 'bu-is-active bu-has-text-primary' : ''}
             >
               <a>{tab.name}</a>
             </li>
           ))}
         </ul>
       </div>
-      {tabs.find((i) => i.name === currentTab.name).content()}
+      {tabs.find((t) => t.name === currentName)?.content()}
     </div>
   );
 };

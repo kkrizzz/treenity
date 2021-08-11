@@ -1,0 +1,1 @@
+add(({ instruction }) => 'AToken: Create');

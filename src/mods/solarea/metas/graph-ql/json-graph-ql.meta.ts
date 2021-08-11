@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { types } from 'mobx-state-tree';
 import useAsyncEffect from 'use-async-effect';
-import jsonGraphqlExpress from 'json-graphql-server';
+import jsonGraphqlExpress from 'solarea-json-graphql-server';
 
 import { meta } from '../../../../treenity/meta/meta.model';
 import { addComponent } from '../../../../treenity/context/context-db';

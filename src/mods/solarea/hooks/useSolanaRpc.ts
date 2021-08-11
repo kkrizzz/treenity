@@ -7,7 +7,7 @@ export function useSolanaRpc(method: string, ...args): [object | null, boolean] 
 
   const { data, isLoading } = useQuery(
     `rpccall_${method}_${clusterUrl}.${JSON.stringify(args)}`,
-    () => this._rpcRequest('getConfirmedBlock', args),
+    () => connection._rpcRequest(method, args).then((res) => res.result?.value),
   );
   return [data || null, isLoading];
 }
