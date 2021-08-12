@@ -26,6 +26,8 @@ add(({ transaction, signature }) => {
   ));
 
   signature = signature || solarea.bs58.encode(transaction.transaction.signatures[0].signature);
+
+  const hasTime = !!transaction.blockTime;
   return (
     <div class="bu-columns bu-is-mobile">
       <div class="bu-column bu-is-4 text-overflow bu-is-code">
@@ -36,15 +38,17 @@ add(({ transaction, signature }) => {
         </span>
       </div>
       <div
-        class="bu-column bu-is-4 bu-is-mobile tags"
         style={{ display: 'flex', gap: 4, overflow: 'auto' }}
+        className={`bu-column ${hasTime ? 'bu-is-4' : 'bu-is-6'} bu-is-mobile`}
       >
         {instructions}
       </div>
+      {hasTime && (
+        <div className="bu-column bu-is-2 bu-is-mobile">
+          <Render id="dev" name="time-ago" date={new Date(transaction.blockTime * 1000)} />
+        </div>
+      )}
       <div className="bu-column bu-is-2 bu-is-mobile">
-        <Render id="dev" name="time-ago" date={new Date(transaction.blockTime * 1000)} />
-      </div>
-      <div class="bu-column bu-is-2 bu-is-mobile">
         <Render id="dev" name="success-badge" success={!transaction.meta?.err} />
       </div>
     </div>

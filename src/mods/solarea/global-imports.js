@@ -13,6 +13,7 @@ import * as Layout from '@solana/web3.js/src/layout';
 import { useWeb3Rpc } from './hooks/useWeb3Rpc';
 import * as BufferLayout from '@solana/buffer-layout';
 import { publicKey, publicKeyString } from './utils/public-key-layout';
+import { Buffer } from 'buffer';
 
 const SolanaLayout = {
   ...Layout,
@@ -24,6 +25,7 @@ globalThis.React = preact;
 globalThis.ReactDOM = preact;
 globalThis.solarea = {
   bs58,
+  Buffer,
   useTransaction,
   useBlock,
   useLocalStorageState,

@@ -1,5 +1,6 @@
 const TwoColumn = render('dev', 'two-column');
 const Link = render('dev', 'link');
+const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
 
 add(({ entityId }) => {
   const [tokens, isTokensLoading] = solarea.useSolanaRpc(
@@ -9,7 +10,7 @@ add(({ entityId }) => {
     { encoding: 'jsonParsed', commitment: 'processed' },
   );
 
-  if (isTokensLoading) return 'Loading...';
+  if (isTokensLoading) return <div>Loading . . . </div>;
 
   // prettier-ignore
   const [tokenData, isDataLoading] = solarea.useGraphQL('/solana/tokens', `{
@@ -28,7 +29,7 @@ add(({ entityId }) => {
     }
   }`);
 
-  if (isDataLoading) return 'Loading...';
+  if (isDataLoading) return <div>Loading . . . </div>;
 
   const tokensMint = tokenData.data.tokens;
 
@@ -38,23 +39,39 @@ add(({ entityId }) => {
         const info = token.account.data.parsed.info;
         const tokenInfo = tokensMint.find((t) => t.address === info.mint);
         const amount = info.tokenAmount.uiAmountString;
-        return tokenInfo ? (
-          <TwoColumn
-            first={
-              <Link to={`/address/${info.mint}`}>
+        return (
+          <div>
+            <TwoColumn
+              is={8}
+              first={
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src={tokenInfo.logoURI} style={{ width: 24, height: 24, marginRight: 6 }} />{' '}
-                  {tokenInfo.name}
+                  <div
+                    style={{
+                      minWidth: 24,
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginRight: 6,
+                    }}
+                  >
+                    {tokenInfo?.logoURI ? (
+                      <img
+                        style={{ width: 24, height: 24 }}
+                        src={tokenInfo.logoURI}
+                        alt="Placeholder image"
+                      />
+                    ) : (
+                      <RandomImageWithNonce width={24} address={info.mint} />
+                    )}
+                  </div>
+                  <div>
+                    <Link to={`/address/${info.mint}`}>{tokenInfo?.name || info.mint}</Link>
+                  </div>
                 </div>
-              </Link>
-            }
-            second={`${amount} ${tokenInfo.symbol}`}
-          />
-        ) : (
-          <TwoColumn
-            first={<Link to={`/address/${info.mint}`}>{info.mint}</Link>}
-            second={amount}
-          />
+              }
+              second={`${amount} ${tokenInfo?.symbol || ''}`}
+            />
+            {!tokens.length && <div>No tokens</div>}
+          </div>
         );
       })}
     </div>

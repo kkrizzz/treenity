@@ -59,7 +59,11 @@ const SolanaBlockView = ({ entityId }) => {
               content: () => (
                 <div>
                   <div>
-                    <TwoColumn is={10} first="Signature" second="Result" />
+                    <div className="bu-columns">
+                      <div className="bu-column bu-is-4">Signature</div>
+                      <div className="bu-column bu-is-6">Instructions</div>
+                      <div className="bu-column bu-is-2">Result</div>
+                    </div>
 
                     {transactions.slice(0, showAmount).map((t, i) => (
                       <TransactionRow key={i} transaction={t} />
