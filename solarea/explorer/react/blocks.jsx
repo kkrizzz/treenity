@@ -1,5 +1,6 @@
 const BulmaCard = render('dev', 'bulma-card');
 const TwoColumn = render('dev', 'two-column');
+const Link = render('dev', 'link');
 const AddressLabel = render('', 'name', 'react-text');
 
 const SolanaBlocksView = () => {
@@ -53,21 +54,25 @@ const EvmBlocksView = () => {
 
   if (isLoading) return InfoCard('Blocks loading');
   return (
-    <div>
+    <BulmaCard>
+      <div className="bu-columns bu-is-mobile">
+        <div className="bu-column bu-is-8">Hash</div>
+        <div className="bu-column bu-is-2">Block</div>
+        <div className="bu-column bu-is-2">Transactions</div>
+      </div>
       {blocks.map(({ result: block }) => {
         const number = parseInt(block.number, 16);
 
         return (
-          <BulmaCard header={`Block #${number}`}>
-            <TwoColumn first="Number" second={number} link={`/block/${number}?chain=evm`} />
-            <TwoColumn first="Transactions" second={block.transactions.length} />
-            <TwoColumn first="Hash" second={block.hash} />
-            <TwoColumn
-              first="Mined by"
-              second={<AddressLabel fallback={() => block.miner} id={block.miner}></AddressLabel>}
-              link={`/address/${block.miner}`}
-            />
-          </BulmaCard>
+          <div>
+            <div className="bu-columns bu-is-mobile">
+              <div className="bu-column bu-is-8 text-overflow">
+                <Link to={`/block/${number}?chain=evm`}>{block.hash}</Link>
+              </div>
+              <div className="bu-column bu-is-2">{number}</div>
+              <div className="bu-column bu-is-2">{block.transactions.length}</div>
+            </div>
+          </div>
         );
       })}
       <button
@@ -76,7 +81,7 @@ const EvmBlocksView = () => {
       >
         Load more...
       </button>
-    </div>
+    </BulmaCard>
   );
 };
 
