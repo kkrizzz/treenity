@@ -129,7 +129,7 @@ const SolanaAddressView = ({ entityId }) => {
             <TwoColumn first="Label" second={<AccountName id={entityId} />} />
             <TwoColumn first="Address" second={entityId} />
             <TwoColumn first="Data" second={`${account.data.length} bytes`} />
-            <TwoColumn first="Balance" second={`${lpsRound(account.lamports)} SOL`} />
+            <TwoColumn first="Balance" second={`${lpsRound(account.lamports)} ◎`} />
             <TwoColumn first="Owner" second={<AccountName id={account.owner.toString()} />} />
           </div>
         </div>

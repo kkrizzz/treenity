@@ -8,10 +8,7 @@ export function useAccount(
   address: string,
   cluster: 'mainnet-beta' | 'devnet' = 'mainnet-beta',
 ): [AccountInfo<Buffer> | null, boolean] {
-  const connection = useMemo(() => {
-    const url = clusterApiUrl(cluster);
-    return new Connection(url);
-  }, [cluster]);
+  const connection = useConnection();
   const { data: account, isLoading } = useQuery(`acc_${address}`, () =>
     connection.getAccountInfo(new PublicKey(address)),
   );
