@@ -60,26 +60,6 @@ html {
   .bu-card-header {
       box-shadow: none !important; 
   }
-  .bu-card:before {
-    border-color: transparent transparent transparent #1c1d31;
-    border-width: 1rem 0 0 1rem;
-    bottom: 0;
-    left: 0;
-  }
-  .bu-card:after, .bu-card:before {
-    border-style: solid;
-    content: "";
-    height: 0;
-    position: absolute;
-    width: 0;
- }
-.bu-card:after {
-    border-color: transparent #1c1d31 transparent transparent;
-    border-width: 0 1rem 1rem 0;
-    right: 0;
-    top: 0;
-}
-
 .bu-title {
    color: white;
 }

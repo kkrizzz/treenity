@@ -131,9 +131,13 @@ add(() => {
   );
   const [voteAccounts, isVoteAccountsLoading] = useSolanaWeb3('getVoteAccounts', 'finalized');
 
+  const connection = solarea.useConnection();
+
+  const isSolana = connection._rpcEndpoint === 'https://api.mainnet-beta.solana.com';
+  const token = isSolana ? 'solana' : 'velas';
   const { data: coinData, isLoading: isSolanaDataLoading } = solarea.useQuery(
-    'solana_coin_data',
-    () => fetch('https://api.coingecko.com/api/v3/coins/solana').then((res) => res.json()),
+    [token, 'coingecko'],
+    () => fetch(`https://api.coingecko.com/api/v3/coins/${token}`).then((res) => res.json()),
   );
 
   const cards = [SupplyStats, StakeStats, PriceStats];
