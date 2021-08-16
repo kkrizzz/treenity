@@ -40,6 +40,8 @@ add(() => {
     }
   };
 
+  const clusterName = NETWORKS.find((n) => n[1] === clusterUrl)?.[0] || clusterUrl;
+
   return (
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
       <div class="bu-container bu-is-max-desktop">
@@ -78,7 +80,7 @@ add(() => {
             <div className="bu-navbar-item bu-has-dropdown bu-is-hoverable">
               <div className="bu-buttons">
                 <a className="bu-button bu-is-primary">
-                  <strong>{clusterUrl}</strong>
+                  <strong>{clusterName}</strong>
                 </a>
 
                 <div className="bu-navbar-dropdown">

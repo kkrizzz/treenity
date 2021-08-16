@@ -12,7 +12,7 @@ add(({ transaction, signature }) => {
     [transaction, loading] = solarea.useTransaction(signature);
   }
 
-  if (loading) return 'loading...';
+  if (loading || !transaction) return 'loading...';
 
   const instructions = transaction.transaction.instructions.map((i) => (
     <Render
