@@ -173,13 +173,13 @@ const EthereumBlockView = ({ entityId }) => {
           return (
             <div className="bu-columns bu-is-mobile">
               <div className="bu-column bu-is-4 text-overflow" link={`/tx/${hash}`}>
-                {hash}
+                <Link to={`/tx/${hash}`}>{hash}</Link>
               </div>
               <div className="bu-column bu-is-4 text-overflow" link={`/address/${from}`}>
-                {from}
+                <Link to={`/address/${from}`}>{from}</Link>
               </div>
               <div className="bu-column bu-is-4 text-overflow" link={`/address/${to}`}>
-                {to}
+                <Link to={`/address/${to}`}>{to}</Link>
               </div>
             </div>
           );

@@ -138,6 +138,7 @@ add(() => {
   const { data: coinData, isLoading: isSolanaDataLoading } = solarea.useQuery(
     [token, 'coingecko'],
     () => fetch(`https://api.coingecko.com/api/v3/coins/${token}`).then((res) => res.json()),
+    { refetchInterval: 5000 },
   );
 
   const cards = [SupplyStats, StakeStats, PriceStats];
