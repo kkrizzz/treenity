@@ -173,12 +173,12 @@ const SolanaTxView = (props) => {
 const LPS = 0.000000000000000001;
 
 const EthereumTxView = ({ entityId }) => {
-  const [tx, isLoading] = solarea.useWeb3Rpc('eth_getTransactionByHash', entityId);
+  const [tx, isLoading] = solarea.useSolanaRpc('eth_getTransactionByHash', entityId);
 
   if (isLoading) return InfoCard('Loading transaction');
-  if (!tx || !tx.result) return InfoCard('Transaction not found');
+  if (!tx) return InfoCard('Transaction not found');
 
-  const { hash, from, to, blockNumber, nonce, value } = tx.result;
+  const { hash, from, to, blockNumber, nonce, value } = tx;
 
   const parsedBlockNumber = parseInt(blockNumber, 16);
   const parsedNonce = parseInt(nonce, 16);

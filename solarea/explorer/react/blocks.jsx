@@ -1,5 +1,6 @@
 const BulmaCard = render('dev', 'bulma-card');
 const TwoColumn = render('dev', 'two-column');
+const TimeAgo = render('dev', 'time-ago');
 const Link = render('dev', 'link');
 const AddressLabel = render('', 'name', 'react-text');
 
@@ -55,10 +56,16 @@ const EvmBlocksView = () => {
           <div key={block.hash}>
             <div className="bu-columns bu-is-mobile">
               <div className="bu-column bu-is-1-desktop bu-is-1-tablet bu-is-2-mobile">
-                {number}
+                <Link to={`/block/${number}?chain=evm`}>{number}</Link>
               </div>
               <div className="bu-column bu-is-10-desktop bu-is-10-tablet bu-is-8-mobile text-overflow">
-                <Link to={`/block/${number}?chain=evm`}>{block.hash}</Link>
+                {block.hash}
+                <div class="bu-columns">
+                  <div className="bu-column">
+                    <TimeAgo date={new Date(parseInt(block.timestamp) * 1000)} />
+                  </div>
+                  <div class="bu-column">Gas used: {parseInt(block.gasUsed)}</div>
+                </div>
               </div>
               <div className="bu-column bu-is-1-desktop bu-is-2-mobile">
                 {block.transactions.length}

@@ -126,13 +126,13 @@ const BlockLoadingView = () => {
 };
 
 const EthereumBlockView = ({ entityId }) => {
-  const [block, isLoading] = solarea.useWeb3Rpc(
+  const [block, isLoading] = solarea.useSolanaRpc(
     'eth_getBlockByNumber',
     '0x' + Number(entityId).toString(16),
     true,
   );
 
-  if (isLoading) {
+  if (isLoading || !block) {
     return <BlockLoadingView />;
   }
 
@@ -140,7 +140,6 @@ const EthereumBlockView = ({ entityId }) => {
     return parseInt(number, 16);
   };
 
-  const result = block.result;
   return (
     <div className="bu-container bu-is-max-desktop">
       <BulmaCard header={<div class="flex-between">Block</div>} />
@@ -148,17 +147,17 @@ const EthereumBlockView = ({ entityId }) => {
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
             <TwoColumn first="Block height" second={entityId} />
-            <TwoColumn first="Block hash" second={result.hash} />
+            <TwoColumn first="Block hash" second={block.hash} />
             <TwoColumn
               first="Mined by"
-              second={<AddressLabel fallback={() => result.miner} id={result.miner}></AddressLabel>}
-              link={`/address/${result.miner}`}
+              second={<AddressLabel fallback={() => block.miner} id={block.miner}></AddressLabel>}
+              link={`/address/${block.miner}`}
             />
-            <TwoColumn first="Size" second={parse16(result.size) + '\tbytes'} />
-            <TwoColumn first="Num of transactions" second={result.transactions.length} />
-            <TwoColumn first="Difficulty" second={parse16(result.difficulty)} />
-            <TwoColumn first="Nonce" second={result.nonce} />
-            <TwoColumn first="Gas used" second={parse16(result.gasUsed)} />
+            <TwoColumn first="Size" second={parse16(block.size) + '\tbytes'} />
+            <TwoColumn first="Num of transactions" second={block.transactions.length} />
+            <TwoColumn first="Difficulty" second={parse16(block.difficulty)} />
+            <TwoColumn first="Nonce" second={block.nonce} />
+            <TwoColumn first="Gas used" second={parse16(block.gasUsed)} />
           </div>
         </div>
       </BulmaCard>
@@ -168,7 +167,7 @@ const EthereumBlockView = ({ entityId }) => {
           <div className="bu-column bu-is-4">From</div>
           <div className="bu-column bu-is-4">To</div>
         </div>
-        {result.transactions.map((tx) => {
+        {block.transactions.map((tx) => {
           const { hash, to, from } = tx;
 
           return (

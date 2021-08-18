@@ -1,6 +1,6 @@
 add(({ date }) => {
   if (!date) return;
-  return <span>{timeAgo(date)}</span>;
+  return timeAgo(date);
 });
 
 const MONTH_NAMES = [

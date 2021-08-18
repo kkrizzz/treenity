@@ -35,9 +35,9 @@ const useLoadSignaturesInfinite = (entityId, limit = 10) => {
 const LPS = 0.000000000000000001;
 
 const EthereumAddressView = ({ entityId }) => {
-  const [balance, isLoading] = solarea.useWeb3Rpc('eth_getBalance', entityId, 'latest');
+  const [balance, isLoading] = solarea.useSolanaRpc('eth_getBalance', entityId, 'latest');
 
-  const [transactionCount, isTransactionCountLoading] = solarea.useWeb3Rpc(
+  const [transactionCount, isTransactionCountLoading] = solarea.useSolanaRpc(
     'eth_getTransactionCount',
     entityId,
     'latest',
@@ -49,11 +49,8 @@ const EthereumAddressView = ({ entityId }) => {
     <div className="bu-container bu-is-max-desktop">
       <BulmaCard header="Overview">
         <TwoColumn first="Address" second={entityId} />
-        <TwoColumn first="Transaction count" second={parseInt(transactionCount.result, 16)} />
-        <TwoColumn
-          first="Balance"
-          second={`${(parseInt(balance.result, 16) * LPS).toFixed(8)} VLX`}
-        />
+        <TwoColumn first="Transaction count" second={parseInt(transactionCount, 16)} />
+        <TwoColumn first="Balance" second={`${(parseInt(balance, 16) * LPS).toFixed(8)} VLX`} />
       </BulmaCard>
       <BulmaCard header="Transactions"></BulmaCard>
       <BulmaCard header="Token holdings"></BulmaCard>
