@@ -20,9 +20,11 @@ const Switch = render('dev', 'switch');
 const NETWORKS = [
   ['Velas Mainnet', 'https://mainnet.velas.com/rpc'],
   ['Velas Testnet', 'https://testnet.velas.com/rpc'],
-  ['Solana Mainnet', 'mainnet-beta'],
-  ['Solana Testnet', 'testnet'],
-  ['Solana Devnet', 'devnet'],
+  ['Velas Devnet', 'https://devnet.velas.com/rpc'],
+
+  // ['Solana Mainnet', 'mainnet-beta'],
+  // ['Solana Testnet', 'testnet'],
+  // ['Solana Devnet', 'devnet'],
 ];
 
 add(() => {

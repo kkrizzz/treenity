@@ -46,3 +46,8 @@ hook('fetch', async function (next, url) {
 
   return new Response(new Blob([code], { type: 'application/javascript' }));
 });
+//
+// hook('instantiate', async function (next, url, parentUrl) {
+//   console.log('instantiate', url, parentUrl);
+//   return next();
+// });

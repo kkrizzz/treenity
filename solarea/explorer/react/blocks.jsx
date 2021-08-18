@@ -4,29 +4,25 @@ const Link = render('dev', 'link');
 const AddressLabel = render('', 'name', 'react-text');
 
 const SolanaBlocksView = () => {
-  return <div>Helo, sol</div>;
+  return <div>Hello, sol</div>;
 };
 
-const useLoadBlocks = (blockNumber) => {
+function loadBlocks(connection, fromNumber, limit) {
+  const requests = [];
+  for (let i = 0; i < limit; i++) {
+    const block = fromNumber - i;
+    requests.push({ methodName: 'eth_getBlockByNumber', args: ['0x' + block.toString(16), false] });
+  }
+  return connection._rpcBatchRequest(requests).then((res) => res.map((r) => r.result));
+}
+
+const useVelasLoadBlocks = (blockNumber) => {
+  const connection = solarea.useConnection();
   const { data: blocksData, isLoading: isBlocksLoading, fetchNextPage } = solarea.useInfiniteQuery(
     ['loadingBlocksFrom', blockNumber],
-    ({ pageParam }) =>
-      globalThis
-        .fetch('https://api.velas.com/', {
-          method: 'POST',
-          body: JSON.stringify({
-            id: 4,
-            jsonrpc: '2.0',
-            method: 'eth_getBlockByNumber',
-            params: ['0x' + (pageParam || blockNumber).toString(16), false],
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => res.json()),
+    ({ pageParam }) => loadBlocks(connection, pageParam || blockNumber, 10),
     {
-      getNextPageParam: (lastPage, pages) => parseInt(lastPage.result.number) - 1,
+      getNextPageParam: (lastPage) => parseInt(lastPage.at(-1).number) - 1,
     },
   );
 
@@ -40,37 +36,33 @@ const InfoCard = (t) => (
 );
 
 const EvmBlocksView = () => {
-  const [blocks, isLoading, fetchNext] = useLoadBlocks(68149);
-
-  React.useEffect(() => {
-    if (!isLoading) {
-      (async function () {
-        for (let i = 0; i < 10; i++) {
-          await fetchNext();
-        }
-      })();
-    }
-  }, [isLoading]);
+  const [lastBlock, isBlockLoading] = solarea.useSolanaRpc('eth_blockNumber');
+  if (isBlockLoading || !lastBlock) return InfoCard('Last block loading');
+  const [blocks, isLoading, fetchNext] = useVelasLoadBlocks(parseInt(lastBlock));
 
   if (isLoading) return InfoCard('Blocks loading');
   return (
     <BulmaCard>
       <div className="bu-columns bu-is-mobile">
-        <div className="bu-column bu-is-8">Hash</div>
-        <div className="bu-column bu-is-2">Block</div>
-        <div className="bu-column bu-is-2">Transactions</div>
+        <div className="bu-column bu-is-1-desktop bu-is-1-tablet bu-is-2-mobile">Block</div>
+        <div className="bu-column bu-is-10-desktop bu-is-10-tablet bu-is-8-mobile">Hash</div>
+        <div className="bu-column bu-is-1-desktop bu-is-2-mobile">txns</div>
       </div>
-      {blocks.map(({ result: block }) => {
+      {blocks.map((block) => {
         const number = parseInt(block.number, 16);
 
         return (
-          <div>
+          <div key={block.hash}>
             <div className="bu-columns bu-is-mobile">
-              <div className="bu-column bu-is-8 text-overflow">
+              <div className="bu-column bu-is-1-desktop bu-is-1-tablet bu-is-2-mobile">
+                {number}
+              </div>
+              <div className="bu-column bu-is-10-desktop bu-is-10-tablet bu-is-8-mobile text-overflow">
                 <Link to={`/block/${number}?chain=evm`}>{block.hash}</Link>
               </div>
-              <div className="bu-column bu-is-2">{number}</div>
-              <div className="bu-column bu-is-2">{block.transactions.length}</div>
+              <div className="bu-column bu-is-1-desktop bu-is-2-mobile">
+                {block.transactions.length}
+              </div>
             </div>
           </div>
         );
