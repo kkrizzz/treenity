@@ -66,6 +66,14 @@ add(({ children }) => {
     min-width: 48px;
     margin-left: 4px;
    }
+   @media screen and (max-width: 1200px) {
+    .p-8-mobile {
+      padding: 8px;
+    }
+   }
+   .bu-navbar-link:not(.bu-is-arrowless)::after {
+    border-color: white !important;
+   }
   `,
   );
 
@@ -73,7 +81,7 @@ add(({ children }) => {
     <div>
       <Render id="explorer" name="acc-css" />
       <Render id="explorer" name="layout-header" />
-      <div class="bu-container bu-is-max-desktop explorer-layout m-b-16 m-t-16">
+      <div class="bu-container bu-is-max-desktop explorer-layout p-8-mobile m-b-16 m-t-16">
         <Search onChange={search} />
       </div>
       {children}

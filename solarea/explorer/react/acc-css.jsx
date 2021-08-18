@@ -150,6 +150,9 @@ add(() => {
   .p-b-8 {
     padding-bottom: 8px !important;
   }
+  .m-16 {
+    margin: 16px;
+  }
   `,
   );
   return null;

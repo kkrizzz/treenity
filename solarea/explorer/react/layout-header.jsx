@@ -18,7 +18,7 @@ const Link = render('dev', 'link');
 const Switch = render('dev', 'switch');
 
 const NETWORKS = [
-  ['Velas', 'https://mainnet.velas.com/rpc'],
+  ['Velas Mainnet', 'https://mainnet.velas.com/rpc'],
   ['Velas Testnet', 'https://testnet.velas.com/rpc'],
   ['Solana Mainnet', 'mainnet-beta'],
   ['Solana Testnet', 'testnet'],
@@ -41,6 +41,7 @@ add(() => {
   };
 
   const clusterName = NETWORKS.find((n) => n[1] === clusterUrl)?.[0] || clusterUrl;
+  const menuRef = React.useRef();
 
   return (
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
@@ -51,11 +52,12 @@ add(() => {
           </Link>
 
           <a
+            onClick={(e) => menuRef.current.classList.toggle('bu-is-active')}
             role="button"
             className="bu-navbar-burger"
             aria-label="menu"
             aria-expanded="false"
-            data-target="navbarBasicExample"
+            data-target="solarea-layout-header"
           >
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -63,52 +65,49 @@ add(() => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" className="bu-navbar-menu">
+        <div id="solarea-layout-header" className="bu-navbar-menu" ref={menuRef}>
           <div className="bu-navbar-end">
-            <Switch value={isDarkTheme} onChange={setIsDarkTheme}>
+            <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme}>
               {isDarkTheme ? '🌙' : '☀'}️
             </Switch>
-            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/tokens">
+            <NavLink className="bu-navbar-item" to="/explorer/tokens">
               Tokens
             </NavLink>
-            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/blocks?chain=evm">
+            <NavLink className="bu-navbar-item" to="/explorer/blocks?chain=evm">
               Blocks
             </NavLink>
-            <NavLink className="bu-navbar-item bu-is-tab" to="/explorer/transactions">
+            <NavLink className="bu-navbar-item" to="/explorer/transactions">
               Transactions
             </NavLink>
             <div className="bu-navbar-item bu-has-dropdown bu-is-hoverable">
-              <div className="bu-buttons">
-                <a className="bu-button bu-is-primary">
-                  <strong>{clusterName}</strong>
-                </a>
-
-                <div className="bu-navbar-dropdown">
-                  {NETWORKS.map(([name, url]) => (
-                    <a onClick={setNetwork(url)} className="bu-navbar-item">
-                      {name}
-                    </a>
-                  ))}
-                  <div className="bu-navbar-item bu-is-align-items-center">
-                    <input
-                      id="cluster-url-input"
-                      class="bu-input bu-is-small m-r-8"
-                      style={{ minWidth: 200 }}
-                      placeholder="Custom url"
-                      ref={custom}
-                    />
-                    <a
-                      class="bu-button bu-is-small bu-is-primary"
-                      style={{ marginBottom: 0 }}
-                      onClick={setCustomUrl}
-                    >
-                      Set
-                    </a>
-                  </div>
-                  <hr className="bu-navbar-divider">
-                    <a className="bu-navbar-item">Report an issue</a>
-                  </hr>
+              <NavLink className="bu-navbar-link bu-is-primary bu-has-text-white bu-has-background-primary bu-has-text-weight-bold">
+                {clusterName}
+              </NavLink>
+              <div className="bu-navbar-item bu-navbar-dropdown bu-is-boxed">
+                {NETWORKS.map(([name, url]) => (
+                  <a onClick={setNetwork(url)} className="bu-navbar-item">
+                    {name}
+                  </a>
+                ))}
+                <div className="bu-navbar-item" style={{ display: 'flex' }}>
+                  <input
+                    id="cluster-url-input"
+                    class="bu-input bu-is-small m-r-8"
+                    style={{ minWidth: 200 }}
+                    placeholder="Custom url"
+                    ref={custom}
+                  />
+                  <a
+                    class="bu-button bu-is-small bu-is-primary"
+                    style={{ marginBottom: 0 }}
+                    onClick={setCustomUrl}
+                  >
+                    Set
+                  </a>
                 </div>
+                <hr className="bu-navbar-divider">
+                  <a className="bu-navbar-item">Report an issue</a>
+                </hr>
               </div>
             </div>
           </div>
