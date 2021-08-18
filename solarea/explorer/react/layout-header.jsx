@@ -81,7 +81,7 @@ add(() => {
             <NavLink className="bu-navbar-item" to="/explorer/transactions">
               Transactions
             </NavLink>
-            <div className="bu-navbar-item bu-has-dropdown bu-is-hoverable">
+            <div className="bu-navbar-item bu-is-hoverable">
               <NavLink className="bu-navbar-link bu-is-primary bu-has-text-white bu-has-background-primary bu-has-text-weight-bold">
                 {clusterName}
               </NavLink>

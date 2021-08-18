@@ -1,7 +1,9 @@
 const { lpsRound } = await require('solarea://explorer/utils');
 
+const TimeAgo = render('dev', 'time-ago');
 const AccountName = render('', 'name', 'react-text');
 const BulmaCard = render('dev', 'bulma-card', 'react');
+const Link = render('dev', 'link', 'react');
 const TwoColumn = render('dev', 'two-column');
 const TransactionRow = render('explorer', 'transaction', 'react-table');
 
@@ -37,12 +39,22 @@ const LPS = 0.000000000000000001;
 const EthereumAddressView = ({ entityId }) => {
   const [balance, isLoading] = solarea.useSolanaRpc('eth_getBalance', entityId, 'latest');
 
+  const {
+    data: accountTransactions,
+    isLoading: isAccountTransactionsLoading,
+  } = solarea.useQuery('eth_acc_txs', () =>
+    fetch(
+      `https://explorer.velas.com/api?module=account&action=txlist&address=${entityId}`,
+    ).then((res) => res.json()),
+  );
+
   const [transactionCount, isTransactionCountLoading] = solarea.useSolanaRpc(
     'eth_getTransactionCount',
     entityId,
     'latest',
   );
 
+  console.log(accountTransactions);
   if (isLoading || isTransactionCountLoading) return InfoCard('Account loading . . .');
 
   return (
@@ -52,7 +64,42 @@ const EthereumAddressView = ({ entityId }) => {
         <TwoColumn first="Transaction count" second={parseInt(transactionCount, 16)} />
         <TwoColumn first="Balance" second={`${(parseInt(balance, 16) * LPS).toFixed(8)} VLX`} />
       </BulmaCard>
-      <BulmaCard header="Transactions"></BulmaCard>
+      <BulmaCard header="Transactions">
+        {!isAccountTransactionsLoading ? (
+          <div>
+            <div className="bu-columns bu-is-mobile">
+              <div className="bu-column bu-is-2">Hash</div>
+              <div className="bu-column bu-is-3">From</div>
+              <div className="bu-column bu-is-3 text-overflow">To</div>
+              <div className="bu-column bu-is-1 text-overflow">Val.</div>
+              <div className="bu-column bu-is-3 text-overflow">Time</div>
+            </div>
+            {accountTransactions.result.map((tx) => {
+              const from = solarea.vlxToEth(tx.from);
+              const to = solarea.vlxToEth(tx.to);
+              return (
+                <div className="bu-columns bu-is-mobile">
+                  <div className="bu-column bu-is-2 text-overflow">
+                    <Link to={`/tx/${tx.hash}`}>{tx.hash}</Link>
+                  </div>
+                  <div className="bu-column bu-is-3 text-overflow">
+                    <Link to={`/address/${from}?chain=evm`}>{from}</Link>
+                  </div>
+                  <div className="bu-column bu-is-3 text-overflow">
+                    <Link to={`/address/${to}?chain=evm`}>{to}</Link>
+                  </div>
+                  <div className="bu-column bu-is-1 text-overflow">{tx.value}</div>
+                  <div className="bu-column bu-is-3 text-overflow">
+                    <TimeAgo date={new Date(tx.timeStamp * 1000)} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div>Loading . . .</div>
+        )}
+      </BulmaCard>
       <BulmaCard header="Token holdings"></BulmaCard>
     </div>
   );

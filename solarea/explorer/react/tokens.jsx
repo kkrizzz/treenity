@@ -2,10 +2,16 @@ const BulmaCard = render('dev', 'bulma-card');
 const Link = render('dev', 'link');
 
 const { tokenRegExp } = await require('solarea://explorer/utils');
-console.log(tokenRegExp);
+
 add(() => {
-  const { data: tokenData, isLoading } = solarea.useQuery('tokendata_query', () =>
-    globalThis.fetch('https://evmexplorer.velas.com/tokens?type=JSON').then((res) => res.json()),
+  const connection = solarea.useConnection();
+
+  const isMainnet = connection._rpcEndpoint === 'https://mainnet.velas.com/rpc';
+  const tokensUrl = isMainnet
+    ? 'https://evmexplorer.velas.com/tokens?type=JSON'
+    : 'https://explorer.testnet.velas.com/tokens?type=JSON';
+  const { data: tokenData, isLoading } = solarea.useQuery([isMainnet, 'tokendata_query'], () =>
+    globalThis.fetch(tokensUrl).then((res) => res.json()),
   );
 
   return (
@@ -39,10 +45,7 @@ add(() => {
                       <div className="bu-column bu-is-5 text-overflow">
                         <Link to={`/address/${tokenAddress}?chain=evm`}>{tokenAddress}</Link>
                       </div>
-                      <div
-                        className="bu-column bu-is-2"
-                        style={{ textAlign: 'right', fontFamily: 'monospace' }}
-                      >
+                      <div className="bu-column bu-is-2" style={{ textAlign: 'right' }}>
                         {parseFloat(tokenSupply.replace(/,/g, '')).toFixed(3)}
                       </div>
                       <div className="bu-column bu-is-1" style={{ textAlign: 'end' }}>

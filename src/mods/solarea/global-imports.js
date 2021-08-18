@@ -15,6 +15,7 @@ import * as Layout from '@solana/web3.js/src/layout';
 import * as BufferLayout from '@solana/buffer-layout';
 import { publicKey, publicKeyString } from './utils/public-key-layout';
 import { Buffer } from 'buffer';
+import { vlxToEth } from './utils/vlx-address-lib';
 
 const SolanaLayout = {
   ...Layout,
@@ -26,6 +27,7 @@ globalThis.React = preact;
 globalThis.ReactDOM = preact;
 globalThis.solarea = {
   bs58,
+  vlxToEth,
   Buffer,
   useTransaction,
   useBlock,
