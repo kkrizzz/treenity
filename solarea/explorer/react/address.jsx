@@ -5,6 +5,7 @@ const AccountName = render('', 'name', 'react-text');
 const BulmaCard = render('dev', 'bulma-card', 'react');
 const Link = render('dev', 'link', 'react');
 const TwoColumn = render('dev', 'two-column');
+const EthAddressTokens = render('explorer', 'eth-address-tokens');
 const TransactionRow = render('explorer', 'transaction', 'react-table');
 
 const InfoCard = (t) => (
@@ -39,13 +40,12 @@ const LPS = 0.000000000000000001;
 const EthereumAddressView = ({ entityId }) => {
   const [balance, isLoading] = solarea.useSolanaRpc('eth_getBalance', entityId, 'latest');
 
-  const {
-    data: accountTransactions,
-    isLoading: isAccountTransactionsLoading,
-  } = solarea.useQuery('eth_acc_txs', () =>
-    fetch(
-      `https://explorer.velas.com/api?module=account&action=txlist&address=${entityId}`,
-    ).then((res) => res.json()),
+  const { data: accountTransactions, isLoading: isAccountTransactionsLoading } = solarea.useQuery(
+    ['eth_acc_txs', entityId],
+    () =>
+      fetch(
+        `https://explorer.velas.com/api?module=account&action=txlist&address=${entityId}`,
+      ).then((res) => res.json()),
   );
 
   const [transactionCount, isTransactionCountLoading] = solarea.useSolanaRpc(
@@ -54,18 +54,13 @@ const EthereumAddressView = ({ entityId }) => {
     'latest',
   );
 
-  console.log(accountTransactions);
   if (isLoading || isTransactionCountLoading) return InfoCard('Account loading . . .');
 
-  return (
-    <div className="bu-container bu-is-max-desktop">
-      <BulmaCard header="Overview">
-        <TwoColumn first="Address" second={entityId} />
-        <TwoColumn first="Transaction count" second={parseInt(transactionCount, 16)} />
-        <TwoColumn first="Balance" second={`${(parseInt(balance, 16) * LPS).toFixed(8)} VLX`} />
-      </BulmaCard>
-      <BulmaCard header="Transactions">
-        {!isAccountTransactionsLoading ? (
+  const tabs = [
+    {
+      name: 'Transactions',
+      content: () => {
+        return !isAccountTransactionsLoading ? (
           <div>
             <div className="bu-columns bu-is-mobile">
               <div className="bu-column bu-is-2">Hash</div>
@@ -98,9 +93,28 @@ const EthereumAddressView = ({ entityId }) => {
           </div>
         ) : (
           <div>Loading . . .</div>
-        )}
+        );
+      },
+    },
+    {
+      name: 'Tokens',
+      content: () => <EthAddressTokens entityId={entityId} />,
+    },
+    { name: 'Token transfers', content: () => {} },
+  ];
+
+  return (
+    <div className="bu-container bu-is-max-desktop">
+      <BulmaCard header="Overview">
+        <TwoColumn first="Address" second={entityId} />
+        <TwoColumn first="Transaction count" second={parseInt(transactionCount, 16)} />
+        <TwoColumn first="Balance" second={`${(parseInt(balance, 16) * LPS).toFixed(8)} VLX`} />
       </BulmaCard>
-      <BulmaCard header="Token holdings"></BulmaCard>
+      <BulmaCard>
+        <div style={{ marginTop: -16 }}>
+          <Tabs tabs={tabs} />
+        </div>
+      </BulmaCard>
     </div>
   );
 };

@@ -19,7 +19,7 @@ function sha256(string) {
   return crypto.createHash('sha256').update(string).digest('hex');
 }
 
-function ethToVlx(address_string) {
+export function ethToVlx(address_string) {
   const clean_address = address_string.replace(/^0x/i, '').toLowerCase();
 
   if (clean_address.length !== 40) {
