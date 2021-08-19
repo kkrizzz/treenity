@@ -40,12 +40,12 @@ html {
     margin-right: 2em
   }
   .bu-tabs a:hover {
-    border-bottom-color: #755cfd !important;
-    color: #755cfd !important;
+    border-bottom-color: #00dfd1 !important;
+    color: #00dfd1 !important;
   }
   .bu-tabs li.bu-is-active a {
-    border-bottom-color: #00d1b2 !important;
-    color: #00d1b2 !important;
+    border-bottom-color: #00ffd1 !important;
+    color: #00ffd1 !important;
   }
   .bu-card {
     color: white;

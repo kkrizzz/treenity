@@ -35,45 +35,49 @@ add(({ entityId }) => {
 
   return (
     <div>
-      {tokens.map((token) => {
-        const info = token.account.data.parsed.info;
-        const tokenInfo = tokensMint.find((t) => t.address === info.mint);
-        const amount = info.tokenAmount.uiAmountString;
-        return (
-          <div>
-            <TwoColumn
-              is={8}
-              first={
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div
-                    style={{
-                      minWidth: 24,
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginRight: 6,
-                    }}
-                  >
-                    {tokenInfo?.logoURI ? (
-                      <img
-                        style={{ width: 24, height: 24 }}
-                        src={tokenInfo.logoURI}
-                        alt="Placeholder image"
-                      />
-                    ) : (
-                      <RandomImageWithNonce width={24} address={info.mint} />
-                    )}
+      {tokens.length ? (
+        tokens.map((token) => {
+          const info = token.account.data.parsed.info;
+          const tokenInfo = tokensMint.find((t) => t.address === info.mint);
+          const amount = info.tokenAmount.uiAmountString;
+          return (
+            <div>
+              <TwoColumn
+                is={8}
+                first={
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div
+                      style={{
+                        minWidth: 24,
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginRight: 6,
+                      }}
+                    >
+                      {tokenInfo?.logoURI ? (
+                        <img
+                          style={{ width: 24, height: 24 }}
+                          src={tokenInfo.logoURI}
+                          alt="Placeholder image"
+                        />
+                      ) : (
+                        <RandomImageWithNonce width={24} address={info.mint} />
+                      )}
+                    </div>
+                    <div>
+                      <Link to={`/address/${info.mint}`}>{tokenInfo?.name || info.mint}</Link>
+                    </div>
                   </div>
-                  <div>
-                    <Link to={`/address/${info.mint}`}>{tokenInfo?.name || info.mint}</Link>
-                  </div>
-                </div>
-              }
-              second={`${amount} ${tokenInfo?.symbol || ''}`}
-            />
-            {!tokens.length && <div>No tokens</div>}
-          </div>
-        );
-      })}
+                }
+                second={`${amount} ${tokenInfo?.symbol || ''}`}
+              />
+              {!tokens.length && <div>No tokens</div>}
+            </div>
+          );
+        })
+      ) : (
+        <div>No tokens</div>
+      )}
     </div>
   );
 });

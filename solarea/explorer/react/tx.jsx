@@ -150,7 +150,7 @@ const SolanaTxView = (props) => {
               first="Signature"
               second={<div class="text-overflow">{signature}</div>}
             />
-            <TwoColumn is={2} first="Block" second={tx.slot} lk={`/block/${tx.slot}`} />
+            <TwoColumn is={2} first="Block" second={tx.slot} link={`/block/${tx.slot}`} />
             <TwoColumn is={2} first="Result" second={<SuccessBadge success={!tx.meta?.err} />} />
             <TwoColumn
               is={2}
@@ -186,18 +186,20 @@ const EthereumTxView = ({ entityId }) => {
     <div className="bu-container bu-is-max-desktop">
       <BulmaCard header="Transaction" />
       <BulmaCard>
-        <div className="bu-column overflow-hidden">
-          <TwoColumn is={2} first="Hash" second={<div className="text-overflow">{hash}</div>} />
-          <TwoColumn
-            is={2}
-            first="Block"
-            link={`/block/${parsedBlockNumber}?chain=evm`}
-            second={parsedBlockNumber}
-          />
-          <TwoColumn is={2} first="From" link={`/address/${from}`} second={from} />
-          <TwoColumn is={2} first="To" link={`/address/${to}`} second={to} />
-          <TwoColumn is={2} first="Value" second={(parseInt(value, 16) * LPS).toFixed(16)} />
-          <TwoColumn is={2} first="Nonce" second={parsedNonce} />
+        <div className="bu-columns overflow-hidden">
+          <div className="bu-column">
+            <TwoColumn is={2} first="Hash" second={<div className="text-overflow">{hash}</div>} />
+            <TwoColumn
+              is={2}
+              first="Block"
+              link={`/block/${parsedBlockNumber}?chain=evm`}
+              second={parsedBlockNumber}
+            />
+            <TwoColumn is={2} first="From" link={`/address/${from}`} second={from} />
+            <TwoColumn is={2} first="To" link={`/address/${to}`} second={to} />
+            <TwoColumn is={2} first="Value" second={(parseInt(value, 16) * LPS).toFixed(16)} />
+            <TwoColumn is={2} first="Nonce" second={parsedNonce} />
+          </div>
         </div>
       </BulmaCard>
     </div>

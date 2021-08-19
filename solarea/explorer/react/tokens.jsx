@@ -9,7 +9,7 @@ add(() => {
   const isMainnet = connection._rpcEndpoint === 'https://mainnet.velas.com/rpc';
   const tokensUrl = isMainnet
     ? 'https://evmexplorer.velas.com/tokens?type=JSON'
-    : 'https://explorer.testnet.velas.com/tokens?type=JSON';
+    : 'https://evmexplorer.testnet.velas.com/tokens?type=JSON';
   const { data: tokenData, isLoading } = solarea.useQuery([isMainnet, 'tokendata_query'], () =>
     globalThis.fetch(tokensUrl).then((res) => res.json()),
   );

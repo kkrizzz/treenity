@@ -49,7 +49,7 @@ add(() => {
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
       <div class="bu-container bu-is-max-desktop">
         <div className="bu-navbar-brand">
-          <Link className="bu-navbar-item" to="/explorer">
+          <Link className="bu-navbar-item" to="/explorer" style={{ color: 'black' }}>
             <Render id="velas" name="logo" />
           </Link>
 
@@ -82,9 +82,9 @@ add(() => {
               Transactions
             </NavLink>
             <div className="bu-navbar-item bu-is-hoverable">
-              <NavLink className="bu-navbar-link bu-is-primary bu-has-text-white bu-has-background-primary bu-has-text-weight-bold">
+              <div className="bu-navbar-link bu-is-primary bu-has-text-white bu-has-background-primary bu-has-text-weight-bold">
                 {clusterName}
-              </NavLink>
+              </div>
               <div className="bu-navbar-item bu-navbar-dropdown bu-is-boxed">
                 {NETWORKS.map(([name, url]) => (
                   <a onClick={setNetwork(url)} className="bu-navbar-item">

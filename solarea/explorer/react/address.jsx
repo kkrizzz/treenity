@@ -40,11 +40,16 @@ const LPS = 0.000000000000000001;
 const EthereumAddressView = ({ entityId }) => {
   const [balance, isLoading] = solarea.useSolanaRpc('eth_getBalance', entityId, 'latest');
 
+  const connection = solarea.useConnection();
+  const isTestnet = connection._rpcEndpoint.includes('testnet');
+
   const { data: accountTransactions, isLoading: isAccountTransactionsLoading } = solarea.useQuery(
-    ['eth_acc_txs', entityId],
+    ['eth_acc_txs', entityId, isTestnet],
     () =>
       fetch(
-        `https://explorer.velas.com/api?module=account&action=txlist&address=${entityId}`,
+        `https://explorer.${
+          isTestnet ? 'testnet.' : ''
+        }velas.com/api?module=account&action=txlist&address=${entityId}`,
       ).then((res) => res.json()),
   );
 
@@ -100,7 +105,6 @@ const EthereumAddressView = ({ entityId }) => {
       name: 'Tokens',
       content: () => <EthAddressTokens entityId={entityId} />,
     },
-    { name: 'Token transfers', content: () => {} },
   ];
 
   return (

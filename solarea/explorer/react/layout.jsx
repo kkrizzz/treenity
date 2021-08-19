@@ -85,7 +85,6 @@ add(({ id, children }) => {
         <Search onChange={search} />
       </div>
       {children}
-      {/*<Render id="explorer" name="footer" />*/}
     </div>
   );
 });
