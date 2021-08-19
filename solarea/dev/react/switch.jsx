@@ -50,18 +50,12 @@ const Switch = ({ className = '', value = false, onChange = () => {}, children }
 }`,
   );
 
-  const [active, setActive] = React.useState(value);
-
-  React.useEffect(() => {
-    onChange(active);
-  }, [active, onChange]);
-
   return (
     <div className={`bu-switch ${className}`}>
       {children && <span className="bu-switch bu-switch__label">{children}</span>}
       <span
-        className={`bu-switch bu-switch__toggle ${active ? 'bu-switch__toggle--on' : ''}`}
-        onClick={() => setActive(!active)}
+        className={`bu-switch bu-switch__toggle ${value ? 'bu-switch__toggle--on' : ''}`}
+        onClick={() => onChange(!value)}
         role="button"
         aria-pressed="true"
       />

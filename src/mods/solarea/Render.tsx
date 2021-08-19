@@ -35,7 +35,7 @@ function ComponentWrapper({ id, name, context, children, props, more }) {
 function Render(props: RenderProps) {
   const { id, name = 'default', context = 'react', children, fallback, render, ...more } = props;
   const [componentInfo, isLoading] = useLoadAccountComponent(id, name, context);
-  console.log('rendering', id, name, context, isLoading);
+  // console.log('rendering', id, name, context, isLoading);
   if (isLoading) return <div className="spinner" />;
 
   if (!componentInfo) {

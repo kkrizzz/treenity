@@ -59,12 +59,17 @@ export function useSolanaBatchedRpc(method: string, ...args): [object | null, bo
   return [data || null, isLoading];
 }
 
-export function useSolanaWeb3(method: string, ...args): [object | null, boolean] {
+export function useSolanaWeb3(
+  method: string,
+  args: any[] = [],
+  queryArgs?: any,
+): [object | null, boolean] {
   const [connection, clusterUrl] = useCluster();
 
   const { data, isLoading } = useQuery(
     `web3call_${method}_${clusterUrl}.${JSON.stringify(args)}`,
     () => connection[method](...args),
+    queryArgs,
   );
   return [data || null, isLoading];
 }

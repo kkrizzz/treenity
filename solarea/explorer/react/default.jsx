@@ -123,17 +123,75 @@ const SupplyStats = ({ currentSupply }) => {
 
 const { useSolanaWeb3 } = solarea;
 
-add(() => {
-  const [currentSupply, isSupplyLoading] = useSolanaWeb3('getSupply', 'finalized');
-  const [epochInfo, isEpochInfoLoading] = useSolanaWeb3('getEpochInfo');
+const ClusterStats = ({}) => {
+  const [epochInfo, isEpochInfoLoading] = useSolanaWeb3('getEpochInfo', [], {
+    refetchInterval: 2000,
+  });
   const [recentPerformance, isRecentPerformanceLoading] = useSolanaWeb3(
     'getRecentPerformanceSamples',
   );
-  const [voteAccounts, isVoteAccountsLoading] = useSolanaWeb3('getVoteAccounts', 'finalized');
+
+  const epochProgress = !isEpochInfoLoading && (epochInfo.slotIndex / epochInfo.slotsInEpoch) * 100;
+
+  return (
+    <>
+      <BulmaCard header="Cluster stats">
+        {isEpochInfoLoading ? (
+          <ProgressBar />
+        ) : (
+          <div>
+            <TwoColumn
+              first="Slot"
+              link={`/block/${epochInfo.absoluteSlot}`}
+              second={epochInfo.absoluteSlot}
+            />
+            <TwoColumn first="Block height" second={epochInfo.blockHeight} />
+            <TwoColumn first="Epoch" second={epochInfo.epoch} />
+            <TwoColumn
+              first="Epoch progress"
+              second={
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div class="m-r-8">{epochProgress.toFixed(1) + '%'}</div>
+                  <ProgressBar percent={epochProgress.toFixed(1)} />
+                </div>
+              }
+            />
+          </div>
+        )}
+      </BulmaCard>
+      <BulmaCard header="Transaction stats">
+        {isEpochInfoLoading || isRecentPerformanceLoading ? (
+          <ProgressBar />
+        ) : (
+          <div>
+            <TwoColumn first="Total transactions" second={epochInfo.transactionCount} />
+            <TwoColumn
+              first="TPS"
+              second={Math.floor(
+                recentPerformance[0].numTransactions / recentPerformance[0].samplePeriodSecs,
+              )}
+            />{' '}
+            <TwoColumn
+              first="Average TPS (30 min)"
+              second={Math.floor(
+                recentPerformance.slice(0, 60).reduce((acc, val) => acc + val.numTransactions, 0) /
+                  3600,
+              )}
+            />
+          </div>
+        )}
+      </BulmaCard>
+    </>
+  );
+};
+
+add(() => {
+  const [currentSupply, isSupplyLoading] = useSolanaWeb3('getSupply', ['finalized']);
+  const [voteAccounts, isVoteAccountsLoading] = useSolanaWeb3('getVoteAccounts', ['finalized']);
 
   const connection = solarea.useConnection();
 
-  const isSolana = connection._rpcEndpoint === 'https://api.mainnet-beta.solana.com';
+  const isSolana = connection._rpcEndpoint.includes('solana');
   const token = isSolana ? 'solana' : 'velas';
   const { data: coinData, isLoading: isSolanaDataLoading } = solarea.useQuery(
     [token, 'coingecko'],
@@ -144,7 +202,6 @@ add(() => {
   const cards = [SupplyStats, StakeStats, PriceStats];
 
   const isLoading = isSupplyLoading || isVoteAccountsLoading || isSolanaDataLoading;
-  const epochProgress = !isEpochInfoLoading && (epochInfo.slotIndex / epochInfo.slotsInEpoch) * 100;
   return (
     <Render id="explorer" name="layout">
       <div className="bu-container bu-is-max-desktop">
@@ -169,53 +226,7 @@ add(() => {
             )}
           </div>
         </BulmaCard>
-        <BulmaCard header="Cluster stats">
-          {isEpochInfoLoading ? (
-            <ProgressBar />
-          ) : (
-            <div>
-              <TwoColumn
-                first="Slot"
-                link={`/block/${epochInfo.absoluteSlot}`}
-                second={epochInfo.absoluteSlot}
-              />
-              <TwoColumn first="Block height" second={epochInfo.blockHeight} />
-              <TwoColumn first="Epoch" second={epochInfo.epoch} />
-              <TwoColumn
-                first="Epoch progress"
-                second={
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div class="m-r-8">{epochProgress.toFixed(1) + '%'}</div>
-                    <ProgressBar percent={epochProgress.toFixed(1)} />
-                  </div>
-                }
-              />
-            </div>
-          )}
-        </BulmaCard>
-        <BulmaCard header="Transaction stats">
-          {isEpochInfoLoading || isRecentPerformanceLoading ? (
-            <ProgressBar />
-          ) : (
-            <div>
-              <TwoColumn first="Total transactions" second={epochInfo.transactionCount} />
-              <TwoColumn
-                first="TPS"
-                second={Math.floor(
-                  recentPerformance[0].numTransactions / recentPerformance[0].samplePeriodSecs,
-                )}
-              />{' '}
-              <TwoColumn
-                first="Average TPS (30 min)"
-                second={Math.floor(
-                  recentPerformance
-                    .slice(0, 60)
-                    .reduce((acc, val) => acc + val.numTransactions, 0) / 3600,
-                )}
-              />
-            </div>
-          )}
-        </BulmaCard>
+        <ClusterStats />
       </div>
     </Render>
   );

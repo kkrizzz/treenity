@@ -33,14 +33,17 @@ hook('instantiate', function (next, loadUrl) {
 
     const cssBlob = new Blob([css], { type: 'text/css' });
     const cssBlobUrl = window.URL.createObjectURL(cssBlob);
-    let blobName = url.split('/');
-    blobName = blobName[blobName.length - 1];
 
     let link = document.createElement('link');
     link.id = url;
     link.type = 'text/css';
     link.rel = 'stylesheet';
-    link.href = cssBlobUrl + '#' + blobName;
+    link.href = cssBlobUrl;
+    if (typeof window !== 'undefined' && window.chrome) {
+      let blobName = url.split('/');
+      blobName = blobName[blobName.length - 1];
+      link.href += '#' + blobName;
+    }
 
     link.onload = function () {
       // console.log('%c Style '+url+' has been loaded', 'color: green');

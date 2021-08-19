@@ -46,7 +46,7 @@ const Search = ({ onChange }) => {
   );
 };
 
-add(({ children }) => {
+add(({ id, children }) => {
   useCSS(
     'explorer-layout.css',
     `
@@ -80,11 +80,12 @@ add(({ children }) => {
   return (
     <div>
       <Render id="explorer" name="acc-css" />
-      <Render id="explorer" name="layout-header" />
+      <Render id={id} name="layout-header" />
       <div class="bu-container bu-is-max-desktop explorer-layout p-8-mobile m-b-16 m-t-16">
         <Search onChange={search} />
       </div>
       {children}
+      {/*<Render id="explorer" name="footer" />*/}
     </div>
   );
 });

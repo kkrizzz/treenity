@@ -189,13 +189,8 @@ const EthereumBlockView = ({ entityId }) => {
   );
 };
 
-const blockByChain = {
-  evm: EthereumBlockView,
-  sol: SolanaBlockView,
-};
-
 add(({ entityId, chain }) => {
-  if (!chain) chain = 'sol';
+  if (chain === 'evm') return EthereumBlockView({ entityId });
 
-  return blockByChain[chain]({ entityId });
+  return SolanaBlockView({ entityId });
 });

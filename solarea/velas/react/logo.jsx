@@ -7,7 +7,7 @@ add(({ color }) => (
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
   >
-    <title>SVG Layer</title>
+    <title>Velas</title>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
       <g id="SVG-Layer" fill={color || 'currentColor'} fill-rule="nonzero">
         <path
