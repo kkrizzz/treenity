@@ -83,6 +83,12 @@ const checkData = async (app, context: ctx) => {
   return context;
 };
 
+const fixError = (ctx) => {
+  if (ctx.error.code && !ctx.error.statusCode) {
+    ctx.error.statusCode = ctx.error.code;
+  }
+};
+
 addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
   const app = useApp();
   const db = useMemo(() => createClientDb(app), []);
@@ -107,6 +113,9 @@ addComponent(RestServiceMeta, 'service', {}, ({ value }) => {
             (ctx) => checkOwner(app, ctx),
             (ctx) => checkData(app, ctx),
           ],
+        },
+        error: {
+          all: [fixError],
         },
       });
     });

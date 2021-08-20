@@ -20,6 +20,7 @@ class RestStorageManager<T> implements ServiceMethods<T> {
       method,
       headers: {
         session: this.session,
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: body && JSON.stringify(body),
