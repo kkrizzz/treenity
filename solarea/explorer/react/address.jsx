@@ -42,6 +42,7 @@ const EthereumAddressView = ({ entityId }) => {
 
   const connection = solarea.useConnection();
   const isTestnet = connection._rpcEndpoint.includes('testnet');
+  const [txListLimit, setTxListLimit] = React.useState(10);
 
   const { data: accountTransactions, isLoading: isAccountTransactionsLoading } = solarea.useQuery(
     ['eth_acc_txs', entityId, isTestnet],
@@ -49,36 +50,34 @@ const EthereumAddressView = ({ entityId }) => {
       fetch(
         `https://explorer.${
           isTestnet ? 'testnet.' : ''
-        }velas.com/api?module=account&action=txlist&address=${entityId}`,
+        }velas.com/api?module=account&action=txlist&address=${entityId}&page=1&offset=1000`,
       ).then((res) => res.json()),
   );
 
-  const [
-    transactionCount,
-    isTransactionCountLoading,
-  ] = solarea.useSolanaRpc('eth_getTransactionCount', [entityId, 'latest']);
-
-  if (isLoading || isTransactionCountLoading) return InfoCard('Account loading . . .');
+  if (isLoading) return InfoCard('Account loading . . .');
 
   const tabs = [
     {
       name: 'Transactions',
       content: () => {
-        return !isAccountTransactionsLoading ? (
+        if (isAccountTransactionsLoading) return <div>Loading ...</div>;
+        const accountTokensArr = accountTransactions.result;
+        if (!accountTokensArr.length) return <div>Transactions not found</div>;
+
+        return (
           <div>
             <div className="bu-columns bu-is-mobile">
-              <div className="bu-column bu-is-2">Hash</div>
+              <div className="bu-column bu-is-3">Hash</div>
               <div className="bu-column bu-is-3">From</div>
               <div className="bu-column bu-is-3 text-overflow">To</div>
-              <div className="bu-column bu-is-1 text-overflow">Val.</div>
               <div className="bu-column bu-is-3 text-overflow">Time</div>
             </div>
-            {accountTransactions.result.map((tx) => {
+            {accountTokensArr.slice(0, txListLimit).map((tx, key) => {
               const from = solarea.vlxToEth(tx.from);
               const to = solarea.vlxToEth(tx.to);
               return (
-                <div className="bu-columns bu-is-mobile">
-                  <div className="bu-column bu-is-2 text-overflow">
+                <div className="bu-columns bu-is-mobile" key={key}>
+                  <div className="bu-column bu-is-3 text-overflow">
                     <Link to={`/tx/${tx.hash}`}>{tx.hash}</Link>
                   </div>
                   <div className="bu-column bu-is-3 text-overflow">
@@ -87,16 +86,19 @@ const EthereumAddressView = ({ entityId }) => {
                   <div className="bu-column bu-is-3 text-overflow">
                     <Link to={`/address/${to}?chain=evm`}>{to}</Link>
                   </div>
-                  <div className="bu-column bu-is-1 text-overflow">{tx.value}</div>
                   <div className="bu-column bu-is-3 text-overflow">
                     <TimeAgo date={new Date(tx.timeStamp * 1000)} />
                   </div>
                 </div>
               );
             })}
+            <button
+              className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+              onClick={() => setTxListLimit(txListLimit + 10)}
+            >
+              Load more...
+            </button>
           </div>
-        ) : (
-          <div>Loading . . .</div>
         );
       },
     },
@@ -106,12 +108,15 @@ const EthereumAddressView = ({ entityId }) => {
     },
   ];
 
+  const parsedBalance = parseInt(balance, 16);
   return (
     <div className="bu-container bu-is-max-desktop">
       <BulmaCard header="Overview">
         <TwoColumn first="Address" second={entityId} />
-        <TwoColumn first="Transaction count" second={parseInt(transactionCount, 16)} />
-        <TwoColumn first="Balance" second={`${(parseInt(balance, 16) * LPS).toFixed(8)} VLX`} />
+        <TwoColumn
+          first="Balance"
+          second={`${parsedBalance === 0 ? parsedBalance : (parsedBalance * LPS).toFixed(8)} VLX`}
+        />
       </BulmaCard>
       <BulmaCard>
         <div style={{ marginTop: -16 }}>

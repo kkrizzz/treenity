@@ -31,40 +31,44 @@ add(({ entityId }) => {
   );
 
   if (isAccountTokensLoading || isTokenDataLoading) return <div>Loading ...</div>;
-
-  console.log(tokenData);
   const parsedTokens = tokenData.items.map((tokenHtml, index) => {
     const [, name, address] = tokenRegExp.exec(tokenHtml);
     return { name, address };
   });
 
-  return accountTokens.result.map((token) => {
-    const tokenAddress = token.contractAddress;
-    const tokenInfo = parsedTokens.find((i) => i.address === tokenAddress);
-    return (
-      <TwoColumn
-        is={8}
-        first={
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div
-              style={{
-                minWidth: 24,
-                display: 'flex',
-                alignItems: 'center',
-                marginRight: 6,
-              }}
-            >
-              <RandomImageWithNonce width={24} address={solarea.ethToVlx(tokenAddress)} />
+  const accountTokensArr = accountTokens.result;
+
+  return accountTokensArr.length ? (
+    accountTokensArr.map((token) => {
+      const tokenAddress = token.contractAddress;
+      const tokenInfo = parsedTokens.find((i) => i.address === tokenAddress);
+      return (
+        <TwoColumn
+          is={8}
+          first={
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div
+                style={{
+                  minWidth: 24,
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginRight: 6,
+                }}
+              >
+                <RandomImageWithNonce width={24} address={solarea.ethToVlx(tokenAddress)} />
+              </div>
+              <div>
+                <Link to={`/address/${tokenAddress}`}>
+                  {tokenInfo ? tokenInfo.name : tokenAddress}
+                </Link>
+              </div>
             </div>
-            <div>
-              <Link to={`/address/${tokenAddress}`}>
-                {tokenInfo ? tokenInfo.name : tokenAddress}
-              </Link>
-            </div>
-          </div>
-        }
-        second={token.balance / Math.pow(10, token.decimals)}
-      />
-    );
-  });
+          }
+          second={token.balance / Math.pow(10, token.decimals)}
+        />
+      );
+    })
+  ) : (
+    <div>No tokens</div>
+  );
 });
