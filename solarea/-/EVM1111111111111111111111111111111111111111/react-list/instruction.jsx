@@ -1,25 +1,34 @@
-const SERUM_CODE_LOOKUP = {
-  0: 'Initialize Market',
-  1: 'New Order',
-  2: 'Match Orders',
-  3: 'Consume Events',
-  4: 'Cancel Order',
-  5: 'Settle Funds',
-  6: 'Cancel Order By Client Id',
-  7: 'Disable Market',
-  8: 'Sweep Fees',
-  9: 'New Order',
-  10: 'New Order',
-  11: 'Cancel Order',
-  12: 'Cancel Order By Client Id',
-  13: 'Send Take',
-};
+const AccountName = render('', 'name', 'react-text', { fallback: ({ id }) => id });
+const TwoColumn = render('dev', 'two-column');
 
-add(({ instruction }) => {
-  solarea.parseRlp(instruction.data);
-  //
-  // const data = instruction.data;
-  // const instNo = (data[0] << 8) | data[1];
+// TODO
+add(({ instruction, transaction }) => {
+  console.log('evm inst', instruction, transaction.meta);
+  const parsed = instruction.parsed;
 
-  return `EVM parsing`;
+  if (!parsed) {
+    return (
+      <div>
+        <b>Uparsed EVM transaction</b>
+        {instruction.accounts.map((pubKey, i) => (
+          <TwoColumn
+            first={`Account #${i}`}
+            second={<AccountName id={pubKey} />}
+            link={`/address/${pubKey}`}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  const evmTransaction = parsed.info.transaction;
+  return (
+    <div>
+      <div>Type: {parsed.type}</div>
+      <div>Hash: {evmTransaction.hash}</div>
+      <div>From: {evmTransaction.from}</div>
+      <div>To: {evmTransaction.to}</div>
+      <div>Gas used: {evmTransaction.gas}</div>
+    </div>
+  );
 });

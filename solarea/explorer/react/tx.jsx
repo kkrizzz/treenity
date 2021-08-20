@@ -2,32 +2,28 @@ const { lpsRound } = await require('solarea://explorer/utils');
 
 const { useTransaction, bs58 } = solarea;
 
-const navigate = (tab) => {
-  window.history.pushState({}, {}, '/' + tab);
-};
-
 const BulmaCard = render('dev', 'bulma-card');
 const TwoColumn = render('dev', 'two-column');
 const Instruction = render('', 'instruction', 'react-list');
 const InstructionName = render('', 'instruction', 'react-text');
-const AccountName = render('', 'name', 'react-text');
+const AccountName = render('', 'name', 'react-text', { fallback: ({ id }) => id });
 const SuccessBadge = render('dev', 'success-badge', 'react');
 
 const InstructionDefault = ({ instruction }) => {
-  const programPubkey = instruction.programId.toBase58();
+  const programPubkey = instruction.programId.toString();
   return (
     <div>
       <TwoColumn
         first="Program"
-        second={<AccountName id={programPubkey} fallback={() => programPubkey} />}
+        second={<AccountName id={programPubkey} />}
         link={`/address/${programPubkey}`}
       />
       {instruction.keys.map((key, index) => {
-        const accountPubkey = key.pubkey.toBase58();
+        const accountPubkey = key.pubkey;
         return (
           <TwoColumn
             first={`Account #${index + 1}`}
-            second={<AccountName id={accountPubkey} fallback={() => accountPubkey} />}
+            second={<AccountName id={accountPubkey} />}
             link={`/address/${accountPubkey}`}
           />
         );
@@ -56,18 +52,18 @@ const TransactionInstructions = ({ tx }) => {
   return (
     <div>
       <BulmaCard header="Instructions" />
-      {tx.transaction.instructions.map((inst, index) => (
+      {tx.transaction.message.instructions.map((inst, index) => (
         <BulmaCard
           header={
             <InstructionName
-              id={inst.programId.toBase58()}
+              id={inst.programId.toString()}
               instruction={inst}
               fallback={() => <InstructionDefaultText instruction={inst} />}
             />
           }
         >
           <Instruction
-            id={inst.programId.toBase58()}
+            id={inst.programId.toString()}
             instruction={inst}
             transaction={tx}
             fallback={() => <InstructionDefault instruction={inst} />}
@@ -87,7 +83,7 @@ const AccountInputs = ({ tx }) => {
         <div className="bu-column bu-is-3">Post</div>
       </div>
       {tx.transaction.message.accountKeys.map((key, index) => {
-        let publicKey = key.toBase58();
+        let publicKey = key.pubkey;
         return (
           <div className="bu-columns bu-is-mobile overflow-auto">
             <div className="bu-column bu-is-6 text-overflow tc-link">
@@ -133,12 +129,12 @@ const InfoCard = (t) => (
 
 const SolanaTxView = (props) => {
   if (!props.entityId) return InfoCard('Transaction not specified');
-  const [tx, isLoading] = useTransaction(props.entityId);
+  const [tx, isLoading] = useTransaction(props.entityId, true);
 
   if (isLoading) return InfoCard('Loading transaction');
   if (!tx) return InfoCard('Transaction not found');
 
-  const signature = bs58.encode(tx.transaction.signatures[0].signature);
+  const signature = tx.transaction.signatures[0];
   return (
     <div class="bu-container bu-is-max-desktop">
       <BulmaCard header="Transaction" />
@@ -173,7 +169,7 @@ const SolanaTxView = (props) => {
 const LPS = 0.000000000000000001;
 
 const EthereumTxView = ({ entityId }) => {
-  const [tx, isLoading] = solarea.useSolanaRpc('eth_getTransactionByHash', entityId);
+  const [tx, isLoading] = solarea.useSolanaRpc('eth_getTransactionByHash', [entityId]);
 
   if (isLoading) return InfoCard('Loading transaction');
   if (!tx) return InfoCard('Transaction not found');
@@ -212,8 +208,8 @@ const EntityTypes = {
 };
 
 add((props) => {
-  const entityType = props.entityId.startsWith('0x') ? 'evm' : 'sol';
   if (!props.entityId) return InfoCard('Address not specified');
+  const entityType = props.entityId.startsWith('0x') ? 'evm' : 'sol';
 
   return EntityTypes[entityType](props);
 });

@@ -38,7 +38,7 @@ const useLoadSignaturesInfinite = (entityId, limit = 10) => {
 const LPS = 0.000000000000000001;
 
 const EthereumAddressView = ({ entityId }) => {
-  const [balance, isLoading] = solarea.useSolanaRpc('eth_getBalance', entityId, 'latest');
+  const [balance, isLoading] = solarea.useSolanaRpc('eth_getBalance', [entityId, 'latest']);
 
   const connection = solarea.useConnection();
   const isTestnet = connection._rpcEndpoint.includes('testnet');
@@ -53,11 +53,10 @@ const EthereumAddressView = ({ entityId }) => {
       ).then((res) => res.json()),
   );
 
-  const [transactionCount, isTransactionCountLoading] = solarea.useSolanaRpc(
-    'eth_getTransactionCount',
-    entityId,
-    'latest',
-  );
+  const [
+    transactionCount,
+    isTransactionCountLoading,
+  ] = solarea.useSolanaRpc('eth_getTransactionCount', [entityId, 'latest']);
 
   if (isLoading || isTransactionCountLoading) return InfoCard('Account loading . . .');
 

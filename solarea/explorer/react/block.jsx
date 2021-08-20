@@ -126,11 +126,10 @@ const BlockLoadingView = () => {
 };
 
 const EthereumBlockView = ({ entityId }) => {
-  const [block, isLoading] = solarea.useSolanaRpc(
-    'eth_getBlockByNumber',
+  const [block, isLoading] = solarea.useSolanaRpc('eth_getBlockByNumber', [
     '0x' + Number(entityId).toString(16),
     true,
-  );
+  ]);
 
   if (isLoading || !block) {
     return <BlockLoadingView />;

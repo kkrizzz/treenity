@@ -1,22 +1,23 @@
 import React, { useMemo } from 'react';
 import { useCluster, useConnection } from './useConnection';
 import { useQuery } from 'react-query';
-import { ConfirmedTransaction } from '@solana/web3.js';
+import { ConfirmedTransaction, ParsedConfirmedTransaction } from '@solana/web3.js';
+import { useSolanaRpc } from './useSolanaRpc';
 
-export function useTransaction(signature: string): [ConfirmedTransaction | null, boolean] {
-  const [connection, clusterUrl] = useCluster();
+export function useTransaction(
+  signature: string,
+  parsed: boolean = false,
+): [ConfirmedTransaction | ParsedConfirmedTransaction | null, boolean] {
+  const args = parsed ? [signature, 'jsonParsed'] : [signature];
+  // @ts-ignore
+  return useSolanaRpc('getConfirmedTransaction', args);
 
-  const { data: transaction, isLoading } = useQuery(
-    `transaction_${signature}_${clusterUrl}`,
-    () => connection.getConfirmedTransaction(signature),
-    { cacheTime: 15 * 60 * 1000, refetchOnWindowFocus: false, staleTime: 30 * 60 * 1000 },
-  );
+  // useMemo(() => {
+  //   if (!parsed && !isLoading && transaction) {
+  //     // @ts-ignore
+  //     transaction.transaction.message = transaction.transaction.compileMessage();
+  //   }
+  // }, [transaction, isLoading]);
 
-  useMemo(() => {
-    if (!isLoading && transaction) {
-      transaction.transaction.message = transaction.transaction.compileMessage();
-    }
-  }, [transaction, isLoading]);
-
-  return [transaction || null, isLoading];
+  // return [transaction || null, isLoading];
 }

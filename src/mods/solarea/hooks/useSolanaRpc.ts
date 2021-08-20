@@ -3,15 +3,24 @@ import { useCluster, useConnection } from './useConnection';
 import { useQuery } from 'react-query';
 import { sleep } from '../utils/sleep';
 
-export function useSolanaRpc(method: string, ...args): [object | null, boolean] {
+export function useSolanaRpc(
+  method: string,
+  args: any[] = [],
+  queryArgs?: any,
+): [object | null, boolean] {
   const [connection, clusterUrl] = useCluster();
 
   const { data, isLoading } = useQuery(
     `rpccall_${method}_${clusterUrl}.${JSON.stringify(args)}`,
     () =>
-      connection
-        ._rpcRequest(method, args)
-        .then((res) => (method.startsWith('eth_') ? res.result : res.result?.value)),
+      connection._rpcRequest(method, args).then((res) => {
+        if ('error' in res) {
+          throw new Error('failed to get confirmed transaction: ' + res.error.message);
+        }
+        // return method.startsWith('eth_') ? res.result : res.result?.value;
+        return res.result;
+      }),
+    queryArgs,
   );
   return [data || null, isLoading];
 }

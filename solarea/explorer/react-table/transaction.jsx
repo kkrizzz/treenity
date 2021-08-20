@@ -9,14 +9,14 @@ function shortString(str, max) {
 add(({ transaction, signature }) => {
   let loading = false;
   if (!transaction) {
-    [transaction, loading] = solarea.useTransaction(signature);
+    [transaction, loading] = solarea.useTransaction(signature, true);
   }
 
   if (loading || !transaction) return 'loading...';
 
-  const instructions = transaction.transaction.instructions.map((i) => (
+  const instructions = transaction.transaction.message.instructions.map((i) => (
     <Render
-      id={i.programId.toBase58()}
+      id={i.programId}
       context="react-text"
       name="instruction"
       instruction={i}
@@ -25,7 +25,7 @@ add(({ transaction, signature }) => {
     />
   ));
 
-  signature = signature || solarea.bs58.encode(transaction.transaction.signatures[0].signature);
+  signature = signature || transaction.transaction.signatures[0];
 
   const hasTime = !!transaction.blockTime;
   return (
