@@ -14,6 +14,9 @@ const SystemInstructionType = [
 ];
 
 add(({ instruction }) => {
-  const instNo = instruction.data[0];
-  return `System: ${SystemInstructionType[instNo]}`;
+  const type = instruction.parsed
+    ? instruction.parsed.type
+    : SystemInstructionType[instruction.data[0]];
+
+  return `System: ${type}`;
 });

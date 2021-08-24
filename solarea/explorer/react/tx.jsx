@@ -153,7 +153,7 @@ const SolanaTxView = (props) => {
               first="Timestamp"
               second={new Date(tx.blockTime * 1000).toLocaleString()}
             />
-            <TwoColumn is={2} first="Fee" second={`${lpsRound(tx.meta?.fee || 0, 6)} SOL`} />
+            <TwoColumn is={2} first="Fee" second={`◎${lpsRound(tx.meta?.fee || 0, 6)}`} />
           </div>
         </div>
       </BulmaCard>

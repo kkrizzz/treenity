@@ -30,11 +30,17 @@ const SolanaBlockView = ({ entityId }) => {
     );
   }
   const transactions = block.transactions;
-
-  const successfulTransactions = transactions.reduce((acc, val) => {
-    if (!val.meta.err) acc += 1;
-    return acc;
-  }, 0);
+  const successfulTransactions = transactions.reduce((acc, val) => acc + (val.meta.err ? 0 : 1), 0);
+  const showTransactions = preact.useMemo(
+    () =>
+      block.transactions.filter((t) => {
+        const is = t.transaction.message.instructions;
+        return !(
+          is.length === 1 && is[0].programId === 'Vote111111111111111111111111111111111111111'
+        );
+      }),
+    [block],
+  );
 
   const parentSlot = block.parentSlot;
   return (
@@ -65,7 +71,7 @@ const SolanaBlockView = ({ entityId }) => {
                       <div className="bu-column bu-is-2">Result</div>
                     </div>
 
-                    {transactions.slice(0, showAmount).map((t, i) => (
+                    {showTransactions.slice(0, showAmount).map((t, i) => (
                       <TransactionRow key={i} transaction={t} />
                     ))}
                   </div>
