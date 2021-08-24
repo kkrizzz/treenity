@@ -2,6 +2,8 @@ require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 
 const { bs58 } = solarea;
 
+const Footer = render('explorer', 'footer');
+
 const search = (id) => {
   let exName;
   let exType;
@@ -85,6 +87,7 @@ add(({ id, children }) => {
         <Search onChange={search} />
       </div>
       {children}
+      <Footer />
     </div>
   );
 });

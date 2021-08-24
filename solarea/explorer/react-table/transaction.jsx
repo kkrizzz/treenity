@@ -28,6 +28,7 @@ add(({ transaction, signature }) => {
   signature = signature || transaction.transaction.signatures[0];
 
   const hasTime = !!transaction.blockTime;
+  const txDate = new Date(transaction.blockTime * 1000);
   return (
     <div class="bu-columns bu-is-mobile">
       <div class="bu-column bu-is-4 text-overflow bu-is-code">
@@ -45,7 +46,7 @@ add(({ transaction, signature }) => {
       </div>
       {hasTime && (
         <div className="bu-column bu-is-2 bu-is-mobile">
-          <Render id="dev" name="time-ago" date={new Date(transaction.blockTime * 1000)} />
+          <Render id="dev" name="time-ago" date={txDate} />
         </div>
       )}
       <div className="bu-column bu-is-2 bu-is-mobile">

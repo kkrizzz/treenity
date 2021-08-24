@@ -45,3 +45,11 @@ export const useCSS = (id, css) => {
 
   return isReady;
 };
+
+export function css(strings: string[], ...args: any[]) {
+  let str = strings[0];
+  for (let i = 0; i < args.length; i++) {
+    str += (args[i] || 'undefined').toString() + strings[i + 1];
+  }
+  return str;
+}

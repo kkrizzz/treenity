@@ -3,7 +3,7 @@ import * as preact from 'preact/compat';
 import findLastIndex from 'lodash/findLastIndex';
 import { promised } from './promised';
 import { useBitQuery } from './hooks/useBitQuery';
-import { useCSS } from './hooks/useCSS';
+import { useCSS, css } from './hooks/useCSS';
 import { useAccount } from './hooks/useAccount';
 import { useAccountTransactions } from './hooks/useAccountTransactions';
 
@@ -106,6 +106,7 @@ export function loadScript(id: string, code: string, context) {
         return globalThis.System.import(url);
       },
       useCSS,
+      css,
       useBitQuery,
       useAccount,
       useAccountTransactions,
@@ -146,7 +147,7 @@ export function loadScript(id: string, code: string, context) {
 
   (async function() {
   try {
-    const { useAccount, useAccountTransactions, useCSS, require, useBitQuery, html, add, Render, render, preact, ...context } = __ls.context;
+    const { useAccount, useAccountTransactions, useCSS, css, require, useBitQuery, html, add, Render, render, preact, ...context } = __ls.context;
     `}
     ////////////// user code /////////////////
     

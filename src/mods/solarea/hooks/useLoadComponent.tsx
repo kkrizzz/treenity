@@ -11,6 +11,44 @@ import { SolareaViewData } from '../storage-adapters/IStorageAdapter';
 
 const addressRegEx = /^[A-z0-9:\.\-_]+$/;
 
+async function loadScriptComponent(address, name, context, apis: any[]) {
+  const id = new SolareaViewId(address, name, context);
+  try {
+    // do {
+    const results = await Promise.allSettled(
+      apis.map((api) => api.get(id, { resolveLinks: true })),
+    );
+
+    const viewData = results.find((res) => res.status === 'fulfilled' && res.value)?.value;
+
+    if (!viewData) return;
+
+    const mimetype = mimeTypesData.getMime(viewData.type);
+
+    if (viewData.type === mimeTypesData['solarea/jsx']) {
+      const viewCode = viewData.data.toString('utf-8');
+
+      await loadScript(id.id, viewCode, {
+        Render,
+        render,
+        add(component, options = {}): void {
+          component.displayName = id.id;
+          addComponent(address, name, context, options, component);
+        },
+      });
+    } else if (mimetype) {
+      addComponent(address, name, context, {}, () =>
+        resolveViewByMime({ mimetype, data: viewData.data }),
+      );
+    } else {
+      throw new Error(`mimetype not resolved ${viewData.type}`);
+    }
+  } catch (err) {
+    console.log(err);
+    // addComponent(address, name, context, {}, getComponent('default', 'default', context).component,);
+  }
+}
+
 export function useLoadAccountComponent(
   address: string,
   name: string,
@@ -39,46 +77,9 @@ export function useLoadAccountComponent(
   const restStorage = useRestStorage();
 
   useAsyncEffect(async () => {
-    const id = new SolareaViewId(address, name, context);
-    try {
-      // do {
-      const [solSettle, restSettle] = await Promise.allSettled([
-        solanaStorage.get(id, { resolveLinks: true }),
-        restStorage.get(id, { resolveLinks: true }),
-      ]);
-
-      const viewData =
-        (solSettle.status === 'fulfilled' && solSettle.value) ||
-        (restSettle.status === 'fulfilled' && restSettle.value);
-
-      if (!viewData) return;
-
-      const mimetype = mimeTypesData.getMime(viewData.type);
-
-      if (viewData.type === mimeTypesData['solarea/jsx']) {
-        const viewCode = viewData.data.toString('utf-8');
-
-        await loadScript(id.id, viewCode, {
-          Render,
-          render,
-          add(component, options = {}): void {
-            component.displayName = id.id;
-            addComponent(address, name, context, options, component);
-          },
-        });
-      } else if (mimetype) {
-        addComponent(address, name, context, {}, () =>
-          resolveViewByMime({ mimetype, data: viewData.data }),
-        );
-      } else {
-        throw new Error(`mimetype not resolved ${viewData.type}`);
-      }
-    } catch (err) {
-      console.log(err);
-      // addComponent(address, name, context, {}, getComponent('default', 'default', context).component,);
-    } finally {
-      setLoading(false);
-    }
+    loadScriptComponent(address, name, context, [solanaStorage, restStorage]).finally(() =>
+      setLoading(false),
+    );
   }, [address, name, context]);
 
   return [null, loading];

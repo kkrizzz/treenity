@@ -8,9 +8,9 @@ add(({ entityId }) => {
     { programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' },
     { encoding: 'jsonParsed', commitment: 'processed' },
   ]);
-  const tokens = tokensResult.value;
 
   if (isTokensLoading) return <div>Loading . . . </div>;
+  const tokens = tokensResult.value;
 
   // prettier-ignore
   const [tokenData, isDataLoading] = solarea.useGraphQL('/solana/tokens', `{

@@ -1,5 +1,6 @@
 const BulmaCard = render('dev', 'bulma-card');
 const TwoColumn = render('dev', 'two-column');
+const ExplorerLayout = render('explorer', 'layout');
 
 const LPS = 0.000000001;
 
@@ -203,7 +204,7 @@ add(() => {
 
   const isLoading = isSupplyLoading || isVoteAccountsLoading || isSolanaDataLoading;
   return (
-    <Render id="explorer" name="layout">
+    <ExplorerLayout>
       <div className="bu-container bu-is-max-desktop">
         <BulmaCard>
           <div className="bu-columns">
@@ -228,6 +229,6 @@ add(() => {
         </BulmaCard>
         <ClusterStats />
       </div>
-    </Render>
+    </ExplorerLayout>
   );
 });
