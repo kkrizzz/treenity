@@ -9,6 +9,8 @@ const Link = render('dev', 'link');
 const TwoColumn = render('dev', 'two-column');
 const TransactionRow = render('explorer', 'transaction', 'react-table');
 
+const VOTE_PROGRAM_ID = 'Vote111111111111111111111111111111111111111';
+
 const SolanaBlockView = ({ entityId }) => {
   const [block, loading] = useBlock(+entityId);
   const [showAmount, setShowAmount] = React.useState(10);
@@ -31,16 +33,14 @@ const SolanaBlockView = ({ entityId }) => {
   }
   const transactions = block.transactions;
   const successfulTransactions = transactions.reduce((acc, val) => acc + (val.meta.err ? 0 : 1), 0);
-  const showTransactions = preact.useMemo(
-    () =>
-      block.transactions.filter((t) => {
-        const is = t.transaction.message.instructions;
-        return !(
-          is.length === 1 && is[0].programId === 'Vote111111111111111111111111111111111111111'
-        );
-      }),
-    [block],
-  );
+
+  const filterTrans = (isVote) =>
+    block.transactions.filter((t) => {
+      const is = t.transaction.message.instructions;
+      const vote = is.length === 1 && is[0].programId === VOTE_PROGRAM_ID;
+      return isVote === vote;
+    });
+  const showTransactions = preact.useMemo(() => filterTrans(false), [block]);
 
   const parentSlot = block.parentSlot;
   return (
@@ -75,7 +75,7 @@ const SolanaBlockView = ({ entityId }) => {
                       <TransactionRow key={i} transaction={t} />
                     ))}
                   </div>
-                  {showAmount < transactions.length && (
+                  {showAmount < showTransactions.length && (
                     <button
                       class="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
                       onClick={() => setShowAmount((am) => am + 10)}
@@ -104,6 +104,33 @@ const SolanaBlockView = ({ entityId }) => {
                       <div className="bu-column bu-is-2">{lpsRound(reward.lamports)}</div>
                     </div>
                   ))}
+                </div>
+              ),
+            },
+            {
+              name: 'Votes',
+              content: () => (
+                <div>
+                  <div>
+                    <div className="bu-columns">
+                      <div className="bu-column bu-is-4">Signature</div>
+                      <div className="bu-column bu-is-2">Result</div>
+                    </div>
+
+                    {filterTrans(true)
+                      .slice(0, showAmount)
+                      .map((t, i) => (
+                        <TransactionRow key={i} transaction={t} fields={['signature', 'result']} />
+                      ))}
+                  </div>
+                  {showAmount < showTransactions.length && (
+                    <button
+                      class="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+                      onClick={() => setShowAmount((am) => am + 10)}
+                    >
+                      Load more...
+                    </button>
+                  )}
                 </div>
               ),
             },
