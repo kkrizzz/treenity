@@ -9,7 +9,7 @@ const Switch = ({ className = '', value = false, onChange = () => {}, children }
  }
 .bu-switch__toggle {
   display: inline-block;
-  background: gray;
+  background: #EEEEEE;
   padding: 2px;
   border-radius: 100px;
   width: 55px;
@@ -24,19 +24,18 @@ const Switch = ({ className = '', value = false, onChange = () => {}, children }
   content: "";
   display: inline-block;
   border-radius: 50%;
-  background: white;
+  background: #BDBDBD;
   width: 23px;
   height: 23px;
   outline: 0;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
   transform: translateX(0);
   transition: 0.15s linear transform;
 }
 .bu-switch__toggle--on {
-  background: black;
+  background: dimgrey;
 }
 .bu-switch__toggle--on::before {
   transform: translateX(27px);

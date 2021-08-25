@@ -87,7 +87,9 @@ add(({ id, children }) => {
         <Search onChange={search} />
       </div>
       {children}
-      <Footer />
+      <div class="m-t-32">
+        <Footer />
+      </div>
     </div>
   );
 });

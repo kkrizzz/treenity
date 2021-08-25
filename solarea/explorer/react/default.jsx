@@ -206,27 +206,25 @@ add(() => {
   return (
     <ExplorerLayout>
       <div className="bu-container bu-is-max-desktop">
-        <BulmaCard>
-          <div className="bu-columns">
-            {isLoading ? (
-              <div class="bu-column bu-box">
-                <ProgressBar />
-              </div>
-            ) : (
-              cards.map((Card) => (
-                <div className="bu-column">
-                  <div class="bu-box">
-                    <Card
-                      coinData={coinData}
-                      currentSupply={currentSupply}
-                      voteAccounts={voteAccounts}
-                    />
-                  </div>
-                </div>
-              ))
-            )}
+        {isLoading ? (
+          <div class="bu-column bu-box">
+            <ProgressBar />
           </div>
-        </BulmaCard>
+        ) : (
+          <div className="bu-columns">
+            {cards.map((Card) => (
+              <div className="bu-column">
+                <div class="bu-box">
+                  <Card
+                    coinData={coinData}
+                    currentSupply={currentSupply}
+                    voteAccounts={voteAccounts}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         <ClusterStats />
       </div>
     </ExplorerLayout>
