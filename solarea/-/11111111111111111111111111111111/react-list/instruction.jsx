@@ -8,12 +8,12 @@ add(({ id, instruction }) => {
     case 'transfer':
       return (
         <div>
-          <div class="bu-columns">
+          <div class="bu-columns bu-is-mobile">
             <div className="bu-column bu-is-4">From</div>
             <div className="bu-column bu-is-4">Amount</div>
             <div className="bu-column bu-is-4">To</div>
           </div>
-          <div class="bu-columns">
+          <div class="bu-columns bu-is-mobile">
             <div className="bu-column bu-is-4">
               <NamedHash hash={parsed.source} type="address" />
             </div>

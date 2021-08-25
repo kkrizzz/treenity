@@ -1,16 +1,16 @@
 const Hash = render('dev', 'hash');
 const AddressName = render(null, 'name', 'react-text');
 
-add((props) => (
+add(({ type, hash }) => (
   <AddressName
     id={hash}
     render={(name) => (
-      <Hash {...props}>
+      <Hash hash={hash} type={type}>
         <div style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
           {name}
         </div>
       </Hash>
     )}
-    fallback={() => <Hash {...props} />}
+    fallback={() => <Hash hash={hash} type={type} />}
   />
 ));
