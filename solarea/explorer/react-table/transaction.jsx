@@ -1,3 +1,6 @@
+const InstructionBadge = render(null, 'instruction', 'react-text');
+const Hash = render('dev', 'hash');
+
 function shortString(str, max) {
   if (str.length > max) {
     const half = max / 2 - 1;
@@ -14,35 +17,28 @@ add(({ transaction, signature }) => {
 
   if (loading || !transaction) return 'loading...';
 
-  const instructions = transaction.transaction.message.instructions.map((i) => (
-    <Render
-      id={i.programId}
-      context="react-text"
-      name="instruction"
-      instruction={i}
-      render={(elem) => <div className="bu-tag bu-is-black">{elem}</div>}
-      fallback={() => <div class="bu-tag bu-is-light bu-is-danger">unknown</div>}
-    />
-  ));
-
   signature = signature || transaction.transaction.signatures[0];
 
   const hasTime = !!transaction.blockTime;
   const txDate = new Date(transaction.blockTime * 1000);
+
   return (
     <div class="bu-columns bu-is-mobile">
       <div class="bu-column bu-is-4 text-overflow bu-is-code">
-        <span style={{ fontFamily: 'monospace' }}>
-          <Render id="dev" name="link" className="link" to={`/tx/${signature}`}>
-            {shortString(signature, 20)}
-          </Render>
-        </span>
+        <Hash hash={signature} type="tx" />
       </div>
       <div
-        style={{ display: 'flex', gap: 4, overflow: 'auto' }}
+        style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}
         className={`bu-column ${hasTime ? 'bu-is-4' : 'bu-is-6'} bu-is-mobile`}
       >
-        {instructions}
+        {transaction.transaction.message.instructions.map((i) => (
+          <InstructionBadge
+            id={i.programId}
+            instruction={i}
+            render={(elem) => <div className="bu-tag bu-is-black">{elem}</div>}
+            fallback={() => <div class="bu-tag bu-is-light bu-is-danger">unknown</div>}
+          />
+        ))}
       </div>
       {hasTime && (
         <div className="bu-column bu-is-2 bu-is-mobile">

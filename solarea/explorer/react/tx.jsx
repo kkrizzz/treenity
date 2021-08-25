@@ -8,9 +8,16 @@ const Instruction = render('', 'instruction', 'react-list');
 const InstructionName = render('', 'instruction', 'react-text');
 const AccountName = render('', 'name', 'react-text', { fallback: ({ id }) => id });
 const SuccessBadge = render('dev', 'success-badge', 'react');
+const Hash = render('dev', 'hash');
+const NamedHash = render('dev', 'named-hash');
 
 const InstructionDefault = ({ instruction }) => {
   const programPubkey = instruction.programId.toString();
+
+  if (instruction.parsed) {
+    return <pre>{JSON.stringify(instruction.parsed.info, null, 2)}</pre>;
+  }
+
   return (
     <div>
       <TwoColumn
@@ -184,7 +191,7 @@ const EthereumTxView = ({ entityId }) => {
       <BulmaCard>
         <div className="bu-columns overflow-hidden">
           <div className="bu-column">
-            <TwoColumn is={2} first="Hash" second={<div className="text-overflow">{hash}</div>} />
+            <TwoColumn is={2} first="Hash" second={<Hash hash={hash} />} />
             <TwoColumn
               is={2}
               first="Block"

@@ -1,6 +1,3 @@
-import React, { useMemo } from 'react';
-import { useCluster, useConnection } from './useConnection';
-import { useQuery } from 'react-query';
 import { ConfirmedTransaction, ParsedConfirmedTransaction } from '@solana/web3.js';
 import { useSolanaRpc } from './useSolanaRpc';
 

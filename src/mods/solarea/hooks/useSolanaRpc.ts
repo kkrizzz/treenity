@@ -55,7 +55,7 @@ const throttledRpcRequest = throttleArray(async (requests) => {
   const connection = requests[0][0];
   const rpcReqs = requests.map(([, methodName, args]) => ({ methodName, args }));
   const results = await connection._rpcBatchRequest(rpcReqs);
-  return results.data;
+  return results;
 }, 100);
 
 export function useSolanaBatchedRpc(method: string, ...args): [object | null, boolean] {
