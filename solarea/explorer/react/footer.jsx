@@ -69,7 +69,6 @@ add(() => {
                   Support
                 </a>
               </li>
-              <li>Version: v0.1</li>
             </ul>
           </div>
           <div className="bu-column bu-is-12-mobile bu-is-4 bu-is-4-desktop footer-list">
@@ -125,6 +124,11 @@ add(() => {
                 </a>
               </li>
             </ul>
+          </div>
+        </div>
+        <div className="bu-columns">
+          <div className="bu-column bu-is-12-mobile bu-is-4 bu-is-4-desktop footer-list">
+            Version 0.1
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ const Link = render('dev', 'link', 'react');
 const TwoColumn = render('dev', 'two-column');
 const EthAddressTokens = render('explorer', 'eth-address-tokens');
 const TransactionRow = render('explorer', 'transaction', 'react-table');
+const Hash = render('dev', 'hash');
 
 const InfoCard = (t) => (
   <div class="bu-container bu-is-max-desktop">
@@ -193,7 +194,7 @@ const SolanaAddressView = ({ entityId }) => {
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
             <TwoColumn first="Label" second={<AccountName id={entityId} />} />
-            <TwoColumn first="Address" second={entityId} />
+            <TwoColumn first="Address" second={<Hash hash={entityId} type="address" />} />
             <TwoColumn first="Data" second={`${account.data.length} bytes`} />
             <TwoColumn first="Balance" second={`◎${lpsRound(account.lamports)}`} />
             <TwoColumn first="Owner" second={<AccountName id={account.owner.toString()} />} />

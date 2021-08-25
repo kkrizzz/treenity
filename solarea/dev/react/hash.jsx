@@ -28,7 +28,7 @@ const Hash = ({ hash, type = 'address', children }) => {
       <div style={{ float: 'left', marginRight: 4, width: 16 }} onClick={copyHash}>
         <FeCopy />
       </div>
-      <Link to={`/${type}/${hash}`} style={{ display: 'flex' }}>
+      <Link to={`/${type}/${hash}`} className="bu-monospace bu-tc-link" style={{ display: 'flex' }}>
         {children || fallback()}
       </Link>
     </div>

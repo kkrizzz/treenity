@@ -51,32 +51,32 @@ const Search = ({ onChange }) => {
 add(({ id, children }) => {
   useCSS(
     'explorer-layout.css',
-    `
-   .explorer-layout {
-      flex-flow: nowrap;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-   }
-   .explorer-layout-input {
-     box-sizing: border-box;
-     flex: 0.95;
-   }
-   .explorer-layout-button {
-    flex: 0.05;
-    text-align: center;
-    min-width: 48px;
-    margin-left: 4px;
-   }
-   @media screen and (max-width: 1200px) {
-    .p-8-mobile {
-      padding: 8px;
-    }
-   }
-   .bu-navbar-link:not(.bu-is-arrowless)::after {
-    border-color: white !important;
-   }
-  `,
+    css`
+      .explorer-layout {
+        flex-flow: nowrap;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .explorer-layout-input {
+        box-sizing: border-box;
+        flex: 0.95;
+      }
+      .explorer-layout-button {
+        flex: 0.05;
+        text-align: center;
+        min-width: 48px;
+        margin-left: 4px;
+      }
+      @media screen and (max-width: 1200px) {
+        .p-8-mobile {
+          padding: 8px;
+        }
+      }
+      .bu-navbar-link:not(.bu-is-arrowless)::after {
+        border-color: white !important;
+      }
+    `,
   );
 
   return (

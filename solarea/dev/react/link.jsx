@@ -5,7 +5,7 @@ add(function Link({ to, children, className = '', style }) {
   };
 
   return (
-    <a onClick={go} href={to} className={`bu-tc-link ${className}`} style={style}>
+    <a onClick={go} href={to} className={className} style={style}>
       {children}
     </a>
   );
