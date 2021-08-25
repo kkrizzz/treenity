@@ -208,6 +208,9 @@ add(() => {
   .m-16 {
     margin: 16px;
   }
+  .m-t-32 {
+   margin-top: 32px;
+  }
   `,
   );
   return null;

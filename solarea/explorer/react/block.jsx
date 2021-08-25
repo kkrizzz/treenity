@@ -51,7 +51,7 @@ const SolanaBlockView = ({ entityId }) => {
           <div class="bu-column">
             <TwoColumn first="Slot" second={entityId} />
             <TwoColumn first="Blockhash" second={block.blockhash} />
-            <TwoColumn first="Parent slot" link={`/blocks/${parentSlot}`} second={parentSlot} />
+            <TwoColumn first="Parent slot" link={`/block/${parentSlot}`} second={parentSlot} />
             <TwoColumn first="Processed transactions" second={transactions.length} />
             <TwoColumn first="Successful transactions" second={successfulTransactions} />
           </div>
