@@ -54,9 +54,7 @@ const SolanaBlockView = ({ entityId }) => {
               first="Slot"
               second={
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Hash hash={entityId} type="block">
-                    {entityId}
-                  </Hash>
+                  <Hash hash={entityId} type="block" />
                 </div>
               }
             />
@@ -65,9 +63,7 @@ const SolanaBlockView = ({ entityId }) => {
               first="Parent slot"
               second={
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Hash hash={parentSlot.toString()} type="block">
-                    {parentSlot}
-                  </Hash>
+                  <Hash hash={parentSlot.toString()} type="block" />
                 </div>
               }
             />
@@ -98,7 +94,7 @@ const SolanaBlockView = ({ entityId }) => {
                           <div className="bu-column bu-is-2">Result</div>
                         </div>
                       ) : (
-                        'Transactions not found'
+                        'No non-votes transactions in block'
                       )}
 
                       {showTx()}

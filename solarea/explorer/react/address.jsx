@@ -112,7 +112,7 @@ const EthereumAddressView = ({ entityId }) => {
   const parsedBalance = parseInt(balance, 16);
   return (
     <div className="bu-container bu-is-max-desktop">
-      <BulmaCard header="Overview">
+      <BulmaCard header="Account overview">
         <TwoColumn first="Address" second={entityId} />
         <TwoColumn
           first="Balance"
@@ -177,7 +177,6 @@ const SolanaAddressView = ({ entityId }) => {
 
   return (
     <div class="bu-container bu-is-max-desktop">
-      <BulmaCard header={<div class="flex-between">Account</div>} />
       <Render
         id={entityId}
         render={(item) => <BulmaCard header="View">{item}</BulmaCard>}
@@ -190,7 +189,7 @@ const SolanaAddressView = ({ entityId }) => {
         entityId={entityId}
         fallback={() => null}
       />
-      <BulmaCard header="Overview">
+      <BulmaCard header="Account overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
             <TwoColumn first="Label" second={<AccountName id={entityId} />} />

@@ -25,7 +25,10 @@ const Hash = ({ hash, type = 'address', children, urlParams }) => {
 
   return (
     <div>
-      <div style={{ float: 'left', marginRight: 4, width: 16 }} onClick={copyHash}>
+      <div
+        style={{ float: 'left', marginRight: 4, width: 16, cursor: 'pointer' }}
+        onClick={copyHash}
+      >
         <FeCopy />
       </div>
       <Link

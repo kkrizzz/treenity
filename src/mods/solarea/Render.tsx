@@ -36,7 +36,7 @@ function Render(props: RenderProps) {
   const { id, name = 'default', context = 'react', children, fallback, render, ...more } = props;
   const [componentInfo, isLoading] = useLoadAccountComponent(id, name, context);
   // console.log('rendering', id, name, context, isLoading);
-  if (isLoading) return <div className="spinner" />;
+  if (isLoading) return <span className="spinner-grow spinner-grow-sm m-r-4"></span>;
 
   if (!componentInfo) {
     if (fallback !== undefined) return fallback(props);
@@ -63,7 +63,7 @@ function Render(props: RenderProps) {
     } else if (needAccount) {
       const [accountInfo, isAccLoading] = useAccount(id);
       if (isAccLoading) {
-        return <div className="bu-spinner" />;
+        return <span className="spinner-grow spinner-grow-sm m-r-4"></span>;
       }
       result = (
         <Component

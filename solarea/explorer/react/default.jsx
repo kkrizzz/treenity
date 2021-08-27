@@ -139,16 +139,17 @@ const ClusterStats = ({}) => {
     <>
       <BulmaCard header="Cluster stats">
         {isEpochInfoLoading ? (
-          <div></div>
+          <div className="bu-column bu-box bu-has-text-centered">
+            <span className="spinner-grow spinner-grow-sm m-r-4"></span>
+            Loading cluster stats ...
+          </div>
         ) : (
           <div>
             <TwoColumn
               first="Slot"
               second={
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Hash hash={epochInfo.absoluteSlot.toString()} type="block">
-                    {epochInfo.absoluteSlot}
-                  </Hash>
+                  <Hash hash={epochInfo.absoluteSlot.toString()} type="block" />
                 </div>
               }
             />
@@ -168,7 +169,10 @@ const ClusterStats = ({}) => {
       </BulmaCard>
       <BulmaCard header="Transaction stats">
         {isEpochInfoLoading || isRecentPerformanceLoading ? (
-          <ProgressBar />
+          <div className="bu-column bu-box bu-has-text-centered">
+            <span className="spinner-grow spinner-grow-sm m-r-4"></span>
+            Loading transactions stats ...
+          </div>
         ) : (
           <div>
             <TwoColumn first="Total transactions" second={epochInfo.transactionCount} />
@@ -215,7 +219,7 @@ add(() => {
         {isLoading ? (
           <div class="bu-column bu-box bu-has-text-centered">
             <span className="spinner-grow spinner-grow-sm m-r-4"></span>
-            Loading supply and market data ...
+            Loading token data ...
           </div>
         ) : (
           <div className="bu-columns">

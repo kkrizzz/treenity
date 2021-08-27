@@ -44,9 +44,7 @@ add(() => {
                       <div className="bu-column bu-is-1">{index + 1}</div>
                       <div className="bu-column bu-is-3">{tokenName}</div>
                       <div className="bu-column bu-is-5 text-overflow">
-                        <Hash hash={tokenAddress} urlParams={'chain=evm'} type="address">
-                          {tokenAddress}
-                        </Hash>
+                        <Hash hash={tokenAddress} urlParams={'chain=evm'} type="address" />
                       </div>
                       <div className="bu-column bu-is-2" style={{ textAlign: 'right' }}>
                         {parseFloat(tokenSupply.replace(/,/g, '')).toFixed(3)}

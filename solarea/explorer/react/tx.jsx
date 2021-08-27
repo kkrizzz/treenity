@@ -94,14 +94,7 @@ const AccountInputs = ({ tx }) => {
         return (
           <div className="bu-columns bu-is-mobile overflow-auto">
             <div className="bu-column bu-is-6 text-overflow tc-link">
-              <Render id="dev" name="link" to={`/address/${publicKey}`}>
-                <Render
-                  id={publicKey}
-                  name="name"
-                  context="react-text"
-                  fallback={() => publicKey}
-                />
-              </Render>
+              <Hash hash={publicKey} type="address" />
             </div>
             <div className="bu-column bu-is-3 tc-monospace">
               {lpsRound(tx.meta.postBalances[index] - tx.meta.preBalances[index], 6)}
@@ -119,7 +112,14 @@ const AccountInputs = ({ tx }) => {
 const TransactionLog = ({ tx }) => {
   return (
     <BulmaCard header="Log messages">
-      <div class="bu-notification tc-monospace" style={{ background: '#232323', margin: '-1rem' }}>
+      <div
+        class="bu-notification tc-monospace log-messages"
+        style={{
+          background: 'var(--theme-main-bg-color)',
+          color: 'var(--theme-main-color)',
+          margin: '-1rem',
+        }}
+      >
         {tx.meta.logMessages.map((text) => (
           <div>{text}</div>
         ))}
@@ -153,7 +153,15 @@ const SolanaTxView = (props) => {
               first="Signature"
               second={<div class="text-overflow">{signature}</div>}
             />
-            <TwoColumn is={2} first="Block" second={tx.slot} link={`/block/${tx.slot}`} />
+            <TwoColumn
+              is={2}
+              first="Block"
+              second={
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Hash hash={tx.slot.toString()} type="block" />
+                </div>
+              }
+            />
             <TwoColumn is={2} first="Result" second={<SuccessBadge success={!tx.meta?.err} />} />
             <TwoColumn
               is={2}

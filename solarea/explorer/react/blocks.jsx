@@ -3,6 +3,7 @@ const TwoColumn = render('dev', 'two-column');
 const TimeAgo = render('dev', 'time-ago');
 const Link = render('dev', 'link');
 const AddressLabel = render('', 'name', 'react-text');
+const Hash = render('dev', 'hash');
 
 const SolanaBlocksView = () => {
   return <div>Hello, sol</div>;
@@ -45,8 +46,8 @@ const EvmBlocksView = () => {
   return (
     <BulmaCard>
       <div className="bu-columns bu-is-mobile">
-        <div className="bu-column bu-is-1-desktop bu-is-1-tablet bu-is-2-mobile">Block</div>
-        <div className="bu-column bu-is-10-desktop bu-is-10-tablet bu-is-8-mobile">Hash</div>
+        <div className="bu-column bu-is-2-desktop bu-is-2-tablet bu-is-2-mobile">Block</div>
+        <div className="bu-column bu-is-9-desktop bu-is-9-tablet bu-is-8-mobile">Hash</div>
         <div className="bu-column bu-is-1-desktop bu-is-2-mobile">txns</div>
       </div>
       {blocks.map((block) => {
@@ -55,10 +56,10 @@ const EvmBlocksView = () => {
         return (
           <div key={block.hash}>
             <div className="bu-columns bu-is-mobile">
-              <div className="bu-column bu-is-1-desktop bu-is-1-tablet bu-is-2-mobile">
-                <Link to={`/block/${number}?chain=evm`}>{number}</Link>
+              <div className="bu-column bu-is-2-desktop bu-is-2-tablet bu-is-2-mobile">
+                <Hash hash={number.toString()} type="block" urlParams="chain=evm" />
               </div>
-              <div className="bu-column bu-is-10-desktop bu-is-10-tablet bu-is-8-mobile text-overflow">
+              <div className="bu-column bu-is-9-desktop bu-is-9-tablet bu-is-8-mobile text-overflow">
                 {block.hash}
                 <div class="bu-columns">
                   <div className="bu-column">
