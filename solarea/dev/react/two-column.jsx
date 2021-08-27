@@ -13,7 +13,7 @@ add(({ first, second, is = 4, link: lk }) => {
             {second}
           </Render>
         ) : (
-          <div style={{ display: 'flex', justifyContent: 'end' }}>{second}</div>
+          <div>{second}</div>
         )}
       </div>
     </div>

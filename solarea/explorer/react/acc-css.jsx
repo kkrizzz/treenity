@@ -30,7 +30,7 @@ const themeCss = css`
     color: var(--theme-main-color);
     background: var(--theme-card-bg-color);
     padding: 8px;
-    box-shadow: none !important;
+    box-shadow: var(--theme-card-shadow) !important;
     width: inherit !important;
   }
   .bu-card-header-title {
@@ -72,6 +72,7 @@ const lightThemeVars = css`
     --theme-a-hover-color: #00d1b2;
 
     --theme-card-bg-color: white;
+    --theme-card-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
   }
 `;
 const darkThemeVars = css`
@@ -86,6 +87,7 @@ const darkThemeVars = css`
     --theme-a-hover-color: #00d1b2;
 
     --theme-card-bg-color: #282945;
+    --theme-card-shadow: none;
   }
 `;
 
@@ -100,7 +102,7 @@ add(() => {
       *::before,
       *::after {
         transition-property: background-color, color;
-        transition-duration: 500ms, 100ms;
+        transition-duration: 250ms, 50ms;
       }
 
       .container {

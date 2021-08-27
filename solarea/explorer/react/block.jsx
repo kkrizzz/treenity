@@ -3,6 +3,7 @@ const { lpsRound, numberWithSpaces } = await require('solarea://explorer/utils')
 const { useBlock } = solarea;
 
 const AddressLabel = render('', 'name', 'react-text');
+const Hash = render('dev', 'hash');
 const BulmaCard = render('dev', 'bulma-card', 'react');
 const Tabs = render('dev', 'tabs', 'react');
 const Link = render('dev', 'link');
@@ -49,9 +50,27 @@ const SolanaBlockView = ({ entityId }) => {
       <BulmaCard header="Overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
-            <TwoColumn first="Slot" second={entityId} />
+            <TwoColumn
+              first="Slot"
+              second={
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Hash hash={entityId} type="block">
+                    {entityId}
+                  </Hash>
+                </div>
+              }
+            />
             <TwoColumn first="Blockhash" second={block.blockhash} />
-            <TwoColumn first="Parent slot" link={`/block/${parentSlot}`} second={parentSlot} />
+            <TwoColumn
+              first="Parent slot"
+              second={
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Hash hash={parentSlot.toString()} type="block">
+                    {parentSlot}
+                  </Hash>
+                </div>
+              }
+            />
             <TwoColumn first="Processed transactions" second={transactions.length} />
             <TwoColumn first="Successful transactions" second={successfulTransactions} />
           </div>
@@ -62,29 +81,39 @@ const SolanaBlockView = ({ entityId }) => {
           tabs={[
             {
               name: 'Block transactions',
-              content: () => (
-                <div>
-                  <div>
-                    <div className="bu-columns">
-                      <div className="bu-column bu-is-4">Signature</div>
-                      <div className="bu-column bu-is-6">Instructions</div>
-                      <div className="bu-column bu-is-2">Result</div>
-                    </div>
+              content: () => {
+                const showTx = React.useCallback(() => {
+                  return showTransactions
+                    .slice(0, showAmount)
+                    .map((t, i) => <TransactionRow key={i} transaction={t} />);
+                }, []);
 
-                    {showTransactions.slice(0, showAmount).map((t, i) => (
-                      <TransactionRow key={i} transaction={t} />
-                    ))}
+                return (
+                  <div>
+                    <div>
+                      {showTx.length ? (
+                        <div className="bu-columns">
+                          <div className="bu-column bu-is-4">Signature</div>
+                          <div className="bu-column bu-is-6">Instructions</div>
+                          <div className="bu-column bu-is-2">Result</div>
+                        </div>
+                      ) : (
+                        'Transactions not found'
+                      )}
+
+                      {showTx()}
+                    </div>
+                    {showAmount < showTransactions.length && (
+                      <button
+                        class="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+                        onClick={() => setShowAmount((am) => am + 10)}
+                      >
+                        Load more...
+                      </button>
+                    )}
                   </div>
-                  {showAmount < showTransactions.length && (
-                    <button
-                      class="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
-                      onClick={() => setShowAmount((am) => am + 10)}
-                    >
-                      Load more...
-                    </button>
-                  )}
-                </div>
-              ),
+                );
+              },
             },
             {
               name: 'Block rewards',

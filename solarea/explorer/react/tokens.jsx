@@ -1,5 +1,6 @@
 const BulmaCard = render('dev', 'bulma-card');
 const Link = render('dev', 'link');
+const Hash = render('dev', 'hash');
 
 const { tokenRegExp } = await require('solarea://explorer/utils');
 
@@ -43,7 +44,9 @@ add(() => {
                       <div className="bu-column bu-is-1">{index + 1}</div>
                       <div className="bu-column bu-is-3">{tokenName}</div>
                       <div className="bu-column bu-is-5 text-overflow">
-                        <Link to={`/address/${tokenAddress}?chain=evm`}>{tokenAddress}</Link>
+                        <Hash hash={tokenAddress} urlParams={'chain=evm'} type="address">
+                          {tokenAddress}
+                        </Hash>
                       </div>
                       <div className="bu-column bu-is-2" style={{ textAlign: 'right' }}>
                         {parseFloat(tokenSupply.replace(/,/g, '')).toFixed(3)}

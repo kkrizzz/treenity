@@ -1,6 +1,7 @@
 const BulmaCard = render('dev', 'bulma-card');
 const TwoColumn = render('dev', 'two-column');
 const ExplorerLayout = render('explorer', 'layout');
+const Hash = render('dev', 'hash');
 
 const LPS = 0.000000001;
 
@@ -33,7 +34,7 @@ const ProgressBar = ({ percent = '100' }) => {
 const SmallCard = ({ head, children, foot }) => {
   return (
     <div>
-      <div className="bu-is-size-5 bu-has-text-black">{head}</div>
+      <div className="bu-is-size-6 bu-has-text-black">{head}</div>
       <div>
         <div className="bu-is-size-3 bu-has-text-primary">{children}</div>
       </div>
@@ -143,8 +144,13 @@ const ClusterStats = ({}) => {
           <div>
             <TwoColumn
               first="Slot"
-              link={`/block/${epochInfo.absoluteSlot}`}
-              second={epochInfo.absoluteSlot}
+              second={
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Hash hash={epochInfo.absoluteSlot.toString()} type="block">
+                    {epochInfo.absoluteSlot}
+                  </Hash>
+                </div>
+              }
             />
             <TwoColumn first="Block height" second={epochInfo.blockHeight} />
             <TwoColumn first="Epoch" second={epochInfo.epoch} />

@@ -194,7 +194,14 @@ const SolanaAddressView = ({ entityId }) => {
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
             <TwoColumn first="Label" second={<AccountName id={entityId} />} />
-            <TwoColumn first="Address" second={<Hash hash={entityId} type="address" />} />
+            <TwoColumn
+              first="Address"
+              second={
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Hash hash={entityId} type="address" />
+                </div>
+              }
+            />
             <TwoColumn first="Data" second={`${account.data.length} bytes`} />
             <TwoColumn first="Balance" second={`◎${lpsRound(account.lamports)}`} />
             <TwoColumn first="Owner" second={<AccountName id={account.owner.toString()} />} />
