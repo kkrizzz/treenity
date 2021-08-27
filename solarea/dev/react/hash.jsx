@@ -38,7 +38,7 @@ const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
   return (
     <div style={alignRight ? { display: 'flex', justifyContent: 'flex-end' } : {}}>
       <div
-        style={{ float: 'left', marginRight: 4, width: 16, cursor: 'pointer' }}
+        style={{ float: 'left', marginRight: 4, width: 12, cursor: 'pointer' }}
         onClick={copyHash}
       >
         <FeCopy />

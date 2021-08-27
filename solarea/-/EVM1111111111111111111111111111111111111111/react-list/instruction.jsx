@@ -1,34 +1,55 @@
-const AccountName = render('', 'name', 'react-text', { fallback: ({ id }) => id });
 const TwoColumn = render('dev', 'two-column');
+const Hash = render('dev', 'hash');
+const { weiToEth } = await require('solarea://explorer/utils');
 
 // TODO
 add(({ instruction, transaction }) => {
   console.log('evm inst', instruction, transaction.meta);
-  const parsed = instruction.parsed;
-
-  if (!parsed) {
+  if (!instruction.parsed) {
     return (
       <div>
-        <b>Uparsed EVM transaction</b>
         {instruction.accounts.map((pubKey, i) => (
-          <TwoColumn
-            first={`Account #${i}`}
-            second={<AccountName id={pubKey} />}
-            link={`/address/${pubKey}`}
-          />
+          <TwoColumn first={`Account #${i}`} second={<Hash hash={pubKey} type="address" />} />
         ))}
       </div>
     );
   }
 
-  const evmTransaction = parsed.info.transaction;
+  const evmTransaction = instruction.parsed.info.transaction;
+  const gasUsed = parseInt(evmTransaction.gas, 16);
+  const gasPrice = parseInt(evmTransaction.gasPrice, 16);
+  const fee = weiToEth(gasUsed * gasPrice, 8);
+
   return (
-    <div>
-      <div>Type: {parsed.type}</div>
-      <div>Hash: {evmTransaction.hash}</div>
-      <div>From: {evmTransaction.from}</div>
-      <div>To: {evmTransaction.to}</div>
-      <div>Gas used: {evmTransaction.gas}</div>
-    </div>
+    <>
+      <div className="bu-columns">
+        <div class="bu-column bu-is-5">
+          From
+          <Hash hash={evmTransaction.from} type="address" />
+        </div>
+        <div class="bu-column bu-is-2">
+          <div style={{ margin: 'auto', width: '1.5rem', marginTop: 16 }}>
+            <Render id="icons" name="fe-arrow-right" />
+          </div>
+        </div>
+
+        <div className="bu-column bu-is-5">
+          To
+          <Hash hash={evmTransaction.from} type="address" />
+        </div>
+      </div>
+      <div className="bu-columns">
+        <div class="bu-column bu-is-4">Amount</div>
+        <div class="bu-column bu-is-4 bu-has-text-centered">{weiToEth(evmTransaction.value)}</div>
+
+        <div className="bu-column bu-is-4 bu-has-text-right">Fee: {fee}</div>
+      </div>
+      <div>
+        <TwoColumn first="Type" second={instruction.parsed.type} />
+        <TwoColumn first="Hash" second={<Hash hash={evmTransaction.hash} />} />
+        <TwoColumn first="Gas used" second={gasUsed} />
+        <TwoColumn first="Gas price" second={gasPrice} />
+      </div>
+    </>
   );
 });
