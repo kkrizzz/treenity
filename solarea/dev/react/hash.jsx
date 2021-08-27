@@ -5,7 +5,7 @@ const Link = render('dev', 'link');
 const FeCopy = render('icons', 'fe-copy');
 
 const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
-  const parsedHash = React.useCallback(() => {
+  const parsedHash = React.useMemo(() => {
     switch (typeof hash) {
       case 'number':
         return hash.toString().includes('0x') ? hash : numberWithSpaces(hash);
@@ -16,8 +16,8 @@ const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
     }
   }, []);
 
-  const start = parsedHash().slice(0, -4);
-  const end = parsedHash().slice(-4);
+  const start = parsedHash.slice(0, -4);
+  const end = parsedHash.slice(-4);
 
   const fallback = () => (
     <>

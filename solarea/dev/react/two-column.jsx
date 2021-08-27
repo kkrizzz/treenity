@@ -7,7 +7,7 @@ add(({ first, second, is = 4, link: lk }) => {
   `,
   );
 
-  const parsedSecond = React.useCallback(() => {
+  const parsedSecond = React.useMemo(() => {
     switch (typeof second) {
       case 'number':
         return second.toString().includes('0x') ? second : numberWithSpaces(second);
@@ -27,7 +27,7 @@ add(({ first, second, is = 4, link: lk }) => {
             {second}
           </Render>
         ) : (
-          <div>{parsedSecond()}</div>
+          <div>{parsedSecond}</div>
         )}
       </div>
     </div>
