@@ -1,6 +1,7 @@
 import preact from 'preact/compat';
 import bs58 from 'bs58';
 import zustand from 'zustand';
+import bn from 'bn.js';
 
 import { parseRlp } from './evm/parse-rlp';
 import { useCluster, useConnection } from './hooks/useConnection';
@@ -27,6 +28,7 @@ globalThis.React = preact;
 globalThis.ReactDOM = preact;
 globalThis.solarea = {
   bs58,
+  bn,
   vlxToEth,
   ethToVlx,
   Buffer,

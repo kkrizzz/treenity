@@ -8,6 +8,18 @@ exports.numberWithSpaces = (x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
+const { BigNumber } = await require('solarea://explorer/bignumber');
+const WEI_IN_ETH = new BigNumber(10).pow(18);
+exports.weiToEth = (valueString, prec = 18) => {
+  let eth = new BigNumber(parseInt(valueString, 16), 18).divide(WEI_IN_ETH).toString();
+  const point = eth.indexOf('.');
+  prec += 1;
+  if (eth.length - point > prec) {
+    eth = eth.slice(0, eth.length - point - prec);
+  }
+  return eth;
+};
+
 exports.tokenRegExp = new RegExp(`  <td class="stakes-td">
       <!-- incremented number by order in the list -->
       <span class="color-lighten">
