@@ -3,7 +3,7 @@ const { toast, error } = await require('solarea://dev/toast');
 const Link = render('dev', 'link');
 const FeCopy = render('icons', 'fe-copy');
 
-const Hash = ({ hash, type = 'address', children, urlParams }) => {
+const Hash = ({ hash, type, children, urlParams }) => {
   const start = hash.slice(0, -4);
   const end = hash.slice(-4);
 
@@ -31,13 +31,17 @@ const Hash = ({ hash, type = 'address', children, urlParams }) => {
       >
         <FeCopy />
       </div>
-      <Link
-        to={`/${type}/${hash}${urlParams ? `?${urlParams}` : ''}`}
-        className="bu-monospace bu-tc-link"
-        style={{ display: 'flex', fontSize: 16.5 }}
-      >
-        {children || fallback()}
-      </Link>
+      {type ? (
+        <Link
+          to={`/${type}/${hash}${urlParams ? `?${urlParams}` : ''}`}
+          className="bu-tc-link"
+          style={{ display: 'flex', fontFamily: 'monospace' }}
+        >
+          {children || fallback()}
+        </Link>
+      ) : (
+        <div style={{ display: 'flex', fontFamily: 'monospace' }}>{children || fallback()}</div>
+      )}
     </div>
   );
 };
