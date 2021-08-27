@@ -139,7 +139,7 @@ const ClusterStats = ({}) => {
     <>
       <BulmaCard header="Cluster stats">
         {isEpochInfoLoading ? (
-          <ProgressBar />
+          <div></div>
         ) : (
           <div>
             <TwoColumn
@@ -213,8 +213,9 @@ add(() => {
     <ExplorerLayout>
       <div className="bu-container bu-is-max-desktop">
         {isLoading ? (
-          <div class="bu-column bu-box">
-            <ProgressBar />
+          <div class="bu-column bu-box bu-has-text-centered">
+            <span className="spinner-grow spinner-grow-sm m-r-4"></span>
+            Loading supply and market data ...
           </div>
         ) : (
           <div className="bu-columns">

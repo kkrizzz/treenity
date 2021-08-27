@@ -134,6 +134,29 @@ add(() => {
         border-bottom: 1px solid #b9b9b9;
         margin-bottom: 24px;
       }
+
+      .spinner-grow {
+        display: inline-block;
+        width: 1.1rem;
+        height: 1.1rem;
+        vertical-align: text-bottom;
+        background-color: currentColor;
+        border-radius: 50%;
+        opacity: 0;
+        -webkit-animation: spinner-grow 0.75s linear infinite;
+        animation: spinner-grow 0.75s linear infinite;
+      }
+
+      @keyframes spinner-grow {
+        0% {
+          transform: scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
       @media screen and (max-width: 480px) {
         .column {
           font-size: 12pt !important;
@@ -181,6 +204,10 @@ add(() => {
       }
       .m-t-32 {
         margin-top: 32px;
+      }
+
+      .m-r-4 {
+        margin-right: 4px;
       }
 
       ${themeCss}

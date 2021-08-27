@@ -143,6 +143,7 @@ const SolanaBlockView = ({ entityId }) => {
                   <div>
                     <div className="bu-columns">
                       <div className="bu-column bu-is-4">Signature</div>
+                      <div className="bu-column bu-is-6">Instructions</div>
                       <div className="bu-column bu-is-2">Result</div>
                     </div>
 
