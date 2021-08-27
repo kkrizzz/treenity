@@ -152,11 +152,7 @@ const SolanaTxView = (props) => {
             <TwoColumn
               is={2}
               first="Block"
-              second={
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Hash hash={tx.slot.toString()} type="block" />
-                </div>
-              }
+              second={<Hash hash={tx.slot.toString()} type="block" alignRight />}
             />
             <TwoColumn is={2} first="Result" second={<SuccessBadge success={!tx.meta?.err} />} />
             <TwoColumn

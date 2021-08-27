@@ -2,7 +2,6 @@ const BulmaCard = render('dev', 'bulma-card');
 const TwoColumn = render('dev', 'two-column');
 const ExplorerLayout = render('explorer', 'layout');
 const Hash = render('dev', 'hash');
-
 const LPS = 0.000000001;
 
 function humanizeFormatter(num, digits) {
@@ -147,11 +146,7 @@ const ClusterStats = ({}) => {
           <div>
             <TwoColumn
               first="Slot"
-              second={
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Hash hash={epochInfo.absoluteSlot.toString()} type="block" />
-                </div>
-              }
+              second={<Hash hash={epochInfo.absoluteSlot.toString()} type="block" alignRight />}
             />
             <TwoColumn first="Block height" second={epochInfo.blockHeight} />
             <TwoColumn first="Epoch" second={epochInfo.epoch} />

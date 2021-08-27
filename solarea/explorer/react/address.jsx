@@ -195,11 +195,7 @@ const SolanaAddressView = ({ entityId }) => {
             <TwoColumn first="Label" second={<AccountName id={entityId} />} />
             <TwoColumn
               first="Address"
-              second={
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Hash hash={entityId} type="address" />
-                </div>
-              }
+              second={<Hash hash={entityId} type="address" alignRight />}
             />
             <TwoColumn first="Data" second={`${account.data.length} bytes`} />
             <TwoColumn first="Balance" second={`◎${lpsRound(account.lamports)}`} />

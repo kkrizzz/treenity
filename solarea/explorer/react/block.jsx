@@ -50,22 +50,11 @@ const SolanaBlockView = ({ entityId }) => {
       <BulmaCard header="Overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
-            <TwoColumn
-              first="Slot"
-              second={
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Hash hash={entityId} type="block" />
-                </div>
-              }
-            />
+            <TwoColumn first="Slot" second={<Hash hash={entityId} type="block" alignRight />} />
             <TwoColumn first="Blockhash" second={block.blockhash} />
             <TwoColumn
               first="Parent slot"
-              second={
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Hash hash={parentSlot.toString()} type="block" />
-                </div>
-              }
+              second={<Hash hash={parentSlot.toString()} type="block" alignRight />}
             />
             <TwoColumn first="Processed transactions" second={transactions.length} />
             <TwoColumn first="Successful transactions" second={successfulTransactions} />
