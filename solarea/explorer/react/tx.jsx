@@ -38,7 +38,7 @@ const InstructionDefault = ({ instruction }) => {
       <div className="bu-columns bu-is-mobile" style={{ justifyContent: 'space-between' }}>
         <div className={`bu-column bu-is-4 text-overflow`}>Data</div>
         <div
-          className="bu-column tc-monospace"
+          className="bu-column bu-tc-monospace"
           style={{
             overflowWrap: 'anywhere',
             background: '#232323',
@@ -96,10 +96,10 @@ const AccountInputs = ({ tx }) => {
             <div className="bu-column bu-is-6 text-overflow tc-link">
               <NamedHash hash={publicKey} type="address" />
             </div>
-            <div className="bu-column bu-is-3 tc-monospace">
+            <div className="bu-column bu-is-3 bu-tc-monospace">
               {lpsRound(tx.meta.postBalances[index] - tx.meta.preBalances[index], 6)}
             </div>
-            <div className="bu-column bu-is-3 tc-monospace">
+            <div className="bu-column bu-is-3 bu-tc-monospace">
               {lpsRound(tx.meta.postBalances[index], 6)}
             </div>
           </div>
@@ -113,7 +113,7 @@ const TransactionLog = ({ tx }) => {
   return (
     <BulmaCard header="Log messages">
       <div
-        class="bu-notification tc-monospace log-messages"
+        class="bu-notification bu-tc-monospace log-messages"
         style={{
           background: 'var(--theme-main-bg-color)',
           color: 'var(--theme-main-color)',
