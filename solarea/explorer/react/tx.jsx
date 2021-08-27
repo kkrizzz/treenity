@@ -94,7 +94,7 @@ const AccountInputs = ({ tx }) => {
         return (
           <div className="bu-columns bu-is-mobile overflow-auto">
             <div className="bu-column bu-is-6 text-overflow tc-link">
-              <Hash hash={publicKey} type="address" />
+              <NamedHash hash={publicKey} type="address" />
             </div>
             <div className="bu-column bu-is-3 tc-monospace">
               {lpsRound(tx.meta.postBalances[index] - tx.meta.preBalances[index], 6)}
@@ -148,11 +148,7 @@ const SolanaTxView = (props) => {
       <BulmaCard header="Overview">
         <div class="bu-columns">
           <div class="bu-column overflow-hidden">
-            <TwoColumn
-              is={2}
-              first="Signature"
-              second={<div class="text-overflow">{signature}</div>}
-            />
+            <TwoColumn is={2} first="Signature" second={<Hash hash={signature} />} />
             <TwoColumn
               is={2}
               first="Block"
