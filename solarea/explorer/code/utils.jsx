@@ -4,7 +4,7 @@ exports.lpsRound = (lamports, digits = 4) => {
   return (lamports * LPS).toFixed(digits);
 };
 
-const digRe = /^[\d\.]{3,32}$/;
+const digRe = /^[\d\.]{3,31}$/;
 const replaceRe = /(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g;
 exports.numberWithSpaces = (x) => {
   if (typeof x === 'number' || (typeof x === 'string' && digRe.test(x))) {
