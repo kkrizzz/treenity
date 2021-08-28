@@ -7,22 +7,22 @@ export function useSolanaRpc(
   method: string,
   args: any[] = [],
   queryArgs?: any,
-): [object | null, boolean] {
+): [object | null, boolean, unknown] {
   const [connection, clusterUrl] = useCluster();
 
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, error } = useQuery(
     `rpccall_${method}_${clusterUrl}.${JSON.stringify(args)}`,
     () =>
       connection._rpcRequest(method, args).then((res) => {
         if ('error' in res) {
-          throw new Error('failed to get confirmed transaction: ' + res.error.message);
+          throw new Error(res.error.message);
         }
         // return method.startsWith('eth_') ? res.result : res.result?.value;
-        return res.result;
+        return queryArgs?.transform ? queryArgs?.transform(res.result) : res.result;
       }),
     queryArgs,
   );
-  return [data || null, isLoading];
+  return [data || null, isLoading, error];
 }
 
 function throttleArray(func, ms) {

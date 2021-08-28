@@ -13,7 +13,7 @@ const TransactionRow = render('explorer', 'transaction', 'react-table');
 const VOTE_PROGRAM_ID = 'Vote111111111111111111111111111111111111111';
 
 const SolanaBlockView = ({ entityId }) => {
-  const [block, loading] = useBlock(+entityId);
+  const [block, loading, error] = useBlock(+entityId);
   const [showAmount, setShowAmount] = React.useState(10);
 
   if (loading) {
@@ -32,6 +32,14 @@ const SolanaBlockView = ({ entityId }) => {
       </div>
     );
   }
+  if (error || !block) {
+    return (
+      <div className="bu-container bu-is-max-desktop">
+        <BulmaCard header="Block not found" />
+      </div>
+    );
+  }
+
   const transactions = block.transactions;
   const successfulTransactions = transactions.reduce((acc, val) => acc + (val.meta.err ? 0 : 1), 0);
 

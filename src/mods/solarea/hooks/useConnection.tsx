@@ -43,17 +43,19 @@ const resolveVelasClusterByUrl = (url) => {
 const useCheckClusterInUrl = (localCluster, setCluster) => {
   const { cluster } = useQueryParams();
   useEffect(() => {
-    const velasClusterAliasByUrl = resolveVelasClusterByUrl(localCluster);
-    const clusterAliasByUrl = resolveVelasClusterByUrl(cluster);
-    if (velasClusterAliasByUrl !== clusterAliasByUrl) {
+    // const clusterAliasByUrl = resolveVelasClusterByUrl(cluster);
+    // if (velasClusterAliasByUrl !== clusterAliasByUrl) {
+    if (!cluster) {
+      const velasClusterAliasByUrl = resolveVelasClusterByUrl(localCluster);
       insertUrlParam('cluster', velasClusterAliasByUrl);
     }
-  }, [localCluster]);
+  }, [localCluster, cluster]);
 
   useEffect(() => {
     const targetCluster = resolveVelasClusterByAlias(cluster);
-
+    //
     if (targetCluster && targetCluster !== localCluster) {
+      // if (!cluster) {
       setCluster(targetCluster);
     }
   }, [cluster]);
@@ -69,7 +71,7 @@ export const ConnectionProvider = ({
 }) => {
   const [currentCluster, setCluster] = useLocalStorageState('clusterUrl', cluster as string);
 
-  useCheckClusterInUrl(currentCluster, setCluster);
+  // useCheckClusterInUrl(currentCluster, setCluster);
 
   const value = useMemo<ContextType>(() => {
     let url;
