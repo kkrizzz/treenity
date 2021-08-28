@@ -70,7 +70,7 @@ mod test {
         {
             let create_data: Vec<u8> =
                 [
-                    &[1], // intruction create
+                    &[1], // intsruction create
                     &[address.len() as u8], address,
                     &[context.len() as u8], context,
                     &[name.len() as u8], name,
@@ -88,7 +88,7 @@ mod test {
 
             let store_data: Vec<u8> =
                 [
-                    &[2], // intruction create
+                    &[2], // intsruction create
                     &[address.len() as u8], address,
                     &[context.len() as u8], context,
                     &[name.len() as u8], name,

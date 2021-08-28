@@ -3,17 +3,17 @@ add(() => {
     'footer.css',
     css`
       footer.bu-footer {
-        background-color: #161623;
+        background-color: #00000010;
         line-height: 2rem;
         padding-top: 2rem;
       }
       footer h4 {
         font-weight: 700;
-        color: white;
+        color: var(--theme-main-color);
         font-size: 15px;
       }
       footer a {
-        color: #65ceb3;
+        color: var(--theme-a-color);
         font-size: 15px;
       }
       footer ul {

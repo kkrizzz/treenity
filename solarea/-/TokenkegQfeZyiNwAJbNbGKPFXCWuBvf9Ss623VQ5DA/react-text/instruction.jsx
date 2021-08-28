@@ -22,6 +22,10 @@ const TokenInstructionType = [
 ];
 
 add(({ instruction }) => {
-  const instNo = instruction.data[0];
-  return `SPL: ${TokenInstructionType[instNo]}`;
+  if (instruction.parsed) {
+    return instruction.parsed.type;
+  } else {
+    const instNo = instruction.data[0];
+    return `SPL: ${TokenInstructionType[instNo]}`;
+  }
 });

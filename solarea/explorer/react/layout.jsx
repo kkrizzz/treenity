@@ -30,21 +30,24 @@ const Search = ({ onChange }) => {
   const input = React.useRef();
   const setSearch = () => {
     onChange(input.current.value);
+    input.current.value = '';
   };
 
   return (
-    <>
+    <p className="bu-control bu-has-icons-right explorer-layout-input">
       <input
         ref={input}
         id="exp-l-id"
-        className="bu-input bu-is-primary explorer-layout-input"
+        className="bu-input bu-is-primary"
         placeholder="Search for accounts, transactions, blocks..."
         onKeyPress={(evt) => evt.code === 'Enter' && setSearch()}
       />
-      <div onClick={setSearch} className="bu-button explorer-layout-button">
-        <Render id="icons" name="search" />
-      </div>
-    </>
+      <span class="bu-icon bu-is-right">
+        <div onClick={setSearch}>
+          <Render id="icons" name="search" />
+        </div>
+      </span>
+    </p>
   );
 };
 
@@ -59,14 +62,8 @@ add(({ id, children }) => {
         align-items: center;
       }
       .explorer-layout-input {
+        flex: 1;
         box-sizing: border-box;
-        flex: 0.95;
-      }
-      .explorer-layout-button {
-        flex: 0.05;
-        text-align: center;
-        min-width: 48px;
-        margin-left: 4px;
       }
       @media screen and (max-width: 1200px) {
         .p-8-mobile {
@@ -83,7 +80,7 @@ add(({ id, children }) => {
     <div>
       <Render id="explorer" name="acc-css" />
       <Render id={id} name="layout-header" />
-      <div class="bu-container bu-is-max-desktop explorer-layout p-8-mobile m-b-16 m-t-16">
+      <div class="bu-container bu-is-max-desktop explorer-layout m-b-16 m-t-16">
         <Search onChange={search} />
       </div>
       {children}

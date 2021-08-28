@@ -79,13 +79,13 @@ const EthereumAddressView = ({ entityId }) => {
               return (
                 <div className="bu-columns bu-is-mobile" key={key}>
                   <div className="bu-column bu-is-3 text-overflow">
-                    <Link to={`/tx/${tx.hash}`}>{tx.hash}</Link>
+                    <Hash hash={tx.hash} type="tx" />
                   </div>
                   <div className="bu-column bu-is-3 text-overflow">
-                    <Link to={`/address/${from}?chain=evm`}>{from}</Link>
+                    <Hash hash={from} type="address" urlParams="chain=evm" />
                   </div>
                   <div className="bu-column bu-is-3 text-overflow">
-                    <Link to={`/address/${to}?chain=evm`}>{to}</Link>
+                    <Hash hash={to} type="address" "chain=evm" />
                   </div>
                   <div className="bu-column bu-is-3 text-overflow">
                     <TimeAgo date={new Date(tx.timeStamp * 1000)} />
@@ -199,7 +199,7 @@ const SolanaAddressView = ({ entityId }) => {
             />
             <TwoColumn first="Data" second={`${account.data.length} bytes`} />
             <TwoColumn first="Balance" second={`◎${lpsRound(account.lamports)}`} />
-            <TwoColumn first="Owner" second={<AccountName id={account.owner.toString()} />} />
+            <TwoColumn first="Owner" second={<Hash hash={account.owner.toString()} type="address" alignRight />} />
           </div>
         </div>
       </BulmaCard>

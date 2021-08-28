@@ -112,7 +112,7 @@ const SolanaBlockView = ({ entityId }) => {
                   {block.rewards.map((reward) => (
                     <div className="bu-columns bu-is-mobile">
                       <div className="bu-column bu-is-8 text-overflow">
-                        <Link to={`/address/${reward.pubkey}`}>{reward.pubkey}</Link>
+                        <Hash hash={reward.pubkey} type="address" />
                       </div>
                       <div className="bu-column bu-is-2">{reward.rewardType}</div>
                       <div className="bu-column bu-is-2">{lpsRound(reward.lamports)}</div>

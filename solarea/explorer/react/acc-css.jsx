@@ -73,6 +73,9 @@ const lightThemeVars = css`
 
     --theme-card-bg-color: white;
     --theme-card-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
+
+    --theme-success-color: #00d1b2;
+    --theme-error-color: red;
   }
 `;
 const darkThemeVars = css`
@@ -88,6 +91,9 @@ const darkThemeVars = css`
 
     --theme-card-bg-color: #282945;
     --theme-card-shadow: none;
+
+    --theme-success-color: #00d1b2;
+    --theme-error-color: red;
   }
 `;
 

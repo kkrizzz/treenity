@@ -1,1 +1,1 @@
-add(({ id }) => `EVM Instruction`);
+add(({ id, instruction }) => 'EVM Transaction');

@@ -1,4 +1,4 @@
-const { lpsRound } = await require('solarea://explorer/utils');
+const { lpsRound, numberWithSpaces } = await require('solarea://explorer/utils');
 
 const { useTransaction, bs58 } = solarea;
 
@@ -20,24 +20,18 @@ const InstructionDefault = ({ instruction }) => {
 
   return (
     <div>
-      <TwoColumn
-        first="Program"
-        second={<AccountName id={programPubkey} />}
-        link={`/address/${programPubkey}`}
-      />
-      {instruction.keys.map((key, index) => {
-        const accountPubkey = key.pubkey;
+      <TwoColumn first="Program" second={<Hash hash={programPubkey} type="address" alignRight />} />
+      {instruction.accounts.map((accountPubkey, index) => {
         return (
           <TwoColumn
             first={`Account #${index + 1}`}
-            second={<AccountName id={accountPubkey} />}
-            link={`/address/${accountPubkey}`}
+            second={<Hash hash={accountPubkey} type="address" alignRight />}
           />
         );
       })}
       <div className="bu-columns bu-is-mobile" style={{ justifyContent: 'space-between' }}>
         <div className={`bu-column bu-is-4 text-overflow`}>Data</div>
-        <div
+        <pre
           className="bu-column bu-tc-monospace"
           style={{
             overflowWrap: 'anywhere',
@@ -45,14 +39,16 @@ const InstructionDefault = ({ instruction }) => {
             maxWidth: 440,
           }}
         >
-          {instruction.data.toString('hex')}
-        </div>
+          {instruction.parsed
+            ? JSON.stringify(instruction.parsed, null, 2)
+            : instruction.data.toString('hex')}
+        </pre>
       </div>
     </div>
   );
 };
 const InstructionDefaultText = ({ instruction }) => {
-  return 'Unknown intruction';
+  return 'Unknown intsruction';
 };
 
 const TransactionInstructions = ({ tx }) => {
@@ -100,7 +96,7 @@ const AccountInputs = ({ tx }) => {
               {lpsRound(tx.meta.postBalances[index] - tx.meta.preBalances[index], 6)}
             </div>
             <div className="bu-column bu-is-3 bu-tc-monospace">
-              {lpsRound(tx.meta.postBalances[index], 6)}
+              {numberWithSpaces(lpsRound(tx.meta.postBalances[index], 6))}
             </div>
           </div>
         );
@@ -191,15 +187,24 @@ const EthereumTxView = ({ entityId }) => {
       <BulmaCard>
         <div className="bu-columns overflow-hidden">
           <div className="bu-column">
-            <TwoColumn is={2} first="Hash" second={<Hash hash={hash} />} />
+            <TwoColumn is={2} first="Hash" second={<Hash hash={hash} alignRight />} />
             <TwoColumn
               is={2}
               first="Block"
-              link={`/block/${parsedBlockNumber}?chain=evm`}
-              second={parsedBlockNumber}
+              second={
+                <Hash hash={parsedBlockNumber} type="address" urlParams="chain=evm" alignRight />
+              }
             />
-            <TwoColumn is={2} first="From" link={`/address/${from}`} second={from} />
-            <TwoColumn is={2} first="To" link={`/address/${to}`} second={to} />
+            <TwoColumn
+              is={2}
+              first="From"
+              second={<Hash hash={from} type="address" urlParams="chain=evm" alignRight />}
+            />
+            <TwoColumn
+              is={2}
+              first="To"
+              second={<Hash hash={to} type="address" urlParams="chain=evm" alignRight />}
+            />
             <TwoColumn is={2} first="Value" second={(parseInt(value, 16) * LPS).toFixed(16)} />
             <TwoColumn is={2} first="Nonce" second={parsedNonce} />
           </div>

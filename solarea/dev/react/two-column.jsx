@@ -7,16 +7,7 @@ add(({ first, second, is = 4, link: lk }) => {
   `,
   );
 
-  const parsedSecond = React.useMemo(() => {
-    switch (typeof second) {
-      case 'number':
-        return second.toString().includes('0x') ? second : numberWithSpaces(second);
-      case 'string':
-        return second.includes('0x') ? second : numberWithSpaces(second);
-      default:
-        return second;
-    }
-  }, []);
+  const parsedSecond = numberWithSpaces(second);
 
   return (
     <div class="bu-columns bu-is-mobile">

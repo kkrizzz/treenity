@@ -5,13 +5,16 @@ add(({ instruction }) => {
   const info = instruction.parsed.info;
   return (
     <div>
-      <TwoColumn first="Vote account" second={<Hash hash={info.voteAccount} type="address" />} />
+      <TwoColumn
+        first="Vote account"
+        second={<Hash hash={info.voteAccount} type="address" alignRight />}
+      />
       <TwoColumn
         first="Vote authority"
-        second={<Hash hash={info.voteAuthority} type="address" />}
+        second={<Hash hash={info.voteAuthority} type="address" alignRight />}
       />
-      <TwoColumn first="Vote hash" second={<Hash hash={info.vote.hash} />} />
-      <TwoColumn first="Slots" second={info.vote.slots.join(', ')} />
+      <TwoColumn first="Vote hash" second={<Hash hash={info.vote.hash} alignRight />} />
+      <TwoColumn first="Slots" second={info.vote.slots.join(', ')} alignRight />
     </div>
   );
 });

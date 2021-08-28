@@ -5,16 +5,7 @@ const Link = render('dev', 'link');
 const FeCopy = render('icons', 'fe-copy');
 
 const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
-  const parsedHash = React.useMemo(() => {
-    switch (typeof hash) {
-      case 'number':
-        return hash.toString().includes('0x') ? hash : numberWithSpaces(hash);
-      case 'string':
-        return hash.includes('0x') ? hash : numberWithSpaces(hash);
-      default:
-        return hash;
-    }
-  }, []);
+  const parsedHash = numberWithSpaces(hash);
 
   const start = parsedHash.slice(0, -4);
   const end = parsedHash.slice(-4);
