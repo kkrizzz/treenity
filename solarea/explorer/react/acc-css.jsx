@@ -78,6 +78,8 @@ const lightThemeVars = css`
     --theme-error-color: red;
 
     --theme-logs-bg: #f3f3f3;
+
+    --theme-footer-bg: #00000006;
   }
 `;
 const darkThemeVars = css`
@@ -98,6 +100,8 @@ const darkThemeVars = css`
     --theme-error-color: red;
 
     --theme-logs-bg: #1c1d31;
+
+    --theme-footer-bg: #0000001c;
   }
 `;
 

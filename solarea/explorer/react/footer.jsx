@@ -3,7 +3,7 @@ add(() => {
     'footer.css',
     css`
       footer.bu-footer {
-        background-color: #00000010;
+        background-color: var(--theme-footer-bg);
         line-height: 2rem;
         padding-top: 2rem;
       }
