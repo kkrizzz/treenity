@@ -1,7 +1,8 @@
-const { BufferLayout, SolanaLayout, Buffer } = solarea;
+const { BufferLayout, SolanaLayout, Buffer, useMetaplexNFT } = solarea;
 const { PublicKey } = solanaWeb3;
 
 const BulmaCard = render('dev', 'bulma-card');
+const Hash = render('dev', 'hash');
 const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
 
 const MintLayout = BufferLayout.struct([
@@ -18,12 +19,6 @@ const TwoColumn = render('dev', 'two-column');
 const AccountName = render('', 'name', 'react-text', {
   fallback: ({ id }) => id,
 });
-
-const urlRegExp = new RegExp(
-  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
-);
-
-const metaplexProgramId = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');
 
 add(({ account, entityId }) => {
   const decoded = MintLayout.decode(account.data);
@@ -43,33 +38,9 @@ add(({ account, entityId }) => {
     } 
    }`,
   );
-
-  const connection = solarea.useConnection();
-
-  const [image, setImage] = React.useState('');
-
-  React.useEffect(() => {
-    (async function () {
-      const associatedMetaDataAccount = (
-        await PublicKey.findProgramAddress(
-          [
-            Buffer.from('metadata'),
-            metaplexProgramId.toBuffer(),
-            new PublicKey(entityId).toBuffer(),
-          ],
-          metaplexProgramId,
-        )
-      )[0];
-      const { data } = await connection.getAccountInfo(associatedMetaDataAccount);
-      const utf8 = data.toString('utf-8');
-      const [metadataUrl] = urlRegExp.exec(utf8);
-      const arweaveStoredMetadata = await (await fetch(metadataUrl)).json();
-      console.log(arweaveStoredMetadata);
-      setImage(arweaveStoredMetadata.image);
-    })();
-  });
-
   const tokensInfo = tokensData?.data.allTokens?.[0];
+
+  const [nftTokenData, isNftDataLoading] = useMetaplexNFT(entityId);
 
   return (
     <BulmaCard>
@@ -85,10 +56,10 @@ add(({ account, entityId }) => {
         </div>
         <div className="bu-media-content">
           <p className="bu-title bu-is-4">
-            {tokensInfo?.name?.toString() || 'Unknown token'}
+            {nftTokenData?.name || tokensInfo?.name?.toString() || 'Unknown token'}
             {tokensInfo && <div className="m-l-8 bu-tag bu-is-light">{tokensInfo.symbol}</div>}
           </p>
-          <p className="bu-subtitle bu-is-6">Token</p>
+          <p className="bu-subtitle bu-is-6">{nftTokenData ? 'NFT token' : 'Token'}</p>
         </div>
         <div className="bu-media-right">
           <div
@@ -100,11 +71,11 @@ add(({ account, entityId }) => {
           </div>
         </div>
       </div>
-      <div className="bu-media">
-        <figure className="bu-image bu-is-256x256">
-          <img src={image} alt="Placeholder image" />
-        </figure>
-      </div>
+      {nftTokenData && (
+        <div className="bu-has-text-centered">
+          <img src={nftTokenData.image} width={256} />
+        </div>
+      )}
       <TwoColumn first="Supply" second={decoded.supply / Math.pow(10, decoded.decimals)} />
       <TwoColumn first="Decimals" second={decoded.decimals} />
       {tokensInfo && tokensInfo.extensions?.website && (
@@ -121,13 +92,34 @@ add(({ account, entityId }) => {
         <div>
           <TwoColumn
             first="Mint Authority"
-            link={`/address/${decoded.mintAuthority}`}
-            second={<AccountName id={decoded.mintAuthority} />}
+            second={<Hash alignRight hash={decoded.mintAuthority} type="address" />}
           />
           <TwoColumn
             first="Freeze Authority"
-            second={<AccountName id={decoded.freezeAuthority} />}
+            second={<Hash alignRight hash={decoded.freezeAuthority} type="address" />}
           />
+          {nftTokenData && (
+            <div>
+              <TwoColumn
+                first="NFT Creator"
+                second={
+                  <Hash
+                    type="address"
+                    alignRight
+                    hash={nftTokenData.properties.creators[0].address}
+                  />
+                }
+              />
+              <TwoColumn
+                first="Market"
+                second={
+                  <a class="bu-tc-link" href={nftTokenData.external_url}>
+                    Marketplace
+                  </a>
+                }
+              />
+            </div>
+          )}
         </div>
       )}
     </BulmaCard>

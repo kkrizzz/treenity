@@ -17,6 +17,7 @@ import * as BufferLayout from '@solana/buffer-layout';
 import { publicKey, publicKeyString } from './utils/public-key-layout';
 import { Buffer } from 'buffer';
 import { ethToVlx, vlxToEth } from './utils/vlx-address-lib';
+import { useMetaplexNFT } from './hooks/useMetaplexNFT';
 
 const SolanaLayout = {
   ...Layout,
@@ -43,6 +44,7 @@ globalThis.solarea = {
   useQuery,
   useInfiniteQuery,
   useGraphQL,
+  useMetaplexNFT,
   fetchGraphQL,
   BufferLayout,
   SolanaLayout,
