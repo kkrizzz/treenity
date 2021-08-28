@@ -26,13 +26,15 @@ export const useMetaplexNFT = (entityId) => {
           metaplexProgramId,
         )
       )[0];
-      const { data } = await connection.getAccountInfo(associatedMetaDataAccount);
+      const account = await connection.getAccountInfo(associatedMetaDataAccount);
+      const data = account?.data;
+      if (!data) return;
+
       const utf8 = data.toString('utf-8');
       const [metadataUrl] = urlRegExp.exec(utf8);
       const arweaveStoredMetadata = await (await globalThis.fetch(metadataUrl)).json();
       setNftData(arweaveStoredMetadata);
       setIsLoading(false);
-      console.log(arweaveStoredMetadata);
     })();
   }, [entityId]);
 
