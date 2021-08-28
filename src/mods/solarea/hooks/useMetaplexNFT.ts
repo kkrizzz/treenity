@@ -11,7 +11,7 @@ const metaplexProgramId = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt51
 
 export const useMetaplexNFT = (entityId) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [nftData, setNftData] = useState(null);
+  const [nftData, setNftData] = useState(undefined);
   const connection = useConnection();
 
   useEffect(() => {
@@ -28,13 +28,15 @@ export const useMetaplexNFT = (entityId) => {
       )[0];
       const account = await connection.getAccountInfo(associatedMetaDataAccount);
       const data = account?.data;
-      if (!data) return;
+      if (!data) return setIsLoading(false);
 
       const utf8 = data.toString('utf-8');
       const [metadataUrl] = urlRegExp.exec(utf8);
       const arweaveStoredMetadata = await (await globalThis.fetch(metadataUrl)).json();
       setNftData(arweaveStoredMetadata);
+      arweaveStoredMetadata.metadataUrl = metadataUrl;
       setIsLoading(false);
+      console.log(arweaveStoredMetadata);
     })();
   }, [entityId]);
 
