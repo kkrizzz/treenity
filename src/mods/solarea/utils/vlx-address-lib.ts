@@ -72,7 +72,7 @@ export function ethToVlx(address_string) {
 }
 
 export function vlxToEth(address_string) {
-  if (address_string.length === 0) return null;
+  if (address_string.length === 0) return '0x0000000000000000000000000000000000000000';
   const string = address_string.replace('V', '');
   let bytes = [0];
   for (let i = 0; i < string.length; i++) {

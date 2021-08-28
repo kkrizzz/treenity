@@ -113,7 +113,7 @@ const EthereumAddressView = ({ entityId }) => {
   return (
     <div className="bu-container bu-is-max-desktop">
       <BulmaCard header="Account overview">
-        <TwoColumn first="Label" second={<AccountName id={entityId} fallback={() => 'not set'} />} />
+        <AccountName id={entityId} render={item => <TwoColumn first="Label" second={item} />} fallback={() => null}/>
         <TwoColumn first="Address" second={<Hash hash={entityId} type="address" alignRight />} />
         <TwoColumn
           first="Balance"
@@ -193,7 +193,7 @@ const SolanaAddressView = ({ entityId }) => {
       <BulmaCard header="Account overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
-            <TwoColumn first="Label" second={<AccountName id={entityId} fallback={() => 'not set'}/>} />
+            <AccountName id={entityId} render={item => <TwoColumn first="Label" second={item} />} fallback={() => null}/>
             <TwoColumn
               first="Address"
               second={<Hash hash={entityId} type="address" alignRight />}
