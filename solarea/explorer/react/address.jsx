@@ -3,11 +3,11 @@ const { lpsRound } = await require('solarea://explorer/utils');
 const TimeAgo = render('dev', 'time-ago');
 const AccountName = render('', 'name', 'react-text');
 const BulmaCard = render('dev', 'bulma-card', 'react');
-const Link = render('dev', 'link', 'react');
 const TwoColumn = render('dev', 'two-column');
 const EthAddressTokens = render('explorer', 'eth-address-tokens');
 const TransactionRow = render('explorer', 'transaction', 'react-table');
 const Hash = render('dev', 'hash');
+const NamedHash = render('dev', 'named-hash');
 
 const InfoCard = (t) => (
   <div class="bu-container bu-is-max-desktop">
@@ -82,10 +82,10 @@ const EthereumAddressView = ({ entityId }) => {
                     <Hash hash={tx.hash} type="tx" />
                   </div>
                   <div className="bu-column bu-is-3 text-overflow">
-                    <Hash hash={from} type="address" urlParams="chain=evm" />
+                    <NamedHash hash={from} type="address" urlParams="chain=evm" />
                   </div>
                   <div className="bu-column bu-is-3 text-overflow">
-                    <Hash hash={to} type="address" "chain=evm" />
+                    <NamedHash hash={to} type="address" "chain=evm" />
                   </div>
                   <div className="bu-column bu-is-3 text-overflow">
                     <TimeAgo date={new Date(tx.timeStamp * 1000)} />
@@ -113,7 +113,8 @@ const EthereumAddressView = ({ entityId }) => {
   return (
     <div className="bu-container bu-is-max-desktop">
       <BulmaCard header="Account overview">
-        <TwoColumn first="Address" second={entityId} />
+        <AccountName id={entityId} render={item => <TwoColumn first="Label" second={item} />} fallback={() => null}/>
+        <TwoColumn first="Address" second={<Hash hash={entityId} type="address" alignRight />} />
         <TwoColumn
           first="Balance"
           second={`${parsedBalance === 0 ? parsedBalance : (parsedBalance * LPS).toFixed(8)} VLX`}
@@ -192,14 +193,14 @@ const SolanaAddressView = ({ entityId }) => {
       <BulmaCard header="Account overview">
         <div class="bu-columns" style={{ overflowY: 'auto' }}>
           <div class="bu-column">
-            <TwoColumn first="Label" second={<AccountName id={entityId} />} />
+            <AccountName id={entityId} render={item => <TwoColumn first="Label" second={item} />} fallback={() => null}/>
             <TwoColumn
               first="Address"
               second={<Hash hash={entityId} type="address" alignRight />}
             />
             <TwoColumn first="Data" second={`${account.data.length} bytes`} />
             <TwoColumn first="Balance" second={`◎${lpsRound(account.lamports)}`} />
-            <TwoColumn first="Owner" second={<Hash hash={account.owner.toString()} type="address" alignRight />} />
+            <TwoColumn first="Owner" second={<NamedHash hash={account.owner.toString()} type="address" alignRight />} />
           </div>
         </div>
       </BulmaCard>

@@ -198,14 +198,18 @@ const EthereumTxView = ({ entityId }) => {
             <TwoColumn
               is={2}
               first="From"
-              second={<Hash hash={from} type="address" urlParams="chain=evm" alignRight />}
+              second={<NamedHash hash={from} type="address" urlParams="chain=evm" alignRight />}
             />
             <TwoColumn
               is={2}
               first="To"
-              second={<Hash hash={to} type="address" urlParams="chain=evm" alignRight />}
+              second={<NamedHash hash={to} type="address" urlParams="chain=evm" alignRight />}
             />
-            <TwoColumn is={2} first="Value" second={(parseInt(value, 16) * LPS).toFixed(16)} />
+            <TwoColumn
+              is={2}
+              first="Value"
+              second={`◎ ${(parseInt(value, 16) * LPS).toFixed(16)}`}
+            />
             <TwoColumn is={2} first="Nonce" second={parsedNonce} />
           </div>
         </div>

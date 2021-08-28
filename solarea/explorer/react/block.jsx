@@ -4,6 +4,7 @@ const { useBlock } = solarea;
 
 const AddressLabel = render('', 'name', 'react-text');
 const Hash = render('dev', 'hash');
+const NamedHash = render('dev', 'named-hash');
 const BulmaCard = render('dev', 'bulma-card', 'react');
 const Tabs = render('dev', 'tabs', 'react');
 const Link = render('dev', 'link');
@@ -13,7 +14,7 @@ const TransactionRow = render('explorer', 'transaction', 'react-table');
 const VOTE_PROGRAM_ID = 'Vote111111111111111111111111111111111111111';
 
 const SolanaBlockView = ({ entityId }) => {
-  const [block, loading] = useBlock(+entityId);
+  const [block, loading, error] = useBlock(+entityId);
   const [showAmount, setShowAmount] = React.useState(10);
 
   if (loading) {
@@ -32,6 +33,14 @@ const SolanaBlockView = ({ entityId }) => {
       </div>
     );
   }
+  if (error || !block) {
+    return (
+      <div className="bu-container bu-is-max-desktop">
+        <BulmaCard header="Block not found" />
+      </div>
+    );
+  }
+
   const transactions = block.transactions;
   const successfulTransactions = transactions.reduce((acc, val) => acc + (val.meta.err ? 0 : 1), 0);
 
@@ -195,11 +204,6 @@ const EthereumBlockView = ({ entityId }) => {
           <div class="bu-column">
             <TwoColumn first="Block height" second={entityId} />
             <TwoColumn first="Block hash" second={block.hash} />
-            <TwoColumn
-              first="Mined by"
-              second={<AddressLabel fallback={() => block.miner} id={block.miner}></AddressLabel>}
-              link={`/address/${block.miner}`}
-            />
             <TwoColumn first="Size" second={parse16(block.size) + '\tbytes'} />
             <TwoColumn first="Num of transactions" second={block.transactions.length} />
             <TwoColumn first="Difficulty" second={parse16(block.difficulty)} />
@@ -220,13 +224,13 @@ const EthereumBlockView = ({ entityId }) => {
           return (
             <div className="bu-columns bu-is-mobile">
               <div className="bu-column bu-is-4 text-overflow">
-                <Link to={`/tx/${hash}`}>{hash}</Link>
+                <Hash hash={hash} type="tx" />
               </div>
               <div className="bu-column bu-is-4 text-overflow">
-                <Link to={`/address/${from}`}>{from}</Link>
+                <NamedHash hash={from} type="address" urlParams="chain=evm" />
               </div>
               <div className="bu-column bu-is-4 text-overflow">
-                <Link to={`/address/${to}`}>{to}</Link>
+                <NamedHash hash={to} type="address" urlParams="chain=evm" />
               </div>
             </div>
           );

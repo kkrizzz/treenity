@@ -1,17 +1,17 @@
-const AccName = render('', 'name', 'react-text');
+const NamedHash = render('dev', 'named-hash');
 
 add(({ id, instruction }) => {
-  const data = instruction.data;
-
-  const programId = instruction.programId.toBase58();
+  // const data = instruction.data;
+  //
+  const programId = instruction.programId;
   return (
     <ul>
       <li>
-        ProgramId: <AccName id={programId} fallback={() => programId} />
+        ProgramId: <NamedHash hash={programId} type="address" />
       </li>
-      {instruction.keys.map(({ pubkey }, i) => (
+      {instruction.accounts.map((pubkey, i) => (
         <li key={i}>
-          <AccName id={pubkey.toBase58()} fallback={() => pubkey.toBase58()} />
+          <NamedHash hash={pubkey} type="address" />
         </li>
       ))}
     </ul>
