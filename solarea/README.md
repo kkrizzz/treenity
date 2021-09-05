@@ -7,7 +7,7 @@
 * react
     * `default.jsx` - дефолная view, отображаемая для текущего адреса при рендеринге в React.
         Отображается в Explorer как дефолтный вью для адреса.
-* react-list
+* react-list-item
     * `instruction.jsx` - содержимое карточки инструкции, входные props:
         * instruction - инструкция solana
         * transaction - транзакция, содержащая инструкцию

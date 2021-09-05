@@ -1,6 +1,7 @@
 const BulmaCard = render('dev', 'bulma-card');
 const TwoColumn = render('dev', 'two-column');
-
+const ExplorerLayout = render('explorer', 'layout');
+const Hash = render('dev', 'hash');
 const LPS = 0.000000001;
 
 function humanizeFormatter(num, digits) {
@@ -32,7 +33,7 @@ const ProgressBar = ({ percent = '100' }) => {
 const SmallCard = ({ head, children, foot }) => {
   return (
     <div>
-      <div className="bu-is-size-5 bu-has-text-black">{head}</div>
+      <div className="bu-is-size-6 bu-has-text-black">{head}</div>
       <div>
         <div className="bu-is-size-3 bu-has-text-primary">{children}</div>
       </div>
@@ -107,7 +108,7 @@ const SupplyStats = ({ currentSupply }) => {
       head="Circulating Supply"
       foot={
         <div>
-          {((circulating / totalSupply) * 100).toFixed(1)}%{' '}
+          {((circulating / totalSupply) * 100).toFixed(1)}% \
           <span className="bu-is-size-5 bu-has-text-black">is circulating</span>
         </div>
       }
@@ -137,13 +138,15 @@ const ClusterStats = ({}) => {
     <>
       <BulmaCard header="Cluster stats">
         {isEpochInfoLoading ? (
-          <ProgressBar />
+          <div className="bu-column bu-box bu-has-text-centered">
+            <span className="spinner-grow spinner-grow-sm m-r-4"></span>
+            Loading cluster stats ...
+          </div>
         ) : (
           <div>
             <TwoColumn
               first="Slot"
-              link={`/block/${epochInfo.absoluteSlot}`}
-              second={epochInfo.absoluteSlot}
+              second={<Hash hash={epochInfo.absoluteSlot.toString()} type="block" alignRight />}
             />
             <TwoColumn first="Block height" second={epochInfo.blockHeight} />
             <TwoColumn first="Epoch" second={epochInfo.epoch} />
@@ -161,7 +164,10 @@ const ClusterStats = ({}) => {
       </BulmaCard>
       <BulmaCard header="Transaction stats">
         {isEpochInfoLoading || isRecentPerformanceLoading ? (
-          <ProgressBar />
+          <div className="bu-column bu-box bu-has-text-centered">
+            <span className="spinner-grow spinner-grow-sm m-r-4"></span>
+            Loading transactions stats ...
+          </div>
         ) : (
           <div>
             <TwoColumn first="Total transactions" second={epochInfo.transactionCount} />
@@ -203,31 +209,30 @@ add(() => {
 
   const isLoading = isSupplyLoading || isVoteAccountsLoading || isSolanaDataLoading;
   return (
-    <Render id="explorer" name="layout">
+    <ExplorerLayout>
       <div className="bu-container bu-is-max-desktop">
-        <BulmaCard>
-          <div className="bu-columns">
-            {isLoading ? (
-              <div class="bu-column bu-box">
-                <ProgressBar />
-              </div>
-            ) : (
-              cards.map((Card) => (
-                <div className="bu-column">
-                  <div class="bu-box">
-                    <Card
-                      coinData={coinData}
-                      currentSupply={currentSupply}
-                      voteAccounts={voteAccounts}
-                    />
-                  </div>
-                </div>
-              ))
-            )}
+        {isLoading ? (
+          <div class="bu-column bu-box bu-has-text-centered">
+            <span className="spinner-grow spinner-grow-sm m-r-4"></span>
+            Loading token data ...
           </div>
-        </BulmaCard>
+        ) : (
+          <div className="bu-columns">
+            {cards.map((Card) => (
+              <div className="bu-column">
+                <div class="bu-box">
+                  <Card
+                    coinData={coinData}
+                    currentSupply={currentSupply}
+                    voteAccounts={voteAccounts}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         <ClusterStats />
       </div>
-    </Render>
+    </ExplorerLayout>
   );
 });

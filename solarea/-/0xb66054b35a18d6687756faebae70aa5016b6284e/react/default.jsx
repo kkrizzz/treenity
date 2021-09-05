@@ -1,3 +1,3 @@
 add(() => {
-  return <h1>Hello Velas</h1>;
+  return <h1>Hello Velas from custom view</h1>;
 });

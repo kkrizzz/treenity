@@ -16,7 +16,11 @@ exports.numberWithSpaces = (x) => {
 const { BigNumber } = await require('solarea://explorer/bignumber');
 const WEI_IN_ETH = new BigNumber(10).pow(18);
 exports.weiToEth = (valueString, prec = 18) => {
-  let eth = new BigNumber(parseInt(valueString, 16), 18).divide(WEI_IN_ETH).toString();
+  const value =
+    typeof valueString === 'string' && valueString.startsWith('0x')
+      ? parseInt(valueString, 16)
+      : parseInt(valueString, 10);
+  let eth = new BigNumber(value, 18).divide(WEI_IN_ETH).toString();
   const point = eth.indexOf('.');
   prec += 1;
   if (eth.length - point > prec) {

@@ -140,7 +140,7 @@ add(({ account, entityId }) => {
           <TwoColumn
             first="Metadata"
             second={
-              <a className="bu-tc-link" href={nftTokenData.metadataUrl}>
+              <a className="bu-tc-link" target="_blank" href={nftTokenData.metadataUrl}>
                 <Render id="icons" name="arweave" />
               </a>
             }

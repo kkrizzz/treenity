@@ -1,5 +1,6 @@
 const TwoColumn = render('dev', 'two-column');
 const Hash = render('dev', 'hash');
+const NamedHash = render('dev', 'named-hash');
 const { weiToEth } = await require('solarea://explorer/utils');
 
 // TODO
@@ -25,7 +26,7 @@ add(({ instruction, transaction }) => {
       <div className="bu-columns">
         <div class="bu-column bu-is-5">
           From
-          <Hash hash={evmTransaction.from} type="address" />
+          <NamedHash hash={evmTransaction.from} type="address" />
         </div>
         <div class="bu-column bu-is-2">
           <div style={{ margin: 'auto', width: '1.5rem', marginTop: 16 }}>
@@ -35,7 +36,7 @@ add(({ instruction, transaction }) => {
 
         <div className="bu-column bu-is-5">
           To
-          <Hash hash={evmTransaction.from} type="address" />
+          <NamedHash hash={evmTransaction.from} type="address" />
         </div>
       </div>
       <div className="bu-columns">
@@ -46,7 +47,7 @@ add(({ instruction, transaction }) => {
       </div>
       <div>
         <TwoColumn first="Type" second={instruction.parsed.type} />
-        <TwoColumn first="Hash" second={<Hash hash={evmTransaction.hash} />} />
+        <TwoColumn first="Hash" second={<Hash hash={evmTransaction.hash} type="tx" />} />
         <TwoColumn first="Gas used" second={gasUsed} />
         <TwoColumn first="Gas price" second={gasPrice} />
       </div>

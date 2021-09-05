@@ -76,7 +76,7 @@ const SolanaBlockView = ({ entityId }) => {
             {
               name: 'Block transactions',
               content: () => {
-                const showTx = React.useCallback(() => {
+                const showTx = React.useMemo(() => {
                   return showTransactions
                     .slice(0, showAmount)
                     .map((t, i) => <TransactionRow key={i} transaction={t} />);
@@ -95,7 +95,7 @@ const SolanaBlockView = ({ entityId }) => {
                         'No non-votes transactions in block'
                       )}
 
-                      {showTx()}
+                      {showTx}
                     </div>
                     {showAmount < showTransactions.length && (
                       <button

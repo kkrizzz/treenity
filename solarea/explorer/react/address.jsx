@@ -18,7 +18,7 @@ const InfoCard = (t) => (
 const useLoadSignaturesInfinite = (entityId, limit = 10) => {
   const connection = solarea.useConnection();
   const { data: txsData, isLoading: isTxLoading, fetchNextPage } = solarea.useInfiniteQuery(
-    ['accountSignatures', entityId],
+    ['accountSignatures', entityId, connection._rpcEndpoint],
     ({ pageParam }) => {
       console.log(pageParam, 'pageParam');
       return connection.getConfirmedSignaturesForAddress2(
@@ -112,6 +112,11 @@ const EthereumAddressView = ({ entityId }) => {
   const parsedBalance = parseInt(balance, 16);
   return (
     <div className="bu-container bu-is-max-desktop">
+      <Render
+        id={entityId}
+        render={(item) => <BulmaCard header="View">{item}</BulmaCard>}
+        fallback={() => null}
+      />
       <BulmaCard header="Account overview">
         <AccountName id={entityId} render={item => <TwoColumn first="Label" second={item} />} fallback={() => null}/>
         <TwoColumn first="Address" second={<Hash hash={entityId} type="address" alignRight />} />
@@ -139,7 +144,7 @@ const SolanaAddressView = ({ entityId }) => {
   const [txs, isTxLoading, txFetchNext] = useLoadSignaturesInfinite(entityId, 10);
 
   if (isLoading) return InfoCard('Account loading . . .');
-  if (!account) return InfoCard('Account not found');
+  if (!account) return InfoCard(`Account ${entityId} not found`);
 
   const tabs = [
     {

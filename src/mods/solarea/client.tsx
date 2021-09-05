@@ -32,7 +32,7 @@ export const solareaApi = new SolareaProgramApi();
 
 const inject = (comp) => (
   <QueryClientProvider client={queryClient}>
-    <ConnectionProvider cluster="mainnet-beta">
+    <ConnectionProvider cluster="https://mainnet.velas.com/rpc">
       <WalletProvider>
         <WalletConnect />
         <StorageProvider>{comp}</StorageProvider>

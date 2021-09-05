@@ -25,7 +25,7 @@ const InstructionDefault = ({ instruction }) => {
         return (
           <TwoColumn
             first={`Account #${index + 1}`}
-            second={<Hash hash={accountPubkey} type="address" alignRight />}
+            second={<NamedHash hash={accountPubkey} type="address" alignRight />}
           />
         );
       })}
@@ -192,7 +192,7 @@ const EthereumTxView = ({ entityId }) => {
               is={2}
               first="Block"
               second={
-                <Hash hash={parsedBlockNumber} type="address" urlParams="chain=evm" alignRight />
+                <Hash hash={parsedBlockNumber} type="block" urlParams="chain=evm" alignRight />
               }
             />
             <TwoColumn
