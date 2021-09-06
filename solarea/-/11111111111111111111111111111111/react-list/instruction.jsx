@@ -1,5 +1,6 @@
 const { lpsRound } = await require('solarea://explorer/utils');
 const NamedHash = render('dev', 'named-hash');
+const TwoColumn = render('dev', 'two-column');
 
 add(({ id, instruction }) => {
   const parsed = instruction.parsed.info;
@@ -27,18 +28,24 @@ add(({ id, instruction }) => {
     case 'assign':
       return (
         <div>
-          <div className="bu-columns bu-is-mobile">
-            <div className="bu-column bu-is-6">Account</div>
-            <div className="bu-column bu-is-6">
-              <NamedHash hash={parsed.account} type="address" />
-            </div>
-          </div>
-          <div className="bu-columns bu-is-mobile">
-            <div className="bu-column bu-is-6">Owner</div>
-            <div className="bu-column bu-is-6">
-              <NamedHash alignRight hash={parsed.owner} type="address" />
-            </div>
-          </div>
+          <TwoColumn
+            first="Account"
+            second={<NamedHash hash={parsed.account} type="address" alignRight />}
+          />
+          <TwoColumn
+            first="Owner"
+            second={<NamedHash hash={parsed.owner} type="address" alignRight />}
+          />
+        </div>
+      );
+    case 'allocate':
+      return (
+        <div>
+          <TwoColumn
+            first="Account"
+            second={<NamedHash hash={parsed.account} type="address" alignRight />}
+          />
+          <TwoColumn first="Space (bytes)" second={parsed.space} />
         </div>
       );
   }

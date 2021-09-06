@@ -58,6 +58,15 @@ const themeCss = css`
   .bu-tc-monospace {
     font-family: monospace;
   }
+
+  .bu-box {
+    background-color: var(--theme-logs-bg);
+    color: var(--theme-main-color);
+  }
+
+  strong {
+    color: var(--theme-main-color);
+  }
 `;
 
 const lightThemeVars = css`

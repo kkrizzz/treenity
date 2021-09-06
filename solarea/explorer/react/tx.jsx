@@ -18,24 +18,51 @@ const TransactionInstructions = ({ tx }) => {
   return (
     <div>
       <BulmaCard header="Instructions" />
-      {tx.transaction.message.instructions.map((inst, index) => (
-        <BulmaCard
-          header={
-            <InstructionName
+      {tx.transaction.message.instructions.map((inst, index) => {
+        const inner = tx.meta.innerInstructions.find((i) => i.index === index)?.instructions;
+        return (
+          <BulmaCard
+            header={
+              <InstructionName
+                id={inst.programId.toString()}
+                instruction={inst}
+                fallback={() => <InstructionDefaultText instruction={inst} />}
+              />
+            }
+          >
+            <Instruction
               id={inst.programId.toString()}
               instruction={inst}
-              fallback={() => <InstructionDefaultText instruction={inst} />}
+              transaction={tx}
+              fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
             />
-          }
-        >
-          <Instruction
-            id={inst.programId.toString()}
-            instruction={inst}
-            transaction={tx}
-            fallback={() => <InstructionDefault instruction={inst} />}
-          />
-        </BulmaCard>
-      ))}
+            {inner?.length && (
+              <div style={{ marginTop: '2rem' }}>
+                <strong style={{ marginBottom: '0.5rem', display: 'block' }}>
+                  Inner instructions
+                </strong>
+                {inner.map((inst) => (
+                  <div class="bu-box">
+                    <strong style={{ marginBottom: '0.5rem', display: 'block' }}>
+                      <InstructionName
+                        id={inst.programId.toString()}
+                        instruction={inst}
+                        fallback={() => <InstructionDefaultText instruction={inst} />}
+                      />
+                    </strong>
+                    <Instruction
+                      id={inst.programId.toString()}
+                      instruction={inst}
+                      transaction={tx}
+                      fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </BulmaCard>
+        );
+      })}
     </div>
   );
 };
