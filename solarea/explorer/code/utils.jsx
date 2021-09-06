@@ -1,16 +1,16 @@
 const LPS = 0.000000001;
 
-exports.lpsRound = (lamports, digits = 4) => {
-  return (lamports * LPS).toFixed(digits);
-};
-
 const digRe = /^[\d\.]{3,31}$/;
 const replaceRe = /(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g;
-exports.numberWithSpaces = (x) => {
+const numberWithSpaces = (exports.numberWithSpaces = (x) => {
   if (typeof x === 'number' || (typeof x === 'string' && digRe.test(x))) {
     return String(x).replace(replaceRe, '$1,');
   }
   return x;
+});
+
+exports.lpsRound = (lamports, digits = 4) => {
+  return numberWithSpaces((lamports * LPS).toFixed(digits));
 };
 
 const { BigNumber } = await require('solarea://explorer/bignumber');
