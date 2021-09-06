@@ -90,7 +90,7 @@ add(({ instruction, transaction }) => {
     return (
       <Render
         id="explorer"
-        name="default-transaction"
+        name="default-instruction"
         context="react-list"
         instruction={instruction}
       />

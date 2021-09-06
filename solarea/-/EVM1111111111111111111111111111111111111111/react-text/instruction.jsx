@@ -6,6 +6,6 @@ add(({ id, instruction }) => {
     case 'swapNativeToEvm':
       return 'EVM: Swap native to EVM';
     default:
-      return 'EVM Transaction';
+      return type ? `EVM: ${type}` : 'EVM Transaction';
   }
 });

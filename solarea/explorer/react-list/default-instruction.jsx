@@ -1,3 +1,7 @@
+const TwoColumn = render('dev', 'two-column');
+const Hash = render('dev', 'hash');
+const NamedHash = render('dev', 'named-hash');
+
 add(({ instruction }) => {
   const programPubkey = instruction.programId.toString();
 
