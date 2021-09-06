@@ -24,6 +24,23 @@ add(({ id, instruction }) => {
           </div>
         </div>
       );
+    case 'assign':
+      return (
+        <div>
+          <div className="bu-columns bu-is-mobile">
+            <div className="bu-column bu-is-6">Account</div>
+            <div className="bu-column bu-is-6 bu-has-text-right">Owner</div>
+          </div>
+          <div className="bu-columns bu-is-mobile">
+            <div className="bu-column bu-is-6">
+              <NamedHash hash={parsed.account} type="address" />
+            </div>
+            <div className="bu-column bu-is-6">
+              <NamedHash alignRight hash={parsed.owner} type="address" />
+            </div>
+          </div>
+        </div>
+      );
   }
   // TODO
   return <table class="bu-table"></table>;
