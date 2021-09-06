@@ -86,5 +86,14 @@ add(({ instruction, transaction }) => {
         </div>
       </>
     );
+  } else {
+    return (
+      <Render
+        id="explorer"
+        name="default-transaction"
+        context="react-list"
+        instruction={instruction}
+      />
+    );
   }
 });
