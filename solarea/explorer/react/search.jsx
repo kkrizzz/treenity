@@ -2,6 +2,31 @@ const { bs58 } = solarea;
 
 const Link = render('dev', 'link');
 
+const EVM_EXECUTION_PROGRAM = 'EVM1111111111111111111111111111111111111111';
+const EVM_STATE_PROGRAM = 'EvmState11111111111111111111111111111111111';
+const SYSTEM_PROGRAM = '11111111111111111111111111111111';
+
+const INDEXED_PROGRAM_NAMES = [EVM_EXECUTION_PROGRAM, EVM_STATE_PROGRAM, SYSTEM_PROGRAM];
+
+function buildProgramOptions(rawSearch) {
+  const matchedPrograms = INDEXED_PROGRAM_NAMES.filter((address) => {
+    return address.toLowerCase().includes(rawSearch.toLowerCase()) || address.includes(rawSearch);
+  });
+
+  if (matchedPrograms.length > 0) {
+    return {
+      label: 'Programs',
+      options: matchedPrograms.map((id) => {
+        return {
+          label: <Render id={id} name="name" context="react-text" />,
+          value: [id],
+          pathname: '/address/' + id,
+        };
+      }),
+    };
+  }
+}
+
 function buildOptions(
   rawSearch,
   // cluster: Cluster,
@@ -12,30 +37,10 @@ function buildOptions(
 
   const options = [];
 
-  // const programOptions = buildProgramOptions(search, cluster);
-  // if (programOptions) {
-  //   options.push(programOptions);
-  // }
-  //
-  // const loaderOptions = buildLoaderOptions(search);
-  // if (loaderOptions) {
-  //   options.push(loaderOptions);
-  // }
-  //
-  // const sysvarOptions = buildSysvarOptions(search);
-  // if (sysvarOptions) {
-  //   options.push(sysvarOptions);
-  // }
-  //
-  // const specialOptions = buildSpecialOptions(search);
-  // if (specialOptions) {
-  //   options.push(specialOptions);
-  // }
-  //
-  // const tokenOptions = buildTokenOptions(search, cluster, tokenRegistry);
-  // if (tokenOptions) {
-  //   options.push(tokenOptions);
-  // }
+  const programOptions = buildProgramOptions(search);
+  if (programOptions) {
+    options.push(programOptions);
+  }
 
   if (!isNaN(Number(search)) && !search.startsWith('0x')) {
     options.push({
@@ -186,6 +191,7 @@ const Search = ({ onChange }) => {
                 {r.options.map((o) => (
                   <Link to={o.pathname} onClick={() => setValue('')}>
                     {o.label}
+                    <br />
                   </Link>
                 ))}
               </div>

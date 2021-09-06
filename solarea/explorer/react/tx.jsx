@@ -23,8 +23,8 @@ const TransactionInstructions = ({ tx }) => {
         return (
           <BulmaCard
             header={
-              <div style={{ justifyContent: 'center', display: 'flex' }}>
-                <span className="bu-tag bu-is-primary">#{index + 1}</span>{' '}
+              <div style={{ alignItems: 'center', display: 'flex' }}>
+                <span className="bu-tag bu-is-primary m-r-4">#{index + 1}</span>{' '}
                 <InstructionName
                   id={inst.programId.toString()}
                   instruction={inst}
@@ -46,8 +46,8 @@ const TransactionInstructions = ({ tx }) => {
                 </strong>
                 {inner.map((inst, innerIndex) => (
                   <div class="bu-box">
-                    <div style={{ marginBottom: '0.5rem' }}>
-                      <span class="bu-tag bu-is-primary">
+                    <div style={{ alignItems: 'center', display: 'flex', marginBottom: '1.5rem' }}>
+                      <span class="bu-tag bu-is-primary m-r-4">
                         #{index + 1}.{innerIndex + 1}
                       </span>{' '}
                       <strong>
