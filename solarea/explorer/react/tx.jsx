@@ -23,11 +23,14 @@ const TransactionInstructions = ({ tx }) => {
         return (
           <BulmaCard
             header={
-              <InstructionName
-                id={inst.programId.toString()}
-                instruction={inst}
-                fallback={() => <InstructionDefaultText instruction={inst} />}
-              />
+              <div style={{ justifyContent: 'center', display: 'flex' }}>
+                <span className="bu-tag bu-is-primary">#{index + 1}</span>{' '}
+                <InstructionName
+                  id={inst.programId.toString()}
+                  instruction={inst}
+                  fallback={() => <InstructionDefaultText instruction={inst} />}
+                />
+              </div>
             }
           >
             <Instruction
@@ -41,15 +44,20 @@ const TransactionInstructions = ({ tx }) => {
                 <strong style={{ marginBottom: '0.5rem', display: 'block' }}>
                   Inner instructions
                 </strong>
-                {inner.map((inst) => (
+                {inner.map((inst, innerIndex) => (
                   <div class="bu-box">
-                    <strong style={{ marginBottom: '0.5rem', display: 'block' }}>
-                      <InstructionName
-                        id={inst.programId.toString()}
-                        instruction={inst}
-                        fallback={() => <InstructionDefaultText instruction={inst} />}
-                      />
-                    </strong>
+                    <div style={{ marginBottom: '0.5rem' }}>
+                      <span class="bu-tag bu-is-primary">
+                        #{index + 1}.{innerIndex + 1}
+                      </span>{' '}
+                      <strong>
+                        <InstructionName
+                          id={inst.programId.toString()}
+                          instruction={inst}
+                          fallback={() => <InstructionDefaultText instruction={inst} />}
+                        />
+                      </strong>
+                    </div>
                     <Instruction
                       id={inst.programId.toString()}
                       instruction={inst}
