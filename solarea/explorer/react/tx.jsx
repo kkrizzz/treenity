@@ -45,7 +45,7 @@ const TransactionInstructions = ({ tx }) => {
                   Inner instructions
                 </strong>
                 {inner.map((inst, innerIndex) => (
-                  <div class="bu-box">
+                  <div class="bu-box theme-inner-instruction">
                     <div style={{ alignItems: 'center', display: 'flex', marginBottom: '1.5rem' }}>
                       <span class="bu-tag bu-is-primary m-r-4">
                         #{index + 1}.{innerIndex + 1}

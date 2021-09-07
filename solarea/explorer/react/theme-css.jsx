@@ -59,7 +59,7 @@ const themeCss = css`
     font-family: monospace;
   }
 
-  .bu-box {
+  .theme-inner-instruction {
     background-color: var(--theme-logs-bg);
     color: var(--theme-main-color);
   }

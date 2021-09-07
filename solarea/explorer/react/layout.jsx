@@ -1,6 +1,6 @@
 require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 
-const Footer = render('explorer', 'footer');
+const Footer = render('io.solarea.velas', 'footer');
 const Search = render('explorer', 'search');
 
 add(({ id, children }) => {
@@ -26,7 +26,7 @@ add(({ id, children }) => {
 
   return (
     <div>
-      <Render id="explorer" name="acc-css" />
+      <Render id="explorer" name="theme-css" />
       <Render id={id} name="layout-header" />
       <div class="bu-container bu-is-max-desktop explorer-layout m-b-16 m-t-16">
         <Search />
