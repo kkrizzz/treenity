@@ -1,12 +1,3 @@
-import {useState} from "react";
+import { createStorageState } from './useLocalStorageState';
 
-export const useSessionStorageState = (key: string) => {
-    const [state, setState] = useState<any>(sessionStorage.getItem(key))
-
-    const setSessionState = (value: any) => {
-        setState(value);
-        sessionStorage.setItem(key, value);
-    }
-
-    return [state, setSessionState]
-}
+export const useSessionStorageState = createStorageState(window.sessionStorage, 'session');

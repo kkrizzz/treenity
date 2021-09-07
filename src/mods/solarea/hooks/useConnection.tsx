@@ -1,25 +1,16 @@
 // @ts-ignore
-import React, {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { Cluster, clusterApiUrl, Connection } from '@solana/web3.js';
-import { useLocalStorageState } from './useLocalStorageState';
-import useLocation from './useLocation';
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
+import { Cluster, Connection } from '@solana/web3.js';
 import useQueryParams from './useQueryParams';
+import { useSessionStorageState } from './useSessionStorageState';
 
 type SetState<T> = Dispatch<SetStateAction<T>>;
 type ContextType = [Connection, string, SetState<string>];
 
 const VELAS_RPC_NODES = {
-  devnet: 'https://devnet.velas.com/rpc',
-  testnet: 'https://testnet.velas.com/rpc',
   mainnet: 'https://mainnet.velas.com/rpc',
+  testnet: 'https://testnet.velas.com/rpc',
+  devnet: 'https://devnet.velas.com/rpc',
 };
 
 const resolveVelasClusterByAlias = (cluster) => {
@@ -40,25 +31,20 @@ const resolveVelasClusterByUrl = (url) => {
   else return url;
 };
 
-const useCheckClusterInUrl = (localCluster, setCluster) => {
-  const { cluster } = useQueryParams();
+const useCheckClusterInUrl = (urlCluster, localCluster, setCluster) => {
   useEffect(() => {
-    // const clusterAliasByUrl = resolveVelasClusterByUrl(cluster);
-    // if (velasClusterAliasByUrl !== clusterAliasByUrl) {
-    if (!cluster) {
+    if (!urlCluster) {
       const velasClusterAliasByUrl = resolveVelasClusterByUrl(localCluster);
       insertUrlParam('cluster', velasClusterAliasByUrl);
     }
-  }, [localCluster, cluster]);
+  }, [localCluster, urlCluster]);
 
   useEffect(() => {
-    const targetCluster = resolveVelasClusterByAlias(cluster);
-    //
+    const targetCluster = resolveVelasClusterByAlias(urlCluster);
     if (targetCluster && targetCluster !== localCluster) {
-      // if (!cluster) {
       setCluster(targetCluster);
     }
-  }, [cluster]);
+  }, [urlCluster]);
 };
 
 const ConnectionContext = createContext<ContextType>(null!);
@@ -69,14 +55,23 @@ export const ConnectionProvider = ({
   children: any;
   cluster: Cluster;
 }) => {
-  const [currentCluster, setCluster] = useLocalStorageState('clusterUrl', cluster as string);
+  const { cluster: urlCluster } = useQueryParams();
+  const [localCluster, setLocalCluster] = useSessionStorageState('clusterUrl', cluster as string);
 
-  // useCheckClusterInUrl(currentCluster, setCluster);
+  useCheckClusterInUrl(urlCluster, localCluster, setLocalCluster);
+
+  const setCluster = (cluster) => {
+    setLocalCluster(cluster);
+    const velasClusterAliasByUrl = resolveVelasClusterByUrl(cluster);
+    insertUrlParam('cluster', velasClusterAliasByUrl);
+  };
+
+  const currentCluster = urlCluster || localCluster || cluster;
 
   const value = useMemo<ContextType>(() => {
     let url;
     try {
-      url = clusterApiUrl(currentCluster as Cluster);
+      url = resolveVelasClusterByAlias(currentCluster as Cluster);
     } catch (err) {
       url = currentCluster;
     }
