@@ -33,10 +33,20 @@ function ComponentWrapper({ id, name, context, children, props, more }) {
 }
 
 function Render(props: RenderProps) {
-  const { id, name = 'default', context = 'react', children, fallback, render, ...more } = props;
+  const {
+    id,
+    name = 'default',
+    context = 'react',
+    children,
+    fallback,
+    render,
+    loading,
+    ...more
+  } = props;
   const [componentInfo, isLoading] = useLoadAccountComponent(id, name, context);
   // console.log('rendering', id, name, context, isLoading);
-  if (isLoading) return <span className="spinner-grow spinner-grow-sm m-r-4"></span>;
+  if (isLoading)
+    return loading ? loading(props) : <span className="spinner-grow spinner-grow-sm m-r-4" />;
 
   if (!componentInfo) {
     if (fallback !== undefined) return fallback(props);
