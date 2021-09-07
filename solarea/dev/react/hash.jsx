@@ -7,17 +7,22 @@ const FeCopy = render('icons', 'fe-copy');
 const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
   const parsedHash = numberWithSpaces(hash);
 
-  const start = parsedHash.slice(0, -4);
-  const end = parsedHash.slice(-4);
+  const fallback = () => {
+    if (parsedHash?.length >= 15) {
+      const start = parsedHash.slice(0, -4);
+      const end = parsedHash.slice(-4);
 
-  const fallback = () => (
-    <>
-      <div style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-        {start}
-      </div>
-      {end}
-    </>
-  );
+      return (
+        <>
+          <div style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+            {start}
+          </div>
+          {end}
+        </>
+      );
+    }
+    return parsedHash;
+  };
 
   const copyHash = () => {
     copyTextToClipboard(hash).then(
@@ -37,13 +42,15 @@ const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
       {type ? (
         <Link
           to={`/${type}/${hash}${urlParams ? `?${urlParams}` : ''}`}
-          className="bu-tc-link"
-          style={{ display: 'flex', fontFamily: 'monospace' }}
+          className="bu-tc-link bu-monospace"
+          style={{ display: 'flex' }}
         >
           {children || fallback()}
         </Link>
       ) : (
-        <div style={{ display: 'flex', fontFamily: 'monospace' }}>{children || fallback()}</div>
+        <div style={{ display: 'flex' }} className="bu-monospace">
+          {children || fallback()}
+        </div>
       )}
     </>
   );

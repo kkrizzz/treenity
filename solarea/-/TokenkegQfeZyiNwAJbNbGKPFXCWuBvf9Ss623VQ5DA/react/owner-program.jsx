@@ -132,7 +132,7 @@ add(({ account, entityId }) => {
           <TwoColumn
             first="Marketplace"
             second={
-              <a class="bu-tc-link" href={nftTokenData.external_url}>
+              <a class="bu-tc-link" target="_blank" href={nftTokenData.external_url}>
                 Metaplex
               </a>
             }

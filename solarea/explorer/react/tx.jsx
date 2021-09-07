@@ -90,10 +90,10 @@ const AccountInputs = ({ tx }) => {
             <div className="bu-column bu-is-6 text-overflow tc-link">
               <NamedHash hash={publicKey} type="address" />
             </div>
-            <div className="bu-column bu-is-3 bu-tc-monospace">
+            <div className="bu-column bu-is-3 bu-monospace">
               {lpsRound(tx.meta.postBalances[index] - tx.meta.preBalances[index], 6)}
             </div>
-            <div className="bu-column bu-is-3 bu-tc-monospace">
+            <div className="bu-column bu-is-3 bu-monospace">
               {numberWithSpaces(lpsRound(tx.meta.postBalances[index], 6))}
             </div>
           </div>
@@ -107,10 +107,10 @@ const TransactionLog = ({ tx }) => {
   return (
     <BulmaCard header="Log messages">
       <div
-        class="bu-notification bu-tc-monospace log-messages"
+        class="bu-notification bu-monospace log-messages"
         style={{
-          background: 'var(--theme-main-bg-color)',
-          color: 'var(--theme-main-color)',
+          background: 'var(--theme-logs-bg)',
+          color: 'var(--theme-logs-color)',
           margin: '-1rem',
         }}
       >
