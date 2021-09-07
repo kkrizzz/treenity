@@ -1,5 +1,13 @@
 // @ts-ignore
-import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Cluster, Connection } from '@solana/web3.js';
 import useQueryParams from './useQueryParams';
 import { useSessionStorageState } from './useSessionStorageState';
@@ -22,7 +30,7 @@ function insertUrlParam(key, value) {
   let searchParams = new URLSearchParams(window.location.search);
   searchParams.set(key, value);
   let newurl = '?' + searchParams.toString();
-  window.history.pushState(null, '', newurl);
+  window.history.replaceState(null, '', newurl);
 }
 
 const resolveVelasClusterByUrl = (url) => {

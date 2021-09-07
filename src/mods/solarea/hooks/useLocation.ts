@@ -1,7 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
 
-history.pushState = function pushState(data, title, url, resetCss) {
+history.pushState = function pushState(data, title, url) {
   History.prototype.pushState.call(history, data, title, url);
+  window.dispatchEvent(new Event('pushState'));
+};
+history.replaceState = function replaceState(data, title, url) {
+  History.prototype.replaceState.call(history, data, title, url);
   window.dispatchEvent(new Event('pushState'));
 };
 
