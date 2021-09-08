@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { loadedScripts, loadScript } from '../load-script';
+import { loadScript } from '../compiler/load-script';
 import { makeId } from '../utils/make-id';
-import Render, { render } from '../Render';
-import { addComponent, getComponent } from '../component-db';
+import Render from '../Render';
+import { addComponent } from '../component-db';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useEditorSelect } from '../stores/editor-store';
+import { createExecutionContext } from '../utils/create-execution-context';
 
 export function Preview({ accountData, code, id, name, context, ...params }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -14,8 +15,7 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
     (async () => {
       setIsLoading(true);
       await loadScript(makeId(currentAddress || id, name, context), code, {
-        Render,
-        render,
+        ...createExecutionContext(),
         add(component) {
           addComponent(currentAddress || id, name, context, {}, component);
         },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAccount } from './hooks/useAccount';
 import { useLoadAccountComponent } from './hooks/useLoadComponent';
-import useEditorGridLayout from './editor/NewEditor/EditorGridLayout';
+import { useEditorGridLayout } from './editor/NewEditor/EditorGridLayout';
 import { Icon } from './components/Icon';
 import { toast } from './utils/toast';
 

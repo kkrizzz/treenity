@@ -3,7 +3,7 @@ import { EditorState, EditorView, basicSetup } from '@codemirror/basic-setup';
 import { javascript } from '@codemirror/lang-javascript';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { keymap } from '@codemirror/view';
-import { defaultTabBinding } from '@codemirror/commands';
+import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 
 import './CodeMirror.css';
 
@@ -24,7 +24,7 @@ export default function CodeMirror({ value, onChange }) {
               onChange(viewUpdate.state.doc.toString());
             }
           }),
-          keymap.of([defaultTabBinding]),
+          keymap.of([...defaultKeymap, indentWithTab]),
           javascript({ jsx: true, typescript: false }),
         ],
       }),

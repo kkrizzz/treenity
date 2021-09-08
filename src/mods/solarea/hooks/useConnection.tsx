@@ -61,7 +61,7 @@ export const ConnectionProvider = ({
   cluster = 'mainnet-beta',
 }: {
   children: any;
-  cluster: Cluster;
+  cluster: string;
 }) => {
   const { cluster: urlCluster } = useQueryParams();
   const [localCluster, setLocalCluster] = useSessionStorageState('clusterUrl', cluster as string);

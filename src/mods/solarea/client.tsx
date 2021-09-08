@@ -12,7 +12,6 @@ import './index.css';
 import config from '../../config-common';
 import SolareaRoute from './SolareaRoute';
 import './components/DefaultComponents';
-import './markup';
 import { WalletProvider } from './utils/wallet';
 import WalletConnect from './components/WalletConnect';
 import SolareaProgramApi from './program-api/solarea-program-api';
@@ -49,4 +48,4 @@ const App = () => {
 //   console.log("Install succeeded with the default scope '/'.");
 // });
 
-render(html` <${App} />`, document.getElementById('app'));
+render(html`<${App} />`, document.getElementById('app')!);

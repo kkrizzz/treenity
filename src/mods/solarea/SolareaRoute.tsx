@@ -1,15 +1,14 @@
 import React from 'react';
-import bs58 from 'bs58';
 
 import useParams from './hooks/useParams';
 import useQueryParams from './hooks/useQueryParams';
 import Render from './Render';
 import findMap from '../../utils/find-map';
 
-import SolareaEdit from './editor/NewEditor/SolareaEdit3';
-import EditorGridLayout from './editor/NewEditor/EditorGridLayout';
-// const EditorGridLayout = React.lazy(() => import('./editor/NewEditor/EditorGridLayout'));
-// const SolareaEdit = React.lazy(() => import('./editor/NewEditor/SolareaEdit3'));
+// import SolareaEdit from './editor/NewEditor/SolareaEdit3';
+// import EditorGridLayout from './editor/NewEditor/EditorGridLayout';
+const SolareaEdit = React.lazy(() => import('./editor/NewEditor/SolareaEdit3'));
+const EditorGridLayout = React.lazy(() => import('./editor/NewEditor/EditorGridLayout'));
 
 const idToViewResolvers = [
   (id, name, context, { edit, grid, ...query }) => {

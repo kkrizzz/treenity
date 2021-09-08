@@ -1,11 +1,6 @@
 import { html } from 'htm/preact';
-import * as preact from 'preact/compat';
 import findLastIndex from 'lodash/findLastIndex';
-import { promised } from './promised';
-import { useBitQuery } from './hooks/useBitQuery';
-import { useCSS, css } from './hooks/useCSS';
-import { useAccount } from './hooks/useAccount';
-import { useAccountTransactions } from './hooks/useAccountTransactions';
+import { promised } from '../utils/promised';
 
 export const loadedScripts: { [id: string]: any } = {};
 globalThis.__loadedScripts = loadedScripts;
@@ -101,15 +96,9 @@ export function loadScript(id: string, code: string, context) {
     code,
     context: {
       html,
-      preact,
       require: (url) => {
         return globalThis.System.import(url);
       },
-      useCSS,
-      css,
-      useBitQuery,
-      useAccount,
-      useAccountTransactions,
       ...context,
     },
     ready: false,

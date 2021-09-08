@@ -2,7 +2,6 @@ import { Connection, PublicKey, sendAndConfirmRawTransaction, Transaction } from
 import memoize from 'lodash/memoize';
 import { WalletAdapterInterface } from '../utils/wallet';
 import { SolareaViewId } from './SolareaViewId';
-import { createViewAddress } from '../program-api/solarea-program-api';
 import { solareaApi } from '../client';
 import { promiseSequence } from '../../../utils/promise-sequence';
 import {
