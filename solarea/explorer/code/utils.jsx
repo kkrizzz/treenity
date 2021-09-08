@@ -1,10 +1,12 @@
 const LPS = 0.000000001;
 
 const digRe = /^[\d\.]{3,31}$/;
-const replaceRe = /(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g;
+const replaceRe = /\B(?=(\d{3})+\b)/g;
 const numberWithSpaces = (exports.numberWithSpaces = (x) => {
   if (typeof x === 'number' || (typeof x === 'string' && digRe.test(x))) {
-    return String(x).replace(replaceRe, '$1,');
+    const parts = String(x).split('.');
+    parts[0] = parts[0].replace(replaceRe, ',');
+    return parts.join('.');
   }
   return x;
 });
