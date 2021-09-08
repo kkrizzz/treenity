@@ -19,6 +19,8 @@ import { Buffer } from 'buffer';
 import { ethToVlx, vlxToEth } from './utils/vlx-address-lib';
 import { useMetaplexNFT } from './hooks/useMetaplexNFT';
 
+const borsh = require('borsh');
+
 const SolanaLayout = {
   ...Layout,
   publicKey,
@@ -30,6 +32,7 @@ globalThis.ReactDOM = preact;
 globalThis.solarea = {
   bs58,
   bn,
+  borsh,
   vlxToEth,
   ethToVlx,
   Buffer,

@@ -30,6 +30,15 @@ const idToViewResolvers = [
       );
     }
   },
+  (id, name, context, query) => {
+    if (['account'].includes(id)) {
+      return (
+        <Render id="near" name="layout" context={context}>
+          <Render {...query} entityId={name} id="near" context={context} name={id} />
+        </Render>
+      );
+    }
+  },
   (id, name, context, { nolayout, ...query }) => {
     if (nolayout !== undefined) {
       return <Render {...query} id={id} context={context} name={name} />;
