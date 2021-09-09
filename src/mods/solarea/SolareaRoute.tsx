@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'preact/compat';
 
 import useParams from './hooks/useParams';
 import useQueryParams from './hooks/useQueryParams';
@@ -13,12 +13,20 @@ const EditorGridLayout = React.lazy(() => import('./editor/NewEditor/EditorGridL
 const idToViewResolvers = [
   (id, name, context, { edit, grid, ...query }) => {
     if (edit !== undefined && grid !== undefined) {
-      return <EditorGridLayout {...query} id={id} name={name} context={context} />;
+      return (
+        <Suspense fallback={<div>Loading Grid Layout...</div>}>
+          <EditorGridLayout {...query} id={id} name={name} context={context} />
+        </Suspense>
+      );
     }
   },
   (id, name, context, { edit, ...query }) => {
     if (edit !== undefined) {
-      return <SolareaEdit {...query} value={null} id={id} name={name} context={context} />;
+      return (
+        <Suspense fallback={<div>Loading Editor...</div>}>
+          <SolareaEdit {...query} value={null} id={id} name={name} context={context} />
+        </Suspense>
+      );
     }
   },
   (id, name, context, query) => {

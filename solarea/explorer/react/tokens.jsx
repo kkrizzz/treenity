@@ -3,7 +3,7 @@ const Link = render('dev', 'link');
 const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
 
-const { tokenRegExp } = await require('solarea://explorer/utils');
+const { tokenRegExp, numberWithSpaces } = await require('solarea://explorer/utils');
 
 add(() => {
   const connection = solarea.useConnection();
@@ -47,10 +47,13 @@ add(() => {
                       <div className="bu-column bu-is-5 text-overflow">
                         <NamedHash hash={tokenAddress} urlParams={'chain=evm'} type="address" />
                       </div>
-                      <div className="bu-column bu-is-2" style={{ textAlign: 'right' }}>
-                        {tokenSupply.replace(/([\d,]+(\.\d{1,3})?).*/, '$1')}
+                      <div
+                        className="bu-column bu-is-2 bu-monospace"
+                        style={{ textAlign: 'right' }}
+                      >
+                        {numberWithSpaces(parseFloat(tokenSupply).toFixed(3))}
                       </div>
-                      <div className="bu-column bu-is-1" style={{ textAlign: 'end' }}>
+                      <div className="bu-column bu-is-1 bu-monospace" style={{ textAlign: 'end' }}>
                         {holdersCount}
                       </div>
                     </div>

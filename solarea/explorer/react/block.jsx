@@ -74,7 +74,7 @@ const SolanaBlockView = ({ entityId }) => {
         <Tabs
           tabs={[
             {
-              name: 'Block transactions',
+              name: 'Transactions',
               content: () => {
                 const showTx = React.useMemo(() => {
                   return showTransactions
@@ -110,7 +110,7 @@ const SolanaBlockView = ({ entityId }) => {
               },
             },
             {
-              name: 'Block rewards',
+              name: 'Rewards',
               content: () => (
                 <div>
                   <div className="bu-columns bu-is-mobile">
@@ -135,7 +135,7 @@ const SolanaBlockView = ({ entityId }) => {
               content: () => (
                 <div>
                   <div>
-                    <div className="bu-columns">
+                    <div className="bu-columns bu-is-mobile">
                       <div className="bu-column bu-is-4">Signature</div>
                       <div className="bu-column bu-is-6">Instructions</div>
                       <div className="bu-column bu-is-2">Result</div>

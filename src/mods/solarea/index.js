@@ -1,5 +1,7 @@
 import '../../common/array-at';
 import '../../utils/promise-sequence';
-import 'preact/debug';
+// if (env.NODE_ENV === 'development') {
+// require('preact/debug');
+// }
 
 import './client';
