@@ -13,10 +13,27 @@ const Hash = render('dev', 'hash');
 
 const { Buffer, borsh } = solarea;
 
+const TransactionRow = ({ tx }) => {
+  return (
+    <div className="bu-box">
+      <TwoColumn first="Signature" second={<Hash alignRight>{tx.transaction_hash}</Hash>} />
+      <TwoColumn first="Receiver" second={<Hash alignRight>{tx.receiver_account_id}</Hash>} />
+      <TwoColumn
+        first="Args"
+        second={
+          <pre style={{ textAlign: 'left' }} className="bu-box">
+            {JSON.stringify(tx.args, null, 2)}
+          </pre>
+        }
+      />
+    </div>
+  );
+};
+
 add(({ entityId }) => {
   const [accData, isLoading] = useNearAccount(entityId);
   const [nftData, isNftDataLoading] = useNearNFT(entityId);
-  const [txs, isTxsLoading] = useNearAccTransactions(entityId);
+  const [txs, isTxsLoading] = useNearAccTransactions(entityId, 99);
 
   console.log(txs, isTxsLoading);
 
@@ -29,19 +46,29 @@ add(({ entityId }) => {
         if (isTxsLoading) return 'Loading ...';
 
         return txs.rows
-          .slice(0, 5)
-          .map((i) => (
-            <TwoColumn first="Signature" second={<Hash alignRight>{i.transaction_hash}</Hash>} />
-          ));
+          .filter((i) => i.action_kind === 'ADD_KEY' || i.action_kind === 'DELETE_KEY')
+          .map((i) => <TransactionRow tx={i} />);
       },
     },
     {
       name: 'Transfers',
-      content: () => '',
+      content: () => {
+        if (isTxsLoading) return 'Loading ...';
+
+        return txs.rows
+          .filter((i) => i.action_kind === 'TRANSFER')
+          .map((i) => <TransactionRow tx={i} />);
+      },
     },
     {
       name: 'Calls',
-      content: () => '',
+      content: () => {
+        if (isTxsLoading) return 'Loading ...';
+
+        return txs.rows
+          .filter((i) => i.action_kind === 'FUNCTION_CALL')
+          .map((i) => <TransactionRow tx={i} />);
+      },
     },
   ];
   const tokensTabs = [
