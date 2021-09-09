@@ -1,9 +1,9 @@
 import React from 'react';
 import { useAccount } from './hooks/useAccount';
 import { useLoadAccountComponent } from './hooks/useLoadComponent';
-import { useEditorGridLayout } from './editor/NewEditor/EditorGridLayout';
 import { Icon } from './components/Icon';
 import { toast } from './utils/toast';
+import { useEditorGridLayout } from './editor/NewEditor/useEditorGridLayout';
 
 interface RenderProps {
   id: string;
@@ -45,8 +45,9 @@ function Render(props: RenderProps) {
   } = props;
   const [componentInfo, isLoading] = useLoadAccountComponent(id, name, context);
   // console.log('rendering', id, name, context, isLoading);
-  if (isLoading)
+  if (isLoading) {
     return loading ? loading(props) : <span className="spinner-grow spinner-grow-sm m-r-4" />;
+  }
 
   if (!componentInfo) {
     if (fallback !== undefined) return fallback(props);

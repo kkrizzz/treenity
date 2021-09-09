@@ -162,7 +162,7 @@ const SolareaEditMenu = ({ id, name }) => {
 
       await loadInitialCode(solanaStorage, restStorage, id);
       toast('Successfully saved');
-    } catch (err) {
+    } catch (err: any) {
       console.dir(err);
       error(`Cant save: ${err.message} ${err.code || ''}`);
     }

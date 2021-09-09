@@ -1,75 +1,13 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import GridLayout from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './EditorGridLayout.css';
-import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { makeId } from '../../utils/make-id';
 import Render from '../../Render';
 import { Icon } from '../../components/Icon';
-
-export type LayoutItem = {
-  w: number;
-  h: number;
-  x: number;
-  y: number;
-  i: string;
-  minW?: number;
-  minH?: number;
-  maxW?: number;
-  maxH?: number;
-  moved?: boolean;
-  static?: boolean;
-  isDraggable?: boolean;
-  isResizable?: boolean;
-  resizeHandles?: Array<'s' | 'w' | 'e' | 'n' | 'sw' | 'nw' | 'se' | 'ne'>;
-  isBounded?: boolean;
-};
-
-interface EditorLayoutItem {
-  id: string; // i in LayoutItem
-  name: string;
-  context: string;
-  props: any;
-}
-
-type IEditorGridLayout = {
-  viewId: string;
-  additionalLayoutInfo: Array<EditorLayoutItem>;
-  layout: Array<LayoutItem>;
-};
-
-export function useEditorGridLayout(
-  viewId: string,
-): [IEditorGridLayout, any, (targetId: string, name: string, context: string, props: any) => void] {
-  const [gridLayout, updateGridLayout] = useLocalStorageState<IEditorGridLayout>(
-    `editorGridLayout~${viewId}`,
-    { layout: [], additionalLayoutInfo: [], viewId },
-  );
-
-  const handleAddItem = (targetId: string, name: string, context: string, props) => {
-    updateGridLayout((prevState) => {
-      const newState = Object.assign({}, prevState);
-      newState.additionalLayoutInfo.push({
-        id: targetId,
-        name,
-        context,
-        props,
-      });
-
-      newState.layout.push({
-        x: 0,
-        y: 0,
-        w: 4,
-        h: 4,
-        i: targetId,
-      });
-      return newState;
-    });
-  };
-
-  return [gridLayout, updateGridLayout, handleAddItem];
-}
+import { useEditorGridLayout } from './useEditorGridLayout';
+import { EditorLayoutItem } from './gridLayoutTypes';
 
 export const EditorGridLayout = ({ id, name, context }) => {
   const viewId = useMemo(() => {
