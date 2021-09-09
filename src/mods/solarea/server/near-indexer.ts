@@ -12,9 +12,20 @@ client.connect();
 
 export function nearIndexer(app: Application) {
   app.post('/solarea/near/acctx', async (req, res) => {
-    const entityId = req.body.entityId;
+    let { entityId, limit, offset = 0 } = req.body;
+    if (!(0 < limit && limit < 100)) limit = 10;
+    if (!(offset >= 0)) offset = 0;
+
     res.send(
-      await client.query(`SELECT * FROM TRANSACTIONS WHERE signer_account_id='${entityId}';`),
+      await client.query(`
+        SELECT * FROM transactions 
+        JOIN transaction_actions 
+        ON transactions.transaction_hash=transaction_actions.transaction_hash 
+        WHERE signer_account_id='${entityId}'
+        LIMIT ${limit}
+        OFFSET ${offset}
+        ;
+      `),
     );
   });
 }
