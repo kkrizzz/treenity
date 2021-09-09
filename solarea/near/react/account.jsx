@@ -25,8 +25,15 @@ const TransactionRow = ({ tx }) => {
   return (
     <div className="bu-box">
       <TwoColumn first="Signature" second={<Hash alignRight>{tx.transaction_hash}</Hash>} />
-      <TwoColumn first="Receiver" second={<Hash alignRight>{tx.receiver_account_id}</Hash>} />
-      <TwoColumn first="Signer" second={<Hash alignRight>{tx.signer_account_id}</Hash>} />
+      <TwoColumn first="Action" second={tx.action_kind} />
+      <TwoColumn
+        first="Receiver"
+        second={<Hash alignRight hash={tx.receiver_account_id} type="account" />}
+      />
+      <TwoColumn
+        first="Signer"
+        second={<Hash hash={tx.signer_account_id} type="account" alignRight />}
+      />
       <TwoColumn
         first="Args"
         second={
@@ -75,7 +82,7 @@ add(({ entityId }) => {
         if (isTxsLoading) return 'Loading ...';
 
         return txs.rows
-          .filter((i) => i.action_kind === 'FUNCTION_CALL')
+          .filter((i) => i.action_kind === 'FUNCTION_CALL' || i.action_kind === 'DEPLOY_CONTRACT')
           .map((i) => <TransactionRow tx={i} />);
       },
     },
