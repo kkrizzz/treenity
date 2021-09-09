@@ -14,10 +14,19 @@ const Hash = render('dev', 'hash');
 const { Buffer, borsh } = solarea;
 
 const TransactionRow = ({ tx }) => {
+  useCSS(
+    'near-acc-tx.css',
+    css`
+      .bu-columns:not(:last-child) {
+        margin-bottom: 0;
+      }
+    `,
+  );
   return (
     <div className="bu-box">
       <TwoColumn first="Signature" second={<Hash alignRight>{tx.transaction_hash}</Hash>} />
       <TwoColumn first="Receiver" second={<Hash alignRight>{tx.receiver_account_id}</Hash>} />
+      <TwoColumn first="Signer" second={<Hash alignRight>{tx.signer_account_id}</Hash>} />
       <TwoColumn
         first="Args"
         second={
