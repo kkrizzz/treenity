@@ -44,7 +44,7 @@ exports.useAccount = (entityId) => {
 exports.useNearAccTransactions = (entityId) => {
   const { data, isLoading } = useQuery([entityId, 'transactions'], () =>
     window
-      .fetch('http://localhost:3100/solarea/near/acctx', {
+      .fetch('/solarea/near/acctx', {
         method: 'POST',
         body: JSON.stringify({ entityId }),
         headers: {

@@ -69,8 +69,12 @@ add(({ entityId }) => {
                         <TwoColumn first="Copies" second={i.metadata.copies} />
                         <div style={{ textAlign: 'center', height: '60%' }}>
                           <img
-                            style={{ width: '100%', height: '100%' }}
-                            src={i.metadata.media.replace(',', ';')}
+                            style={{ height: '100%' }}
+                            src={
+                              i.metadata.media.startsWith('bafy')
+                                ? `https://ipfs.fleek.co/ipfs/${i.metadata.media}`
+                                : i.metadata
+                            }
                           />
                         </div>
                       </div>
