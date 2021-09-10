@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
 import { DeviceScaleFrame } from '../DeviceScaleFrame';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
-import Render from '../../Render';
+import Render from '../../render/Render';
 import { Preview } from '../Preview';
 
 export const SolareaEditPreview = ({ value, id, name, ...params }) => {

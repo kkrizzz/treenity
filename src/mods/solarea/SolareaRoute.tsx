@@ -2,7 +2,7 @@ import React, { Suspense } from 'preact/compat';
 
 import useParams from './hooks/useParams';
 import useQueryParams from './hooks/useQueryParams';
-import Render from './Render';
+import Render from './render/Render';
 import findMap from '../../utils/find-map';
 
 // import SolareaEdit from './editor/NewEditor/SolareaEdit3';

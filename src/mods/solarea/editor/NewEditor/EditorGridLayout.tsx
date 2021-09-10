@@ -4,7 +4,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './EditorGridLayout.css';
 import { makeId } from '../../utils/make-id';
-import Render from '../../Render';
+import Render from '../../render/Render';
 import { Icon } from '../../components/Icon';
 import { useEditorGridLayout } from './useEditorGridLayout';
 import { EditorLayoutItem } from './gridLayoutTypes';

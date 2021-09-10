@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { loadScript } from '../compiler/load-script';
 import { makeId } from '../utils/make-id';
-import Render from '../Render';
+import Render from '../render/Render';
 import { addComponent } from '../component-db';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useEditorSelect } from '../stores/editor-store';
