@@ -116,7 +116,7 @@ add(({ entityId }) => {
                             src={
                               i.metadata.media.startsWith('bafy')
                                 ? `https://ipfs.fleek.co/ipfs/${i.metadata.media}`
-                                : i.metadata
+                                : i.metadata.media
                             }
                           />
                         </div>
