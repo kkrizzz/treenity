@@ -38,6 +38,22 @@ const InfoCard = (t) => (
 );
 
 const EvmBlocksView = () => {
+  useCSS(
+    'blocks-page.css',
+    css`
+      @media screen and (max-width: 550px) {
+        .blocs-container {
+          overflow-x: scroll;
+          overflow-y: hidden;
+        }
+        .blocs-container > div {
+          min-width: 460px;
+          width: 100%;
+        }
+      }
+    `,
+  );
+
   const [lastBlock, isBlockLoading] = solarea.useSolanaRpc('eth_blockNumber');
   if (isBlockLoading || !lastBlock) return InfoCard('Last block loading');
   const [blocks, isLoading, fetchNext] = useVelasLoadBlocks(parseInt(lastBlock));
@@ -45,36 +61,45 @@ const EvmBlocksView = () => {
   if (isLoading) return InfoCard('Blocks loading');
   return (
     <BulmaCard>
-      <div className="bu-columns bu-is-mobile">
-        <div className="bu-column bu-is-2-desktop bu-is-2-tablet bu-is-2-mobile">Block</div>
-        <div className="bu-column bu-is-9-desktop bu-is-9-tablet bu-is-8-mobile">Hash</div>
-        <div className="bu-column bu-is-1-desktop bu-is-2-mobile">txns</div>
-      </div>
-      {blocks.map((block) => {
-        const number = parseInt(block.number, 16);
+      <div class="blocs-container">
+        <div>
+          <div className="bu-columns bu-is-mobile">
+            <div className="bu-column bu-is-2-desktop bu-is-2-tablet bu-is-3-mobile">Block</div>
+            <div className="bu-column bu-is-2-desktop bu-is-2-tablet bu-is-3-mobile">Age</div>
+            <div className="bu-column bu-is-1-desktop bu-is-1-tablet bu-is-1-mobile">Txn</div>
+            <div className="bu-column bu-is-5-desktop bu-is-5-tablet bu-is-3-mobile">Hash</div>
+            <div className="bu-column bu-is-2-desktop bu-is-2-tablet bu-is-2-mobile">Gas Used</div>
+          </div>
+          {blocks.map((block) => {
+            const number = parseInt(block.number, 16);
 
-        return (
-          <div key={block.hash}>
-            <div className="bu-columns bu-is-mobile">
-              <div className="bu-column bu-is-2-desktop bu-is-2-tablet bu-is-2-mobile">
-                <Hash hash={number.toString()} type="block" urlParams="chain=evm" />
-              </div>
-              <div className="bu-column bu-is-9-desktop bu-is-9-tablet bu-is-8-mobile text-overflow">
-                {block.hash}
-                <div class="bu-columns">
-                  <div className="bu-column">
+            return (
+              <div key={block.hash}>
+                <div className="bu-columns bu-is-mobile">
+                  <div className="bu-column bu-is-2-desktop bu-is-2-tablet bu-is-3-mobile">
+                    <Hash hash={number.toString()} type="block" urlParams="chain=evm" />
+                  </div>
+                  <div className="bu-column bu-is-2-desktop bu-is-2-tablet bu-is-3-mobile">
                     <TimeAgo date={new Date(parseInt(block.timestamp) * 1000)} />
                   </div>
-                  <div class="bu-column">Gas used: {parseInt(block.gasUsed)}</div>
+                  <div className="bu-column bu-is-1-desktop bu-is-1-tablet bu-is-1-mobile">
+                    {block.transactions.length}
+                  </div>
+
+                  <div className="bu-column bu-is-5-desktop bu-is-5-tablet bu-is-3-mobile text-overflow">
+                    <Hash hash={number.toString()} type="block" urlParams="chain=evm">
+                      {block.hash}
+                    </Hash>
+                  </div>
+                  <div className="bu-column bu-is-1-desktop bu-is-2-tablet bu-is-2-mobile">
+                    {parseInt(block.gasUsed)}
+                  </div>
                 </div>
               </div>
-              <div className="bu-column bu-is-1-desktop bu-is-2-mobile">
-                {block.transactions.length}
-              </div>
-            </div>
-          </div>
-        );
-      })}
+            );
+          })}
+        </div>
+      </div>
       <button
         className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
         onClick={fetchNext}
