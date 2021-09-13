@@ -7,10 +7,10 @@ const FeCopy = render('icons', 'fe-copy');
 const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
   const parsedHash = numberWithSpaces(hash);
 
-  const fallback = () => {
-    if (parsedHash?.length >= 15) {
-      const start = parsedHash.slice(0, -4);
-      const end = parsedHash.slice(-4);
+  const fallback = (str = parsedHash) => {
+    if (str?.length >= 15) {
+      const start = str.slice(0, -4);
+      const end = str.slice(-4);
 
       return (
         <>
@@ -21,7 +21,7 @@ const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
         </>
       );
     }
-    return parsedHash;
+    return str;
   };
 
   const copyHash = () => {
@@ -45,7 +45,7 @@ const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
           className="bu-tc-link bu-monospace"
           style={{ display: 'flex' }}
         >
-          {children || fallback()}
+          {!!children ? (typeof children === 'string' ? fallback(children) : children) : fallback()}
         </Link>
       ) : (
         <div style={{ display: 'flex' }} className="bu-monospace">
