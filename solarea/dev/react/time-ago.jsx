@@ -61,11 +61,11 @@ function timeAgo(dateParam) {
   if (seconds < 5) {
     return 'now';
   } else if (seconds < 60) {
-    return `${seconds} seconds ago`;
+    return `${seconds} secs ago`;
   } else if (seconds < 90) {
-    return 'about a minute ago';
+    return '1 min ago';
   } else if (minutes < 60) {
-    return `${minutes} minutes ago`;
+    return `${minutes} mins ago`;
   } else if (today.toDateString() === date.toDateString()) {
     return getFormattedDate(date, 'Today'); // Today at 10:20
   } else if (yesterday.toDateString() === date.toDateString()) {
