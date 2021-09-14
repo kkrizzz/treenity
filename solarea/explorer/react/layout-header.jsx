@@ -95,6 +95,7 @@ add(() => {
                     style={{ minWidth: 200 }}
                     placeholder="Custom url"
                     ref={custom}
+                    onKeyPress={(evt) => evt.code === 'Enter' && setCustomUrl()}
                   />
                   <a
                     class="bu-button bu-is-small bu-is-primary"
