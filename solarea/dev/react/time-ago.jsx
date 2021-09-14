@@ -4,18 +4,18 @@ add(({ date }) => {
 });
 
 const MONTH_NAMES = [
-  'January',
-  'February',
-  'March',
-  'April',
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
   'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
 ];
 
 function getFormattedDate(date, prefomattedDate = false, hideYear = false) {
@@ -37,12 +37,12 @@ function getFormattedDate(date, prefomattedDate = false, hideYear = false) {
   }
 
   if (hideYear) {
-    // 10. January at 10:20
-    return `${day}. ${month} at ${hours}:${minutes}`;
+    // 10 January at 10:20
+    return `${day} ${month} at ${hours}:${minutes}`;
   }
 
-  // 10. January 2017. at 10:20
-  return `${day}. ${month} ${year}. at ${hours}:${minutes}`;
+  // 10 January 2017. at 10:20
+  return `${day} ${month} ${year}. at ${hours}:${minutes}`;
 }
 
 // --- Main function
