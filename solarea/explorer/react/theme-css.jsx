@@ -258,6 +258,10 @@ add(() => {
         margin-bottom: 16px !important;
       }
 
+      .m-b-20 {
+        margin-bottom: 20px !important;
+      }
+
       .m-t-8 {
         margin-top: 8px !important;
       }
@@ -268,6 +272,10 @@ add(() => {
 
       .m-r-8 {
         margin-right: 8px !important;
+      }
+
+      .m-r-12 {
+        margin-right: 12px !important;
       }
 
       .m-r-16 {
