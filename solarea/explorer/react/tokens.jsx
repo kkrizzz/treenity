@@ -1,9 +1,26 @@
 const BulmaCard = render('dev', 'bulma-card');
-const Link = render('dev', 'link');
-const Hash = render('dev', 'hash');
+const Table = render('dev', 'table');
 const NamedHash = render('dev', 'named-hash');
+const ScrollBox = render('dev', 'scroll-box');
 
 const { tokenRegExp, numberWithSpaces } = await require('solarea://explorer/utils');
+const columns = [
+  { title: 'Token', dataIndex: 'tokenName' },
+  {
+    title: 'Address',
+    dataIndex: 'tokenAddress',
+    render: (tokenAddress) => (
+      <NamedHash hash={tokenAddress} urlParams={'chain=evm'} type="address" />
+    ),
+  },
+  {
+    title: 'Supply',
+    dataIndex: 'tokenSupply',
+    textAlign: 'right',
+    render: (tokenSupply) => numberWithSpaces(parseFloat(tokenSupply).toFixed(3)),
+  },
+  { title: 'Holders', dataIndex: 'holdersCount', textAlign: 'right' },
+];
 
 add(() => {
   const connection = solarea.useConnection();
@@ -12,9 +29,16 @@ add(() => {
   const tokensUrl = isMainnet
     ? 'https://evmexplorer.velas.com/tokens?type=JSON'
     : 'https://evmexplorer.testnet.velas.com/tokens?type=JSON';
-  const { data: tokenData, isLoading } = solarea.useQuery([isMainnet, 'tokendata_query'], () =>
+  const { data: tokenRawData, isLoading } = solarea.useQuery([isMainnet, 'tokendata_query'], () =>
     globalThis.fetch(tokensUrl).then((res) => res.json()),
   );
+
+  const tokenData =
+    !isLoading &&
+    tokenRawData.items.map((tokenHtml) => {
+      const [, tokenName, tokenAddress, tokenSupply, holdersCount] = tokenRegExp.exec(tokenHtml);
+      return { tokenName, tokenAddress, tokenSupply, holdersCount };
+    });
 
   return (
     <Render id="explorer" name="layout">
@@ -23,42 +47,11 @@ add(() => {
           <BulmaCard header="Loading token data . . ." />
         ) : (
           <div>
-            {' '}
             <BulmaCard header="Tokens" />
             <BulmaCard>
-              <div className="bu-columns bu-is-mobile">
-                <div className="bu-column bu-is-1">№</div>
-                <div className="bu-column bu-is-3">Token</div>
-                <div className="bu-column bu-is-5">Address</div>
-                <div className="bu-column bu-is-2">Supply</div>
-                <div className="bu-column bu-is-1" style={{ textAlign: 'end' }}>
-                  Holders
-                </div>
-              </div>
-              {!isLoading &&
-                tokenData.items.map((tokenHtml, index) => {
-                  const [, tokenName, tokenAddress, tokenSupply, holdersCount] = tokenRegExp.exec(
-                    tokenHtml,
-                  );
-                  return (
-                    <div className="bu-columns bu-is-mobile">
-                      <div className="bu-column bu-is-1">{index + 1}</div>
-                      <div className="bu-column bu-is-3">{tokenName}</div>
-                      <div className="bu-column bu-is-5 text-overflow">
-                        <NamedHash hash={tokenAddress} urlParams={'chain=evm'} type="address" />
-                      </div>
-                      <div
-                        className="bu-column bu-is-2 bu-monospace"
-                        style={{ textAlign: 'right' }}
-                      >
-                        {numberWithSpaces(parseFloat(tokenSupply).toFixed(3))}
-                      </div>
-                      <div className="bu-column bu-is-1 bu-monospace" style={{ textAlign: 'end' }}>
-                        {holdersCount}
-                      </div>
-                    </div>
-                  );
-                })}
+              <ScrollBox>
+                <Table stripped columns={columns} data={tokenData} />
+              </ScrollBox>
             </BulmaCard>
           </div>
         )}
