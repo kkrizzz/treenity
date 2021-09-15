@@ -4,6 +4,23 @@ const NamedHash = render('dev', 'named-hash');
 const ScrollBox = render('dev', 'scroll-box');
 
 const { tokenRegExp, numberWithSpaces } = await require('solarea://explorer/utils');
+const columns = [
+  { title: 'Token', dataIndex: 'tokenName' },
+  {
+    title: 'Address',
+    dataIndex: 'tokenAddress',
+    render: (tokenAddress) => (
+      <NamedHash hash={tokenAddress} urlParams={'chain=evm'} type="address" />
+    ),
+  },
+  {
+    title: 'Supply',
+    dataIndex: 'tokenSupply',
+    textAlign: 'right',
+    render: (tokenSupply) => numberWithSpaces(parseFloat(tokenSupply).toFixed(3)),
+  },
+  { title: 'Holders', dataIndex: 'holdersCount', textAlign: 'right' },
+];
 
 add(() => {
   const connection = solarea.useConnection();
@@ -33,27 +50,7 @@ add(() => {
             <BulmaCard header="Tokens" />
             <BulmaCard>
               <ScrollBox>
-                <Table
-                  stripped
-                  columns={[
-                    { title: 'Token', dataIndex: 'tokenName' },
-                    {
-                      title: 'Address',
-                      dataIndex: 'tokenAddress',
-                      render: (tokenAddress) => (
-                        <NamedHash hash={tokenAddress} urlParams={'chain=evm'} type="address" />
-                      ),
-                    },
-                    {
-                      title: 'Supply',
-                      dataIndex: 'tokenSupply',
-                      textAlign: 'right',
-                      render: (tokenSupply) => numberWithSpaces(parseFloat(tokenSupply).toFixed(3)),
-                    },
-                    { title: 'Holders', dataIndex: 'holdersCount', textAlign: 'right' },
-                  ]}
-                  data={tokenData}
-                />
+                <Table stripped columns={columns} data={tokenData} />
               </ScrollBox>
             </BulmaCard>
           </div>

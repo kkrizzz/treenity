@@ -1,8 +1,7 @@
 const Table = ({ columns = [], data = [], stripped = false, bordered = false }) => {
-  console.log(data[0]);
   return (
     <table
-      className={`bu-table ${bordered && 'bu-is-bordered'} ${stripped && 'bu-is-striped'}`}
+      className={`bu-table ${bordered ? 'bu-is-bordered' : ''} ${stripped ? 'bu-is-striped' : ''}`}
       style={{ width: '100%' }}
     >
       <thead>
