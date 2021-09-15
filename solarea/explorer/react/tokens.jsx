@@ -1,6 +1,7 @@
 const BulmaCard = render('dev', 'bulma-card');
 const Table = render('dev', 'table');
 const NamedHash = render('dev', 'named-hash');
+const ScrollBox = render('dev', 'scroll-box');
 
 const { tokenRegExp, numberWithSpaces } = await require('solarea://explorer/utils');
 
@@ -31,27 +32,29 @@ add(() => {
           <div>
             <BulmaCard header="Tokens" />
             <BulmaCard>
-              <Table
-                stripped
-                columns={[
-                  { title: 'Token', dataIndex: 'tokenName' },
-                  {
-                    title: 'Address',
-                    dataIndex: 'tokenAddress',
-                    render: (tokenAddress) => (
-                      <NamedHash hash={tokenAddress} urlParams={'chain=evm'} type="address" />
-                    ),
-                  },
-                  {
-                    title: 'Supply',
-                    dataIndex: 'tokenSupply',
-                    textAlign: 'right',
-                    render: (tokenSupply) => numberWithSpaces(parseFloat(tokenSupply).toFixed(3)),
-                  },
-                  { title: 'Holders', dataIndex: 'holdersCount', textAlign: 'right' },
-                ]}
-                data={tokenData}
-              />
+              <ScrollBox>
+                <Table
+                  stripped
+                  columns={[
+                    { title: 'Token', dataIndex: 'tokenName' },
+                    {
+                      title: 'Address',
+                      dataIndex: 'tokenAddress',
+                      render: (tokenAddress) => (
+                        <NamedHash hash={tokenAddress} urlParams={'chain=evm'} type="address" />
+                      ),
+                    },
+                    {
+                      title: 'Supply',
+                      dataIndex: 'tokenSupply',
+                      textAlign: 'right',
+                      render: (tokenSupply) => numberWithSpaces(parseFloat(tokenSupply).toFixed(3)),
+                    },
+                    { title: 'Holders', dataIndex: 'holdersCount', textAlign: 'right' },
+                  ]}
+                  data={tokenData}
+                />
+              </ScrollBox>
             </BulmaCard>
           </div>
         )}
