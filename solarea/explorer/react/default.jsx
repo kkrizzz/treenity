@@ -1,9 +1,10 @@
-const BulmaCard = render('dev', 'bulma-card');
-const TwoColumn = render('dev', 'two-column');
+const DashboardCard = render('dev', 'dashboard-card');
+const DashboardSection = render('dev', 'dashboard-section');
 const ExplorerLayout = render('explorer', 'layout');
-const Hash = render('dev', 'hash');
 const LPS = 0.000000001;
 
+const colors = { green: '#00C164', red: '#FF003D', blue: '#0B74FF' };
+const styleForSmall = { fontSize: 20, color: '#788CBF', marginLeft: 8 };
 function humanizeFormatter(num, digits) {
   const lookup = [
     { value: 1, symbol: '' },
@@ -22,26 +23,6 @@ function humanizeFormatter(num, digits) {
   return item ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol : '0';
 }
 
-const ProgressBar = ({ percent = '100' }) => {
-  return (
-    <progress className="bu-progress bu-is-small bu-is-success" value={percent} max="100">
-      {percent}%
-    </progress>
-  );
-};
-
-const SmallCard = ({ head, children, foot }) => {
-  return (
-    <div>
-      <div className="bu-is-size-6 bu-has-text-black">{head}</div>
-      <div>
-        <div className="bu-is-size-3 bu-has-text-primary">{children}</div>
-      </div>
-      <div className="bu-is-size-5 bu-has-text-primary">{foot}</div>
-    </div>
-  );
-};
-
 const StakeStats = ({ voteAccounts, currentSupply }) => {
   const { current, delinquent } = voteAccounts;
   const { total: totalSupply } = currentSupply.value;
@@ -52,23 +33,24 @@ const StakeStats = ({ voteAccounts, currentSupply }) => {
   const delinquentStake = delinquent.reduce(sumStake, 0);
 
   return (
-    <SmallCard
-      head="Active Stake"
-      foot={
-        <div>
-          <span className="bu-is-size-5 bu-has-text-black">Delinquent stake: </span>
+    <DashboardCard
+      title="Active Stake"
+      size="large"
+      color={{
+        info: colors.green,
+        content: colors.blue,
+      }}
+      info={
+        <span>
           {(100 - (activeStake / (activeStake + delinquentStake)) * 100).toFixed(2)}%
-        </div>
+          <br />
+          delinquent stake
+        </span>
       }
     >
-      <div class="bu-is-size-3 bu-has-text-primary">
-        {humanizeFormatter(activeStake * LPS, 1)}
-        <span className="bu-is-size-3 bu-has-text-black">/</span>
-        <span className="bu-is-size-3 bu-has-text-black">
-          {humanizeFormatter(totalSupply * LPS, 1)}
-        </span>
-      </div>
-    </SmallCard>
+      {humanizeFormatter(activeStake * LPS, 1)}
+      <span style={styleForSmall}>{humanizeFormatter(totalSupply * LPS, 1)}</span>
+    </DashboardCard>
   );
 };
 
@@ -77,26 +59,26 @@ const PriceStats = ({ coinData }) => {
   const priceChangePercentage24h = marketData.price_change_percentage_24h;
   const priceChangePositive = priceChangePercentage24h >= 0;
 
-  const className = `bu-is-size-5 ${
-    priceChangePositive ? 'bu-has-text-success' : 'bu-has-text-danger'
-  }`;
+  const color = priceChangePositive ? colors.green : colors.red;
 
   return (
-    <SmallCard
-      head="Price"
-      foot={
-        <div>
-          <span className="bu-is-size-5 bu-has-text-black">24h Vol $</span>
-          {humanizeFormatter(marketData.total_volume.usd, 1)}
-        </div>
+    <DashboardCard
+      title="Price"
+      size="large"
+      color={color}
+      info={
+        <span>
+          24h Vol
+          <br />${humanizeFormatter(marketData.total_volume.usd, 1)}
+        </span>
       }
     >
-      <div className="bu-is-size-3 bu-has-text-primary">
-        ${marketData.current_price.usd}
-        <span className={className}>{priceChangePositive ? '↑' : '↓'}</span>
-        <span className={className}>{priceChangePercentage24h.toFixed(2)}%</span>
-      </div>
-    </SmallCard>
+      <span style={{ color }}>${marketData.current_price.usd}</span>
+      <span style={styleForSmall}>
+        <span>{priceChangePositive ? '↑' : '↓'}</span>
+        <span>{priceChangePercentage24h.toFixed(2)}%</span>
+      </span>
+    </DashboardCard>
   );
 };
 
@@ -104,21 +86,24 @@ const SupplyStats = ({ currentSupply }) => {
   const { circulating, total: totalSupply } = currentSupply.value;
 
   return (
-    <SmallCard
-      head="Circulating Supply"
-      foot={
-        <div>
-          {((circulating / totalSupply) * 100).toFixed(1)}%{' '}
-          <span className="bu-is-size-5 bu-has-text-black">is circulating</span>
-        </div>
+    <DashboardCard
+      title="Circulating Supply"
+      size="large"
+      color={{
+        info: colors.green,
+        content: colors.blue,
+      }}
+      info={
+        <span>
+          {((circulating / totalSupply) * 100).toFixed(1)}%
+          <br />
+          is circulating
+        </span>
       }
     >
       {humanizeFormatter(circulating * LPS, 1)}
-      <span className="bu-is-size-3 bu-has-text-black">/</span>
-      <span className="bu-is-size-3 bu-has-text-black">
-        {humanizeFormatter(totalSupply * LPS, 1)}
-      </span>
-    </SmallCard>
+      <span style={styleForSmall}>{humanizeFormatter(totalSupply * LPS, 1)}</span>
+    </DashboardCard>
   );
 };
 
@@ -136,57 +121,64 @@ const ClusterStats = ({}) => {
 
   return (
     <>
-      <BulmaCard header="Cluster stats">
-        {isEpochInfoLoading ? (
-          <div className="bu-column bu-box bu-has-text-centered">
-            <span className="spinner-grow spinner-grow-sm m-r-4"></span>
-            Loading cluster stats ...
+      {isEpochInfoLoading ? (
+        <div className="bu-column bu-box bu-has-text-centered">
+          <span className="spinner-grow spinner-grow-sm m-r-4" />
+          Loading cluster stats ...
+        </div>
+      ) : (
+        <DashboardSection title="Test">
+          <div className="bu-columns">
+            <div className="bu-column">
+              <DashboardCard title="Slot" value={epochInfo.absoluteSlot} />
+            </div>
+            <div className="bu-column">
+              <DashboardCard title="Block height" value={epochInfo.blockHeight} />
+            </div>
+            <div className="bu-column">
+              <DashboardCard title="Epoch" value={epochInfo.epoch} />
+            </div>
           </div>
-        ) : (
-          <div>
-            <TwoColumn
-              first="Slot"
-              second={<Hash hash={epochInfo.absoluteSlot.toString()} type="block" alignRight />}
-            />
-            <TwoColumn first="Block height" second={epochInfo.blockHeight} />
-            <TwoColumn first="Epoch" second={epochInfo.epoch} />
-            <TwoColumn
-              first="Epoch progress"
-              second={
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div class="m-r-8">{epochProgress.toFixed(1) + '%'}</div>
-                  <ProgressBar percent={epochProgress.toFixed(1)} />
-                </div>
-              }
-            />
+          <div className="bu-columns">
+            <div className="bu-column">
+              <DashboardCard title="Epoch progress" value={epochProgress} progress />
+            </div>
           </div>
-        )}
-      </BulmaCard>
-      <BulmaCard header="Transaction stats">
-        {isEpochInfoLoading || isRecentPerformanceLoading ? (
-          <div className="bu-column bu-box bu-has-text-centered">
-            <span className="spinner-grow spinner-grow-sm m-r-4"></span>
-            Loading transactions stats ...
+        </DashboardSection>
+      )}
+
+      {isEpochInfoLoading || isRecentPerformanceLoading ? (
+        <div className="bu-column bu-box bu-has-text-centered">
+          <span className="spinner-grow spinner-grow-sm m-r-4" />
+          Loading transactions stats ...
+        </div>
+      ) : (
+        <DashboardSection title="Test">
+          <div className="bu-columns">
+            <div className="bu-column">
+              <DashboardCard title="Total transactions" value={epochInfo.transactionCount} />
+            </div>
+            <div className="bu-column">
+              <DashboardCard
+                title="TPS"
+                value={Math.floor(
+                  recentPerformance[0].numTransactions / recentPerformance[0].samplePeriodSecs,
+                )}
+              />
+            </div>
+            <div className="bu-column">
+              <DashboardCard
+                title="Average TPS (30 min)"
+                value={Math.floor(
+                  recentPerformance
+                    .slice(0, 60)
+                    .reduce((acc, val) => acc + val.numTransactions, 0) / 3600,
+                )}
+              />
+            </div>
           </div>
-        ) : (
-          <div>
-            <TwoColumn first="Total transactions" second={epochInfo.transactionCount} />
-            <TwoColumn
-              first="TPS"
-              second={Math.floor(
-                recentPerformance[0].numTransactions / recentPerformance[0].samplePeriodSecs,
-              )}
-            />{' '}
-            <TwoColumn
-              first="Average TPS (30 min)"
-              second={Math.floor(
-                recentPerformance.slice(0, 60).reduce((acc, val) => acc + val.numTransactions, 0) /
-                  3600,
-              )}
-            />
-          </div>
-        )}
-      </BulmaCard>
+        </DashboardSection>
+      )}
     </>
   );
 };
@@ -211,27 +203,31 @@ add(() => {
   return (
     <ExplorerLayout>
       <div className="bu-container bu-is-max-desktop">
-        {isLoading ? (
-          <div class="bu-column bu-box bu-has-text-centered">
-            <span className="spinner-grow spinner-grow-sm m-r-4"></span>
-            Loading token data ...
-          </div>
-        ) : (
-          <div className="bu-columns">
-            {cards.map((Card) => (
-              <div className="bu-column">
-                <div class="bu-box">
-                  <Card
-                    coinData={coinData}
-                    currentSupply={currentSupply}
-                    voteAccounts={voteAccounts}
-                  />
-                </div>
+        <div className="bu-columns">
+          <div className="bu-column bu-is-two-fifths">
+            {isLoading ? (
+              <div class="bu-column bu-box bu-has-text-centered">
+                <span className="spinner-grow spinner-grow-sm m-r-4" />
+                Loading token data ...
               </div>
-            ))}
+            ) : (
+              <div>
+                {cards.map((Card) => (
+                  <div style={{ marginBottom: 36 }}>
+                    <Card
+                      coinData={coinData}
+                      currentSupply={currentSupply}
+                      voteAccounts={voteAccounts}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-        <ClusterStats />
+          <div className="bu-column">
+            <ClusterStats />
+          </div>
+        </div>
       </div>
     </ExplorerLayout>
   );
