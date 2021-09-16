@@ -15,7 +15,7 @@ const ProgressBar = ({ percent = '100' }) => {
 
 add(
   ({
-    gradient = true,
+    gradient = false,
     title,
     value = 0,
     progress = false,
@@ -64,9 +64,8 @@ add(
             ? `radial-gradient( 200.42% 204.83% at -120% -50%, ${
                 (color instanceof Object ? color.background : color) || 'transparent'
               } 0%, var(--theme-d-card-bg-color) 100%)`
-            : color instanceof Object
-            ? color.background
-            : color,
+            : (color instanceof Object ? color.background : color) ||
+              'var(--theme-d-card-bg-color)',
         }}
       >
         {title && (
