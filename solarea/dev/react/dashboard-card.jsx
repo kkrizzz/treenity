@@ -31,9 +31,12 @@ add(
       'dashboard-card.css',
       css`
         .dashboard-card {
+          color: var(--theme-main-color);
+          box-shadow: var(--theme-card-shadow);
           position: relative;
           border-radius: 16px !important;
           padding: 16px !important;
+          width: 100%;
         }
         .dashboard-card__header {
           margin-bottom: 4px;
@@ -43,6 +46,7 @@ add(
         }
         .dashboard-card__content {
           font-weight: bold;
+          overflow: hidden;
         }
         .dashboard-card__info {
           font-weight: 600;
@@ -58,7 +62,7 @@ add(
 
     return (
       <div
-        className={`bu-card dashboard-card`}
+        className={`dashboard-card`}
         style={{
           background: gradient
             ? `radial-gradient( 200.42% 204.83% at -120% -50%, ${

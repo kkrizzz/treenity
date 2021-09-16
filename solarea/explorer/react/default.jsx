@@ -3,7 +3,11 @@ const DashboardSection = render('dev', 'dashboard-section');
 const ExplorerLayout = render('explorer', 'layout');
 const LPS = 0.000000001;
 
-const colors = { green: '#00C164', red: '#FF003D', blue: '#0B74FF' };
+const colors = {
+  green: 'var(--theme-success-color)',
+  red: 'var(--theme-error-color)',
+  blue: 'var(--theme-a-color)',
+};
 const styleForSmall = { fontSize: 20, color: '#788CBF', marginLeft: 8 };
 function humanizeFormatter(num, digits) {
   const lookup = [
@@ -66,6 +70,7 @@ const PriceStats = ({ coinData }) => {
       title="Price"
       size="large"
       color={color}
+      gradient
       info={
         <span>
           24h Vol
@@ -127,15 +132,15 @@ const ClusterStats = ({}) => {
           Loading cluster stats ...
         </div>
       ) : (
-        <DashboardSection title="Test">
+        <DashboardSection title="Cluster stats">
           <div className="bu-columns">
-            <div className="bu-column">
+            <div className="bu-column bu-is-4">
               <DashboardCard title="Slot" value={epochInfo.absoluteSlot} />
             </div>
-            <div className="bu-column">
+            <div className="bu-column bu-is-4">
               <DashboardCard title="Block height" value={epochInfo.blockHeight} />
             </div>
-            <div className="bu-column">
+            <div className="bu-column bu-is-4">
               <DashboardCard title="Epoch" value={epochInfo.epoch} />
             </div>
           </div>
@@ -153,12 +158,12 @@ const ClusterStats = ({}) => {
           Loading transactions stats ...
         </div>
       ) : (
-        <DashboardSection title="Test">
+        <DashboardSection title="Transaction stats">
           <div className="bu-columns">
-            <div className="bu-column">
+            <div className="bu-column bu-is-4">
               <DashboardCard title="Total transactions" value={epochInfo.transactionCount} />
             </div>
-            <div className="bu-column">
+            <div className="bu-column bu-is-4">
               <DashboardCard
                 title="TPS"
                 value={Math.floor(
@@ -166,7 +171,7 @@ const ClusterStats = ({}) => {
                 )}
               />
             </div>
-            <div className="bu-column">
+            <div className="bu-column bu-is-4">
               <DashboardCard
                 title="Average TPS (30 min)"
                 value={Math.floor(
@@ -224,7 +229,7 @@ add(() => {
               </div>
             )}
           </div>
-          <div className="bu-column">
+          <div className="bu-column bu-is-three-fifths">
             <ClusterStats />
           </div>
         </div>
