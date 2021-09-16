@@ -1,6 +1,6 @@
 const Table = ({ columns = [], data = [], stripped = false, bordered = false }) => {
   useCSS(
-    'table',
+    'bu-table.css',
     css`
       .bu-table.bu-is-striped tbody tr:not(.bu-is-selected):nth-child(even) {
         background-color: transparent !important;
