@@ -14,9 +14,14 @@ const comp2 = {
   componentID: 'example',
   props: { content: 'Lilya' },
 };
+const comp3 = {
+  id: 'asd',
+  componentID: 'token-price',
+  props: { contract: 'token.v2.ref-finance.near' },
+};
 
 add(() => {
-  const [components, setComponents] = React.useState([comp, comp2]);
+  const [components, setComponents] = React.useState([comp, comp2, comp3]);
   const [editable, setEditable] = React.useState(false);
   const [isModalVisible, setIsModalVisible] = React.useState(false);
   const [editComponent, setEditComponent] = React.useState(null);

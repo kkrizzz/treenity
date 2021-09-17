@@ -43,9 +43,15 @@ add(function ComponentList({ components, onChange, isEditable, onChoose }) {
                   draggable={isEditable}
                   index={index}
                 >
-                  <ComponentCard title={item.componentID} onClick={()=>onChoose(item)}>
-                    <Component ...{item.props} />
-                  </ComponentCard>
+                  {isEditable?(
+                        <ComponentCard title={item.componentID} onClick={()=>onChoose(item)}>
+                          <Component ...{item.props} />
+                        </ComponentCard>
+                       ) : (
+                          <Component ...{item.props} />
+                      )
+
+                  }
                 </DraggableContainer>
               );
             })}
