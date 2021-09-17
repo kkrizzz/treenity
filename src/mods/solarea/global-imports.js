@@ -18,6 +18,7 @@ import { publicKey, publicKeyString } from './utils/public-key-layout';
 import { Buffer } from 'buffer';
 import { ethToVlx, vlxToEth } from './utils/vlx-address-lib';
 import { useMetaplexNFT } from './hooks/useMetaplexNFT';
+import * as nearContext from './hooks/near/useConnection';
 
 const borsh = require('borsh');
 
@@ -30,6 +31,7 @@ const SolanaLayout = {
 globalThis.React = preact;
 globalThis.ReactDOM = preact;
 globalThis.solarea = {
+  nearContext,
   bs58,
   bn,
   borsh,
