@@ -30,19 +30,28 @@ const idToViewResolvers = [
     }
   },
   (id, name, context, query) => {
-    if (['address', 'tx', 'block'].includes(id)) {
+    if (['account', 'transaction', 'block'].includes(id)) {
       return (
-        <Render id="explorer" name="layout" context={context}>
-          <Render {...query} entityId={name} id="explorer" context={context} name={id} />
+        <Render id="near" name="layout" context={context}>
+          <Render {...query} entityId={name} id="near" context={context} name={id} />
         </Render>
       );
     }
   },
   (id, name, context, query) => {
-    if (['account'].includes(id)) {
+    if (['near'].includes(id)) {
       return (
-        <Render id="near" name="layout" context={context}>
-          <Render {...query} entityId={name} id="near" context={context} name={id} />
+        <Render id="near" name="portfolio-layout" context={context}>
+          <Render id={id} />
+        </Render>
+      );
+    }
+  },
+  (id, name, context, query) => {
+    if (['dashboard'].includes(id)) {
+      return (
+        <Render id="dashboard" name="layout" context={context}>
+          <Render {...query} name={name} id={id} context={context} />
         </Render>
       );
     }

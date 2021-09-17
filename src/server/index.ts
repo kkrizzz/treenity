@@ -61,6 +61,7 @@ async function main() {
   app.collection('edges');
   app.collection('users');
   app.collection('session');
+  app.collection('near-token-price');
   const tree = app
     .use('tree', new TreeService())
     .service('tree')
