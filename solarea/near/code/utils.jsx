@@ -7,6 +7,9 @@ const NEAR_RPC = {
   betanet: 'https://rpc.betanet.near.org',
 };
 
+const tokensDecimalsPow = (amount, decimals, toFixed = 4) =>
+  (amount * Math.pow(10, -decimals)).toFixed(toFixed);
+
 const nearFetch = async (rpc, params, queryMethod = 'query', httpMethod = 'POST', body = {}) => {
   body.jsonrpc = '2.0';
   body.id = 'test';
@@ -197,7 +200,6 @@ exports.useNearTokens = (entityId) => {
 
 exports.useNearNFT = (entityId) => {
   const { config } = useConnection();
-  console.log(config);
   const [target, setTarget] = React.useState(undefined);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -239,4 +241,68 @@ exports.useNearNFT = (entityId) => {
 
 exports.nearHumanBalance = (balance) => {
   return (balance * 0.000000000000000000000001).toFixed(5) + ' Ⓝ';
+};
+
+exports.useNearPortfolioBalance = (entityId) => {
+  const [accData, isAccDataLoading] = exports.useAccount(entityId);
+  const [nearCoinData, isNearCoinDataLoading] = exports.useNearCoinData();
+
+  const { config } = useConnection();
+  const [target, setTarget] = React.useState(undefined);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  const { data: tokensLikely, isLoading: isTokensLikelyLoading } = useQuery(
+    [entityId, 'tokens_tt'],
+    () =>
+      window
+        .fetch(`${config.helperUrl}/account/${entityId}/likelyTokens`)
+        .then((res) => res.json()),
+  );
+
+  React.useEffect(() => {
+    (async function () {
+      if (tokensLikely && tokensLikely.length && nearCoinData && accData) {
+        const TOKENS = (
+          await Promise.all(
+            tokensLikely.map(async (i) => {
+              const metadataReq = await nearFetch(config.networkId, [`call/${i}/ft_metadata`, '']);
+              if (!metadataReq || !metadataReq.result) return null;
+              const metadata = parseNearBuffer(metadataReq.result);
+
+              const tokensReq = await nearFetch(config.networkId, [
+                `call/${i}/ft_balance_of`,
+                solarea.borsh.baseEncode(JSON.stringify({ account_id: entityId })),
+              ]);
+              const tokens = parseNearBuffer(tokensReq.result);
+              if (tokens === '0') return null;
+
+              const coinPrice = (await fetch(`/near/price/${i}`).then((res) => res.json())).price
+                .price;
+
+              const nearPrice = nearCoinData.market_data.current_price.usd;
+              const priceInUsd =
+                coinPrice * tokensDecimalsPow(tokens, metadata.decimals) * nearPrice;
+
+              return new Promise((resolve) =>
+                resolve({ metadata, tokens, contract: i, priceInUsd }),
+              );
+            }),
+          )
+        ).filter((i) => i !== null);
+
+        setTarget({
+          TOKENS,
+          walletBalance:
+            accData.amount *
+            0.000000000000000000000001 *
+            nearCoinData.market_data.current_price.usd,
+        });
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
+    })();
+  }, [tokensLikely, accData, nearCoinData]);
+
+  return [target, isLoading];
 };
