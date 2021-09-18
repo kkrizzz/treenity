@@ -1,18 +1,18 @@
 const inputTypes = {
-  string: ({ name, defaultValue }) => (
+  string: ({ id, name, defaultValue }) => (
     <input
-      name={name}
+      name={id}
       defaultValue={defaultValue}
       placeholder={`Input ${name}`}
       className="bu-input"
       type="text"
     />
   ),
-  select: ({ name, defaultValue, options }) => (
+  select: ({ id, name, defaultValue, options }) => (
     <div style={{ display: 'block' }} className="bu-select">
       <select
         style={{ width: '100%' }}
-        name={name}
+        name={id}
         defaultValue={defaultValue}
         placeholder={`Input ${name}`}
       >

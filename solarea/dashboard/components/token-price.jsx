@@ -1,7 +1,7 @@
 exports.props = [
   {
     id: 'contract',
-    name: 'contract',
+    name: 'Token',
     type: 'select',
     options: [
       {

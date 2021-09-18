@@ -22,7 +22,7 @@ const comp3 = {
 };
 
 add(() => {
-  const [components, setComponents] = React.useState([comp, comp2, comp3]);
+  const [components, setComponents] = solarea.useLocalStorageState('dashboard', []);
   const [editable, setEditable] = React.useState(false);
   const [isModalVisible, setIsModalVisible] = React.useState(false);
   const [editComponent, setEditComponent] = React.useState(null);
@@ -77,6 +77,15 @@ add(() => {
           onChoose={(component) => setEditComponent(component)}
           onChange={(components) => setComponents(components)}
         />
+        {!components.length && (
+          <div
+            className="bu-notification bu-is-info bu-is-light"
+            style={{ width: 'max-content', margin: '40vh auto' }}
+          >
+            There are still no components here, but you can add a new one by clicking the "Add"
+            button.
+          </div>
+        )}
       </div>
 
       <div className="tools">
