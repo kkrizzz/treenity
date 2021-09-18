@@ -3,7 +3,8 @@ const {
   Droppable,
 } = await require('https://unpkg.com/react-beautiful-dnd@13.1.0/dist/react-beautiful-dnd.min.js');
 const DraggableContainer = render('dashboard', 'draggable-container');
-const ComponentCard = render('dashboard', 'component-card');
+const DashboardSection = render('dev', 'dashboard-section');
+const Icon = render('dashboard', 'icon');
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -13,7 +14,36 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-add(function ComponentList({ components, onChange, isEditable, onChoose }) {
+add(function ComponentList({ components, onChange, isEditable, onChoose, onDelete }) {
+  useCSS(
+    'component-list',
+    css`
+      .settings-button {
+        position: absolute;
+        right: 28px;
+        top: 4px;
+        padding: 0;
+      }
+      .delete-button {
+        position: absolute;
+        right: 4px;
+        top: 4px;
+        padding: 0;
+      }
+      .component-list__item {
+        width: 100%;
+        position: relative;
+      }
+
+      .delete-button svg,
+      .delete-button .bu-icon,
+      .settings-button svg,
+      .settings-button .bu-icon {
+        width: 20px !important;
+        height: 20px !important;
+      }
+    `,
+  );
   const onDragEnd = (result) => {
     // dropped outside the list
     if (!result.destination) {
@@ -43,15 +73,31 @@ add(function ComponentList({ components, onChange, isEditable, onChoose }) {
                   draggable={isEditable}
                   index={index}
                 >
-                  {isEditable?(
-                        <ComponentCard title={item.componentID} onClick={()=>onChoose(item)}>
-                          <Component ...{item.props} />
-                        </ComponentCard>
-                       ) : (
-                          <Component ...{item.props} />
-                      )
-
-                  }
+                  <div className={'component-list__item'}>
+                    <DashboardSection title={item.componentName || item.componentID}>
+                      <Component ...{item.props} />
+                      {isEditable && (
+                        <button
+                          className="settings-button bu-card-header-icon"
+                          title="Edit component"
+                          aria-label="more options"
+                          onClick={() => onChoose(item)}
+                        >
+                          <Icon type="gear" />
+                        </button>
+                      )}
+                      {isEditable && (
+                        <button
+                          className="delete-button bu-card-header-icon"
+                          title="Delete component"
+                          aria-label="more options"
+                          onClick={() => onChange(components.filter((c) => c.id !== item.id))}
+                        >
+                          <Icon type="close" />
+                        </button>
+                      )}
+                    </DashboardSection>
+                  </div>
                 </DraggableContainer>
               );
             })}

@@ -2,12 +2,13 @@ await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 const Icon = render('dashboard', 'icon');
 const ComponentList = render('dashboard', 'component-list');
 const Modal = render('dashboard', 'modal');
-const EditForm = render('dashboard', 'edit-component');
+const EditForm = render('dashboard', 'edit-form');
+const AddComponentList = render('dashboard', 'add-component-list');
 
 const comp = {
   id: 'aa',
   componentID: 'example',
-  props: { content: 'Eugene' },
+  props: { content: 'Eugene', someProp: '' },
 };
 const comp2 = {
   id: 'asd',
@@ -15,13 +16,13 @@ const comp2 = {
   props: { content: 'Lilya' },
 };
 const comp3 = {
-  id: 'asd',
+  id: 'asd3',
   componentID: 'token-price',
   props: { contract: 'token.v2.ref-finance.near' },
 };
 
 add(() => {
-  const [components, setComponents] = React.useState([comp, comp2, comp3]);
+  const [components, setComponents] = solarea.useLocalStorageState('dashboard', []);
   const [editable, setEditable] = React.useState(false);
   const [isModalVisible, setIsModalVisible] = React.useState(false);
   const [editComponent, setEditComponent] = React.useState(null);
@@ -76,6 +77,15 @@ add(() => {
           onChoose={(component) => setEditComponent(component)}
           onChange={(components) => setComponents(components)}
         />
+        {!components.length && (
+          <div
+            className="bu-notification bu-is-info bu-is-light"
+            style={{ width: 'max-content', margin: '40vh auto' }}
+          >
+            There are still no components here, but you can add a new one by clicking the "Add"
+            button.
+          </div>
+        )}
       </div>
 
       <div className="tools">
@@ -98,7 +108,8 @@ add(() => {
           <EditForm
             componentID={editComponent.componentID}
             propValues={editComponent.props}
-            onChange={(newProps) => {
+            onSave={(newProps) => {
+              console.log(newProps);
               editComponent.props = newProps;
               setComponents(components);
               setEditComponent(null);
@@ -108,7 +119,14 @@ add(() => {
       </Modal>
 
       <Modal visible={isModalVisible} onClose={() => setIsModalVisible(false)}>
-        <div>hello</div>
+        {isModalVisible && (
+          <AddComponentList
+            onAdd={(newComponent) => {
+              setComponents((components) => [newComponent, ...components]);
+              setIsModalVisible(false);
+            }}
+          />
+        )}
       </Modal>
     </div>
   );
