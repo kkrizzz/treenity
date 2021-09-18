@@ -11,10 +11,9 @@ const DashboardCard = render('dev', 'dashboard-card');
 
 const TokenAmountPrice = render('dashboard', 'token-amount-price');
 const AccountBalance = render('dashboard', 'account-balance');
-const TokenPrice = render('dashboard', 'token-price');
-const PortfolioNft = render('dashboard', 'portfolio-nft');
+const PortfolioNft = render('dashboard', 'portfolio-nft-component', 'components');
 const PortfolioCharts = render('dashboard', 'portfolio-charts');
-const PortfolioTotalPrice = render('dashboard', 'portfolio-total-price');
+const PortfolioTotalPrice = render('dashboard', 'portfolio-total-price-component', 'components');
 
 const tokensDecimalsPow = (amount, decimals, toFixed = 4) =>
   (amount * Math.pow(10, -decimals)).toFixed(toFixed);

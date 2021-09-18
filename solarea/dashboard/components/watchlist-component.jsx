@@ -1,4 +1,4 @@
-const TokenPrice = render('dashboard', 'token-price');
+const TokenPrice = render('dashboard', 'token-price-component', 'components');
 
 add(function Watchlist({ contracts }) {
   return (

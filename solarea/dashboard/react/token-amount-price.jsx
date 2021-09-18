@@ -13,7 +13,13 @@ add(({ contract, amount }) => {
 
   const tokenPrice = nearPerToken * nearPrice;
   return (
-    <div class="asset-wrapper">
+    <div
+      class="asset-wrapper"
+      style={{
+        background: 'white',
+        boxShadow: '0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%)',
+      }}
+    >
       <div class="asset-icon">
         <figure class="bu-image bu-is-32x32">
           <img src={tokenData.info.icon} />

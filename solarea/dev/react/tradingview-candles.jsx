@@ -1,7 +1,7 @@
 const tradingView = await require('https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js');
 console.log(tradingView);
 const { useNearCoinData } = await require('solarea://near/utils');
-const DashboardSection = render('dev', 'dashboard-section');
+const DashboardCard = render('dev', 'dashboard-card');
 
 const config = {
   timeScale: {
@@ -103,9 +103,30 @@ add(({ contract, width = 400, height = 300 }) => {
     chart.applyOptions(config);
   }, [tokenData, nearTokenData]);
 
+  useCSS(
+    'tradingview-candles.css',
+    css`
+      .tradingview-candles-card {
+        color: var(--theme-main-color);
+        box-shadow: var(--theme-card-shadow);
+        position: relative;
+        border-radius: 16px !important;
+        padding: 16px !important;
+        width: 100%;
+      }
+    `,
+  );
+
   return (
-    <DashboardSection title={tokenData? tokenData._id: 'Loading chart'}/USD>
-      <div ref={ref}></div>
-    </DashboardSection>
+    <div className="tradingview-candles-card">
+      <header className="bu-card-header">
+        <p className="bu-card-header-title">
+          <div className="bu-content">{tokenData ? tokenData._id + '/USD' : 'Loading chart'}</div>
+        </p>
+      </header>
+      <div className="bu-card-content">
+        <div ref={ref}></div>
+      </div>
+    </div>
   );
 });
