@@ -2,12 +2,13 @@ await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 const Icon = render('dashboard', 'icon');
 const ComponentList = render('dashboard', 'component-list');
 const Modal = render('dashboard', 'modal');
-const EditForm = render('dashboard', 'edit-component');
+const EditForm = render('dashboard', 'edit-form');
+const AddComponentList = render('dashboard', 'add-component-list');
 
 const comp = {
   id: 'aa',
   componentID: 'example',
-  props: { content: 'Eugene' },
+  props: { content: 'Eugene', someProp: '' },
 };
 const comp2 = {
   id: 'asd',
@@ -15,7 +16,7 @@ const comp2 = {
   props: { content: 'Lilya' },
 };
 const comp3 = {
-  id: 'asd',
+  id: 'asd3',
   componentID: 'token-price',
   props: { contract: 'token.v2.ref-finance.near' },
 };
@@ -98,7 +99,8 @@ add(() => {
           <EditForm
             componentID={editComponent.componentID}
             propValues={editComponent.props}
-            onChange={(newProps) => {
+            onSave={(newProps) => {
+              console.log(newProps);
               editComponent.props = newProps;
               setComponents(components);
               setEditComponent(null);
@@ -108,7 +110,14 @@ add(() => {
       </Modal>
 
       <Modal visible={isModalVisible} onClose={() => setIsModalVisible(false)}>
-        <div>hello</div>
+        {isModalVisible && (
+          <AddComponentList
+            onAdd={(newComponent) => {
+              setComponents((components) => [newComponent, ...components]);
+              setIsModalVisible(false);
+            }}
+          />
+        )}
       </Modal>
     </div>
   );

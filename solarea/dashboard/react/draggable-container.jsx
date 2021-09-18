@@ -2,27 +2,26 @@ const {
   Draggable,
 } = await require('https://unpkg.com/react-beautiful-dnd@13.1.0/dist/react-beautiful-dnd.min.js');
 
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
+const getItemStyle = (isDragging, draggableStyle, draggable) => ({
   userSelect: 'none',
-  // padding: 16,
   borderRadius: '.25rem',
-  margin: `0 0 8px 0`,
+  margin: `0`,
+  padding: '4px',
   border: '2px solid',
-  borderColor: isDragging ? 'rgba(0,255,202,0.15)' : 'white',
+  background: 'white',
+  borderColor: isDragging ? 'rgba(72,95,199,0.5)' : draggable? 'rgba(126,126,126,0.2)':'white',
 
-  // styles we need to apply on draggables
   ...draggableStyle,
 });
 
-add(function DraggableContainer({ draggableId, index, title, children, draggable }) {
+add(function DraggableContainer({ draggableId, index, title, children, draggable, isEditable }) {
   return <Draggable draggableId={draggableId} index={index}>
     {(provided, snapshot) => (<div
         ref={provided.innerRef}
       ...{draggable?provided.draggableProps:{}}
       ...{draggable?provided.dragHandleProps:{}}
 
-      style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+      style={getItemStyle(snapshot.isDragging, provided.draggableProps.style, draggable)}
       >
         {children}
       </div>)}
