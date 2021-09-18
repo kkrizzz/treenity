@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 const cron = require('node-cron');
 const pools = require('./ref-pools.json');
 const fetch = require('node-fetch');
@@ -26,13 +28,38 @@ export const updatePrice = async (contractId, collection) => {
   const currentTokenPrice = currentTokenPrices[currentTokenPrices.length - 1];
 
   const token = needRevert ? pool.tokens[1].token : pool.tokens[0].token;
-  const tokenData = {
+  const tokenData: any = {
     _id: token.symbol,
     info: token,
     price: currentTokenPrice,
     prices: currentTokenPrices,
     date: new Date(),
   };
+
+  const dayInterval = 86400000;
+  const hourInterval = Math.floor(dayInterval / 6);
+
+  tokenData.prices.forEach((price) => {
+    price.group = Number((price.timestamp / hourInterval).toFixed(0));
+  });
+
+  const grouped = _.groupBy(tokenData.prices, 'group');
+
+  const candles = Object.keys(grouped).map((key, index) => {
+    const group = grouped[key];
+    const number = Number(key);
+
+    return {
+      time: (number * hourInterval) / 1000,
+      open: index !== 0 ? _.last(grouped[number - 1]).price : _.head(group).price,
+      high: _.maxBy(group, 'price').price,
+      low: _.minBy(group, 'price').price,
+      close: _.last(group).price,
+    };
+  });
+
+  tokenData.candles = candles;
+
   let hasPrice = false;
 
   try {
@@ -52,8 +79,8 @@ export const indexPriceCron = (app) => {
   const priceCollection = app.services['near-token-price'];
 
   TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
-
-  cron.schedule('30 0-59 * * * *', () => {
-    TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
-  });
+  //
+  // cron.schedule('30 0-59 * * * *', () => {
+  //   TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
+  // });
 };
