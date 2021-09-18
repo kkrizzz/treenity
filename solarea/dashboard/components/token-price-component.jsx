@@ -8,7 +8,7 @@ add(({ contract }) => {
     () => fetch(`/near/price/${contract}`).then((res) => res.json()),
   );
   if (isTokenDataLoading || isNearTokenDataLoading) return 'Loading ...';
-  console.log(nearTokenData, tokenData);
+  // console.log(nearTokenData, tokenData);
   const nearPerToken = tokenData.price.price;
   const nearPrice = nearTokenData.market_data.current_price.usd;
 

@@ -1,8 +1,8 @@
 exports.props = [
   {
-    id: 'contract',
-    name: 'Token',
-    type: 'select',
+    id: 'contracts',
+    name: 'contracts',
+    type: 'multipleSelect',
     options: [
       {
         value: 'token.skyward.near',
@@ -16,6 +16,5 @@ exports.props = [
   },
 ];
 
-exports.name = 'Token price';
-
-exports.description = 'Shows price of chosen token';
+exports.name = 'Tokens watchlist';
+exports.description = 'Here you can watch multiple tokens';

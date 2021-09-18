@@ -1,6 +1,6 @@
 const EditForm = render('dashboard', 'edit-form');
 
-const availableComponentsIDs = ['example', 'token-price'];
+const availableComponentsIDs = ['example', 'token-price', 'watchlist'];
 
 add(function AddComponentList({ onAdd }) {
   const [chosenComponent, setChosenComponent] = React.useState(null);

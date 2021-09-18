@@ -1,3 +1,35 @@
+const { Select } = await require('https://cdnjs.cloudflare.com/ajax/libs/antd/4.14.1/antd.min.js');
+await require('https://cdnjs.cloudflare.com/ajax/libs/antd/4.17.0-alpha.3/antd.min.css');
+
+const { Option } = Select;
+
+const CustomSelect = ({ options, name, id, defaultValue }) => {
+  const [value, setValue] = React.useState([]);
+  return (
+    <>
+      <input
+        name={id}
+        style={{ visibility: 'hidden', position: 'absolute' }}
+        value={'multipleSelect:' + value.join(',')}
+      />
+      <Select
+        defaultValue={defaultValue}
+        onChange={(v) => {
+          setValue(v);
+        }}
+        mode="multiple"
+        allowClear
+        style={{ width: '100%' }}
+        placeholder={`Choose ${name}`}
+      >
+        {options.map((option) => (
+          <Option key={option.value}>{option.label}</Option>
+        ))}
+      </Select>
+    </>
+  );
+};
+
 const inputTypes = {
   string: ({ id, name, defaultValue }) => (
     <input
@@ -16,10 +48,15 @@ const inputTypes = {
         defaultValue={defaultValue}
         placeholder={`Input ${name}`}
       >
-        {options.map(({ value, text }) => (
-          <option value={value}>{text}</option>
+        {options.map(({ value, label }) => (
+          <option value={value}>{label}</option>
         ))}
       </select>
+    </div>
+  ),
+  multipleSelect: ({ id, name, defaultValue, options }) => (
+    <div style={{ display: 'block' }}>
+      <CustomSelect name={name} id={id} options={options} defaultValue={defaultValue} />
     </div>
   ),
 };
@@ -54,8 +91,19 @@ add(function EditForm({ componentID, propValues, onSave, onSaveText = 'Save' }) 
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const values = {};
-    props.forEach((prop) => (values[prop.id] = e.target[prop.id].value));
+    const values = {}; //multipleSelect
+    props.forEach((prop) => {
+      const source = e.target[prop.id];
+      if (!source) return;
+
+      let value = source.value;
+
+      if (value.includes('multipleSelect:'))
+        value = value.replace('multipleSelect:', '').split(',');
+
+      values[prop.id] = value;
+    });
+    console.log(values);
     onSave(values);
   };
 

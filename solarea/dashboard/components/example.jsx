@@ -7,15 +7,15 @@ exports.props = [
   {
     id: 'someProp',
     name: 'someProp',
-    type: 'select',
+    type: 'multipleSelect',
     options: [
       {
         value: 'kek',
-        text: 'KEK',
+        label: 'KEK',
       },
       {
         value: 'lol',
-        text: 'LOL',
+        label: 'LOL',
       },
     ],
   },
