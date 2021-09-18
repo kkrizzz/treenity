@@ -21,7 +21,7 @@ add(({ contract }) => {
         </figure>
       </div>
       <div class="asset-info">
-        <div>{tokenData.info.symbol}</div>
+        <div class="asset-info-symbol">{tokenData.info.symbol}</div>
         <div>${tokenPrice.toFixed(4)}</div>
       </div>
     </div>

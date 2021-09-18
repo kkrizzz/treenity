@@ -24,7 +24,7 @@ add(({ contract, amount }) => {
         <div>
           {amount} {tokenData.info.symbol}
         </div>
-        <div>${(tokenPrice * amount).toFixed(4)}</div>
+        <div className="asset-info-symbol">${(tokenPrice * amount).toFixed(4)}</div>
       </div>
     </div>
   );

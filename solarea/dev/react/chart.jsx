@@ -1,8 +1,6 @@
-const {
-  Chart,
-} = await require('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js');
+const { Chart } = await require('https://cdn.jsdelivr.net/npm/chart.js');
 
-add(({ labels, data, className }) => {
+add(({ labels, data, className, max = undefined }) => {
   const canvas = React.useRef();
   console.log(labels, data);
 
@@ -17,10 +15,21 @@ add(({ labels, data, className }) => {
           {
             borderColor: '#00cccc',
             backgroundColor: '#00000000',
-            label: 'Total',
             data,
           },
         ],
+      },
+      options: {
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+        scales: {
+          y: {
+            suggestedMax: 5.1,
+          },
+        },
       },
     });
   }, [data]);

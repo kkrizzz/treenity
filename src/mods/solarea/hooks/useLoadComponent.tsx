@@ -77,9 +77,7 @@ export function useLoadAccountComponent(
   const restStorage = useRestStorage();
 
   useAsyncEffect(async () => {
-    loadScriptComponent(address, name, context, [solanaStorage, restStorage]).finally(() =>
-      setLoading(false),
-    );
+    loadScriptComponent(address, name, context, [restStorage]).finally(() => setLoading(false));
   }, [address, name, context]);
 
   return [null, loading];
