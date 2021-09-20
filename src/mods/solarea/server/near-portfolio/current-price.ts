@@ -4,7 +4,7 @@ const pools = require('./ref-pools.json');
 
 export function currentPrice(app: Application) {
   const priceCollection = app.services['near-token-price'];
-  app.get('/near/price/:contractId', async (req, res) => {
+  app.get('/near/api/price/:contractId', async (req, res) => {
     try {
       const { contractId } = req.params;
       if (!contractId) return res.sendStatus(500);

@@ -3,6 +3,7 @@ add(({ title, children }) => {
     'dashboard-section.css',
     css`
       .dashboard-section {
+        color: var(--theme-main-color);
         margin-bottom: 40px !important;
       }
       .dashboard-section__title {

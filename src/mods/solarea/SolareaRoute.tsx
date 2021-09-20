@@ -47,15 +47,6 @@ const idToViewResolvers = [
       );
     }
   },
-  (id, name, context, query) => {
-    if (['dashboard'].includes(id)) {
-      return (
-        <Render id="dashboard" name="layout" context={context}>
-          <Render {...query} name={name} id={id} context={context} />
-        </Render>
-      );
-    }
-  },
   (id, name, context, { nolayout, ...query }) => {
     if (nolayout !== undefined) {
       return <Render {...query} id={id} context={context} name={name} />;

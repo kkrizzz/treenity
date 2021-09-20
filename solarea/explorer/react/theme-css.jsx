@@ -197,15 +197,12 @@ add(() => {
   useCSS(
     'bulma-overrides.css',
     css`
-      *,
-      *::before,
-      *::after {
-        transition-property: background-color, color;
-        transition-duration: 250ms, 50ms;
-      }
-
       .container {
         padding: 0;
+      }
+
+      figure {
+        margin: 0 !important;
       }
 
       .flex-between {
@@ -227,6 +224,10 @@ add(() => {
       .text-overflow {
         overflow: hidden;
         text-overflow: ellipsis;
+      }
+
+      .bu-navbar {
+        background: var(--theme-card-bg-color);
       }
 
       .solarea-tx-default_program-viewport {
@@ -269,6 +270,10 @@ add(() => {
 
       .m-b-16 {
         margin-bottom: 16px !important;
+      }
+
+      .m-b-36 {
+        margin-bottom: 36px !important;
       }
 
       .m-b-20 {

@@ -1,151 +1,128 @@
-await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
-
 const {
   useAccount: useNearAccount,
   nearHumanBalance,
   useNearNFT,
   useNearAccTransactions,
+  useNearTokens,
 } = await require('solarea://near/utils');
 const BulmaCard = render('dev', 'bulma-card');
 const TwoColumn = render('dev', 'two-column');
 const Tabs = render('dev', 'tabs');
+const AccountTokens = render('near', 'account-tokens');
 const Hash = render('dev', 'hash');
+const Table = render('dev', 'table');
+const NamedHash = render('dev', 'named-hash');
+const TransactionRow = render('near', 'transaction', 'react-table');
+const ScrollBox = render('dev', 'scroll-box');
+const AccountNfts = render('near', 'account-nfts');
+const Dropdown = render('dev', 'dropdown');
+const Icon = render('near_action', 'icon');
 
 const { Buffer, borsh } = solarea;
-
-const TransactionRow = ({ tx }) => {
-  useCSS(
-    'near-acc-tx.css',
-    css`
-      .bu-columns:not(:last-child) {
-        margin-bottom: 0;
-      }
-    `,
-  );
-  return (
-    <div className="bu-box">
-      <TwoColumn first="Signature" second={<Hash alignRight>{tx.transaction_hash}</Hash>} />
-      <TwoColumn first="Action" second={tx.action_kind} />
-      <TwoColumn
-        first="Receiver"
-        second={<Hash alignRight hash={tx.receiver_account_id} type="account" />}
-      />
-      <TwoColumn
-        first="Signer"
-        second={<Hash hash={tx.signer_account_id} type="account" alignRight />}
-      />
-      <TwoColumn
-        first="Args"
-        second={
-          <pre style={{ textAlign: 'left' }} className="bu-box">
-            {JSON.stringify(tx.args, null, 2)}
-          </pre>
-        }
-      />
-    </div>
-  );
-};
 
 add(({ entityId }) => {
   const [accData, isLoading] = useNearAccount(entityId);
   const [nftData, isNftDataLoading] = useNearNFT(entityId);
   const [txs, isTxsLoading] = useNearAccTransactions(entityId, 99);
+  const [tokens, isTokensLoading] = useNearTokens(entityId);
 
   console.log(txs, isTxsLoading);
 
-  if (isLoading) return <div>Loading . . .</div>;
+  if (isLoading || isTxsLoading) return <div>Loading . . .</div>;
 
-  const txTabs = [
-    {
-      name: 'Permissions',
-      content: () => {
-        if (isTxsLoading) return 'Loading ...';
-
-        return txs.rows
-          .filter((i) => i.action_kind === 'ADD_KEY' || i.action_kind === 'DELETE_KEY')
-          .map((i) => <TransactionRow tx={i} />);
-      },
-    },
-    {
-      name: 'Transfers',
-      content: () => {
-        if (isTxsLoading) return 'Loading ...';
-
-        return txs.rows
-          .filter((i) => i.action_kind === 'TRANSFER')
-          .map((i) => <TransactionRow tx={i} />);
-      },
-    },
-    {
-      name: 'Calls',
-      content: () => {
-        if (isTxsLoading) return 'Loading ...';
-
-        return txs.rows
-          .filter((i) => i.action_kind === 'FUNCTION_CALL' || i.action_kind === 'DEPLOY_CONTRACT')
-          .map((i) => <TransactionRow tx={i} />);
-      },
-    },
-  ];
   const tokensTabs = [
     {
       name: 'NEP-141',
-      content: () => '',
+      content: () => (isTokensLoading ? 'Loading tokens...' : <AccountTokens tokenData={tokens} />),
     },
     {
       name: 'NEP-177',
-      content: () => {
-        if (nftData && !isNftDataLoading) {
-          console.log(nftData);
-          return nftData.map((nftCollection) => {
-            return (
-              <div>
-                <div style={{ alignItems: 'center', display: 'flex', marginBottom: '1.5rem' }}>
-                  <img width={32} src={nftCollection.metadata.icon} />
-                  <strong>{nftCollection.metadata.name}</strong>
-                </div>
-                <div style={{ display: 'flex', flexFlow: 'wrap' }}>
-                  {nftCollection.tokens.map((i) => {
-                    return (
-                      <div class="bu-box" style={{ width: '48%', height: 400, marginRight: 12 }}>
-                        <TwoColumn first="Token" second={i.metadata.title} />
-                        <TwoColumn first="Copies" second={i.metadata.copies} />
-                        <div style={{ textAlign: 'center', height: '60%' }}>
-                          <img
-                            style={{ height: '100%' }}
-                            src={
-                              i.metadata.media.startsWith('bafy')
-                                ? `https://ipfs.fleek.co/ipfs/${i.metadata.media}`
-                                : i.metadata.media
-                            }
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          });
-        }
-
-        return 'No nft data';
-      },
+      content: () => (isNftDataLoading ? 'Loading nft...' : <AccountNfts nftData={nftData} />),
     },
   ];
 
+  useCSS(
+    'near-account.css',
+    css`
+      .inner-shadow {
+        box-shadow: inset 0px 0px 5px -2px rgba(0, 0, 0, 0.25);
+      }
+    `,
+  );
+
+  const TX_SORT_DATA = [
+    {
+      key: 'all',
+      name: 'All',
+      sort: undefined,
+    },
+    {
+      key: 'fc_call',
+      name: <Icon i="FUNCTION_CALL" />,
+      sort: ['FUNCTION_CALL', 'DEPLOY_CONTRACT'],
+    },
+    {
+      key: 'transfer',
+      name: <Icon i="TRANSFER" />,
+      sort: ['TRANSFER'],
+    },
+    {
+      key: 'permissons',
+      name: <Icon i="ADD_KEY" />,
+      sort: ['ADD_KEY', 'DELETE_KEY'],
+    },
+  ];
+
+  const [selectedTxFilter, setSelectedTxFilter] = React.useState(TX_SORT_DATA[0]);
+
   return (
-    <div className="bu-container bu-is-max-desktop">
+    <div>
       <BulmaCard header="Near Account" />
       <BulmaCard header="Overview">
         <TwoColumn first="Account" second={entityId} />
-        <TwoColumn first="Balance" second={nearHumanBalance(accData.amount) + 'Ⓝ'} />
-      </BulmaCard>
-      <BulmaCard header="Transactions">
-        <Tabs tabs={txTabs} />
+        <TwoColumn first="Balance" second={nearHumanBalance(accData.amount)} />
       </BulmaCard>
       <BulmaCard header="Tokens">
         <Tabs tabs={tokensTabs} />
+      </BulmaCard>
+      <BulmaCard
+        header={
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <div>Transactions</div>
+            <div class="bu-tags">
+              {TX_SORT_DATA.map((i) => (
+                <div
+                  onClick={() => setSelectedTxFilter(i)}
+                  class={`bu-tag ${i.key === selectedTxFilter.key ? 'bu-is-primary' : ''}`}
+                >
+                  {i.name}
+                </div>
+              ))}
+            </div>
+          </div>
+        }
+      >
+        <ScrollBox>
+          {selectedTxFilter.name === 'All'
+            ? txs.rows.map((i) => (
+                <div
+                  key={`${i.transaction_hash}`}
+                  class="bu-box theme-inner-instruction inner-shadow"
+                >
+                  <TransactionRow tx={i} />
+                </div>
+              ))
+            : txs.rows
+                .filter((i) => selectedTxFilter.sort.includes(i.action_kind))
+                .map((i) => (
+                  <div
+                    key={`${i.transaction_hash}`}
+                    class="bu-box theme-inner-instruction inner-shadow"
+                  >
+                    <TransactionRow tx={i} />
+                  </div>
+                ))}
+        </ScrollBox>
       </BulmaCard>
     </div>
   );
