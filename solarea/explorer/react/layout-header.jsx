@@ -50,8 +50,9 @@ add(() => {
       <div class="bu-container bu-is-max-desktop">
         <div className="bu-navbar-brand">
           <Link className="bu-navbar-item" to="/explorer" style={{ color: 'black' }}>
-            <Render id="velas" name="logo" />
+            <Render id="velas" name="logo" color="var(--theme-main-oposit-color)" />
           </Link>
+          <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme} />
 
           <a
             onClick={(e) => menuRef.current.classList.toggle('bu-is-active')}
@@ -69,9 +70,6 @@ add(() => {
 
         <div id="solarea-layout-header" className="bu-navbar-menu" ref={menuRef}>
           <div className="bu-navbar-end">
-            <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme}>
-              {isDarkTheme ? '🌙' : '☀'}️
-            </Switch>
             <NavLink className="bu-navbar-item" to="/explorer/tokens">
               Tokens
             </NavLink>
