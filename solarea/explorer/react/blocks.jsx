@@ -4,6 +4,7 @@ const TimeAgo = render('dev', 'time-ago');
 const Link = render('dev', 'link');
 const ScrollBox = render('dev', 'scroll-box');
 const Hash = render('dev', 'hash');
+const DashboardSection = render('dev', 'dashboard-section');
 
 const SolanaBlocksView = () => {
   return <div>Hello, sol</div>;
@@ -105,8 +106,9 @@ add(({ chain }) => {
   return (
     <Render id="explorer" name="layout">
       <div className="bu-container bu-is-max-desktop">
-        <BulmaCard header="Latest blocks" />
-        <TargetType />
+        <DashboardSection title="Latest blocks">
+          <TargetType />
+        </DashboardSection>
       </div>
     </Render>
   );
