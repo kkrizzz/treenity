@@ -10,6 +10,7 @@ const AccountName = render('', 'name', 'react-text', { fallback: ({ id }) => id 
 const SuccessBadge = render('dev', 'success-badge', 'react');
 const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
+const DashboardSection = render('dev', 'dashboard-section');
 
 const InstructionDefault = render('explorer', 'default-instruction', 'react-list');
 const InstructionDefaultText = render('explorer', 'default-instruction', 'react-text');
@@ -181,37 +182,38 @@ const EthereumTxView = ({ entityId }) => {
   const parsedNonce = parseInt(nonce, 16);
   return (
     <div className="bu-container bu-is-max-desktop">
-      <BulmaCard header="Transaction" />
-      <BulmaCard>
-        <div className="bu-columns overflow-hidden">
-          <div className="bu-column">
-            <TwoColumn is={2} first="Hash" second={<Hash hash={hash} alignRight />} />
-            <TwoColumn
-              is={2}
-              first="Block"
-              second={
-                <Hash hash={parsedBlockNumber} type="block" urlParams="chain=evm" alignRight />
-              }
-            />
-            <TwoColumn
-              is={2}
-              first="From"
-              second={<NamedHash hash={from} type="address" urlParams="chain=evm" alignRight />}
-            />
-            <TwoColumn
-              is={2}
-              first="To"
-              second={<NamedHash hash={to} type="address" urlParams="chain=evm" alignRight />}
-            />
-            <TwoColumn
-              is={2}
-              first="Value"
-              second={`◎ ${(parseInt(value, 16) * LPS).toFixed(16)}`}
-            />
-            <TwoColumn is={2} first="Nonce" second={parsedNonce} />
+      <DashboardSection title="Transaction">
+        <BulmaCard>
+          <div className="bu-columns overflow-hidden">
+            <div className="bu-column">
+              <TwoColumn is={2} first="Hash" second={<Hash hash={hash} alignRight />} />
+              <TwoColumn
+                is={2}
+                first="Block"
+                second={
+                  <Hash hash={parsedBlockNumber} type="block" urlParams="chain=evm" alignRight />
+                }
+              />
+              <TwoColumn
+                is={2}
+                first="From"
+                second={<NamedHash hash={from} type="address" urlParams="chain=evm" alignRight />}
+              />
+              <TwoColumn
+                is={2}
+                first="To"
+                second={<NamedHash hash={to} type="address" urlParams="chain=evm" alignRight />}
+              />
+              <TwoColumn
+                is={2}
+                first="Value"
+                second={`◎ ${(parseInt(value, 16) * LPS).toFixed(16)}`}
+              />
+              <TwoColumn is={2} first="Nonce" second={parsedNonce} />
+            </div>
           </div>
-        </div>
-      </BulmaCard>
+        </BulmaCard>
+      </DashboardSection>
     </div>
   );
 };

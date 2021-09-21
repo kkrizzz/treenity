@@ -19,6 +19,7 @@ const themeCss = css`
     line-height: 1.333;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: var(--theme-main-color);
   }
 
   html {
@@ -131,6 +132,7 @@ const lightThemeVars = css`
     --theme-main-color: black;
     --theme-main-bg-color: #eef3ff;
     --theme-main-oposit-color: rgb(12, 25, 55);
+    --theme-main-content-color: #6f87c5;
 
     --theme-tabs-color: #0b74ff;
     --theme-tabs-active-color: #398dfd;
@@ -191,6 +193,7 @@ const newDarkThemeVars = css`
     --theme-main-color: white;
     --theme-main-bg-color: rgb(12, 25, 55);
     --theme-main-oposit-color: #eef3ff;
+    --theme-main-content-color: #788cbf;
 
     --theme-tabs-color: #0b74ff;
     --theme-tabs-active-color: #398dfd;

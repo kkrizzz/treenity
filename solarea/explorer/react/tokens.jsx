@@ -2,6 +2,7 @@ const BulmaCard = render('dev', 'bulma-card');
 const Table = render('dev', 'table');
 const NamedHash = render('dev', 'named-hash');
 const ScrollBox = render('dev', 'scroll-box');
+const DashboardSection = render('dev', 'dashboard-section');
 
 const { tokenRegExp, numberWithSpaces } = await require('solarea://explorer/utils');
 const columns = [
@@ -46,14 +47,13 @@ add(() => {
         {isLoading ? (
           <BulmaCard header="Loading token data . . ." />
         ) : (
-          <div>
-            <BulmaCard header="Tokens" />
-            <BulmaCard>
+          <DashboardSection title="Tokens">
+            <div style={{ padding: 0, borderRadius: 12 }} className="bu-card m-b-8">
               <ScrollBox>
                 <Table stripped columns={columns} data={tokenData} />
               </ScrollBox>
-            </BulmaCard>
-          </div>
+            </div>
+          </DashboardSection>
         )}
       </div>
     </Render>

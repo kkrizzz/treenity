@@ -40,6 +40,7 @@ add(
         }
         .dashboard-card__header {
           margin-bottom: 4px;
+          max-width: calc(100% - 120px);
         }
         .dashboard-card__title {
           font-weight: 600;
