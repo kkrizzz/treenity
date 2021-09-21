@@ -112,14 +112,14 @@ const EthereumAddressView = ({ entityId }) => {
               />
             </ScrollBox>
 
-              {txListLimit < accountTokensArr.length && (
-                  <button
-                      className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
-                      onClick={() => setTxListLimit(txListLimit + 10)}
-                  >
-                      Load more...
-                  </button>
-              )}
+            {txListLimit < accountTokensArr.length && (
+              <button
+                className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+                onClick={() => setTxListLimit(txListLimit + 10)}
+              >
+                Load more...
+              </button>
+            )}
           </>
         );
       },
@@ -143,25 +143,23 @@ const EthereumAddressView = ({ entityId }) => {
         fallback={() => null}
       />
       <DashboardSection title="Account overview">
-        <BulmaCard>
-          <AccountName
-            id={entityId}
-            render={(item) => <TwoColumn first="Label" second={item} />}
-            fallback={() => null}
-          />
-          <div className="bu-columns">
-            <div className="bu-column bu-is-8">
-              <DashboardCard title="Address">
-                <Hash hash={entityId} type="address" />
-              </DashboardCard>
-            </div>
-            <div className="bu-column bu-is-4">
-              <DashboardCard title="Balance">
-                {`${parsedBalance === 0 ? parsedBalance : (parsedBalance * LPS).toFixed(8)} VLX`}
-              </DashboardCard>
-            </div>
+        <AccountName
+          id={entityId}
+          render={(item) => <DashboardCard title="Label">{item}</DashboardCard>}
+          fallback={() => null}
+        />
+        <div className="bu-columns">
+          <div className="bu-column bu-is-8">
+            <DashboardCard title="Address">
+              <Hash hash={entityId} type="address" />
+            </DashboardCard>
           </div>
-        </BulmaCard>
+          <div className="bu-column bu-is-4">
+            <DashboardCard title="Balance">
+              {`${parsedBalance === 0 ? parsedBalance : (parsedBalance * LPS).toFixed(8)} VLX`}
+            </DashboardCard>
+          </div>
+        </div>
       </DashboardSection>
 
       <Tabs tabs={tabs} />
