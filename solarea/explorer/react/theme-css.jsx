@@ -19,6 +19,7 @@ const themeCss = css`
     line-height: 1.333;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: var(--theme-main-color);
   }
 
   html {
@@ -57,7 +58,7 @@ const themeCss = css`
     color: var(--theme-main-color);
     background: var(--theme-card-bg-color);
     padding: 8px;
-    box-shadow: var(--theme-card-shadow) !important;
+    box-shadow: none !important;
     width: inherit !important;
   }
 
@@ -99,22 +100,49 @@ const themeCss = css`
   strong {
     color: var(--theme-main-color);
   }
+
+  .bu-navbar {
+    background-color: var(--theme-main-bg-color) !important;
+  }
+  .bu-navbar-item,
+  .bu-navbar-link {
+    color: var(--theme-main-color);
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .bu-is-primary.bu-input,
+  .bu-is-primary.bu-textarea {
+    border-color: var(--theme-a-color);
+  }
+  .bu-has-background-primary {
+    background-color: var(--theme-a-color) !important;
+  }
+  .bu-button.bu-is-primary.bu-is-outlined:hover {
+    background-color: var(--theme-a-color) !important;
+    color: white !important;
+  }
+  .bu-button.bu-is-primary.bu-is-outlined {
+    color: var(--theme-a-color) !important;
+    border-color: var(--theme-a-color) !important;
+  }
 `;
 
 const lightThemeVars = css`
   * {
     --theme-main-color: black;
-    --theme-main-bg-color: white;
+    --theme-main-bg-color: #eef3ff;
+    --theme-main-oposit-color: rgb(12, 25, 55);
+    --theme-main-content-color: #6f87c5;
 
-    --theme-tabs-color: #755cfd;
-    --theme-tabs-active-color: #00d1b2;
+    --theme-tabs-color: #0b74ff;
+    --theme-tabs-active-color: #398dfd;
 
-    --theme-a-color: #00d1b2;
-    --theme-a-hover-color: #00d1b2;
+    --theme-a-color: #0b74ff;
+    --theme-a-hover-color: #398dfd;
 
     --theme-card-bg-color: white;
 
-    --theme-d-card-bg-color: #fdfdfd;
+    --theme-d-card-bg-color: #ffffff;
 
     --theme-subcard-bg-color: #fafafa;
     --theme-card-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
@@ -164,6 +192,8 @@ const newDarkThemeVars = css`
   * {
     --theme-main-color: white;
     --theme-main-bg-color: rgb(12, 25, 55);
+    --theme-main-oposit-color: #eef3ff;
+    --theme-main-content-color: #788cbf;
 
     --theme-tabs-color: #0b74ff;
     --theme-tabs-active-color: #398dfd;

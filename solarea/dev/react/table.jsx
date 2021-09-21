@@ -1,4 +1,4 @@
-const Table = ({ columns = [], data = [], stripped = false, bordered = false }) => {
+const Table = ({ columns = [], data = [], stripped = false, bordered = false, fixed = false }) => {
   useCSS(
     'bu-table.css',
     css`
@@ -16,7 +16,7 @@ const Table = ({ columns = [], data = [], stripped = false, bordered = false }) 
 
         font-weight: 600 !important;
         font-size: 14px !important;
-        padding: 20px 0.75em;
+        padding: 20px 20px;
       }
 
       .bu-table {
@@ -25,6 +25,7 @@ const Table = ({ columns = [], data = [], stripped = false, bordered = false }) 
         font-size: 16px;
         line-height: 20px;
         background-color: transparent !important;
+        max-width: 960px;
         width: 100%;
       }
     `,
@@ -32,6 +33,7 @@ const Table = ({ columns = [], data = [], stripped = false, bordered = false }) 
   return (
     <table
       className={`bu-table ${bordered ? 'bu-is-bordered' : ''} ${stripped ? 'bu-is-striped' : ''}`}
+      style={{ tableLayout: fixed ? 'fixed' : 'auto' }}
     >
       <thead>
         <tr>
