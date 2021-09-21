@@ -7,12 +7,11 @@ const Component = ({ tabs }) => {
         //margin-bottom: 0 !important;
       }
       .bu-tabs ul {
-        border-color: var(--theme-d-card-bg-color);
+        border-color: var(--theme-tabs-color);
       }
 
       .bu-tabs li {
-        color: var(--theme-main-color) !important;
-        opacity: 0.6;
+        color: var(--theme-main-content-color) !important;
         border-radius: 12px 12px 0 0;
         padding: 16px 36px;
         font-weight: 600;
@@ -22,8 +21,8 @@ const Component = ({ tabs }) => {
 
       .bu-tabs .bu-is-active {
         opacity: 1;
-        color: var(--theme-main-color) !important;
-        background: var(--theme-d-card-bg-color);
+        color: white !important;
+        background: var(--theme-tabs-color);
       }
     `,
   );

@@ -23,20 +23,25 @@ add(
     info,
     children,
     color,
+    subcard = false,
   }) => {
-    const titleFontSize = size === 'medium' ? 14 : 20;
-    const contentFontSize = size === 'medium' ? 20 : 40;
+    const titleFontSize = size === 'medium' ? 14 : 'small' ? 14 : 20;
+    const contentFontSize = size === 'medium' ? 20 : 'small' ? 16 : 40;
+    const defaultColor = subcard ? 'var(--theme-subcard-bg-color)' : 'var(--theme-card-bg-color)';
 
     useCSS(
       'dashboard-card.css',
       css`
         .dashboard-card {
           color: var(--theme-main-color);
-          box-shadow: var(--theme-card-shadow);
           position: relative;
           border-radius: 16px !important;
           padding: 16px !important;
           width: 100%;
+          margin-bottom: 20px;
+        }
+        .dashboard-card:last-child {
+          margin-bottom: 0;
         }
         .dashboard-card__header {
           margin-bottom: 4px;
@@ -64,12 +69,12 @@ add(
       <div
         className={`dashboard-card`}
         style={{
+          boxShadow: subcard ? 'none' : '0 4px 50px rgba(40, 61, 113, 0.1)',
           background: gradient
-            ? `radial-gradient( 200.42% 204.83% at -120% -50%, ${
+            ? `radial-gradient( 200.42% 204.83% at -150% -50%, ${
                 (color instanceof Object ? color.background : color) || 'transparent'
-              } 0%, var(--theme-d-card-bg-color) 100%)`
-            : (color instanceof Object ? color.background : color) ||
-              'var(--theme-d-card-bg-color)',
+              } 0%, ${defaultColor}`
+            : (color instanceof Object ? color.background : color) || defaultColor,
         }}
       >
         {title && (
