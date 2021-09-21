@@ -47,7 +47,12 @@ const InfoCard = (t) => (
 
 const useLoadSignaturesInfinite = (entityId, limit = 10) => {
   const connection = solarea.useConnection();
-  const { data: txsData, isLoading: isTxLoading, fetchNextPage } = solarea.useInfiniteQuery(
+  const {
+    data: txsData,
+    isLoading: isTxLoading,
+    fetchNextPage,
+    hasNextPage,
+  } = solarea.useInfiniteQuery(
     ['accountSignatures', entityId, connection._rpcEndpoint],
     ({ pageParam }) => {
       console.log(pageParam, 'pageParam');
@@ -60,10 +65,11 @@ const useLoadSignaturesInfinite = (entityId, limit = 10) => {
       );
     },
     {
-      getNextPageParam: (lastPage, pages) => lastPage[lastPage.length - 1]?.signature,
+      getNextPageParam: (lastPage, pages) =>
+        lastPage.length === 10 ? lastPage[lastPage.length - 1]?.signature : undefined,
     },
   );
-  return [txsData?.pages.flat(), isTxLoading, () => fetchNextPage()];
+  return [txsData?.pages.flat(), isTxLoading, () => fetchNextPage(), hasNextPage];
 };
 
 const LPS = 0.000000000000000001;
@@ -106,12 +112,14 @@ const EthereumAddressView = ({ entityId }) => {
               />
             </ScrollBox>
 
-            <button
-              className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
-              onClick={() => setTxListLimit(txListLimit + 10)}
-            >
-              Load more...
-            </button>
+              {txListLimit < accountTokensArr.length && (
+                  <button
+                      className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+                      onClick={() => setTxListLimit(txListLimit + 10)}
+                  >
+                      Load more...
+                  </button>
+              )}
           </>
         );
       },
@@ -167,8 +175,7 @@ const Tabs = render('dev', 'tabs');
 const SolanaAddressView = ({ entityId }) => {
   const [account, isLoading] = useAccount(entityId);
 
-  // const [txs, isTxLoading] = useAccountTransactions(entityId);
-  const [txs, isTxLoading, txFetchNext] = useLoadSignaturesInfinite(entityId, 10);
+  const [txs, isTxLoading, txFetchNext, hasNextPage] = useLoadSignaturesInfinite(entityId, 10);
 
   if (isLoading) return InfoCard('Account loading . . .');
   if (!account) return InfoCard(`Account ${entityId} not found`);
@@ -192,12 +199,15 @@ const SolanaAddressView = ({ entityId }) => {
             ) : (
               txs && txs.map((tx) => <TransactionRow signature={tx.signature} />)
             )}
-            <button
-              className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
-              onClick={txFetchNext}
-            >
-              Load more...
-            </button>
+
+            {hasNextPage && (
+              <button
+                className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+                onClick={txFetchNext}
+              >
+                Load more...
+              </button>
+            )}
           </div>
         </div>
       ),
