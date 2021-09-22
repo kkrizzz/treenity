@@ -47,7 +47,12 @@ const InfoCard = (t) => (
 
 const useLoadSignaturesInfinite = (entityId, limit = 10) => {
   const connection = solarea.useConnection();
-  const { data: txsData, isLoading: isTxLoading, fetchNextPage } = solarea.useInfiniteQuery(
+  const {
+    data: txsData,
+    isLoading: isTxLoading,
+    fetchNextPage,
+    hasNextPage,
+  } = solarea.useInfiniteQuery(
     ['accountSignatures', entityId, connection._rpcEndpoint],
     ({ pageParam }) => {
       console.log(pageParam, 'pageParam');
@@ -60,10 +65,11 @@ const useLoadSignaturesInfinite = (entityId, limit = 10) => {
       );
     },
     {
-      getNextPageParam: (lastPage, pages) => lastPage[lastPage.length - 1]?.signature,
+      getNextPageParam: (lastPage, pages) =>
+        lastPage.length === 10 ? lastPage[lastPage.length - 1]?.signature : undefined,
     },
   );
-  return [txsData?.pages.flat(), isTxLoading, () => fetchNextPage()];
+  return [txsData?.pages.flat(), isTxLoading, () => fetchNextPage(), hasNextPage];
 };
 
 const LPS = 0.000000000000000001;
@@ -106,12 +112,14 @@ const EthereumAddressView = ({ entityId }) => {
               />
             </ScrollBox>
 
-            <button
-              className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
-              onClick={() => setTxListLimit(txListLimit + 10)}
-            >
-              Load more...
-            </button>
+            {txListLimit < accountTokensArr.length && (
+              <button
+                className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+                onClick={() => setTxListLimit(txListLimit + 10)}
+              >
+                Load more...
+              </button>
+            )}
           </>
         );
       },
@@ -135,25 +143,23 @@ const EthereumAddressView = ({ entityId }) => {
         fallback={() => null}
       />
       <DashboardSection title="Account overview">
-        <BulmaCard>
-          <AccountName
-            id={entityId}
-            render={(item) => <TwoColumn first="Label" second={item} />}
-            fallback={() => null}
-          />
-          <div className="bu-columns">
-            <div className="bu-column bu-is-8">
-              <DashboardCard title="Address">
-                <Hash hash={entityId} type="address" />
-              </DashboardCard>
-            </div>
-            <div className="bu-column bu-is-4">
-              <DashboardCard title="Balance">
-                {`${parsedBalance === 0 ? parsedBalance : (parsedBalance * LPS).toFixed(8)} VLX`}
-              </DashboardCard>
-            </div>
+        <AccountName
+          id={entityId}
+          render={(item) => <DashboardCard title="Label">{item}</DashboardCard>}
+          fallback={() => null}
+        />
+        <div className="bu-columns">
+          <div className="bu-column bu-is-8">
+            <DashboardCard title="Address">
+              <Hash hash={entityId} type="address" />
+            </DashboardCard>
           </div>
-        </BulmaCard>
+          <div className="bu-column bu-is-4">
+            <DashboardCard title="Balance">
+              {`${parsedBalance === 0 ? parsedBalance : (parsedBalance * LPS).toFixed(8)} VLX`}
+            </DashboardCard>
+          </div>
+        </div>
       </DashboardSection>
 
       <Tabs tabs={tabs} />
@@ -167,8 +173,7 @@ const Tabs = render('dev', 'tabs');
 const SolanaAddressView = ({ entityId }) => {
   const [account, isLoading] = useAccount(entityId);
 
-  // const [txs, isTxLoading] = useAccountTransactions(entityId);
-  const [txs, isTxLoading, txFetchNext] = useLoadSignaturesInfinite(entityId, 10);
+  const [txs, isTxLoading, txFetchNext, hasNextPage] = useLoadSignaturesInfinite(entityId, 10);
 
   if (isLoading) return InfoCard('Account loading . . .');
   if (!account) return InfoCard(`Account ${entityId} not found`);
@@ -177,29 +182,24 @@ const SolanaAddressView = ({ entityId }) => {
     {
       name: 'Transactions',
       content: () => (
-        <div className="bu-columns">
-          <div className="bu-column text-overflow">
-            <div className="bu-columns bu-is-mobile">
-              <div className="bu-column bu-is-4 text-overflow bu-is-code">Signature</div>
-              <div className="bu-column bu-is-4 bu-is-mobile">Instruction</div>
-              <div className="bu-column bu-is-2 bu-is-mobile">Age</div>
-              <div className="bu-column bu-is-mobile">Result</div>
-            </div>
-            {isTxLoading ? (
-              <progress className="bu-progress bu-is-small bu-is-success" max="100">
-                100%
-              </progress>
-            ) : (
-              txs && txs.map((tx) => <TransactionRow signature={tx.signature} />)
-            )}
+        <>
+          {isTxLoading ? (
+            <progress className="bu-progress bu-is-small bu-is-success" max="100">
+              100%
+            </progress>
+          ) : (
+            txs && txs.map((tx) => <TransactionRow signature={tx.signature} />)
+          )}
+
+          {hasNextPage && (
             <button
               className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
               onClick={txFetchNext}
             >
               Load more...
             </button>
-          </div>
-        </div>
+          )}
+        </>
       ),
     },
     {
@@ -224,31 +224,49 @@ const SolanaAddressView = ({ entityId }) => {
       />
 
       <DashboardSection title="Account overview">
-        <div className="bu-columns" style={{ overflowY: 'auto' }}>
-          <div className="bu-column">
+        <DashboardCard>
+          <div className="bu-columns">
             <AccountName
               id={entityId}
-              render={(item) => <TwoColumn first="Label" second={item} />}
+              render={(item) => (
+                <div className="bu-column">
+                  <DashboardCard size="small" subcard title={'Label'}>
+                    {item}
+                  </DashboardCard>
+                </div>
+              )}
               fallback={() => null}
             />
-            <TwoColumn
-              first="Address"
-              second={<Hash hash={entityId} type="address" alignRight />}
-            />
-            <TwoColumn first="Data" second={`${account.data.length} bytes`} />
-            <TwoColumn first="Balance" second={`◎${lpsRound(account.lamports)}`} />
-            <TwoColumn
-              first="Owner"
-              second={<NamedHash hash={account.owner.toString()} type="address" alignRight />}
-            />
+
+            <div className="bu-column">
+              <DashboardCard size="small" subcard title={'Address'}>
+                <div style={{ width: '99%' }}>
+                  <Hash hash={entityId} type="address" />
+                </div>
+              </DashboardCard>
+            </div>
           </div>
-        </div>
+
+          <div className="bu-columns" style={{ marginBottom: -12 }}>
+            <div className="bu-column bu-is-4">
+              <DashboardCard size="small" subcard title={'Balance'}>
+                ◎{lpsRound(account.lamports)}
+              </DashboardCard>
+            </div>
+            <div className="bu-column bu-is-4">
+              <DashboardCard size="small" subcard title={'Data'}>
+                {account.data.length} bytes
+              </DashboardCard>
+            </div>
+            <div className="bu-column bu-is-4">
+              <DashboardCard size="small" subcard title={'Owner'}>
+                <NamedHash hash={account.owner.toString()} type="address" />
+              </DashboardCard>
+            </div>
+          </div>
+        </DashboardCard>
       </DashboardSection>
-      <BulmaCard>
-        <div style={{ marginTop: -16 }}>
-          <Tabs tabs={tabs} />
-        </div>
-      </BulmaCard>
+      <Tabs tabs={tabs} />
     </div>
   );
 };

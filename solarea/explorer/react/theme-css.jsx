@@ -125,6 +125,9 @@ const themeCss = css`
     color: var(--theme-a-color) !important;
     border-color: var(--theme-a-color) !important;
   }
+  .bu-tag {
+    border-radius: 11px !important;
+  }
 `;
 
 const lightThemeVars = css`
@@ -140,11 +143,11 @@ const lightThemeVars = css`
     --theme-a-color: #0b74ff;
     --theme-a-hover-color: #398dfd;
 
-    --theme-card-bg-color: white;
+    --theme-card-bg-color: #f8faff;
+    --theme-subcard-bg-color: white;
 
     --theme-d-card-bg-color: #ffffff;
 
-    --theme-subcard-bg-color: #fafafa;
     --theme-card-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
 
     --theme-success-color: #00d1b2;
@@ -195,8 +198,8 @@ const newDarkThemeVars = css`
     --theme-main-oposit-color: #eef3ff;
     --theme-main-content-color: #788cbf;
 
-    --theme-tabs-color: #0b74ff;
-    --theme-tabs-active-color: #398dfd;
+    --theme-tabs-color: #273555;
+    --theme-tabs-active-color: #273555;
 
     --theme-a-color: #0b74ff;
     --theme-a-hover-color: #398dfd;
