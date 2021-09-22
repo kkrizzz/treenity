@@ -74,10 +74,9 @@ const updateStats = async (app, value, sqlClient) => {
 
       console.log('Cash.service: added new elem');
     } catch (e) {
-      console.log('error');
+      console.error('error', e);
     }
   }
-  sqlClient.end();
 };
 
 addComponent(CashServiceMeta, 'service', {}, ({ value }) => {
@@ -95,12 +94,14 @@ addComponent(CashServiceMeta, 'service', {}, ({ value }) => {
         }),
       );
       const sqlClient = new Client(value.sql);
-      sqlClient.connect();
+      await sqlClient.connect();
       sqlClient.once('error', () => console.log('error in once'));
       try {
         await updateStats(app, value, sqlClient);
       } catch (e) {
-        console.log('error in hook');
+        console.error('error in hook', e);
+      } finally {
+        await sqlClient.end();
       }
     })();
 
