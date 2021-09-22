@@ -25,8 +25,8 @@ add(
     color,
     subcard = false,
   }) => {
-    const titleFontSize = size === 'medium' ? 14 : 'small' ? 14 : 20;
-    const contentFontSize = size === 'medium' ? 20 : 'small' ? 16 : 40;
+    const titleFontSize = size === 'medium' ? 14 : size === 'small' ? 14 : 20;
+    const contentFontSize = size === 'medium' ? 20 : size === 'small' ? 16 : 40;
     const defaultColor = subcard ? 'var(--theme-subcard-bg-color)' : 'var(--theme-card-bg-color)';
 
     useCSS(
