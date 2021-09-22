@@ -17,6 +17,9 @@ const ScrollBox = render('dev', 'scroll-box');
 const AccountNfts = render('near', 'account-nfts');
 const Dropdown = render('dev', 'dropdown');
 const Icon = render('near_action', 'icon');
+const DashboardSection = render('dev', 'dashboard-section');
+const DashboardCard = render('dev', 'dashboard-card');
+const AccountName = render('', 'name', 'react-text');
 
 const { Buffer, borsh } = solarea;
 
@@ -74,19 +77,32 @@ add(({ entityId }) => {
   ];
 
   const [selectedTxFilter, setSelectedTxFilter] = React.useState(TX_SORT_DATA[0]);
+  const [limit, setLimit] = React.useState(10);
 
   return (
     <div>
-      <BulmaCard header="Near Account" />
-      <BulmaCard header="Overview">
-        <TwoColumn first="Account" second={entityId} />
-        <TwoColumn first="Balance" second={nearHumanBalance(accData.amount)} />
-      </BulmaCard>
-      <BulmaCard header="Tokens">
+      <DashboardSection title="Account overview">
+        <AccountName
+          id={entityId}
+          render={(item) => <DashboardCard title="Label">{item}</DashboardCard>}
+          fallback={() => null}
+        />
+        <div className="bu-columns">
+          <div className="bu-column bu-is-8">
+            <DashboardCard title="Address">
+              <Hash hash={entityId} type="address" />
+            </DashboardCard>
+          </div>
+          <div className="bu-column bu-is-4">
+            <DashboardCard title="Balance">{nearHumanBalance(accData.amount)}</DashboardCard>
+          </div>
+        </div>
+      </DashboardSection>
+      <DashboardSection title="Tokens">
         <Tabs tabs={tokensTabs} />
-      </BulmaCard>
-      <BulmaCard
-        header={
+      </DashboardSection>
+      <DashboardSection
+        title={
           <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
             <div>Transactions</div>
             <div class="bu-tags">
@@ -104,26 +120,33 @@ add(({ entityId }) => {
       >
         <ScrollBox>
           {selectedTxFilter.name === 'All'
-            ? txs.rows.map((i) => (
-                <div
+            ? txs.rows.slice(0, limit).map((i) => (
+                <DashboardCard
                   key={`${i.transaction_hash}`}
                   class="bu-box theme-inner-instruction inner-shadow"
                 >
                   <TransactionRow tx={i} />
-                </div>
+                </DashboardCard>
               ))
             : txs.rows
+                .slice(0, limit)
                 .filter((i) => selectedTxFilter.sort.includes(i.action_kind))
                 .map((i) => (
-                  <div
+                  <DashboardCard
                     key={`${i.transaction_hash}`}
                     class="bu-box theme-inner-instruction inner-shadow"
                   >
                     <TransactionRow tx={i} />
-                  </div>
+                  </DashboardCard>
                 ))}
         </ScrollBox>
-      </BulmaCard>
+        <button
+          className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+          onClick={() => setLimit(limit + 10)}
+        >
+          Load more...
+        </button>
+      </DashboardSection>
     </div>
   );
 });

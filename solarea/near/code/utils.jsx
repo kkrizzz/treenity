@@ -47,7 +47,7 @@ exports.useAccount = (entityId) => {
 exports.useNearAccTransactions = (entityId, limit, offset) => {
   const { data, isLoading } = useQuery([entityId, 'transactions'], () =>
     window
-      .fetch('/solarea/near/acctx', {
+      .fetch('/near/api/acctx', {
         method: 'POST',
         body: JSON.stringify({ entityId, limit, offset }),
         headers: {
@@ -88,7 +88,7 @@ exports.useNearCoinData = () => {
 
 exports.useNearStats = () => {
   const { data, isLoading } = useQuery(['near_tx_stats'], () =>
-    window.fetch('/solarea/near/todaystats').then((res) => res.json()),
+    window.fetch('/near/api/todaystats').then((res) => res.json()),
   );
 
   return [data, isLoading];
@@ -96,7 +96,7 @@ exports.useNearStats = () => {
 
 exports.useNearTx = (entityId) => {
   const { data, isLoading } = useQuery(['tx', entityId], () =>
-    window.fetch(`/solarea/near/tx/${entityId}`).then((res) => res.json()),
+    window.fetch(`/near/api/tx/${entityId}`).then((res) => res.json()),
   );
 
   return [data, isLoading];
@@ -104,7 +104,7 @@ exports.useNearTx = (entityId) => {
 
 exports.useNearBlockFromIndexer = (entityId) => {
   const { data, isLoading } = useQuery(['block', 'indexer', entityId], () =>
-    window.fetch(`/solarea/near/block/${entityId}`).then((res) => res.json()),
+    window.fetch(`/near/api/block/${entityId}`).then((res) => res.json()),
   );
   return [data, isLoading];
 };
@@ -158,7 +158,7 @@ exports.useNearTokens = (entityId) => {
   const [isLoading, setIsLoading] = React.useState(true);
 
   const { data: tokensLikely, isLoading: isTokensLikelyLoading } = useQuery(
-    [entityId, 'tokens'],
+    [entityId, 'likelyTokens'],
     () =>
       window
         .fetch(`${config.helperUrl}/account/${entityId}/likelyTokens`)
@@ -168,6 +168,8 @@ exports.useNearTokens = (entityId) => {
   React.useEffect(() => {
     (async function () {
       if (!isTokensLikelyLoading && tokensLikely.length) {
+        setTarget(undefined);
+        setIsLoading(true);
         const TOKENS = (
           await Promise.all(
             tokensLikely.map(async (i) => {
@@ -193,7 +195,7 @@ exports.useNearTokens = (entityId) => {
         setIsLoading(false);
       }
     })();
-  }, [tokensLikely, isTokensLikelyLoading]);
+  }, [tokensLikely, isTokensLikelyLoading, entityId]);
 
   return [target, isLoading];
 };
@@ -210,6 +212,8 @@ exports.useNearNFT = (entityId) => {
   React.useEffect(() => {
     (async function () {
       if (!isNftLikelyLoading && nftLikely.length) {
+        setTarget(undefined);
+        setIsLoading(true);
         const NFT_TOKENS = await Promise.all(
           nftLikely.map(async (i) => {
             const metadataReq = await nearFetch(config.networkId, [`call/${i}/nft_metadata`, '']);
@@ -234,7 +238,7 @@ exports.useNearNFT = (entityId) => {
         setIsLoading(false);
       }
     })();
-  }, [nftLikely, isNftLikelyLoading]);
+  }, [nftLikely, isNftLikelyLoading, entityId]);
 
   return [target, isLoading];
 };

@@ -12,7 +12,7 @@ const client = new Client({
 client.connect();
 
 export function nearIndexer(app: Application) {
-  app.post('/solarea/near/acctx', async (req, res) => {
+  app.post('/near/api/acctx', async (req, res) => {
     let { entityId, limit, offset = 0 } = req.body;
     if (!(0 < limit && limit < 100)) limit = 10;
     if (!(offset >= 0)) offset = 0;
@@ -31,7 +31,7 @@ export function nearIndexer(app: Application) {
     result.rows = result.rows.sort((a, b) => b.block_timestamp - a.block_timestamp);
     res.send(result);
   });
-  app.get('/solarea/near/todaystats', async (req, res) => {
+  app.get('/near/api/todaystats', async (req, res) => {
     // let { entityId, limit, offset = 0, from_timestamp, to_timestamp } = req.body;
     // if (!(0 < limit && limit < 100)) limit = 10;
     // if (!(offset >= 0)) offset = 0;
@@ -63,7 +63,7 @@ export function nearIndexer(app: Application) {
       totalAccsToday: totalAccsToday.rows[0].count,
     });
   });
-  app.get('/solarea/near/tx/:id', async (req, res) => {
+  app.get('/near/api/tx/:id', async (req, res) => {
     const txId = req.params.id;
 
     const txWithBlock = await client.query(`
@@ -84,7 +84,7 @@ export function nearIndexer(app: Application) {
 
     res.send(txWithBlock.rows[0]);
   });
-  app.get('/solarea/near/block/:id', async (req, res) => {
+  app.get('/near/api/block/:id', async (req, res) => {
     const blockHeight = req.params.id;
 
     const block = await client.query(`

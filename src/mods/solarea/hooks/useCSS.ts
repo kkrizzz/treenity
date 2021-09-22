@@ -17,6 +17,13 @@ export const useCSS = (id, css) => {
     const cssBlob = new Blob([css], { type: 'text/css' });
     const cssBlobUrl = window.URL.createObjectURL(cssBlob);
 
+    const oldLink = document.querySelector(`link[id="${id}"]`);
+
+    if (oldLink) {
+      // already added
+      return;
+    }
+
     let link = document.createElement('link');
     link.id = id;
     link.type = 'text/css';

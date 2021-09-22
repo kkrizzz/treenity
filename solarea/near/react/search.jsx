@@ -7,7 +7,13 @@ const search = (id) => {
 
   if (id.includes('.near')) {
     exName = 'account';
+  } else if (Number(id)) {
+    exName = 'block';
+  } else {
+    exName = 'transaction';
   }
+
+  console.log(Number(id));
 
   if (exName) window.history.pushState({}, '', `/${exName}/${id}`);
 };
