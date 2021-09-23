@@ -43,11 +43,11 @@ export const useCSS = (id, css) => {
       setIsReady(true);
     };
 
-    return () => {
-      setTimeout(() => {
-        link.remove();
-      }, 500);
-    };
+    // return () => {
+    //   setTimeout(() => {
+    //     link.remove();
+    //   }, 500);
+    // };
   }, [id, css]);
 
   return isReady;

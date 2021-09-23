@@ -30,19 +30,19 @@ const idToViewResolvers = [
     }
   },
   (id, name, context, query) => {
-    if (['account', 'transaction', 'block'].includes(id)) {
+    if (['velas-dextools'].includes(id)) {
       return (
-        <Render id="near" name="layout" context={context}>
-          <Render {...query} entityId={name} id="near" context={context} name={id} />
+        <Render id="velas-dextools" name="layout" context={context}>
+          <Render {...query} id={id} context={context} name={name} />
         </Render>
       );
     }
   },
   (id, name, context, query) => {
-    if (['near'].includes(id)) {
+    if (['coin'].includes(id)) {
       return (
-        <Render id="near" name="portfolio-layout" context={context}>
-          <Render id={id} />
+        <Render id="velas-dextools" name="layout" context={context}>
+          <Render {...query} entityId={name} id="velas-dextools" context={context} name="coin" />
         </Render>
       );
     }
