@@ -14,15 +14,31 @@ const TOKENS_TO_INDEX_PRICE = [
 ];
 
 const tokenInfoQuery = `
-query ($tokens: [String!]) {
+query ($after: ISO8601DateTime!) {
   ethereum(network: velas_testnet) {
     dexTrades(
-      baseCurrency: {in: $tokens},
-    ) 
-    {
+      date: {after: $after}
+    ) {
       block {
-        timestamp {
-          time
+        timestamp{
+          unixtime
+        }
+      }
+      baseCurrency {
+        symbol
+        address
+      }
+      baseAmount
+      quoteCurrency {
+        symbol
+        address
+      }
+      quoteAmount
+      quotePrice
+      side
+      smartContract {
+        address {
+          address
         }
       }
       exchange {
@@ -30,41 +46,65 @@ query ($tokens: [String!]) {
           address
         }
       }
-      side
-      quotePrice
-      quoteCurrency {
-        symbol
-        address
-      }
-      baseCurrency {
-        symbol
-        address
-      }
+
     }
   }
 }
 `;
 
 const updateData = async (collection) => {
+  const lastTrade = (await collection.find({ options: { sort: { time: -1 }, limit: 1 } }))?.[0];
+  const after = lastTrade?.time.toISOString() || '2020-01-01T00:00:00.000Z';
+
+  const params = { query: tokenInfoQuery, variables: { after } };
   const tokenDataBitQueryFetch = await fetch('https://graphql.bitquery.io/', {
     method: 'POST',
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ query: tokenInfoQuery, variables: { tokens: TOKENS_TO_INDEX_PRICE } }),
+    body: JSON.stringify(params),
   });
 
   const bitQueryResult = await tokenDataBitQueryFetch.json();
   const dexTrades = bitQueryResult.data.ethereum.dexTrades;
 
-  const groupedByBaseCurrency = _.groupBy(dexTrades, (i) => i.baseCurrency.address);
-  Object.keys(groupedByBaseCurrency).forEach((key) => {
-    const group = groupedByBaseCurrency[key];
-    const baseTokenAddress = key;
-    const tokenInfo = group[0].baseCurrency;
-    updateTokenData(baseTokenAddress, tokenInfo, group, collection);
-  });
+  for (let i = 0; i < dexTrades.length; i++) {
+    const dt = dexTrades[i];
+
+    const kline = {
+      qp: dt.quotePrice,
+      amount: dt.quoteAmount,
+      // time: new Date(dt.timeInterval.minute.replace(' ', 'T') + 'Z'),
+      time: new Date(dt.block.timestamp.unixtime * 1000),
+      market: dt.smartContract.address.address,
+      exchange: dt.exchange.address.address,
+      base: dt.baseCurrency,
+      quote: dt.quoteCurrency,
+      side: dt.side,
+      // min: dt.min,
+      // max: dt.max,
+      // open: parseFloat(dt.open),
+      // close: parseFloat(dt.close),
+      // med: dt.med,
+      // trades: dt.trades,
+      // i: 5 * 60,
+    };
+    await collection.create(kline);
+  }
+
+  // updateTradesData(baseTokenAddress, tokenInfo, group, collection);
+
+  // const groupedByBaseCurrency = _.groupBy(
+  //   dexTrades,
+  //   (i) => `${i.baseCurrency.address}_${i.quoteCurrency.address}`,
+  // );
+  // Object.keys(groupedByBaseCurrency).forEach((key) => {
+  //   const group = groupedByBaseCurrency[key];
+  //   const baseTokenAddress = key;
+  //   const tokenInfo = group[0].baseCurrency;
+  //   updateTokenData(baseTokenAddress, tokenInfo, group, collection);
+  // });
 };
 
 const interval1day = 86400000;
@@ -149,17 +189,79 @@ export const updateTokenData = async (address, smartContract, trades, collection
 export const indexPriceCron = (app) => {
   const priceCollection = app.services['velas-dextools'];
 
-  app.get('/velas/token/:id', async (req, res) => {
+  app.get('/velas/klines/:base/:quote', async (req, res) => {
     try {
-      return res.send(await priceCollection.get(req.params.id));
+      const { base, quote } = req.params;
+
+      const klines = await priceCollection.Model.aggregate([
+        {
+          $match: {
+            'base.address': base,
+            'quote.address': quote,
+          },
+        },
+        {
+          $project: {
+            frame: {
+              y: { $year: '$time' },
+              m: { $month: '$time' },
+              d: { $dayOfMonth: '$time' },
+              H: { $hour: '$time' },
+              M: { $minute: '$time' },
+            },
+            time: 1,
+            qp: 1,
+            amount: 1,
+          },
+        },
+        { $sort: { time: 1 } },
+        {
+          $group: {
+            _id: '$frame',
+            time: { $first: '$time' },
+            open: { $first: '$qp' },
+            close: { $last: '$qp' },
+            high: { $max: '$qp' },
+            low: { $min: '$qp' },
+            vol: { $sum: '$amount' },
+          },
+        },
+        { $sort: { time: 1 } },
+      ]).toArray();
+      return res.send(klines);
     } catch (e) {
       console.error(e);
     }
   });
 
-  updateData(priceCollection);
+  app.get('/velas/token/:token/markets', async (req, res) => {
+    try {
+      const { token } = req.params;
+
+      let markets = await priceCollection.Model.aggregate([
+        {
+          $match: {
+            'base.address': token,
+          },
+        },
+        {
+          $group: {
+            _id: 'quote.address',
+            market: { $first: '$market' },
+          },
+        },
+      ]).toArray();
+      markets = markets.map((m) => ({ market: m.market, quote: m._id }));
+      return res.send(markets);
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  updateData(priceCollection).catch(console.error);
   //
-  // cron.schedule('30 0-59 * * * *', () => {
-  //   TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
-  // });
+  cron.schedule('*/30 * * * * *', async () => {
+    // await updateData(priceCollection);
+    // TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
+  });
 };
