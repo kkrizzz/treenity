@@ -11,21 +11,23 @@ const SuccessBadge = render('dev', 'success-badge', 'react');
 const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
 const DashboardSection = render('dev', 'dashboard-section');
+const DashboardCard = render('dev', 'dashboard-card');
+const Table = render('dev', 'table');
+const ScrollBox = render('dev', 'scroll-box');
 
 const InstructionDefault = render('explorer', 'default-instruction', 'react-list');
 const InstructionDefaultText = render('explorer', 'default-instruction', 'react-text');
 
 const TransactionInstructions = ({ tx }) => {
   return (
-    <div>
-      <BulmaCard header="Instructions" />
+    <DashboardSection title="Instructions">
       {tx.transaction.message.instructions.map((inst, index) => {
         const inner = tx.meta.innerInstructions.find((i) => i.index === index)?.instructions;
         return (
-          <BulmaCard
-            header={
+          <DashboardCard
+            title={
               <div style={{ alignItems: 'center', display: 'flex' }}>
-                <span className="bu-tag bu-is-primary m-r-4">#{index + 1}</span>{' '}
+                <span className="bu-tag bu-is-primary  m-r-4">#{index + 1}</span>{' '}
                 <InstructionName
                   id={inst.programId.toString()}
                   instruction={inst}
@@ -33,7 +35,9 @@ const TransactionInstructions = ({ tx }) => {
                 />
               </div>
             }
+            info={<NamedHash hash={inst.programId.toString()} type="address" />}
           >
+            <br />
             <Instruction
               id={inst.programId.toString()}
               instruction={inst}
@@ -41,65 +45,109 @@ const TransactionInstructions = ({ tx }) => {
               fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
             />
             {inner?.length && (
-              <div style={{ marginTop: '2rem' }}>
-                <strong style={{ marginBottom: '0.5rem', display: 'block' }}>
-                  Inner instructions
-                </strong>
-                {inner.map((inst, innerIndex) => (
-                  <div class="bu-box theme-inner-instruction">
-                    <div style={{ alignItems: 'center', display: 'flex', marginBottom: '1.5rem' }}>
-                      <span class="bu-tag bu-is-primary m-r-4">
-                        #{index + 1}.{innerIndex + 1}
-                      </span>{' '}
-                      <strong>
-                        <InstructionName
-                          id={inst.programId.toString()}
-                          instruction={inst}
-                          fallback={() => <InstructionDefaultText instruction={inst} />}
-                        />
-                      </strong>
-                    </div>
-                    <Instruction
-                      id={inst.programId.toString()}
-                      instruction={inst}
-                      transaction={tx}
-                      fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
-                    />
-                  </div>
-                ))}
+              <div style={{ marginBottom: -40, padding: '2rem' }}>
+                <DashboardSection title="Inner instructions">
+                  {inner.map((inst, innerIndex) => (
+                    <DashboardCard
+                      title={
+                        <div
+                          style={{ alignItems: 'center', display: 'flex', marginBottom: '1.5rem' }}
+                        >
+                          <span className="bu-tag bu-is-primary m-r-4">
+                            #{index + 1}.{innerIndex + 1}
+                          </span>{' '}
+                          <strong>
+                            <InstructionName
+                              id={inst.programId.toString()}
+                              instruction={inst}
+                              fallback={() => <InstructionDefaultText instruction={inst} />}
+                            />
+                          </strong>
+                        </div>
+                      }
+                    >
+                      <Instruction
+                        id={inst.programId.toString()}
+                        instruction={inst}
+                        transaction={tx}
+                        fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
+                      />
+                    </DashboardCard>
+                  ))}
+                </DashboardSection>
               </div>
             )}
-          </BulmaCard>
+          </DashboardCard>
         );
       })}
-    </div>
+    </DashboardSection>
   );
 };
 
-const AccountInputs = ({ tx }) => {
-  return (
-    <div>
-      <div className="bu-columns bu-is-mobile">
-        <div className="bu-column bu-is-6">Account</div>
-        <div className="bu-column bu-is-3">Change</div>
-        <div className="bu-column bu-is-3">Post</div>
-      </div>
-      {tx.transaction.message.accountKeys.map((key, index) => {
-        let publicKey = key.pubkey;
-        return (
-          <div className="bu-columns bu-is-mobile overflow-auto">
-            <div className="bu-column bu-is-6 text-overflow tc-link">
-              <NamedHash hash={publicKey} type="address" />
-            </div>
-            <div className="bu-column bu-is-3 bu-monospace">
-              {lpsRound(tx.meta.postBalances[index] - tx.meta.preBalances[index], 6)}
-            </div>
-            <div className="bu-column bu-is-3 bu-monospace">
-              {numberWithSpaces(lpsRound(tx.meta.postBalances[index], 6))}
-            </div>
+const columns = [
+  {
+    title: 'Account',
+    dataIndex: 'publicKey',
+    render: (publicKey) => <NamedHash hash={publicKey} type="address" />,
+  },
+  {
+    title: 'Change',
+    dataIndex: 'change',
+  },
+  {
+    title: 'Post',
+    dataIndex: 'post',
+  },
+  {
+    title: 'Details',
+    dataIndex: 'details',
+    // textAlign: 'right',
+    render: (details) => (
+      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+        {details.map((tag) => (
+          <div
+            className="bu-tag"
+            style={{
+              border: '1px solid var(--theme-main-content-color)',
+              color: 'var(--theme-main-content-color)',
+              background: 'transparent',
+            }}
+          >
+            {tag}
           </div>
-        );
-      })}
+        ))}
+      </div>
+    ),
+  },
+];
+const getDetails = (key, message, feePayer) => {
+  const tags = [];
+  if (key.pubkey === feePayer) tags.push('FeePayer');
+  if (key.signer) tags.push('Signer');
+  if (key.writable) tags.push('Writable');
+  if (message.instructions.find((i) => i.programId === key.pubkey)) tags.push('Program');
+  return tags;
+};
+const AccountInputs = ({ tx }) => {
+  console.log(tx);
+  let feePayer = null;
+  for (let key of tx.transaction.message.accountKeys) {
+    if (key.signer) {
+      feePayer = key.pubkey;
+      break;
+    }
+  }
+  const data = tx.transaction.message.accountKeys.map((key, index) => ({
+    publicKey: key.pubkey,
+    change: lpsRound(tx.meta.postBalances[index] - tx.meta.preBalances[index], 6),
+    post: numberWithSpaces(lpsRound(tx.meta.postBalances[index], 6)),
+    details: getDetails(key, tx.transaction.message, feePayer),
+  }));
+  return (
+    <div style={{ padding: 0, borderRadius: 12, overflow: 'hidden' }} className="bu-card m-b-8">
+      <ScrollBox minWidth={950}>
+        <Table columns={columns} data={data} stripped />
+      </ScrollBox>
     </div>
   );
 };
@@ -139,29 +187,42 @@ const SolanaTxView = (props) => {
   const signature = tx.transaction.signatures[0];
   return (
     <div class="bu-container bu-is-max-desktop">
-      <BulmaCard header="Transaction" />
-      <BulmaCard header="Overview">
-        <div class="bu-columns">
-          <div class="bu-column overflow-hidden">
-            <TwoColumn is={2} first="Signature" second={<Hash hash={signature} />} />
-            <TwoColumn
-              is={2}
-              first="Block"
-              second={<Hash hash={tx.slot.toString()} type="block" alignRight />}
-            />
-            <TwoColumn is={2} first="Result" second={<SuccessBadge success={!tx.meta?.err} />} />
-            <TwoColumn
-              is={2}
-              first="Timestamp"
-              second={new Date(tx.blockTime * 1000).toLocaleString()}
-            />
-            <TwoColumn is={2} first="Fee" second={`◎${lpsRound(tx.meta?.fee || 0, 6)}`} />
+      <DashboardSection title="Transaction">
+        <DashboardCard
+          title="Overview"
+          size="large"
+          info={<SuccessBadge success={!tx.meta?.err} />}
+        >
+          <div className="bu-columns" style={{ marginTop: 16 }}>
+            <div className="bu-column bu-is-4">
+              <DashboardCard size="small" subcard title="Block">
+                <Hash hash={tx.slot.toString()} type="block" />
+              </DashboardCard>
+            </div>
+            <div className="bu-column bu-is-4">
+              <DashboardCard size="small" subcard title="Fee">
+                ◎${lpsRound(tx.meta?.fee || 0, 6)}
+              </DashboardCard>
+            </div>
+            <div className="bu-column bu-is-4">
+              <DashboardCard size="small" subcard title="Timestamp">
+                {new Date(tx.blockTime * 1000).toLocaleString()}
+              </DashboardCard>
+            </div>
           </div>
-        </div>
-      </BulmaCard>
-      <BulmaCard header="Account Inputs">
+          <div className="bu-columns">
+            <div className="bu-column bu-is-12">
+              <DashboardCard size="small" subcard title="Signature">
+                <Hash hash={signature} type="address" />
+              </DashboardCard>
+            </div>
+          </div>
+        </DashboardCard>
+      </DashboardSection>
+
+      <DashboardSection title="Account Inputs">
         <AccountInputs tx={tx} />
-      </BulmaCard>
+      </DashboardSection>
       <TransactionInstructions tx={tx} />
       <TransactionLog tx={tx} />
     </div>

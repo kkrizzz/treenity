@@ -3,15 +3,12 @@ const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
 
 add(({ instruction }) => {
-  const programPubkey = instruction.programId.toString();
-
   if (instruction.parsed) {
     return <pre>{JSON.stringify(instruction.parsed.info, null, 2)}</pre>;
   }
 
   return (
     <div>
-      <TwoColumn first="Program" second={<Hash hash={programPubkey} type="address" alignRight />} />
       {instruction.accounts.map((accountPubkey, index) => {
         return (
           <TwoColumn

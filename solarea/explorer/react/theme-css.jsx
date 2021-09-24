@@ -110,6 +110,10 @@ const themeCss = css`
     font-weight: 600;
     font-size: 16px;
   }
+  .bu-tag.bu-is-primary {
+    background: var(--theme-a-color) !important;
+    border-color: var(--theme-a-color);
+  }
   .bu-is-primary.bu-input,
   .bu-is-primary.bu-textarea {
     border-color: var(--theme-a-color);

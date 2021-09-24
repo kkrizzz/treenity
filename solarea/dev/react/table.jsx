@@ -1,9 +1,16 @@
-const Table = ({ columns = [], data = [], stripped = false, bordered = false, fixed = false }) => {
+const Table = ({
+  columns = [],
+  data = [],
+  stripped = false,
+  bordered = false,
+  fixed = false,
+  headless = false,
+}) => {
   useCSS(
     'bu-table.css',
     css`
       .bu-table.bu-is-striped tbody tr:not(.bu-is-selected):nth-child(even) {
-        background-color: transparent !important;
+        background-color: var(--theme-card-bg-color) !important;
       }
       .bu-table.bu-is-striped tbody tr:not(.bu-is-selected):nth-child(odd) {
         background-color: var(--theme-subcard-bg-color) !important;
@@ -35,21 +42,23 @@ const Table = ({ columns = [], data = [], stripped = false, bordered = false, fi
       className={`bu-table ${bordered ? 'bu-is-bordered' : ''} ${stripped ? 'bu-is-striped' : ''}`}
       style={{ tableLayout: fixed ? 'fixed' : 'auto' }}
     >
-      <thead>
-        <tr>
-          {columns.map((column) => (
-            <th style={{ textAlign: column.textAlign || 'left' }}>{column.title}</th>
-          ))}
-        </tr>
-      </thead>
+      {!headless && (
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th style={{ textAlign: column.textAlign || 'left' }}>{column.title}</th>
+            ))}
+          </tr>
+        </thead>
+      )}
 
       <tbody>
-        {data.map((item) => (
+        {data.map((item, index) => (
           <tr>
             {columns.map((column) => (
               <td style={{ textAlign: column.textAlign || 'left' }}>
                 {column.render
-                  ? column.render(item[column.dataIndex], item)
+                  ? column.render(item[column.dataIndex], item, index, data)
                   : item[column.dataIndex]}
               </td>
             ))}

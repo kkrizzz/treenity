@@ -53,6 +53,9 @@ add(
           font-weight: bold;
           overflow: hidden;
         }
+        .dashboard-card__content:empty {
+          display: none;
+        }
         .dashboard-card__info {
           font-weight: 600;
           font-size: 16px;
