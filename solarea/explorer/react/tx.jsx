@@ -1,12 +1,11 @@
 const { lpsRound, numberWithSpaces } = await require('solarea://explorer/utils');
 
-const { useTransaction, bs58 } = solarea;
+const { useTransaction } = solarea;
 
 const BulmaCard = render('dev', 'bulma-card');
 const TwoColumn = render('dev', 'two-column');
 const Instruction = render('', 'instruction', 'react-list');
 const InstructionName = render('', 'instruction', 'react-text');
-const AccountName = render('', 'name', 'react-text', { fallback: ({ id }) => id });
 const SuccessBadge = render('dev', 'success-badge', 'react');
 const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
@@ -20,7 +19,7 @@ const InstructionDefaultText = render('explorer', 'default-instruction', 'react-
 
 const TransactionInstructions = ({ tx }) => {
   return (
-    <DashboardSection title="Instructions">
+    <DashboardSection title="Instructions" style={{ marginBottom: 16 }}>
       {tx.transaction.message.instructions.map((inst, index) => {
         const inner = tx.meta.innerInstructions.find((i) => i.index === index)?.instructions;
         return (
@@ -35,7 +34,11 @@ const TransactionInstructions = ({ tx }) => {
                 />
               </div>
             }
-            info={<NamedHash hash={inst.programId.toString()} type="address" />}
+            info={
+              <span style={{ fontSize: 14 }}>
+                <NamedHash hash={inst.programId.toString()} type="address" />
+              </span>
+            }
           >
             <br />
             <Instruction
@@ -45,10 +48,11 @@ const TransactionInstructions = ({ tx }) => {
               fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
             />
             {inner?.length && (
-              <div style={{ marginBottom: -40, padding: '2rem' }}>
+              <div style={{ marginBottom: -40, padding: 0 }}>
                 <DashboardSection title="Inner instructions">
                   {inner.map((inst, innerIndex) => (
                     <DashboardCard
+                      subcard
                       title={
                         <div
                           style={{ alignItems: 'center', display: 'flex', marginBottom: '1.5rem' }}
@@ -154,20 +158,20 @@ const AccountInputs = ({ tx }) => {
 
 const TransactionLog = ({ tx }) => {
   return (
-    <BulmaCard header="Log messages">
+    <DashboardSection title={'Log messages'}>
       <div
-        class="bu-notification bu-monospace log-messages"
+        className="bu-notification bu-monospace log-messages"
         style={{
           background: 'var(--theme-logs-bg)',
           color: 'var(--theme-logs-color)',
-          margin: '-1rem',
+          borderRadius: 12,
         }}
       >
         {tx.meta.logMessages.map((text) => (
           <div>{text}</div>
         ))}
       </div>
-    </BulmaCard>
+    </DashboardSection>
   );
 };
 
@@ -187,7 +191,7 @@ const SolanaTxView = (props) => {
   const signature = tx.transaction.signatures[0];
   return (
     <div class="bu-container bu-is-max-desktop">
-      <DashboardSection title="Transaction">
+      <DashboardSection title="Transaction" style={{ marginBottom: 16 }}>
         <DashboardCard
           title="Overview"
           size="large"
@@ -220,7 +224,7 @@ const SolanaTxView = (props) => {
         </DashboardCard>
       </DashboardSection>
 
-      <DashboardSection title="Account Inputs">
+      <DashboardSection title="Account Inputs" style={{ marginBottom: 16 }}>
         <AccountInputs tx={tx} />
       </DashboardSection>
       <TransactionInstructions tx={tx} />

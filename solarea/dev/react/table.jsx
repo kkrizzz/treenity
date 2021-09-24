@@ -16,6 +16,9 @@ const Table = ({
         background-color: var(--theme-subcard-bg-color) !important;
       }
 
+      .bu-table thead {
+        background-color: var(--theme-card-bg-color) !important;
+      }
       .bu-table td,
       .bu-table th {
         border-color: transparent !important;
@@ -27,6 +30,8 @@ const Table = ({
       }
 
       .bu-table {
+        border-radius: 12px;
+        overflow: hidden;
         color: var(--theme-main-color);
         font-weight: bold;
         font-size: 16px;

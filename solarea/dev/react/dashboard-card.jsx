@@ -24,6 +24,7 @@ add(
     children,
     color,
     subcard = false,
+    style = {},
   }) => {
     const titleFontSize = size === 'medium' ? 14 : size === 'small' ? 14 : 20;
     const contentFontSize = size === 'medium' ? 20 : size === 'small' ? 16 : 40;
@@ -35,8 +36,9 @@ add(
         .dashboard-card {
           color: var(--theme-main-color);
           position: relative;
-          border-radius: 16px !important;
-          padding: 16px !important;
+          border-radius: 16px;
+          overflow: hidden;
+          padding: 16px;
           width: 100%;
           margin-bottom: 20px;
         }
@@ -44,6 +46,9 @@ add(
           margin-bottom: 0;
         }
         .dashboard-card__header {
+          width: 100%;
+          display: flex;
+          align-items: flex-start;
           margin-bottom: 4px;
         }
         .dashboard-card__title {
@@ -59,11 +64,8 @@ add(
         .dashboard-card__info {
           font-weight: 600;
           font-size: 16px;
-          line-height: 19px;
-          position: absolute;
-          right: 12px;
-          top: 12px;
           text-align: right;
+          margin-left: auto;
         }
       `,
     );
@@ -78,6 +80,7 @@ add(
                 (color instanceof Object ? color.background : color) || 'transparent'
               } 0%, ${defaultColor}`
             : (color instanceof Object ? color.background : color) || defaultColor,
+          ...style,
         }}
       >
         {title && (
@@ -85,6 +88,15 @@ add(
             <p className="dashboard-card__title" style={{ fontSize: titleFontSize }}>
               {title}
             </p>
+
+            {info && (
+              <div
+                className="dashboard-card__info"
+                style={{ color: color instanceof Object ? color.info : color }}
+              >
+                {info}
+              </div>
+            )}
           </header>
         )}
         <div
@@ -105,14 +117,6 @@ add(
             numberWithSpaces(value)
           )}
         </div>
-        {info && (
-          <div
-            className="dashboard-card__info"
-            style={{ color: color instanceof Object ? color.info : color }}
-          >
-            {info}
-          </div>
-        )}
       </div>
     );
   },

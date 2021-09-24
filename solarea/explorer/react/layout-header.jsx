@@ -76,8 +76,12 @@ add(() => {
             <NavLink className="bu-navbar-item" to="/explorer/blocks?chain=evm">
               Blocks
             </NavLink>
+
             <div className="bu-navbar-item bu-is-hoverable">
-              <div className="bu-navbar-link bu-is-primary bu-has-text-white bu-has-background-primary bu-has-text-weight-bold">
+              <div
+                style={{ borderRadius: 12, overflow: 'hidden' }}
+                className="bu-navbar-link bu-is-primary bu-has-text-white bu-has-background-primary bu-has-text-weight-bold"
+              >
                 {clusterName}
               </div>
               <div className="bu-navbar-item bu-navbar-dropdown bu-is-boxed">
@@ -86,26 +90,32 @@ add(() => {
                     {name}
                   </a>
                 ))}
-                <div className="bu-navbar-item" style={{ display: 'flex' }}>
+                <div className="bu-navbar-item" style={{ display: 'block' }}>
                   <input
                     id="cluster-url-input"
-                    class="bu-input bu-is-small m-r-8"
-                    style={{ minWidth: 200 }}
+                    class="bu-input bu-is-small "
+                    style={{ minWidth: 260, paddingRight: 60 }}
                     placeholder="Custom url"
                     ref={custom}
                     onKeyPress={(evt) => evt.code === 'Enter' && setCustomUrl()}
                   />
-                  <a
-                    class="bu-button bu-is-small bu-is-primary"
-                    style={{ marginBottom: 0 }}
+                  <div
+                    style={{
+                      background: 'var(--theme-a-color)',
+                      borderRadius: 12,
+                      color: 'white',
+                      cursor: 'pointer',
+                      width: 60,
+                      position: 'absolute',
+                      right: 16,
+                      pointerEvents: 'all',
+                    }}
                     onClick={setCustomUrl}
+                    className="bu-button bu-is-small bu-is-primary"
                   >
                     Set
-                  </a>
+                  </div>
                 </div>
-                <hr className="bu-navbar-divider">
-                  <a className="bu-navbar-item">Report an issue</a>
-                </hr>
               </div>
             </div>
           </div>

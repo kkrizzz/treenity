@@ -114,11 +114,20 @@ const themeCss = css`
     background: var(--theme-a-color) !important;
     border-color: var(--theme-a-color);
   }
+  .bu-input {
+    border-radius: 12px !important;
+  }
   .bu-is-primary.bu-input,
   .bu-is-primary.bu-textarea {
     border-color: var(--theme-a-color);
   }
   .bu-has-background-primary {
+    background-color: var(--theme-a-color) !important;
+  }
+  .bu-button {
+    border-radius: 11px !important;
+  }
+  .bu-button.bu-is-primary {
     background-color: var(--theme-a-color) !important;
   }
   .bu-button.bu-is-primary.bu-is-outlined:hover {
@@ -131,6 +140,31 @@ const themeCss = css`
   }
   .bu-tag {
     border-radius: 11px !important;
+  }
+  a.bu-navbar-item {
+    border-radius: 12px !important;
+  }
+  a.bu-navbar-item:hover {
+    background: transparent !important;
+    color: var(--theme-a-color) !important;
+  }
+  .bu-navbar-burger {
+    color: var(--theme-main-color) !important;
+  }
+  @media screen and (max-width: 1023px) {
+    .bu-navbar-menu {
+      background: var(--theme-subcard-bg-color);
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .bu-navbar-dropdown {
+      left: auto !important;
+      right: 12px;
+      background: var(--theme-subcard-bg-color);
+      border-radius: 12px !important;
+      //box-shadow: var(--theme-card-shadow) !important;
+    }
   }
 `;
 
@@ -210,7 +244,8 @@ const newDarkThemeVars = css`
 
     --theme-card-bg-color: #1b2845;
     --theme-subcard-bg-color: #273555;
-    --theme-card-shadow: none;
+    --theme-card-shadow: 0 0.5em 1em -0.125em rgba(120, 140, 191, 0.1),
+      0 0px 0 1px rgba(120, 140, 191, 0.02);
 
     --theme-inner-card-color: var(--theme-main-color);
     --theme-inner-card-bg: #353550;
