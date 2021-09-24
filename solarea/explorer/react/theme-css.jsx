@@ -136,6 +136,8 @@ const themeCss = css`
   }
   .bu-button.bu-is-primary.bu-is-outlined {
     color: var(--theme-a-color) !important;
+
+    background-color: transparent !important;
     border-color: var(--theme-a-color) !important;
   }
   .bu-tag {
