@@ -74,7 +74,7 @@ add(
         style={{
           boxShadow: subcard ? 'none' : '0 4px 50px rgba(40, 61, 113, 0.1)',
           background: gradient
-            ? `radial-gradient( 200.42% 204.83% at -150% -50%, ${
+            ? `radial-gradient( 300% 300% at 300% 250%, ${
                 (color instanceof Object ? color.background : color) || 'transparent'
               } 0%, ${defaultColor}`
             : (color instanceof Object ? color.background : color) || defaultColor,
