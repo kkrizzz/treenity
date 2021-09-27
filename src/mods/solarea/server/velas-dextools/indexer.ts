@@ -228,6 +228,9 @@ export const indexPriceCron = (app) => {
         },
         { $sort: { time: 1 } },
       ]).toArray();
+      klines.forEach((k) => {
+        delete k._id;
+      });
       return res.send(klines);
     } catch (e) {
       console.error(e);
@@ -246,7 +249,7 @@ export const indexPriceCron = (app) => {
         },
         {
           $group: {
-            _id: 'quote.address',
+            _id: '$quote.address',
             market: { $first: '$market' },
           },
         },
@@ -258,10 +261,13 @@ export const indexPriceCron = (app) => {
     }
   });
 
-  updateData(priceCollection).catch(console.error);
+  // updateData(priceCollection).catch(console.error);
   //
   cron.schedule('*/30 * * * * *', async () => {
-    // await updateData(priceCollection);
+    await updateData(priceCollection).catch((err) => {
+      console.error('Velas klines update', err);
+      throw err;
+    });
     // TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
   });
 };
