@@ -164,7 +164,7 @@ const Search = ({ onChange }) => {
         <div style={{ flex: 1 }}>
           <input
             id="exp-l-id"
-            className="bu-input bu-is-primary"
+            className="bu-input"
             placeholder="Search for accounts, transactions, blocks..."
             aria-haspopup="true"
             aria-controls="search-dropdown"
@@ -172,11 +172,20 @@ const Search = ({ onChange }) => {
             onChange={onSetValue}
             onKeyPress={(evt) => evt.code === 'Enter' && doSearch()}
           />
-          <span class="bu-icon bu-is-right">
-            <div onClick={doSearch}>
-              <Render id="icons" name="search" />
-            </div>
-          </span>
+          <div
+            style={{
+              background: 'var(--theme-a-color)',
+              borderRadius: 'var(--theme-border-radus)',
+              color: 'white',
+              cursor: 'pointer',
+              width: 60,
+              pointerEvents: 'all',
+            }}
+            onClick={doSearch}
+            class="bu-icon bu-is-right"
+          >
+            <Render id="icons" name="search" fill="currentColor" />
+          </div>
         </div>
         <div
           className="bu-dropdown-menu"

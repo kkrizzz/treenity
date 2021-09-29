@@ -1,14 +1,24 @@
-const Table = ({ columns = [], data = [], stripped = false, bordered = false }) => {
+const Table = ({
+  columns = [],
+  data = [],
+  stripped = false,
+  bordered = false,
+  fixed = false,
+  headless = false,
+}) => {
   useCSS(
     'bu-table.css',
     css`
       .bu-table.bu-is-striped tbody tr:not(.bu-is-selected):nth-child(even) {
-        background-color: transparent !important;
+        background-color: var(--theme-card-bg-color) !important;
       }
       .bu-table.bu-is-striped tbody tr:not(.bu-is-selected):nth-child(odd) {
         background-color: var(--theme-subcard-bg-color) !important;
       }
 
+      .bu-table thead {
+        background-color: var(--theme-card-bg-color) !important;
+      }
       .bu-table td,
       .bu-table th {
         border-color: transparent !important;
@@ -16,15 +26,18 @@ const Table = ({ columns = [], data = [], stripped = false, bordered = false }) 
 
         font-weight: 600 !important;
         font-size: 14px !important;
-        padding: 20px 0.75em;
+        padding: 20px 20px;
       }
 
       .bu-table {
+        border-radius: var(--theme-border-radus);
+        overflow: hidden;
         color: var(--theme-main-color);
         font-weight: bold;
         font-size: 16px;
         line-height: 20px;
         background-color: transparent !important;
+        max-width: 960px;
         width: 100%;
       }
     `,
@@ -32,22 +45,25 @@ const Table = ({ columns = [], data = [], stripped = false, bordered = false }) 
   return (
     <table
       className={`bu-table ${bordered ? 'bu-is-bordered' : ''} ${stripped ? 'bu-is-striped' : ''}`}
+      style={{ tableLayout: fixed ? 'fixed' : 'auto' }}
     >
-      <thead>
-        <tr>
-          {columns.map((column) => (
-            <th style={{ textAlign: column.textAlign || 'left' }}>{column.title}</th>
-          ))}
-        </tr>
-      </thead>
+      {!headless && (
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th style={{ textAlign: column.textAlign || 'left' }}>{column.title}</th>
+            ))}
+          </tr>
+        </thead>
+      )}
 
       <tbody>
-        {data.map((item) => (
+        {data.map((item, index) => (
           <tr>
             {columns.map((column) => (
               <td style={{ textAlign: column.textAlign || 'left' }}>
                 {column.render
-                  ? column.render(item[column.dataIndex], item)
+                  ? column.render(item[column.dataIndex], item, index, data)
                   : item[column.dataIndex]}
               </td>
             ))}

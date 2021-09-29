@@ -1,19 +1,24 @@
 const NamedHash = render('dev', 'named-hash');
+const Table = render('dev', 'table');
+const ScrollBox = render('dev', 'scroll-box');
+const DashboardCard = render('dev', 'dashboard-card');
+
+const columns = [
+  { title: 'Index', dataIndex: 'index', render: (i, item, index) => `Account #${index + 1}` },
+  {
+    title: 'Address',
+    dataIndex: 'pubkey',
+    render: (i, pubkey) => <NamedHash hash={pubkey} type="address" alignRight />,
+  },
+];
 
 add(({ id, instruction }) => {
-  // const data = instruction.data;
-  //
-  const programId = instruction.programId;
+  console.log(instruction);
   return (
-    <ul>
-      <li>
-        ProgramId: <NamedHash hash={programId} type="address" />
-      </li>
-      {instruction.accounts.map((pubkey, i) => (
-        <li key={i}>
-          <NamedHash hash={pubkey} type="address" />
-        </li>
-      ))}
-    </ul>
+    <DashboardCard subcard style={{ padding: 0 }}>
+      <ScrollBox>
+        <Table stripped headless columns={columns} data={instruction.accounts} />
+      </ScrollBox>
+    </DashboardCard>
   );
 });

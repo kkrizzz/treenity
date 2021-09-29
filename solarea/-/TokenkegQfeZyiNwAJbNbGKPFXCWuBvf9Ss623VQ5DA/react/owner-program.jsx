@@ -1,7 +1,7 @@
 const { BufferLayout, SolanaLayout, Buffer, useMetaplexNFT } = solarea;
 const { PublicKey } = solanaWeb3;
 
-const BulmaCard = render('dev', 'bulma-card');
+const DashboardCard = render('dev', 'dashboard-card');
 const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
 
@@ -56,109 +56,54 @@ add(({ account, entityId }) => {
     `,
   );
   return (
-    <BulmaCard>
-      <div className="bu-media">
-        <div className="bu-media-left">
-          <figure className="bu-image bu-is-64x64">
-            {tokensInfo && tokensInfo.logoURI ? (
-              <img src={tokensInfo.logoURI} alt="Placeholder image" />
-            ) : (
-              <RandomImageWithNonce width={64} address={entityId} />
-            )}
-          </figure>
+    <DashboardCard gradient color={{ background: 'white' }}>
+      <div className="bu-columns">
+        <div className="bu-column bu-is-8">
+          {nftTokenData && (
+            <div className="bu-media bu-is-justify-content-start bu-is-align-items-start">
+              <img src={nftTokenData.image} width={256} />
+              <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 20 }}>
+                <div style={{ margin: '44px 0' }}>
+                  <p style={{ fontSize: 14, fontWight: 600 }}>
+                    {nftTokenData ? 'NFT token' : 'Token'}
+                  </p>
+                  <p style={{ fontSize: 20, fontWight: 600 }}>
+                    {nftTokenData?.name || tokensInfo?.name?.toString() || 'Unknown token'}
+                    {tokensInfo && (
+                      <div className="m-l-8 bu-tag bu-is-light">{tokensInfo.symbol}</div>
+                    )}
+                  </p>
+                </div>
+                <DashboardCard subcard>
+                  <span style={{ fontSize: 14 }}>{nftTokenData.description}</span>
+                </DashboardCard>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="bu-media-content">
-          <p className="bu-title bu-is-4">
-            {nftTokenData?.name || tokensInfo?.name?.toString() || 'Unknown token'}
-            {tokensInfo && <div className="m-l-8 bu-tag bu-is-light">{tokensInfo.symbol}</div>}
-          </p>
-          <p className="bu-subtitle bu-is-6">{nftTokenData ? 'NFT token' : 'Token'}</p>
-        </div>
-        <div className="bu-media-right">
-          <div
-            onClick={() => setViewMore(!viewMore)}
-            style={{ cursor: 'pointer' }}
-            className="bu-tag bu-is-link"
-          >
-            {viewMore ? 'Hide ↑' : 'More ↓'}
-          </div>
-        </div>
-      </div>
-      {nftTokenData && (
-        <div className="bu-media bu-is-justify-content-center bu-is-align-items-center">
-          <img src={nftTokenData.image} width={256} />
-          <div
-            className="bu-notification bu-tc-monospace log-messages"
-            style={{
-              flex: 0.6,
-              background: 'var(--theme-logs-bg)',
-              color: 'var(--theme-main-color)',
-              margin: '-1rem',
-              marginLeft: 16,
-            }}
-          >
-            {nftTokenData.description}
-          </div>
-        </div>
-      )}
-      {!nftTokenData && !isNftDataLoading && (
-        <div>
-          <TwoColumn first="Supply" second={decoded.supply / Math.pow(10, decoded.decimals)} />
-          <TwoColumn first="Decimals" second={decoded.decimals} />
-        </div>
-      )}
-      {tokensInfo && tokensInfo.extensions?.website && (
-        <TwoColumn
-          first="Website"
-          second={
-            <a target="_blank" href={tokensInfo.extensions.website}>
-              {tokensInfo.extensions.website}
-            </a>
-          }
-        />
-      )}
-      {nftTokenData && (
-        <div>
-          <TwoColumn
-            first="Creator"
-            second={
+
+        {nftTokenData && (
+          <div className="bu-column bu-is-4">
+            <DashboardCard size="small" title="Creator" subcard>
               <NamedHash
                 type="address"
                 alignRight
                 hash={nftTokenData.properties.creators[0].address}
               />
-            }
-          />
-          <TwoColumn
-            first="Marketplace"
-            second={
-              <a class="bu-tc-link" target="_blank" href={nftTokenData.external_url}>
+            </DashboardCard>
+            <DashboardCard size="small" title="Marketplace" subcard>
+              <a className="bu-tc-link" target="_blank" href={nftTokenData.external_url}>
                 Metaplex
               </a>
-            }
-          />
-          <TwoColumn
-            first="Metadata"
-            second={
+            </DashboardCard>
+            <DashboardCard size="small" title="Metadata" subcard>
               <a className="bu-tc-link" target="_blank" href={nftTokenData.metadataUrl}>
                 <Render id="icons" name="arweave" />
               </a>
-            }
-          />
-        </div>
-      )}
-      {viewMore && (
-        <div>
-          <TwoColumn
-            first="Mint Authority"
-            second={<Hash alignRight hash={decoded.mintAuthority} type="address" />}
-          />
-          <TwoColumn
-            first="Freeze Authority"
-            second={<Hash alignRight hash={decoded.freezeAuthority} type="address" />}
-          />
-        </div>
-      )}
-    </BulmaCard>
+            </DashboardCard>
+          </div>
+        )}
+      </div>
+    </DashboardCard>
   );
 });
