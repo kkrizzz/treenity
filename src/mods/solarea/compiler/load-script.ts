@@ -56,6 +56,8 @@ export function reactToHtmPreact(execCode: string) {
       const end = c === '<' ? execCode.indexOf('>', i) + 1 : i + 2;
       if (!tags.length) {
         let jsxText = fixHtmlInnerCode(execCode.slice(start, end).trim())
+          .replace(/\${\.\.\./g, '...${')
+          .replace(/\${\/\*((.|\n)*?)\*\/}/g, '')
           // .replace(/\{(.*?)\}/g, '${$1}')
           .replace(/<([A-Z][\w\d_]*)/g, '<${$1}');
         jsxText = fixFragments(jsxText);

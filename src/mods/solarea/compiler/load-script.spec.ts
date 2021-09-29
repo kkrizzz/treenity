@@ -94,5 +94,60 @@ describe('load-script', () => {
       \`
       `);
     });
+
+    it('skip comments', () => {
+      const htmlText = reactToHtmPreact(`
+      <>
+        <Render id="dev" name="bulma-card" header="Account Inputs">
+          {isLoading ? <span class="spinner"></span> : <AccountInputs tx={tx}></AccountInputs>}
+        </Render>
+        {/*<Render id="dev" name="bulma-card" header="Account Inputs">*/}1
+        {/*  {isLoading ? <span class="spinner"></span> : <AccountInputs tx={tx}></AccountInputs>}*/}2
+        {/*</Render>*/}3
+        <div />
+      </>
+      `);
+
+      expect(htmlText).toBe(`
+      html\`
+        <\${Render} id="dev" name="bulma-card" header="Account Inputs">
+          \${isLoading ? html\`<span class="spinner"></span>\` : html\`<\${AccountInputs} tx=\${tx}></AccountInputs>\`}
+        </Render>
+        1
+        2
+        3
+        <div />
+      \`
+      `);
+    });
+
+    it('skip multiline comment', () => {
+      const htmlText = reactToHtmPreact(`
+      <>
+        <Render id="dev" name="bulma-card" header="Account Inputs">
+          {isLoading ? <span class="spinner"></span> : <AccountInputs tx={tx}></AccountInputs>}
+        </Render>
+        {/*<Render id="dev" name="bulma-card" header="Account Inputs">
+          {isLoading ? <span class="spinner"></span> : <AccountInputs tx={tx}></AccountInputs>}
+        </Render>*/}
+        <div />
+      </>
+      `);
+      console.log(htmlText);
+
+      expect(htmlText).toBe(`
+      html\`
+        <\${Render} id="dev" name="bulma-card" header="Account Inputs">
+          \${isLoading ? html\`<span class="spinner"></span>\` : html\`<\${AccountInputs} tx=\${tx}></AccountInputs>\`}
+        </Render>
+        
+        <div />
+      \`
+      `);
+    });
+    it('spread props', () => {
+      const htmlText = reactToHtmPreact(`<{ClusterStats} {...{ test: true }} />`);
+      expect(htmlText).toBe(`html\`<\${ClusterStats} ...\${{ test: true }} />\``);
+    });
   });
 });
