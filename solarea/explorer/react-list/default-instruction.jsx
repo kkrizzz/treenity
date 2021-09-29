@@ -18,6 +18,17 @@ add(({ instruction }) => {
   if (instruction.parsed) {
     return <pre>{JSON.stringify(instruction.parsed.info, null, 2)}</pre>;
   }
+  useCSS(
+    'default-instruction.css',
+    css`
+      .default-instruction__log {
+        overflow-wrap: anywhere;
+        background: var(--theme-logs-bg) !important;
+        color: var(--theme-logs-color) !important;
+        max-width: 440px;
+      }
+    `,
+  );
 
   return (
     <div>
@@ -29,14 +40,7 @@ add(({ instruction }) => {
       <DashboardCard subcard>
         <div className="bu-columns bu-is-mobile" style={{ justifyContent: 'space-between' }}>
           <div className={`bu-column bu-is-4 text-overflow`}>Data</div>
-          <pre
-            className="bu-column bu-tc-monospace"
-            style={{
-              overflowWrap: 'anywhere',
-              background: '#232323',
-              maxWidth: 440,
-            }}
-          >
+          <pre className="bu-column bu-tc-monospace default-instruction__log">
             {instruction.parsed
               ? JSON.stringify(instruction.parsed, null, 2)
               : instruction.data.toString('hex')}

@@ -48,7 +48,7 @@ add(() => {
           <BulmaCard header="Loading token data . . ." />
         ) : (
           <DashboardSection title="Tokens">
-            <div style={{ padding: 0, borderRadius: 12 }} className="bu-card m-b-8">
+            <div className="bu-card m-b-8">
               <ScrollBox>
                 <Table stripped columns={columns} data={tokenData} />
               </ScrollBox>

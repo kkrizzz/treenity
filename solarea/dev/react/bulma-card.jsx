@@ -2,7 +2,9 @@ add((props) => {
   return (
     <div
       class="bu-card m-b-8"
-      style={{ borderRadius: 12, padding: 0, boxShadow: 'none !important' }}
+      style={{
+        padding: 0,
+      }}
     >
       {props.header && (
         <header class="bu-card-header">

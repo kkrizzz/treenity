@@ -175,7 +175,7 @@ const Search = ({ onChange }) => {
           <div
             style={{
               background: 'var(--theme-a-color)',
-              borderRadius: 12,
+              borderRadius: 'var(--theme-border-radus)',
               color: 'white',
               cursor: 'pointer',
               width: 60,

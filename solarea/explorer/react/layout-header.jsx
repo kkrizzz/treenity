@@ -79,7 +79,7 @@ add(() => {
 
             <div className="bu-navbar-item bu-is-hoverable">
               <div
-                style={{ borderRadius: 12, overflow: 'hidden' }}
+                style={{ borderRadius: 'var(--theme-border-radus)', overflow: 'hidden' }}
                 className="bu-navbar-link bu-is-primary bu-has-text-white bu-has-background-primary bu-has-text-weight-bold"
               >
                 {clusterName}
@@ -102,7 +102,7 @@ add(() => {
                   <div
                     style={{
                       background: 'var(--theme-a-color)',
-                      borderRadius: 12,
+                      borderRadius: 'var(--theme-border-radus)',
                       color: 'white',
                       cursor: 'pointer',
                       width: 60,

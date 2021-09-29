@@ -12,7 +12,7 @@ const Component = ({ tabs }) => {
 
       .bu-tabs li {
         color: var(--theme-main-content-color) !important;
-        border-radius: 12px 12px 0 0;
+        border-radius: var(--theme-border-radus) var(--theme-border-radus) 0 0;
         padding: 16px 36px;
         font-weight: 600;
         font-size: 16px;

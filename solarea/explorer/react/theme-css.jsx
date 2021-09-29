@@ -5,6 +5,13 @@ const themeCss = css`
   * {
     --theme-font-monospace: 'Roboto Mono';
     --theme-font: 'Roboto';
+
+    --theme-xsmall-font-size: 14px;
+    --theme-small-font-size: 16px;
+    --theme-medium-font-size: 20px;
+    --theme-large-font-size: 40px;
+
+    --theme-border-radus: 12px;
   }
 
   html,
@@ -45,11 +52,6 @@ const themeCss = css`
     color: var(--theme-tabs-active-color) !important;
   }
 
-  .bu-card {
-    padding: 8px;
-    width: inherit !important;
-  }
-
   .bu-card-header {
     box-shadow: none !important;
   }
@@ -58,8 +60,10 @@ const themeCss = css`
     color: var(--theme-main-color);
     background: var(--theme-card-bg-color);
     padding: 8px;
-    box-shadow: none !important;
+    box-shadow: none;
     width: inherit !important;
+    border-radius: var(--theme-border-radus) !important;
+    overflow: hidden;
   }
 
   .bu-card-header-title {
@@ -115,7 +119,7 @@ const themeCss = css`
     border-color: var(--theme-a-color);
   }
   .bu-input {
-    border-radius: 12px !important;
+    border-radius: var(--theme-border-radus) !important;
   }
   .bu-is-primary.bu-input,
   .bu-is-primary.bu-textarea {
@@ -144,7 +148,7 @@ const themeCss = css`
     border-radius: 11px !important;
   }
   a.bu-navbar-item {
-    border-radius: 12px !important;
+    border-radius: var(--theme-border-radus) !important;
   }
   a.bu-navbar-item:hover {
     background: transparent !important;
@@ -164,7 +168,7 @@ const themeCss = css`
       left: auto !important;
       right: 12px;
       background: var(--theme-subcard-bg-color);
-      border-radius: 12px !important;
+      border-radius: var(--theme-border-radus) x !important;
       //box-shadow: var(--theme-card-shadow) !important;
     }
   }

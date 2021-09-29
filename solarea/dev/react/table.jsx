@@ -30,7 +30,7 @@ const Table = ({
       }
 
       .bu-table {
-        border-radius: 12px;
+        border-radius: var(--theme-border-radus);
         overflow: hidden;
         color: var(--theme-main-color);
         font-weight: bold;

@@ -148,7 +148,10 @@ const AccountInputs = ({ tx }) => {
     details: getDetails(key, tx.transaction.message, feePayer),
   }));
   return (
-    <div style={{ padding: 0, borderRadius: 12, overflow: 'hidden' }} className="bu-card m-b-8">
+    <div
+      style={{ padding: 0, boxShadow: '0 4px 50px rgba(40, 61, 113, 0.1)' }}
+      className="bu-card m-b-8"
+    >
       <ScrollBox minWidth={950}>
         <Table columns={columns} data={data} stripped />
       </ScrollBox>
@@ -164,7 +167,7 @@ const TransactionLog = ({ tx }) => {
         style={{
           background: 'var(--theme-logs-bg)',
           color: 'var(--theme-logs-color)',
-          borderRadius: 12,
+          borderRadius: 'var(--theme-border-radus)',
         }}
       >
         {tx.meta.logMessages.map((text) => (
