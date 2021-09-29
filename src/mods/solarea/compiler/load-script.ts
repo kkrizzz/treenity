@@ -19,9 +19,9 @@ function fixHtmlInnerCode(code: string) {
   for (let i = 0; i < code.length; i++) {
     const c = code[i];
 
-    if (c === '{') {
+    if (c === '{' && code[i + 1] !== '/') {
       inners.push(i);
-    } else if (c === '}') {
+    } else if (c === '}' && code[i - 1] !== '/') {
       const start = inners.pop() || 0;
       if (inners.length !== 0) continue;
       const end = i;
@@ -57,7 +57,7 @@ export function reactToHtmPreact(execCode: string) {
       if (!tags.length) {
         let jsxText = fixHtmlInnerCode(execCode.slice(start, end).trim())
           .replace(/\${\.\.\./g, '...${')
-          .replace(/\${\/\*((.|\n)*?)\*\/}/g, '')
+          // .replace(/\${\/\*((.|\n)*?)\*\/}/g, '')
           // .replace(/\{(.*?)\}/g, '${$1}')
           .replace(/<([A-Z][\w\d_]*)/g, '<${$1}');
         jsxText = fixFragments(jsxText);

@@ -113,9 +113,9 @@ describe('load-script', () => {
         <\${Render} id="dev" name="bulma-card" header="Account Inputs">
           \${isLoading ? html\`<span class="spinner"></span>\` : html\`<\${AccountInputs} tx=\${tx}></AccountInputs>\`}
         </Render>
-        1
-        2
-        3
+        {/*<\${Render} id="dev" name="bulma-card" header="Account Inputs">*/}1
+        {/*  \${isLoading ? html\`<span class="spinner"></span>\` : html\`<\${AccountInputs} tx=\${tx}></AccountInputs>\`}*/}2
+        {/*</Render>*/}3
         <div />
       \`
       `);
@@ -140,7 +140,9 @@ describe('load-script', () => {
         <\${Render} id="dev" name="bulma-card" header="Account Inputs">
           \${isLoading ? html\`<span class="spinner"></span>\` : html\`<\${AccountInputs} tx=\${tx}></AccountInputs>\`}
         </Render>
-        
+        {/*<\${Render} id="dev" name="bulma-card" header="Account Inputs">
+          \${isLoading ? html\`<span class="spinner"></span>\` : html\`<\${AccountInputs} tx=\${tx}></AccountInputs>\`}
+        </Render>*/}
         <div />
       \`
       `);
