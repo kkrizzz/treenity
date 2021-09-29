@@ -23,22 +23,49 @@ add(
     info,
     children,
     color,
+    subcard = false,
+    style = {},
   }) => {
-    const titleFontSize = size === 'medium' ? 14 : 20;
-    const contentFontSize = size === 'medium' ? 20 : 40;
+    const defaultColor = subcard ? 'var(--theme-subcard-bg-color)' : 'var(--theme-card-bg-color)';
 
     useCSS(
       'dashboard-card.css',
       css`
         .dashboard-card {
           color: var(--theme-main-color);
-          box-shadow: var(--theme-card-shadow);
           position: relative;
-          border-radius: 16px !important;
-          padding: 16px !important;
+          border-radius: var(--theme-border-radus);
+          overflow: hidden;
+          padding: 16px;
           width: 100%;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 50px rgba(40, 61, 113, 0.1);
+        }
+        .dashboard-card.dashboard-card_subcard {
+          box-shadow: none;
+        }
+
+        .dashboard-card_small > .dashboard-card__header,
+        .dashboard-card_medium > .dashboard-card__header {
+          font-size: var(--theme-xsmall-font-size);
+        }
+        .dashboard-card_small > .dashboard-card__content {
+          font-size: var(--theme-small-font-size);
+        }
+        .dashboard-card_large > .dashboard-card__header,
+        .dashboard-card_medium > .dashboard-card__content {
+          font-size: var(--theme-medium-font-size);
+        }
+        .dashboard-card_large > .dashboard-card__content {
+          font-size: var(--theme-large-font-size);
+        }
+        .dashboard-card:last-child {
+          margin-bottom: 0;
         }
         .dashboard-card__header {
+          width: 100%;
+          display: flex;
+          align-items: flex-start;
           margin-bottom: 4px;
         }
         .dashboard-card__title {
@@ -48,41 +75,49 @@ add(
           font-weight: bold;
           overflow: hidden;
         }
+        .dashboard-card__content:empty {
+          display: none;
+        }
         .dashboard-card__info {
           font-weight: 600;
           font-size: 16px;
-          line-height: 19px;
-          position: absolute;
-          right: 12px;
-          top: 12px;
           text-align: right;
+          margin-left: auto;
         }
       `,
     );
 
     return (
       <div
-        className={`dashboard-card`}
+        className={`dashboard-card dashboard-card_${size} ${
+          subcard ? 'dashboard-card_subcard' : ''
+        }`}
         style={{
           background: gradient
-            ? `radial-gradient( 200.42% 204.83% at -120% -50%, ${
+            ? `radial-gradient( 300% 300% at 300% 250%, ${
                 (color instanceof Object ? color.background : color) || 'transparent'
-              } 0%, var(--theme-d-card-bg-color) 100%)`
-            : (color instanceof Object ? color.background : color) ||
-              'var(--theme-d-card-bg-color)',
+              } 0%, ${defaultColor}`
+            : (color instanceof Object ? color.background : color) || defaultColor,
+          ...style,
         }}
       >
         {title && (
           <header className="dashboard-card__header">
-            <p className="dashboard-card__title" style={{ fontSize: titleFontSize }}>
-              {title}
-            </p>
+            <p className="dashboard-card__title">{title}</p>
+
+            {info && (
+              <div
+                className="dashboard-card__info"
+                style={{ color: color instanceof Object ? color.info : color }}
+              >
+                {info}
+              </div>
+            )}
           </header>
         )}
         <div
           className="dashboard-card__content"
           style={{
-            fontSize: contentFontSize,
             color: color instanceof Object ? color.content : color,
           }}
         >
@@ -97,14 +132,6 @@ add(
             numberWithSpaces(value)
           )}
         </div>
-        {info && (
-          <div
-            className="dashboard-card__info"
-            style={{ color: color instanceof Object ? color.info : color }}
-          >
-            {info}
-          </div>
-        )}
       </div>
     );
   },

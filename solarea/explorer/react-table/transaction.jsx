@@ -1,13 +1,6 @@
 const InstructionBadge = render(null, 'instruction', 'react-text');
 const Hash = render('dev', 'hash');
-
-function shortString(str, max) {
-  if (str.length > max) {
-    const half = max / 2 - 1;
-    return str.substr(0, half) + '...' + str.substr(str.length - half, str.length);
-  }
-  return str;
-}
+const DashboardCard = render('dev', 'dashboard-card');
 
 add(({ transaction, signature }) => {
   let loading = false;
@@ -23,31 +16,57 @@ add(({ transaction, signature }) => {
   const txDate = new Date(transaction.blockTime * 1000);
 
   return (
-    <div class="bu-columns bu-is-mobile">
-      <div class="bu-column bu-is-4 text-overflow bu-is-code">
-        <Hash hash={signature} type="tx" />
-      </div>
+    <DashboardCard title={<Hash hash={signature} type="tx" />}>
       <div
-        style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}
-        className={`bu-column ${hasTime ? 'bu-is-4' : 'bu-is-6'} bu-is-mobile`}
+        className="bu-media  bu-is-align-items-center"
+        style={{
+          fontSize: 12,
+          color: 'var(--theme-main-content-color)',
+          paddingTop: 12,
+          flexWrap: 'wrap',
+        }}
       >
-        {transaction.transaction.message.instructions.map((i) => (
-          <InstructionBadge
-            id={i.programId}
-            instruction={i}
-            render={(elem) => <div className="bu-tag bu-is-black">{elem}</div>}
-            fallback={() => <div class="bu-tag bu-is-light bu-is-danger">unknown</div>}
-          />
-        ))}
-      </div>
-      {hasTime && (
-        <div className="bu-column bu-is-2 bu-is-mobile">
-          <Render id="dev" name="time-ago" date={txDate} />
+        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 4 }}>
+          {transaction.transaction.message.instructions.map((i) => (
+            <InstructionBadge
+              id={i.programId}
+              instruction={i}
+              render={(elem) => (
+                <div
+                  className="bu-tag"
+                  style={{
+                    border: '1px solid var(--theme-a-color)',
+                    color: 'var(--theme-a-color)',
+                    background: 'transparent',
+                  }}
+                >
+                  {elem}
+                </div>
+              )}
+              fallback={() => (
+                <div
+                  className="bu-tag"
+                  style={{
+                    border: '1px solid var(--theme-main-content-color)',
+                    color: 'var(--theme-main-content-color)',
+                    background: 'transparent',
+                  }}
+                >
+                  unknown
+                </div>
+              )}
+            />
+          ))}
         </div>
-      )}
-      <div className="bu-column bu-is-2 bu-is-mobile">
-        <Render id="dev" name="success-badge" success={!transaction.meta?.err} />
+
+        <div style={{ marginLeft: 'auto', width: 'max-content' }}>
+          <span style={{ marginRight: 8 }}>
+            {hasTime && <Render id="dev" name="time-ago" date={txDate} />}
+          </span>
+
+          <Render id="dev" name="success-badge" success={!transaction.meta?.err} />
+        </div>
       </div>
-    </div>
+    </DashboardCard>
   );
 });

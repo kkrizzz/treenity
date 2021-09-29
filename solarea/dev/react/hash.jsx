@@ -5,6 +5,45 @@ const Link = render('dev', 'link');
 const FeCopy = render('icons', 'fe-copy');
 
 const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
+  useCSS(
+    'hash.css',
+    css`
+      .hash-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .hash-copy-icon {
+        float: left;
+        margin-right: 4px;
+        width: 1em;
+        height: 1em;
+        min-width: 20px;
+        min-height: 20px;
+        cursor: pointer;
+        background: var(--theme-main-bg-color);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--theme-main-content-color);
+      }
+
+      .hash-copy-icon svg {
+        width: 8px;
+        height: 8px;
+        margin: 6px;
+        display: flex;
+      }
+
+      .hash-copy-content {
+        max-width: calc(100% - 24px);
+      }
+      .hash-copy-content > * {
+        display: flex;
+      }
+    `,
+  );
   const parsedHash = numberWithSpaces(hash);
 
   const fallback = (str = parsedHash) => {
@@ -32,26 +71,30 @@ const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
   };
 
   return (
-    <div style={alignRight ? { display: 'flex', justifyContent: 'flex-end' } : {}}>
-      <div
-        style={{ float: 'left', marginRight: 4, width: 12, cursor: 'pointer' }}
-        onClick={copyHash}
-      >
+    <div
+      className="hash-container"
+      style={{ justifyContent: alignRight ? 'flex-end' : 'flex-start' }}
+    >
+      <div className="hash-copy-icon" onClick={copyHash}>
         <FeCopy />
       </div>
-      {type ? (
-        <Link
-          to={`/${type}/${hash}${urlParams ? `?${urlParams}` : ''}`}
-          className="bu-tc-link bu-monospace"
-          style={{ display: 'flex' }}
-        >
-          {!!children ? (typeof children === 'string' ? fallback(children) : children) : fallback()}
-        </Link>
-      ) : (
-        <div style={{ display: 'flex' }} className="bu-monospace">
-          {children || fallback()}
-        </div>
-      )}
+
+      <div className="hash-copy-content">
+        {type ? (
+          <Link
+            to={`/${type}/${hash}${urlParams ? `?${urlParams}` : ''}`}
+            className="bu-tc-link bu-monospace"
+          >
+            {!!children
+              ? typeof children === 'string'
+                ? fallback(children)
+                : children
+              : fallback()}
+          </Link>
+        ) : (
+          <div className="bu-monospace">{children || fallback()}</div>
+        )}
+      </div>
     </>
   );
 };

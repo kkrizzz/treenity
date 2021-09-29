@@ -1,9 +1,9 @@
-add(({ title, children }) => {
+add(({ title, style = {}, children }) => {
   useCSS(
     'dashboard-section.css',
     css`
       .dashboard-section {
-        margin-bottom: 40px !important;
+        margin-bottom: 40px;
       }
       .dashboard-section__title {
         font-weight: 600;
@@ -26,7 +26,7 @@ add(({ title, children }) => {
   );
 
   return (
-    <div class="bu-block dashboard-section">
+    <div class="dashboard-section" style={{ ...style }}>
       <div class="dashboard-section__title">{title}</div>
       <div class="dashboard-section__separate-line" />
       <div class="dashboard-section__content">{children}</div>

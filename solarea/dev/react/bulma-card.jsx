@@ -1,6 +1,11 @@
 add((props) => {
   return (
-    <div class="bu-card m-b-8">
+    <div
+      class="bu-card m-b-8"
+      style={{
+        padding: 0,
+      }}
+    >
       {props.header && (
         <header class="bu-card-header">
           <p class="bu-card-header-title">{props.header}</p>

@@ -10,6 +10,7 @@ const Tabs = render('dev', 'tabs', 'react');
 const Link = render('dev', 'link');
 const TwoColumn = render('dev', 'two-column');
 const TransactionRow = render('explorer', 'transaction', 'react-table');
+const DashboardSection = render('dev', 'dashboard-section');
 
 const VOTE_PROGRAM_ID = 'Vote111111111111111111111111111111111111111';
 
@@ -198,44 +199,48 @@ const EthereumBlockView = ({ entityId }) => {
 
   return (
     <div className="bu-container bu-is-max-desktop">
-      <BulmaCard header={<div class="flex-between">Block</div>} />
-      <BulmaCard header="Overview">
-        <div class="bu-columns" style={{ overflowY: 'auto' }}>
-          <div class="bu-column">
-            <TwoColumn first="Block height" second={entityId} />
-            <TwoColumn first="Block hash" second={block.hash} />
-            <TwoColumn first="Size" second={parse16(block.size) + '\tbytes'} />
-            <TwoColumn first="Num of transactions" second={block.transactions.length} />
-            <TwoColumn first="Difficulty" second={parse16(block.difficulty)} />
-            <TwoColumn first="Nonce" second={block.nonce} />
-            <TwoColumn first="Gas used" second={parse16(block.gasUsed)} />
-          </div>
-        </div>
-      </BulmaCard>
-      <BulmaCard header="Transactions">
-        <div className="bu-columns bu-is-mobile">
-          <div className="bu-column bu-is-4">Hash</div>
-          <div className="bu-column bu-is-4">From</div>
-          <div className="bu-column bu-is-4">To</div>
-        </div>
-        {block.transactions.map((tx) => {
-          const { hash, to, from } = tx;
-
-          return (
-            <div className="bu-columns bu-is-mobile">
-              <div className="bu-column bu-is-4 text-overflow">
-                <Hash hash={hash} type="tx" />
-              </div>
-              <div className="bu-column bu-is-4 text-overflow">
-                <NamedHash hash={from} type="address" urlParams="chain=evm" />
-              </div>
-              <div className="bu-column bu-is-4 text-overflow">
-                <NamedHash hash={to} type="address" urlParams="chain=evm" />
-              </div>
+      <DashboardSection title="Block overview">
+        <BulmaCard>
+          <div class="bu-columns" style={{ overflowY: 'auto' }}>
+            <div class="bu-column">
+              <TwoColumn first="Block height" second={entityId} />
+              <TwoColumn first="Block hash" second={block.hash} />
+              <TwoColumn first="Size" second={parse16(block.size) + '\tbytes'} />
+              <TwoColumn first="Num of transactions" second={block.transactions.length} />
+              <TwoColumn first="Difficulty" second={parse16(block.difficulty)} />
+              <TwoColumn first="Nonce" second={block.nonce} />
+              <TwoColumn first="Gas used" second={parse16(block.gasUsed)} />
             </div>
-          );
-        })}
-      </BulmaCard>
+          </div>
+        </BulmaCard>
+      </DashboardSection>
+
+      <DashboardSection title="Transactions">
+        <BulmaCard>
+          <div className="bu-columns bu-is-mobile">
+            <div className="bu-column bu-is-4">Hash</div>
+            <div className="bu-column bu-is-4">From</div>
+            <div className="bu-column bu-is-4">To</div>
+          </div>
+          {block.transactions.map((tx) => {
+            const { hash, to, from } = tx;
+
+            return (
+              <div className="bu-columns bu-is-mobile">
+                <div className="bu-column bu-is-4 text-overflow">
+                  <Hash hash={hash} type="tx" />
+                </div>
+                <div className="bu-column bu-is-4 text-overflow">
+                  <NamedHash hash={from} type="address" urlParams="chain=evm" />
+                </div>
+                <div className="bu-column bu-is-4 text-overflow">
+                  <NamedHash hash={to} type="address" urlParams="chain=evm" />
+                </div>
+              </div>
+            );
+          })}
+        </BulmaCard>
+      </DashboardSection>
     </div>
   );
 };

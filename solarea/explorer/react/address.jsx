@@ -8,6 +8,36 @@ const EthAddressTokens = render('explorer', 'eth-address-tokens');
 const TransactionRow = render('explorer', 'transaction', 'react-table');
 const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
+const DashboardSection = render('dev', 'dashboard-section');
+const DashboardCard = render('dev', 'dashboard-card');
+const Table = render('dev', 'table');
+const ScrollBox = render('dev', 'scroll-box');
+
+const columns = [
+  {
+    title: 'Hash',
+    dataIndex: 'hash',
+    render: (hash) => <Hash hash={hash} type="tx" />,
+  },
+  {
+    title: 'From',
+    dataIndex: 'from',
+    render: (from) => (
+      <NamedHash hash={solarea.vlxToEth(from)} type="address" urlParams="chain=evm" />
+    ),
+  },
+  {
+    title: 'To',
+    dataIndex: 'to',
+    render: (to) => <NamedHash hash={solarea.vlxToEth(to)} type="address" urlParams="chain=evm" />,
+  },
+  {
+    title: 'Time',
+    dataIndex: 'timeStamp',
+    textAlign: 'right',
+    render: (timeStamp) => <TimeAgo date={new Date(timeStamp * 1000)} />,
+  },
+];
 
 const InfoCard = (t) => (
   <div class="bu-container bu-is-max-desktop">
@@ -72,33 +102,15 @@ const EthereumAddressView = ({ entityId }) => {
         if (!accountTokensArr.length) return <div>Transactions not found</div>;
 
         return (
-          <div>
-            <div className="bu-columns bu-is-mobile">
-              <div className="bu-column bu-is-3">Hash</div>
-              <div className="bu-column bu-is-3">From</div>
-              <div className="bu-column bu-is-3 text-overflow">To</div>
-              <div className="bu-column bu-is-3 text-overflow">Time</div>
-            </div>
-            {accountTokensArr.slice(0, txListLimit).map((tx, key) => {
-              const from = solarea.vlxToEth(tx.from);
-              const to = solarea.vlxToEth(tx.to);
-              return (
-                <div className="bu-columns bu-is-mobile" key={key}>
-                  <div className="bu-column bu-is-3 text-overflow">
-                    <Hash hash={tx.hash} type="tx" />
-                  </div>
-                  <div className="bu-column bu-is-3 text-overflow">
-                    <NamedHash hash={from} type="address" urlParams="chain=evm" />
-                  </div>
-                  <div className="bu-column bu-is-3 text-overflow">
-                    <NamedHash hash={to} type="address" urlParams="chain=evm" />
-                  </div>
-                  <div className="bu-column bu-is-3 text-overflow">
-                    <TimeAgo date={new Date(tx.timeStamp * 1000)} />
-                  </div>
-                </div>
-              );
-            })}
+          <>
+            <ScrollBox>
+              <Table
+                stripped
+                fixed
+                columns={columns}
+                data={accountTokensArr.slice(0, txListLimit)}
+              />
+            </ScrollBox>
 
             {txListLimit < accountTokensArr.length && (
               <button
@@ -108,13 +120,17 @@ const EthereumAddressView = ({ entityId }) => {
                 Load more...
               </button>
             )}
-          </div>
+          </>
         );
       },
     },
     {
       name: 'Tokens',
-      content: () => <EthAddressTokens entityId={entityId} />,
+      content: () => (
+        <BulmaCard>
+          <EthAddressTokens entityId={entityId} />
+        </BulmaCard>
+      ),
     },
   ];
 
@@ -126,23 +142,27 @@ const EthereumAddressView = ({ entityId }) => {
         render={(item) => <BulmaCard header="View">{item}</BulmaCard>}
         fallback={() => null}
       />
-      <BulmaCard header="Account overview">
+      <DashboardSection title="Account overview">
         <AccountName
           id={entityId}
-          render={(item) => <TwoColumn first="Label" second={item} />}
+          render={(item) => <DashboardCard title="Label">{item}</DashboardCard>}
           fallback={() => null}
         />
-        <TwoColumn first="Address" second={<Hash hash={entityId} type="address" alignRight />} />
-        <TwoColumn
-          first="Balance"
-          second={`${parsedBalance === 0 ? parsedBalance : (parsedBalance * LPS).toFixed(8)} VLX`}
-        />
-      </BulmaCard>
-      <BulmaCard>
-        <div style={{ marginTop: -16 }}>
-          <Tabs tabs={tabs} />
+        <div className="bu-columns">
+          <div className="bu-column bu-is-8">
+            <DashboardCard title="Address">
+              <Hash hash={entityId} type="address" />
+            </DashboardCard>
+          </div>
+          <div className="bu-column bu-is-4">
+            <DashboardCard title="Balance">
+              {`${parsedBalance === 0 ? parsedBalance : (parsedBalance * LPS).toFixed(8)} VLX`}
+            </DashboardCard>
+          </div>
         </div>
-      </BulmaCard>
+      </DashboardSection>
+
+      <Tabs tabs={tabs} />
     </div>
   );
 };
@@ -162,32 +182,24 @@ const SolanaAddressView = ({ entityId }) => {
     {
       name: 'Transactions',
       content: () => (
-        <div className="bu-columns">
-          <div className="bu-column text-overflow">
-            <div className="bu-columns bu-is-mobile">
-              <div className="bu-column bu-is-4 text-overflow bu-is-code">Signature</div>
-              <div className="bu-column bu-is-4 bu-is-mobile">Instruction</div>
-              <div className="bu-column bu-is-2 bu-is-mobile">Age</div>
-              <div className="bu-column bu-is-mobile">Result</div>
-            </div>
-            {isTxLoading ? (
-              <progress className="bu-progress bu-is-small bu-is-success" max="100">
-                100%
-              </progress>
-            ) : (
-              txs && txs.map((tx) => <TransactionRow signature={tx.signature} />)
-            )}
+        <>
+          {isTxLoading ? (
+            <progress className="bu-progress bu-is-small bu-is-success" max="100">
+              100%
+            </progress>
+          ) : (
+            txs && txs.map((tx) => <TransactionRow signature={tx.signature} />)
+          )}
 
-            {hasNextPage && (
-              <button
-                className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
-                onClick={txFetchNext}
-              >
-                Load more...
-              </button>
-            )}
-          </div>
-        </div>
+          {hasNextPage && (
+            <button
+              className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
+              onClick={txFetchNext}
+            >
+              Load more...
+            </button>
+          )}
+        </>
       ),
     },
     {
@@ -210,32 +222,51 @@ const SolanaAddressView = ({ entityId }) => {
         entityId={entityId}
         fallback={() => null}
       />
-      <BulmaCard header="Account overview">
-        <div class="bu-columns" style={{ overflowY: 'auto' }}>
-          <div class="bu-column">
+
+      <DashboardSection title="Account overview">
+        <DashboardCard>
+          <div className="bu-columns">
             <AccountName
               id={entityId}
-              render={(item) => <TwoColumn first="Label" second={item} />}
+              render={(item) => (
+                <div className="bu-column">
+                  <DashboardCard size="small" subcard title={'Label'}>
+                    {item}
+                  </DashboardCard>
+                </div>
+              )}
               fallback={() => null}
             />
-            <TwoColumn
-              first="Address"
-              second={<Hash hash={entityId} type="address" alignRight />}
-            />
-            <TwoColumn first="Data" second={`${account.data.length} bytes`} />
-            <TwoColumn first="Balance" second={`◎${lpsRound(account.lamports)}`} />
-            <TwoColumn
-              first="Owner"
-              second={<NamedHash hash={account.owner.toString()} type="address" alignRight />}
-            />
+
+            <div className="bu-column">
+              <DashboardCard size="small" subcard title={'Address'}>
+                <div style={{ width: '99%' }}>
+                  <Hash hash={entityId} type="address" />
+                </div>
+              </DashboardCard>
+            </div>
           </div>
-        </div>
-      </BulmaCard>
-      <BulmaCard>
-        <div style={{ marginTop: -16 }}>
-          <Tabs tabs={tabs} />
-        </div>
-      </BulmaCard>
+
+          <div className="bu-columns" style={{ marginBottom: -12 }}>
+            <div className="bu-column bu-is-4">
+              <DashboardCard size="small" subcard title={'Balance'}>
+                ◎{lpsRound(account.lamports)}
+              </DashboardCard>
+            </div>
+            <div className="bu-column bu-is-4">
+              <DashboardCard size="small" subcard title={'Data'}>
+                {account.data.length} bytes
+              </DashboardCard>
+            </div>
+            <div className="bu-column bu-is-4">
+              <DashboardCard size="small" subcard title={'Owner'}>
+                <NamedHash hash={account.owner.toString()} type="address" />
+              </DashboardCard>
+            </div>
+          </div>
+        </DashboardCard>
+      </DashboardSection>
+      <Tabs tabs={tabs} />
     </div>
   );
 };
