@@ -18,9 +18,9 @@ const Link = render('dev', 'link');
 const Switch = render('dev', 'switch');
 
 const NETWORKS = [
-  ['Velas Mainnet', 'https://mainnet.velas.com/rpc'],
-  ['Velas Testnet', 'https://testnet.velas.com/rpc'],
-  ['Velas Devnet', 'https://devnet.velas.com/rpc'],
+  ['Velas Mainnet', 'https://mainnet.velas.com/rpc', 'mainnet'],
+  ['Velas Testnet', 'https://testnet.velas.com/rpc', 'testnet'],
+  ['Velas Devnet', 'https://devnet.velas.com/rpc', 'devnet'],
 
   // ['Solana Mainnet', 'mainnet-beta'],
   // ['Solana Testnet', 'testnet'],
@@ -42,8 +42,8 @@ add(() => {
     }
   };
 
-  const clusterName = NETWORKS.find((n) => n[1] === clusterUrl)?.[0] || clusterUrl;
-  const menuRef = React.useRef();
+  const clusterName = NETWORKS.find((n) => n.includes(clusterUrl))?.[0] || clusterUrl;
+  const [isActive, setIsActive] = React.useState(false);
 
   return (
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
@@ -55,7 +55,7 @@ add(() => {
           <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme} />
 
           <a
-            onClick={(e) => menuRef.current.classList.toggle('bu-is-active')}
+            onClick={(e) => setIsActive((val) => !val)}
             role="button"
             className="bu-navbar-burger"
             aria-label="menu"
@@ -68,7 +68,10 @@ add(() => {
           </a>
         </div>
 
-        <div id="solarea-layout-header" className="bu-navbar-menu" ref={menuRef}>
+        <div
+          id="solarea-layout-header"
+          className={`bu-navbar-menu ${isActive ? 'bu-is-active' : ''}`}
+        >
           <div className="bu-navbar-end">
             <NavLink className="bu-navbar-item" to="/explorer/tokens">
               Tokens

@@ -2,6 +2,13 @@ require('https://fonts.googleapis.com/css?family=Roboto%20Mono&.css');
 require('https://fonts.googleapis.com/css?family=Roboto&.css');
 // require('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@400;500;700&display=swap&.css');
 const themeCss = css`
+  *,
+  *::before,
+  *::after {
+    transition-property: background-color, color;
+    transition-duration: 250ms, 50ms;
+  }
+
   * {
     --theme-font-monospace: 'Roboto Mono';
     --theme-font: 'Roboto';
