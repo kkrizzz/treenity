@@ -62,10 +62,16 @@ const updateData = async (collection) => {
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
+      'X-API-KEY': 'BQYuBhWWLDMGNQ7JbDU9BjOoYycCixU9',
     },
     body: JSON.stringify(params),
   });
 
+  if (tokenDataBitQueryFetch.status !== 200) {
+    throw new Error(
+      `BitQuery: ${tokenDataBitQueryFetch.status}, ${tokenDataBitQueryFetch.statusText}`,
+    );
+  }
   const bitQueryResult = await tokenDataBitQueryFetch.json();
   const dexTrades = bitQueryResult.data.ethereum.dexTrades;
 
@@ -192,22 +198,25 @@ export const indexPriceCron = (app) => {
   app.get('/velas/klines/:base/:quote', async (req, res) => {
     try {
       const { base, quote } = req.params;
+      const { from, to, interval = 1 } = req.query;
+
+      const fromDate = new Date((from || 0) * 1000);
+      const toDate = to ? new Date(to * 1000) : new Date();
 
       const klines = await priceCollection.Model.aggregate([
         {
           $match: {
             'base.address': base,
             'quote.address': quote,
+            time: { $gt: fromDate, $lte: toDate },
           },
         },
         {
           $project: {
             frame: {
-              y: { $year: '$time' },
-              m: { $month: '$time' },
-              d: { $dayOfMonth: '$time' },
-              H: { $hour: '$time' },
-              M: { $minute: '$time' },
+              $trunc: {
+                $divide: [{ $subtract: ['$time', new Date('1970-01-01')] }, interval * 60 * 1000],
+              },
             },
             time: 1,
             qp: 1,
@@ -228,9 +237,6 @@ export const indexPriceCron = (app) => {
         },
         { $sort: { time: 1 } },
       ]).toArray();
-      klines.forEach((k) => {
-        delete k._id;
-      });
       return res.send(klines);
     } catch (e) {
       console.error(e);
@@ -250,11 +256,15 @@ export const indexPriceCron = (app) => {
         {
           $group: {
             _id: '$quote.address',
+            quote: { $first: '$quote' },
+            base: { $first: '$base' },
             market: { $first: '$market' },
           },
         },
       ]).toArray();
-      markets = markets.map((m) => ({ market: m.market, quote: m._id }));
+      markets.forEach((m) => {
+        delete m._id;
+      });
       return res.send(markets);
     } catch (e) {
       console.error(e);
