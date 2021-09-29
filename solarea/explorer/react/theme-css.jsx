@@ -270,7 +270,10 @@ const newDarkThemeVars = css`
 
 add(() => {
   const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
-  useCSS('theme-variables.css', isDarkTheme ? newDarkThemeVars : lightThemeVars);
+  useCSS(
+    `${isDarkTheme ? 'dark' : 'light'}-theme-variables.css`,
+    isDarkTheme ? newDarkThemeVars : lightThemeVars,
+  );
 
   useCSS(
     'bulma-overrides.css',

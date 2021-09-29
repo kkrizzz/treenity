@@ -1,6 +1,6 @@
 const BulmaCard = render('dev', 'bulma-card');
 const Table = render('dev', 'table');
-const NamedHash = render('dev', 'named-hash');
+const Hash = render('dev', 'hash');
 const ScrollBox = render('dev', 'scroll-box');
 const DashboardSection = render('dev', 'dashboard-section');
 
@@ -10,9 +10,7 @@ const columns = [
   {
     title: 'Address',
     dataIndex: 'tokenAddress',
-    render: (tokenAddress) => (
-      <NamedHash hash={tokenAddress} urlParams={'chain=evm'} type="address" />
-    ),
+    render: (tokenAddress) => <Hash hash={tokenAddress} urlParams={'chain=evm'} type="address" />,
   },
   {
     title: 'Supply',

@@ -29,20 +29,29 @@ const idToViewResolvers = [
       );
     }
   },
+  // (id, name, context, query) => {
+  //   if (['account', 'transaction', 'block'].includes(id)) {
+  //     return (
+  //       <Render id="near" name="layout" context={context}>
+  //         <Render {...query} entityId={name} id="near" context={context} name={id} />
+  //       </Render>
+  //     );
+  //   }
+  // },
+  // (id, name, context, query) => {
+  //   if (['near'].includes(id)) {
+  //     return (
+  //       <Render id="near" name="portfolio-layout" context={context}>
+  //         <Render id={id} />
+  //       </Render>
+  //     );
+  //   }
+  // },
   (id, name, context, query) => {
-    if (['account', 'transaction', 'block'].includes(id)) {
+    if (['address', 'tx', 'block'].includes(id)) {
       return (
-        <Render id="near" name="layout" context={context}>
-          <Render {...query} entityId={name} id="near" context={context} name={id} />
-        </Render>
-      );
-    }
-  },
-  (id, name, context, query) => {
-    if (['near'].includes(id)) {
-      return (
-        <Render id="near" name="portfolio-layout" context={context}>
-          <Render id={id} />
+        <Render id="explorer" name="layout" context={context}>
+          <Render {...query} entityId={name} id="explorer" context={context} name={id} />
         </Render>
       );
     }
