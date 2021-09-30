@@ -1,15 +1,26 @@
-const tradingView = await require('/charting_library/charting_library.standalone.js');
-const LastTrades = render('dev', 'last-trades');
+const LastTrades = render('velas-dextools', 'last-trades');
+const TradingView = render('dev', 'trading-view');
+
+function loadKlines(symbolInfo, resolution, from, to) {
+  console.log(symbolInfo, resolution, from, to);
+  const { base, quote } = symbolInfo;
+  return fetch(
+    `/velas/klines/${base.address}/${quote.address}?from=${from}&to=${to}&interval=${resolution}`,
+  )
+    .then((res) => res.json())
+    .then((klines) => {
+      klines.forEach((k) => {
+        const interMs = +resolution * 60 * 1000;
+        k.time = new Date(k._id * interMs).getTime();
+        k.volume = k.vol;
+      });
+      return klines;
+    });
+}
 
 const configurationData = {
   supported_resolutions: ['1', '5', '15', '30', '60', '240', '480', '1440', '10080', '43200'],
-  exchanges: [
-    {
-      value: 'Serum',
-      name: 'Serum',
-      desc: 'Serum Solana Exchange',
-    },
-  ],
+  exchanges: [],
   symbols_types: [
     {
       name: 'crypto',
@@ -22,9 +33,16 @@ const configurationData = {
 class Datafeed {
   // _markets = [];
   _market;
+  _conf = {
+    exchanges: [],
+  };
 
-  constructor(market) {
+  constructor(market, conf) {
     this._market = market;
+
+    if (conf.exchanges) {
+      this._conf.exchanges.push(...conf.exchanges);
+    }
     // this._markets = markets;
   }
 
@@ -32,11 +50,6 @@ class Datafeed {
     console.log('getBars', arguments);
     try {
       const klines = await loadKlines(symbolInfo, resolution, from, to);
-      klines.forEach((k) => {
-        const interMs = +resolution * 60 * 1000;
-        k.time = new Date(k._id * interMs).getTime();
-        k.volume = k.vol;
-      });
 
       onHistoryCallback(klines, { noData: false });
     } catch (err) {
@@ -84,14 +97,10 @@ class Datafeed {
     console.log('[resolveSymbol]: Symbol resolved', symbolName);
     setTimeout(() => onSymbolResolvedCallback(symbolInfo));
   }
-}
 
-function loadKlines(symbolInfo, resolution, from, to) {
-  console.log(symbolInfo, resolution, from, to);
-  const { base, quote } = symbolInfo;
-  return fetch(
-    `/velas/klines/${base.address}/${quote.address}?from=${from}&to=${to}&interval=${resolution}`,
-  ).then((res) => res.json());
+  unsubscribeBars(...args) {
+    console.log('unsubscribeBars', ...args);
+  }
 }
 
 function useLoadMarkets(token) {
@@ -100,59 +109,34 @@ function useLoadMarkets(token) {
   );
 }
 
-const TradingViewComponent = ({ market }) => {
-  const widget = React.useRef();
-  React.useLayoutEffect(() => {
-    const token = `${market.base.symbol}/${market.quote.symbol}`;
-
-    widget.current = new TradingView.widget({
-      // debug: true, // uncomment this line to see Library errors and warnings in the console
-      symbol: token,
-      interval: '1',
-      datafeed: new Datafeed(market),
-      container: 'tv_chart_container',
-      library_path: '/charting_library/',
-      locale: 'en',
-      // enabled_features: ['study_templates'],
-      disabled_features: [
-        'left_toolbar',
-        // 'header_widget',
-        // 'control_bar',
-        // 'timeframes_toolbar',
-        'legend_widget',
-      ],
-      charts_storage_api_version: '1.1',
-      client_id: 'tradingview.com',
-      user_id: 'public_user_id',
-      load_last_chart: true,
-      width: '100%',
-    });
-  }, [market]);
-
-  return <div style={{ width: '100%' }} id="tv_chart_container"></div>;
-};
-
 add(({ token }) => {
   const { data: markets, isLoading: isMarketsLoading } = useLoadMarkets(token);
 
   if (isMarketsLoading) return <div>Loading markets ...</div>;
 
   const [currentMarket, setMarket] = React.useState(markets[0]);
+  const datafeed = React.useMemo(() => new Datafeed(currentMarket, configurationData), [
+    currentMarket,
+  ]);
+
+  const tokenName = `${currentMarket.base.symbol}/${currentMarket.quote.symbol}`;
 
   return (
     <div>
-      <select
-        style={{ color: 'black' }}
-        onChange={(e) => setMarket(markets.find((m) => m.market === e.currentTarget.value))}
-      >
-        {markets.map((m) => (
-          <option value={m.market}>
-            {m.base.symbol}/{m.quote.symbol}
-          </option>
-        ))}
-      </select>
-      {currentMarket && <TradingViewComponent market={currentMarket} />}
-      {currentMarket && <LastTrades market={currentMarket.market} />}
+      <div className="bu-select m-b-16">
+        <select
+          style={{ color: 'black' }}
+          onChange={(e) => setMarket(markets.find((m) => m.market === e.currentTarget.value))}
+        >
+          {markets.map((m) => (
+            <option value={m.market}>
+              {m.base.symbol}/{m.quote.symbol}
+            </option>
+          ))}
+        </select>
+      </div>
+      <TradingView token={tokenName} datafeed={datafeed} />
+      <LastTrades market={currentMarket} />
     </div>
   );
 });

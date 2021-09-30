@@ -32,7 +32,7 @@ const Table = ({
         font-size: 16px;
         line-height: 20px;
         background-color: transparent !important;
-        max-width: 960px;
+        //max-width: 960px;
         width: 100%;
       }
     `,

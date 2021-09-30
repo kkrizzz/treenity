@@ -195,12 +195,12 @@ export const updateTokenData = async (address, smartContract, trades, collection
 export const indexPriceCron = (app) => {
   const priceCollection = app.services['velas-dextools'];
 
-  app.get('/velas/market/:market/trades', async (req, res) => {
-    const { market } = req.params;
+  app.get('/velas/market/:base/:quote/trades', async (req, res) => {
+    const { base, quote } = req.params;
     const { offset } = req.query;
 
     const trades = await priceCollection.Model.find(
-      { market },
+      { 'base.address': base, 'quote.address': quote },
       { sort: { time: -1 }, limit: 100 },
     ).toArray();
 
@@ -263,6 +263,7 @@ export const indexPriceCron = (app) => {
         {
           $match: {
             'base.address': token,
+            'quote.address': { $ne: token },
           },
         },
         {
@@ -272,6 +273,9 @@ export const indexPriceCron = (app) => {
             base: { $first: '$base' },
             market: { $first: '$market' },
           },
+        },
+        {
+          $sort: { market: 1 },
         },
       ]).toArray();
       markets.forEach((m) => {
