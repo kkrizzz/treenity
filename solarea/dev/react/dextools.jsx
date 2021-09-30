@@ -1,4 +1,5 @@
 const tradingView = await require('/charting_library/charting_library.standalone.js');
+const LastTrades = render('dev', 'last-trades');
 
 const configurationData = {
   supported_resolutions: ['1', '5', '15', '30', '60', '240', '480', '1440', '10080', '43200'],
@@ -106,7 +107,6 @@ const TradingViewComponent = ({ market }) => {
 
     widget.current = new TradingView.widget({
       // debug: true, // uncomment this line to see Library errors and warnings in the console
-      // fullscreen: true,
       symbol: token,
       interval: '1',
       datafeed: new Datafeed(market),
@@ -125,29 +125,34 @@ const TradingViewComponent = ({ market }) => {
       client_id: 'tradingview.com',
       user_id: 'public_user_id',
       load_last_chart: true,
+      width: '100%',
     });
   }, [market]);
 
-  return <div id="tv_chart_container"></div>;
+  return <div style={{ width: '100%' }} id="tv_chart_container"></div>;
 };
 
 add(({ token }) => {
   const { data: markets, isLoading: isMarketsLoading } = useLoadMarkets(token);
 
   if (isMarketsLoading) return <div>Loading markets ...</div>;
-  console.log(markets);
-  //
 
   const [currentMarket, setMarket] = React.useState(markets[0]);
 
   return (
     <div>
-      <select onChange={(e) => setMarket(markets.find((m) => m.market === e.currentTarget.value))}>
+      <select
+        style={{ color: 'black' }}
+        onChange={(e) => setMarket(markets.find((m) => m.market === e.currentTarget.value))}
+      >
         {markets.map((m) => (
-          <option value={m.market}>{m.quote.symbol}</option>
+          <option value={m.market}>
+            {m.base.symbol}/{m.quote.symbol}
+          </option>
         ))}
       </select>
       {currentMarket && <TradingViewComponent market={currentMarket} />}
+      {currentMarket && <LastTrades market={currentMarket.market} />}
     </div>
   );
 });

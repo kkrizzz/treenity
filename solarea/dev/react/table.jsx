@@ -1,4 +1,11 @@
-const Table = ({ columns = [], data = [], stripped = false, bordered = false, fixed = false }) => {
+const Table = ({
+  columns = [],
+  data = [],
+  rowStyle,
+  stripped = false,
+  bordered = false,
+  fixed = false,
+}) => {
   useCSS(
     'bu-table.css',
     css`
@@ -45,7 +52,7 @@ const Table = ({ columns = [], data = [], stripped = false, bordered = false, fi
 
       <tbody>
         {data.map((item) => (
-          <tr>
+          <tr style={rowStyle(item)}>
             {columns.map((column) => (
               <td style={{ textAlign: column.textAlign || 'left' }}>
                 {column.render
