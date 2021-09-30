@@ -56,7 +56,9 @@ export function reactToHtmPreact(execCode: string) {
       const end = c === '<' ? execCode.indexOf('>', i) + 1 : i + 2;
       if (!tags.length) {
         let jsxText = fixHtmlInnerCode(execCode.slice(start, end).trim())
+          // replace all spread component props like {...obj} to ...${obj} in jsx
           .replace(/\${\.\.\./g, '...${')
+          // replace all comments like {/* some comment */} to empty string
           .replace(/\${\/\*((.|\n)*?)\*\/}/g, '')
           // .replace(/\{(.*?)\}/g, '${$1}')
           .replace(/<([A-Z][\w\d_]*)/g, '<${$1}');
