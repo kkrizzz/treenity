@@ -1,16 +1,20 @@
 const LastTrades = render('velas-dextools', 'last-trades');
 const TradingView = render('dev', 'trading-view');
+const TokenData = render('velas-dextools', 'token-data');
 
 function loadKlines(symbolInfo, resolution, from, to) {
-  console.log(symbolInfo, resolution, from, to);
+  // console.log(symbolInfo, resolution, from, to);
   const { base, quote } = symbolInfo;
   return fetch(
     `/velas/klines/${base.address}/${quote.address}?from=${from}&to=${to}&interval=${resolution}`,
   )
     .then((res) => res.json())
     .then((klines) => {
-      klines.forEach((k) => {
+      klines.forEach((k, index) => {
         const interMs = +resolution * 60 * 1000;
+        const prev = klines[index - 1];
+
+        k.open = prev ? prev.close : k.open;
         k.time = new Date(k._id * interMs).getTime();
         k.volume = k.vol;
       });
@@ -47,7 +51,6 @@ class Datafeed {
   }
 
   async getBars(symbolInfo, resolution, { from, to }, onHistoryCallback, onErrorCallback) {
-    console.log('getBars', arguments);
     try {
       const klines = await loadKlines(symbolInfo, resolution, from, to);
 
@@ -72,7 +75,7 @@ class Datafeed {
 
     // const symbolDesc
 
-    const tickSize = 0.001;
+    const tickSize = 0.000001;
 
     const precision = -Math.log10(tickSize);
     const symbolInfo = {
@@ -134,6 +137,9 @@ add(({ token }) => {
             </option>
           ))}
         </select>
+      </div>
+      <div class="bu-mb-5">
+        <TokenData market={currentMarket} />
       </div>
       <TradingView token={tokenName} datafeed={datafeed} />
       <LastTrades market={currentMarket} />
