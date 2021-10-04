@@ -18,6 +18,11 @@ query MyQuery {
     ) {
       count
     }
+    holders: transfers(
+      currency: {is: "${market.base.address}"}
+    ) {
+      count(uniq: receivers)
+    }
   }
 }
 `;
@@ -31,6 +36,7 @@ const MarketData = ({ market }) => {
   const marketInfo = marketData.data.ethereum;
   const poolBalances = marketInfo.address[0].balances;
   const totalTrades = marketInfo.totalTrades[0].count; // чет не работает
+  const holders = marketInfo.holders[0].count; // чет не работает
 
   return (
     <div>
@@ -38,6 +44,7 @@ const MarketData = ({ market }) => {
         <TwoColumn first={`Pooled ${i.currency.symbol}`} second={i.value} />
       ))}
       <TwoColumn first="Total trades" second={totalTrades} />
+      <TwoColumn first={`${market.base.symbol} holders`} second={holders} />
     </div>
   );
 };
