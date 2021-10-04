@@ -9,7 +9,7 @@ const search = (id) => {
     isToken = 'account';
   }
 
-  if (isToken) window.history.pushState({}, '', `/coin/${id}`);
+  if (isToken) window.history.pushState({}, '', `/velas-dextools/dextools/?token=${id}`);
 };
 
 const Search = ({ onChange }) => {
@@ -56,7 +56,7 @@ const Search = ({ onChange }) => {
           <input
             id="exp-l-id"
             className="bu-input bu-is-rounded remove-border"
-            placeholder="Search for accounts, transactions, blocks..."
+            placeholder="Search for tokens ..."
             aria-haspopup="true"
             aria-controls="search-dropdown"
             value={value}

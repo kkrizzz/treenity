@@ -47,16 +47,20 @@ add(() => {
 
   return (
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
-      <div class="bu-container bu-is-max-desktop">
+      <div class="bu-container">
         <div className="bu-navbar-brand">
           <Link
             className="bu-navbar-item"
             to="/near"
-            style={{ color: 'var(--theme-main-oposit-color)' }}
+            style={{
+              color: 'var(--theme-main-oposit-color)',
+              display: 'flex',
+              alignItems: 'flex-end',
+            }}
           >
             <Render id="velas" name="logo" />
+            <div class="bu-is-size-6 bu-ml-2">DEXTOOLS</div>
           </Link>
-          <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme} />
 
           <a
             onClick={(e) => menuRef.current.classList.toggle('bu-is-active')}

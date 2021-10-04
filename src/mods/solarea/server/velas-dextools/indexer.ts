@@ -194,6 +194,11 @@ export const updateTokenData = async (address, smartContract, trades, collection
 
 export const indexPriceCron = (app) => {
   const priceCollection = app.services['velas-dextools'];
+  priceCollection.Model.createIndex({
+    'base.address': 1,
+    'quote.address': 1,
+    time: 1,
+  });
 
   app.get('/velas/market/:base/:quote/trades', async (req, res) => {
     const { base, quote } = req.params;
@@ -278,17 +283,43 @@ export const indexPriceCron = (app) => {
           $sort: { market: 1 },
         },
       ]).toArray();
-      markets.forEach((m) => {
-        delete m._id;
-      });
+
+      // CALCULATE PRICE CHANGES
+      for (let i = 0; i < markets.length; i++) {
+        const market = markets[i];
+
+        let latestMarketTrade = await priceCollection.Model.findOne(
+          { market: market.market },
+          { sort: { time: -1 } },
+        );
+
+        const latestMarketTrade24hrAgoDate = new Date();
+        latestMarketTrade24hrAgoDate.setDate(latestMarketTrade24hrAgoDate.getDate() - 1); // yesterday
+
+        let trade24hrAgo = await priceCollection.Model.findOne(
+          {
+            time: { $gte: latestMarketTrade24hrAgoDate },
+            'base.address': market.base.address,
+            'quote.address': market.quote.address,
+          },
+          { sort: { time: 1 } },
+        );
+
+        trade24hrAgo = trade24hrAgo || latestMarketTrade;
+        market.priceChange24hrValue = latestMarketTrade.qp - trade24hrAgo.qp;
+        market.priceChange24hrPercent = (market.priceChange24hrValue / latestMarketTrade.qp) * 100;
+
+        delete market._id;
+      }
+
       return res.send(markets);
     } catch (e) {
       console.error(e);
     }
   });
 
-  // updateData(priceCollection).catch(console.error);
-  //
+  updateData(priceCollection).catch(console.error);
+
   cron.schedule('*/30 * * * * *', async () => {
     await updateData(priceCollection).catch((err) => {
       console.error('Velas klines update', err);

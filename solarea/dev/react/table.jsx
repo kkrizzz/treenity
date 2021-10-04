@@ -52,7 +52,7 @@ const Table = ({
 
       <tbody>
         {data.map((item) => (
-          <tr style={rowStyle(item)}>
+          <tr style={rowStyle && rowStyle(item)}>
             {columns.map((column) => (
               <td style={{ textAlign: column.textAlign || 'left' }}>
                 {column.render

@@ -31,7 +31,6 @@ const MarketData = ({ market }) => {
   const [marketData, isMarketDataLoading] = useBitQuery(queryMarketData(market));
 
   if (isMarketDataLoading) return 'Loading ...';
-  console.log(marketData);
 
   const marketInfo = marketData.data.ethereum;
   const poolBalances = marketInfo.address[0].balances;
@@ -39,13 +38,24 @@ const MarketData = ({ market }) => {
   const holders = marketInfo.holders[0].count; // чет не работает
 
   return (
-    <div>
-      {poolBalances.map((i) => (
-        <TwoColumn first={`Pooled ${i.currency.symbol}`} second={i.value} />
-      ))}
-      <TwoColumn first="Total trades" second={totalTrades} />
-      <TwoColumn first={`${market.base.symbol} holders`} second={holders} />
-    </div>
+    <table className="bu-table" style={{ textAlign: 'left' }}>
+      <tbody>
+        {poolBalances.map((i) => (
+          <tr>
+            <td>{`Pooled ${i.currency.symbol}`}</td>
+            <td>{i.value}</td>
+          </tr>
+        ))}
+        <tr>
+          <td>Total trades</td>
+          <td>{totalTrades}</td>
+        </tr>
+        <tr>
+          <td>{`${market.base.symbol} holders`} </td>
+          <td>{holders}</td>
+        </tr>
+      </tbody>
+    </table>
   );
 };
 
