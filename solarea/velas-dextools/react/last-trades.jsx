@@ -1,6 +1,8 @@
 await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 const Table = render('dev', 'table');
+const DashboardCard = render('dev', 'dashboard-card');
 const { numberWithSpaces } = await require('solarea://explorer/utils');
+const { useLatestTokenTrades } = await require('solarea://velas-dextools/utils');
 
 const columns = [
   {
@@ -27,19 +29,17 @@ const columns = [
 add(({ market }) => {
   const { base, quote } = market;
   const token = `${base.address}/${quote.address}`;
-  const { data, isLoading } = solarea.useQuery(['market_trades', token], () =>
-    fetch(`/velas/market/${token}/trades`).then((res) => res.json()),
-  );
+  const [data, isLoading] = useLatestTokenTrades(token);
   if (isLoading) return 'Loading trades ...';
   return (
-    <div>
-      <Render id="explorer" name="theme-css" />
+    <div style={{ padding: 0, borderRadius: 12 }} className="bu-card m-b-8">
       <Table
+        rowStyle={(item) => ({
+          background: item.side === 'BUY' ? 'rgba(82,255,99,0.05)' : 'rgba(255,59,97,0.06)',
+        })}
+        bordered
         columns={columns}
         data={data}
-        rowStyle={({ side }) => ({
-          background: side === 'BUY' ? 'rgba(83,227,73,0.56)' : 'rgba(243,81,81,0.49)',
-        })}
       />
     </div>
   );
