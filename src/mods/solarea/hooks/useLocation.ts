@@ -10,21 +10,17 @@ history.replaceState = function replaceState(data, title, url) {
 };
 
 export default function useLocation() {
-  const [location, setLocation] = useState(window.location);
-
-  const handleHashChange = useCallback(() => {
-    // just window.location not worked
-    setLocation(Object.assign({}, window.location));
-  }, []);
+  const [, setCounter] = useState(0);
 
   useEffect(() => {
+    const handleHashChange = () => setCounter((n) => n + 1);
     window.addEventListener('pushState', handleHashChange);
     window.addEventListener('popstate', handleHashChange);
     return () => {
       window.removeEventListener('pushState', handleHashChange);
       window.removeEventListener('popstate', handleHashChange);
     };
-  }, [handleHashChange]);
+  }, [setCounter]);
 
-  return location;
+  return window.location;
 }
