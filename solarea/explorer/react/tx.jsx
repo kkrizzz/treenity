@@ -244,42 +244,11 @@ const EthereumTxView = ({ entityId }) => {
   if (isLoading) return InfoCard('Loading transaction');
   if (!tx) return InfoCard('Transaction not found');
 
-  const { hash, from, to, blockNumber, nonce, value } = tx;
-
-  const parsedBlockNumber = parseInt(blockNumber, 16);
-  const parsedNonce = parseInt(nonce, 16);
   return (
     <div className="bu-container bu-is-max-desktop">
-      <DashboardSection title="Transaction">
+      <DashboardSection title="EVM Transaction">
         <BulmaCard>
-          <div className="bu-columns overflow-hidden">
-            <div className="bu-column">
-              <TwoColumn is={2} first="Hash" second={<Hash hash={hash} alignRight />} />
-              <TwoColumn
-                is={2}
-                first="Block"
-                second={
-                  <Hash hash={parsedBlockNumber} type="block" urlParams="chain=evm" alignRight />
-                }
-              />
-              <TwoColumn
-                is={2}
-                first="From"
-                second={<NamedHash hash={from} type="address" urlParams="chain=evm" alignRight />}
-              />
-              <TwoColumn
-                is={2}
-                first="To"
-                second={<NamedHash hash={to} type="address" urlParams="chain=evm" alignRight />}
-              />
-              <TwoColumn
-                is={2}
-                first="Value"
-                second={`◎ ${(parseInt(value, 16) * LPS).toFixed(16)}`}
-              />
-              <TwoColumn is={2} first="Nonce" second={parsedNonce} />
-            </div>
-          </div>
+          <Render tx={tx} id="explorer" name="evm-transaction" context="react-list" />
         </BulmaCard>
       </DashboardSection>
     </div>
