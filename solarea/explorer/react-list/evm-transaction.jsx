@@ -1,6 +1,7 @@
 const TwoColumn = render('dev', 'two-column');
 const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
+const DashboardCard = render('dev', 'dashboard-card');
 const { weiToEth, lpsRound } = await require('solarea://explorer/utils');
 
 add(({ tx }) => {
@@ -10,33 +11,46 @@ add(({ tx }) => {
 
   return (
     <>
-      <div className="bu-columns bu-is-mobile">
-        <div class="bu-column bu-is-5">
-          From
-          <NamedHash hash={tx.from} type="address" />
+      <div className="bu-columns">
+        <div className="bu-column bu-is-12">
+          <DashboardCard subcard title={'Hash'}>
+            <Hash hash={tx.hash} type="tx" />
+          </DashboardCard>
         </div>
-        <div class="bu-column bu-is-2">
-          <div style={{ margin: 'auto', width: '1.5rem', marginTop: 16 }}>
-            <Render id="icons" name="fe-arrow-right" />
-          </div>
+      </div>
+      <div className="bu-columns">
+        <div className="bu-column bu-is-6">
+          <DashboardCard subcard title="From">
+            <NamedHash hash={tx.from} type="address" />
+          </DashboardCard>
         </div>
+        <div className="bu-column bu-is-6">
+          <DashboardCard subcard title="To">
+            <NamedHash hash={tx.to} type="address" />
+          </DashboardCard>
+        </div>
+      </div>
+      <div className="bu-columns">
+        <div className="bu-column bu-is-12">
+          <DashboardCard subcard title="Amount" value={weiToEth(tx.value)} info={`Fee: ${fee}`} />
+        </div>
+      </div>
+      <div className="bu-columns">
+        <div className="bu-column bu-is-6">
+          <DashboardCard subcard title="Gas used" value={gasUsed} />
+        </div>
+        <div className="bu-column bu-is-6">
+          <DashboardCard subcard title="Gas price" value={gasPrice} />
+        </div>
+      </div>
 
-        <div className="bu-column bu-is-5">
-          To
-          <NamedHash hash={tx.to} type="address" />
-        </div>
-      </div>
-      <div className="bu-columns bu-is-mobile">
-        <div class="bu-column bu-is-4">Amount</div>
-        <div class="bu-column bu-is-4 bu-has-text-centered">{weiToEth(tx.value)}</div>
-
-        <div className="bu-column bu-is-4 bu-has-text-right">Fee: {fee}</div>
-      </div>
-      <div>
-        <TwoColumn first="Hash" second={<Hash hash={tx.hash} type="tx" />} />
-        <TwoColumn first="Gas used" second={gasUsed} />
-        <TwoColumn first="Gas price" second={gasPrice} />
-      </div>
+      {/*  <div className="bu-column bu-is-6">*/}
+      {/*    <DashboardCard subcard title="Gas used" value={gasUsed} />*/}
+      {/*  </div>*/}
+      {/*  <div className="bu-column bu-is-6">*/}
+      {/*    <DashboardCard subcard title="Gas price" value={gasPrice} />*/}
+      {/*  </div>*/}
+      {/*</div>*/}
     </>
   );
 });

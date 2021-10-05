@@ -42,7 +42,7 @@ add(
           box-shadow: 0 4px 50px rgba(40, 61, 113, 0.1);
         }
         .dashboard-card.dashboard-card_subcard {
-          box-shadow: none;
+          box-shadow: 0 1px 10px rgba(40, 61, 113, 0.05);
         }
 
         .dashboard-card_small > .dashboard-card__header,
@@ -73,7 +73,6 @@ add(
         }
         .dashboard-card__content {
           font-weight: bold;
-          overflow: hidden;
         }
         .dashboard-card__content:empty {
           display: none;
