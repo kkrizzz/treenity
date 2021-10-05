@@ -70,7 +70,6 @@ const MarketCap = ({ coinData }) => {
 add(() => {
   const [nodeStatus, isNodeStatusLoading] = nearUtils.useNearNodeStatus();
   const [networkInfo, isNetworkInfoLoading] = nearUtils.useNearNetworkInfo();
-  const [nearStats, isNearStatsLoading] = nearUtils.useNearStats();
   const [near2weeksStats, isNear2weeksStatsLoading] = nearUtils.useNearTwoWeeksStats();
   const [nearCoinData, isNearCoinDataLoading] = nearUtils.useNearCoinData();
 

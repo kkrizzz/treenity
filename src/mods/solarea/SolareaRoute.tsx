@@ -41,7 +41,7 @@ const idToViewResolvers = [
   (id, name, context, query) => {
     if (['near'].includes(id)) {
       return (
-        <Render id="near" name="portfolio-layout" context={context}>
+        <Render id="near" name="layout" context={context}>
           <Render id={id} />
         </Render>
       );

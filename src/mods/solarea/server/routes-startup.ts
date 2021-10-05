@@ -10,5 +10,5 @@ export function routesStartup(app: Application) {
   emailSubscribeRoute(app);
   klinesProxy(app);
   nearIndexer(app);
-  nearPortfolio(app);
+  // nearPortfolio(app);
 }
