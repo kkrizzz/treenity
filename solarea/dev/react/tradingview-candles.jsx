@@ -70,7 +70,7 @@ add(({ candles, width = 400, height = 300 }) => {
       localization: {
         locale: 'en-US',
         priceFormatter: (price) => {
-          return '$' + parseFloat(price).toFixed(8);
+          return '$' + parseFloat(price).toFixed(4);
         },
       },
     });
@@ -82,6 +82,8 @@ add(({ candles, width = 400, height = 300 }) => {
     candlestickSeries.setData(candles);
 
     chart.applyOptions(config);
+
+    return () => (ref.current.innerHTML = '');
   }, [candles]);
 
   return <div ref={ref}></div>;
