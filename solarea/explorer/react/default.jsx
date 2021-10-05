@@ -218,7 +218,7 @@ add(() => {
             ) : (
               <div>
                 {cards.map((Card) => (
-                  <div style={{ marginBottom: 36 }}>
+                  <div style={{ marginBottom: 28 }}>
                     <Card
                       coinData={coinData}
                       currentSupply={currentSupply}

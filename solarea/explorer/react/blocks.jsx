@@ -5,6 +5,7 @@ const Link = render('dev', 'link');
 const ScrollBox = render('dev', 'scroll-box');
 const Hash = render('dev', 'hash');
 const DashboardSection = render('dev', 'dashboard-section');
+const { numberWithSpaces } = await require('solarea://explorer/utils');
 
 const SolanaBlocksView = () => {
   return <div>Hello, sol</div>;
@@ -71,12 +72,10 @@ const EvmBlocksView = () => {
                 </div>
 
                 <div className="bu-column bu-is-5-desktop bu-is-5-tablet bu-is-3-mobile text-overflow">
-                  <Hash hash={number.toString()} type="block" urlParams="chain=evm">
-                    {block.hash}
-                  </Hash>
+                  <Hash hash={block.hash} />
                 </div>
                 <div className="bu-column bu-is-1-desktop bu-is-2-tablet bu-is-2-mobile">
-                  {parseInt(block.gasUsed)}
+                  {numberWithSpaces(parseInt(block.gasUsed))}
                 </div>
               </div>
             </div>

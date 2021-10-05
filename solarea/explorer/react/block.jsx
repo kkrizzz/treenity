@@ -209,7 +209,7 @@ const EthereumBlockView = ({ entityId }) => {
               <TwoColumn first="Num of transactions" second={block.transactions.length} />
               <TwoColumn first="Difficulty" second={parse16(block.difficulty)} />
               <TwoColumn first="Nonce" second={block.nonce} />
-              <TwoColumn first="Gas used" second={parse16(block.gasUsed)} />
+              <TwoColumn first="Gas used" second={numberWithSpaces(parse16(block.gasUsed))} />
             </div>
           </div>
         </BulmaCard>

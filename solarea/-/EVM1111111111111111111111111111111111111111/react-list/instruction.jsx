@@ -17,42 +17,8 @@ add(({ instruction, transaction }) => {
   }
   if (instruction.parsed.type === 'evmTransaction') {
     const evmTransaction = instruction.parsed.info.transaction;
-    const gasUsed = parseInt(evmTransaction.gas, 16);
-    const gasPrice = parseInt(evmTransaction.gasPrice, 16);
-    const fee = weiToEth(gasUsed * gasPrice, 8);
 
-    return (
-      <>
-        <div className="bu-columns">
-          <div class="bu-column bu-is-5">
-            From
-            <NamedHash hash={evmTransaction.from} type="address" />
-          </div>
-          <div class="bu-column bu-is-2">
-            <div style={{ margin: 'auto', width: '1.5rem', marginTop: 16 }}>
-              <Render id="icons" name="fe-arrow-right" />
-            </div>
-          </div>
-
-          <div className="bu-column bu-is-5">
-            To
-            <NamedHash hash={evmTransaction.to} type="address" />
-          </div>
-        </div>
-        <div className="bu-columns">
-          <div class="bu-column bu-is-4">Amount</div>
-          <div class="bu-column bu-is-4 bu-has-text-centered">{weiToEth(evmTransaction.value)}</div>
-
-          <div className="bu-column bu-is-4 bu-has-text-right">Fee: {fee}</div>
-        </div>
-        <div>
-          <TwoColumn first="Type" second={instruction.parsed.type} />
-          <TwoColumn first="Hash" second={<Hash hash={evmTransaction.hash} type="tx" />} />
-          <TwoColumn first="Gas used" second={gasUsed} />
-          <TwoColumn first="Gas price" second={gasPrice} />
-        </div>
-      </>
-    );
+    return <Render tx={evmTransaction} id="explorer" name="evm-transaction" context="react-list" />;
   } else if (instruction.parsed.type === 'swapNativeToEvm') {
     const info = instruction.parsed.info;
     const from = info.fromNativeAccount;

@@ -1,11 +1,21 @@
 import React from 'react';
 
-globalThis.useCSSprop = [];
+const counterAttr = 'counter';
+function updateCounter(el, upd) {
+  const value = el.dataset[counterAttr];
+  el.dataset[counterAttr] = upd(value ? parseInt(value) : 0).toString();
+}
 
-// globalThis.removeAlluseCSSprop = () => {
-//   globalThis.useCSSprop.forEach((link) => link.remove());
-//   globalThis.useCSSprop = [];
-// };
+const remover = (link) => () => {
+  setTimeout(() => {
+    const counter = link.dataset[counterAttr];
+    if (+(counter || 0) > 1) {
+      updateCounter(link, (count) => count - 1);
+    } else {
+      link.remove();
+    }
+  }, 500);
+};
 
 export const useCSS = (id, css) => {
   const [isReady, setIsReady] = React.useState(false);
@@ -13,6 +23,13 @@ export const useCSS = (id, css) => {
 
   React.useLayoutEffect(() => {
     setIsReady(false);
+
+    const oldLink = document.querySelector(`link[id="${id}"]`);
+
+    if (oldLink) {
+      updateCounter(oldLink, (count) => count + 1);
+      return remover(oldLink);
+    }
 
     const cssBlob = new Blob([css], { type: 'text/css' });
     const cssBlobUrl = window.URL.createObjectURL(cssBlob);
@@ -28,6 +45,7 @@ export const useCSS = (id, css) => {
     link.id = id;
     link.type = 'text/css';
     link.rel = 'stylesheet';
+    link.dataset[counterAttr] = '1';
     link.href = cssBlobUrl;
     if (typeof window !== 'undefined' && (window as any).chrome) {
       link.href += '#' + id;
@@ -35,19 +53,13 @@ export const useCSS = (id, css) => {
 
     document.head.appendChild(link);
 
-    // globalThis.useCSSprop.push(link);
-
     link.onload = function () {
       linkRef.current?.remove();
       linkRef.current = link;
       setIsReady(true);
     };
 
-    return () => {
-      setTimeout(() => {
-        link.remove();
-      }, 500);
-    };
+    return remover(link);
   }, [id, css]);
 
   return isReady;
