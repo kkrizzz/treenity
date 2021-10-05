@@ -51,7 +51,7 @@ export function reactToHtmPreact(execCode: string) {
     const c2 = execCode[i + 1];
     if (c === '<' && c2 !== '/' && !['<', '=', ' '].includes(c2)) {
       tags.push(i);
-    } else if ((c === '<' && c2 === '/') || (c === '/' && c2 === '>')) {
+    } else if ((c === '<' && c2 === '/') || (c === '/' && c2 === '>' && execCode[i + 2] !== '*')) {
       const start = tags.pop()!;
       const end = c === '<' ? execCode.indexOf('>', i) + 1 : i + 2;
       if (!tags.length) {
@@ -59,7 +59,7 @@ export function reactToHtmPreact(execCode: string) {
           // replace all spread component props like {...obj} to ...${obj} in jsx
           .replace(/\${\.\.\./g, '...${')
           // replace all comments like {/* some comment */} to empty string
-          // .replace(/\${\/\*((.|\n)*?)\*\/}/g, '')
+          .replace(/{\/\*((.|\n)*?)\*\/}/g, '')
           // .replace(/\{(.*?)\}/g, '${$1}')
           .replace(/<([A-Z][\w\d_]*)/g, '<${$1}');
         jsxText = fixFragments(jsxText);
