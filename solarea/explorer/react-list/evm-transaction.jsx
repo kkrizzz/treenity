@@ -34,6 +34,10 @@ add(({ tx }) => {
       </div>
       <div>
         <TwoColumn first="Hash" second={<Hash hash={tx.hash} type="tx" />} />
+        <TwoColumn
+          first="Block"
+          second={<Hash hash={parseInt(tx.blockNumber, 16)} type="block" urlParams="chain=evm" />}
+        />
         <TwoColumn first="Gas used" second={gasUsed} />
         <TwoColumn first="Gas price" second={gasPrice} />
       </div>
