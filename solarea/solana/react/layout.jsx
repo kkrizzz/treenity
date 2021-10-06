@@ -1,8 +1,8 @@
 await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 
-const { ThemeProvider } = solarea;
-const Footer = render('io.solarea.velas', 'footer');
+const Footer = render('explorer', 'footer');
 const Search = render('explorer', 'search');
+const { ThemeProvider } = solarea;
 
 add(({ id, children }) => {
   const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);

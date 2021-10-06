@@ -1,12 +1,14 @@
 const TwoColumn = render('dev', 'two-column');
 const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
+const DashboardSection = render('dev', 'dashboard-section');
 const { weiToEth, lpsRound } = await require('solarea://explorer/utils');
 
 add(({ tx }) => {
   const gasUsed = parseInt(tx.gas, 16);
   const gasPrice = parseInt(tx.gasPrice, 16);
   const fee = weiToEth(gasUsed * gasPrice, 8);
+  console.log('tx', tx);
 
   return (
     <>
@@ -40,6 +42,23 @@ add(({ tx }) => {
         />
         <TwoColumn first="Gas used" second={gasUsed} />
         <TwoColumn first="Gas price" second={gasPrice} />
+        {tx.input && (
+          <TwoColumn
+            first="Input"
+            second={
+              <pre
+                className="bu-notification bu-monospace log-messages"
+                style={{
+                  background: 'var(--theme-logs-bg)',
+                  color: 'var(--theme-logs-color)',
+                  borderRadius: 'var(--theme-border-radus)',
+                }}
+              >
+                {tx.input}
+              </pre>
+            }
+          />
+        )}
       </div>
     </>
   );

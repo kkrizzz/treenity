@@ -6,6 +6,7 @@ import bn from 'bn.js';
 import { parseRlp } from './evm/parse-rlp';
 import { useCluster, useConnection } from './hooks/useConnection';
 import { useGraphQL, fetchGraphQL } from './hooks/useGraphQL';
+import useParams from './hooks/useParams';
 import { useTransaction } from './hooks/useTransaction';
 import { useBlock } from './hooks/useBlock';
 import { useLocalStorageState } from './hooks/useLocalStorageState';
@@ -44,6 +45,7 @@ globalThis.solarea = {
   useBlock,
   useLocalStorageState,
   useCluster,
+  useParams,
   useConnection,
   useSolanaRpc,
   useSolanaBatchedRpc,
