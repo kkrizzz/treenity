@@ -26,7 +26,7 @@ exports.weiToEth = (valueString, prec = 18) => {
   const point = eth.indexOf('.');
   prec += 1;
   if (eth.length - point > prec) {
-    eth = eth.slice(0, eth.length - point - prec);
+    eth = eth.slice(0, point + prec);
   }
   return eth;
 };
