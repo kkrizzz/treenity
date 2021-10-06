@@ -40,47 +40,54 @@ const TransactionInstructions = ({ tx }) => {
               </span>
             }
           >
-            <br />
-            <Instruction
-              id={inst.programId.toString()}
-              instruction={inst}
-              transaction={tx}
-              fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
-            />
-            {inner?.length && (
-              <div style={{ marginBottom: -40, padding: 0 }}>
-                <DashboardSection title="Inner instructions">
-                  {inner.map((inst, innerIndex) => (
-                    <DashboardCard
-                      subcard
-                      title={
-                        <div
-                          style={{ alignItems: 'center', display: 'flex', marginBottom: '1.5rem' }}
-                        >
-                          <span className="bu-tag bu-is-primary m-r-4">
-                            #{index + 1}.{innerIndex + 1}
-                          </span>{' '}
-                          <strong>
-                            <InstructionName
-                              id={inst.programId.toString()}
-                              instruction={inst}
-                              fallback={() => <InstructionDefaultText instruction={inst} />}
-                            />
-                          </strong>
-                        </div>
-                      }
-                    >
-                      <Instruction
-                        id={inst.programId.toString()}
-                        instruction={inst}
-                        transaction={tx}
-                        fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
-                      />
-                    </DashboardCard>
-                  ))}
-                </DashboardSection>
-              </div>
-            )}
+            <div style={{ paddingTop: 16 }}>
+              <Instruction
+                id={inst.programId.toString()}
+                instruction={inst}
+                transaction={tx}
+                fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
+              />
+              {inner?.length && (
+                <div style={{ marginBottom: -40, padding: 0 }}>
+                  <DashboardSection title="Inner instructions">
+                    {inner.map((inst, innerIndex) => (
+                      <DashboardCard
+                        subcard
+                        title={
+                          <div
+                            style={{
+                              alignItems: 'center',
+                              display: 'flex',
+                              marginBottom: '1.5rem',
+                            }}
+                          >
+                            <span className="bu-tag bu-is-primary m-r-4">
+                              #{index + 1}.{innerIndex + 1}
+                            </span>{' '}
+                            <strong>
+                              <InstructionName
+                                id={inst.programId.toString()}
+                                instruction={inst}
+                                fallback={() => <InstructionDefaultText instruction={inst} />}
+                              />
+                            </strong>
+                          </div>
+                        }
+                      >
+                        <Instruction
+                          id={inst.programId.toString()}
+                          instruction={inst}
+                          transaction={tx}
+                          fallback={() => (
+                            <InstructionDefault instruction={inst} transaction={tx} />
+                          )}
+                        />
+                      </DashboardCard>
+                    ))}
+                  </DashboardSection>
+                </div>
+              )}
+            </div>
           </DashboardCard>
         );
       })}
@@ -200,7 +207,7 @@ const SolanaTxView = (props) => {
           size="large"
           info={<SuccessBadge success={!tx.meta?.err} />}
         >
-          <div className="bu-columns" style={{ marginTop: 16 }}>
+          <div className="bu-columns" style={{ marginTop: 4 }}>
             <div className="bu-column bu-is-4">
               <DashboardCard size="small" subcard title="Block">
                 <Hash hash={tx.slot.toString()} type="block" />

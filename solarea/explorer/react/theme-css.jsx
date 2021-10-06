@@ -164,6 +164,9 @@ const themeCss = css`
   .bu-navbar-burger {
     color: var(--theme-main-color) !important;
   }
+  .bu-column {
+    padding: 10px;
+  }
   @media screen and (max-width: 1023px) {
     .bu-navbar-menu {
       background: var(--theme-subcard-bg-color);

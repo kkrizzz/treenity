@@ -32,7 +32,7 @@ add(({ instruction }) => {
 
   return (
     <div>
-      <DashboardCard subcard>
+      <DashboardCard subcard style={{ padding: 0 }}>
         <ScrollBox>
           <Table stripped headless columns={columns} data={instruction.accounts} />
         </ScrollBox>
