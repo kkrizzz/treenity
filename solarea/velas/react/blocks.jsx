@@ -103,12 +103,10 @@ add(({ chain }) => {
   const TargetType = chainBlockTypes[chain];
 
   return (
-    <Render id="explorer" name="layout">
-      <div className="bu-container bu-is-max-desktop">
-        <DashboardSection title="Latest blocks">
-          <TargetType />
-        </DashboardSection>
-      </div>
-    </Render>
+    <div className="bu-container bu-is-max-desktop">
+      <DashboardSection title="Latest blocks">
+        <TargetType />
+      </DashboardSection>
+    </div>
   );
 });

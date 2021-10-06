@@ -6,7 +6,8 @@ const REACT = 'react';
 export default function useParams() {
   const location = useLocation();
 
-  const names = location.hostname.split('.').reverse();
+  const hostname = location.hostname;
+  const names = hostname.split('.').reverse();
   const paths = location.pathname.split('/').filter((i) => !!i);
 
   let addr, name, context;
@@ -36,5 +37,5 @@ export default function useParams() {
     context = paths[2];
   }
   // some defaults if needed
-  return [addr, name || DEFAULT, context || REACT];
+  return [addr, name || DEFAULT, context || REACT, hostname];
 }

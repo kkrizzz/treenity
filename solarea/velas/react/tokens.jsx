@@ -40,20 +40,18 @@ add(() => {
     });
 
   return (
-    <Render id="explorer" name="layout">
-      <div className="bu-container bu-is-max-desktop">
-        {isLoading ? (
-          <BulmaCard header="Loading token data . . ." />
-        ) : (
-          <DashboardSection title="Tokens">
-            <div className="bu-card m-b-8 bu-p-0">
-              <ScrollBox>
-                <Table stripped columns={columns} data={tokenData} />
-              </ScrollBox>
-            </div>
-          </DashboardSection>
-        )}
-      </div>
-    </Render>
+    <div className="bu-container bu-is-max-desktop">
+      {isLoading ? (
+        <BulmaCard header="Loading token data . . ." />
+      ) : (
+        <DashboardSection title="Tokens">
+          <div className="bu-card m-b-8" style={{ padding: 0 }}>
+            <ScrollBox>
+              <Table stripped columns={columns} data={tokenData} />
+            </ScrollBox>
+          </div>
+        </DashboardSection>
+      )}
+    </div>
   );
 });
