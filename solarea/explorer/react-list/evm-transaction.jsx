@@ -12,13 +12,6 @@ add(({ tx }) => {
   return (
     <>
       <div className="bu-columns">
-        <div className="bu-column bu-is-12">
-          <DashboardCard subcard size="small" title={'Hash'}>
-            <Hash hash={tx.hash} type="tx" />
-          </DashboardCard>
-        </div>
-      </div>
-      <div className="bu-columns">
         <div className="bu-column bu-is-4">
           <DashboardCard subcard size="small" title="From">
             <NamedHash hash={tx.from} type="address" />
@@ -34,6 +27,18 @@ add(({ tx }) => {
         </div>
       </div>
       <div className="bu-columns">
+        <div className="bu-column bu-is-6">
+          <DashboardCard subcard size="small" title={'Hash'}>
+            <Hash hash={tx.hash} type="tx" />
+          </DashboardCard>
+        </div>
+        <div className="bu-column bu-is-6">
+          <DashboardCard subcard size="small" title="Block">
+            <Hash hash={parseInt(tx.blockNumber, 16)} type="block" urlParams="chain=evm" />
+          </DashboardCard>
+        </div>
+      </div>
+      <div className="bu-columns">
         <div className="bu-column bu-is-4">
           <DashboardCard subcard size="small" title="Fee" value={fee} />
         </div>
@@ -44,6 +49,22 @@ add(({ tx }) => {
           <DashboardCard subcard size="small" title="Gas price" value={gasPrice} />
         </div>
       </div>
+      {tx.input && (
+        <div className="bu-columns">
+          <div className="bu-column bu-is-12">
+            <pre
+              className="bu-notification bu-monospace log-messages"
+              style={{
+                background: 'var(--theme-logs-bg)',
+                color: 'var(--theme-logs-color)',
+                borderRadius: 'var(--theme-border-radus)',
+              }}
+            >
+              {tx.input}
+            </pre>
+          </div>
+        </div>
+      )}
 
       {/*  <div className="bu-column bu-is-6">*/}
       {/*    <DashboardCard subcard title="Gas used" value={gasUsed} />*/}

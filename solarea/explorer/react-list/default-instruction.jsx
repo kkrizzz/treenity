@@ -3,6 +3,7 @@ const Hash = render('dev', 'hash');
 const Table = render('dev', 'table');
 const ScrollBox = render('dev', 'scroll-box');
 const DashboardCard = render('dev', 'dashboard-card');
+const DashboardSection = render('dev', 'dashboard-section');
 const NamedHash = render('dev', 'named-hash');
 
 const columns = [
@@ -31,22 +32,27 @@ add(({ instruction }) => {
   );
 
   return (
-    <div>
+    <>
       <DashboardCard subcard style={{ padding: 0 }}>
         <ScrollBox>
           <Table stripped headless columns={columns} data={instruction.accounts} />
         </ScrollBox>
       </DashboardCard>
-      <DashboardCard subcard>
-        <div className="bu-columns bu-is-mobile" style={{ justifyContent: 'space-between' }}>
-          <div className={`bu-column bu-is-4 text-overflow`}>Data</div>
-          <pre className="bu-column bu-tc-monospace default-instruction__log">
-            {instruction.parsed
-              ? JSON.stringify(instruction.parsed, null, 2)
-              : instruction.data.toString('hex')}
-          </pre>
-        </div>
-      </DashboardCard>
-    </div>
+      <DashboardSection title="Data" style={{ margin: 0 }}>
+        <pre
+          className="bu-tc-monospace default-instruction__log"
+          style={{
+            background: 'var(--theme-logs-bg)',
+            color: 'var(--theme-logs-color)',
+            borderRadius: 'var(--theme-border-radus)',
+            maxWidth: 'none',
+          }}
+        >
+          {instruction.parsed
+            ? JSON.stringify(instruction.parsed, null, 2)
+            : instruction.data.toString('hex')}
+        </pre>
+      </DashboardSection>
+    </>
   );
 });

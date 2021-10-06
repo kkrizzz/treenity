@@ -48,7 +48,7 @@ const TransactionInstructions = ({ tx }) => {
                 fallback={() => <InstructionDefault instruction={inst} transaction={tx} />}
               />
               {inner?.length && (
-                <div style={{ marginBottom: -40, padding: 0 }}>
+                <div style={{ marginBottom: -40, marginTop: 20, padding: 0 }}>
                   <DashboardSection title="Inner instructions">
                     {inner.map((inst, innerIndex) => (
                       <DashboardCard

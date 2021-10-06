@@ -2,16 +2,7 @@ require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 
 const Footer = render('velas', 'footer');
 const Search = render('explorer', 'search');
-const { ThemeProvider } = solarea;
-
-const theme = (isDark) => ({
-  borderRadius: '12px',
-  colors: {
-    main: isDark ? 'white' : 'black',
-    cardBG: 'var(--theme-card-bg-color)',
-    subcardBG: 'var(--theme-subcard-bg-color)',
-  },
-});
+const ThemeProvider = render('explorer', 'theme-provider');
 
 add(({ query, children }) => {
   useCSS(
@@ -40,10 +31,8 @@ add(({ query, children }) => {
     children = <Render {...query} entityId={name} id="explorer" context={context} name={id} />;
   }
 
-  const [isDarkTheme, setIsDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
-
   return (
-    <ThemeProvider theme={theme(isDarkTheme)}>
+    <ThemeProvider>
       <Render id="explorer" name="theme-css" />
       <Render id="velas" name="layout-header" />
       <div class="bu-container bu-is-max-desktop explorer-layout m-b-16 m-t-16">
