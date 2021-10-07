@@ -86,15 +86,7 @@ const SolanaBlockView = ({ entityId }) => {
                 return (
                   <div>
                     <div>
-                      {showTx.length ? (
-                        <div className="bu-columns">
-                          <div className="bu-column bu-is-4">Signature</div>
-                          <div className="bu-column bu-is-6">Instructions</div>
-                          <div className="bu-column bu-is-2">Result</div>
-                        </div>
-                      ) : (
-                        'No non-votes transactions in block'
-                      )}
+                      {!showTx.length && 'No non-votes transactions in block'}
 
                       {showTx}
                     </div>
@@ -136,12 +128,6 @@ const SolanaBlockView = ({ entityId }) => {
               content: () => (
                 <div>
                   <div>
-                    <div className="bu-columns bu-is-mobile">
-                      <div className="bu-column bu-is-4">Signature</div>
-                      <div className="bu-column bu-is-6">Instructions</div>
-                      <div className="bu-column bu-is-2">Result</div>
-                    </div>
-
                     {filterTrans(true)
                       .slice(0, showAmount)
                       .map((t, i) => (
