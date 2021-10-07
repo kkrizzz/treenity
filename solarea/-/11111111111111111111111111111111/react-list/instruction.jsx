@@ -1,6 +1,6 @@
 const { lpsRound } = await require('solarea://explorer/utils');
 const NamedHash = render('dev', 'named-hash');
-const TwoColumn = render('dev', 'two-column');
+const DashboardCard = render('dev', 'dashboard-card');
 
 add(({ id, instruction }) => {
   const parsed = instruction.parsed.info;
@@ -8,44 +8,50 @@ add(({ id, instruction }) => {
   switch (instruction.parsed.type) {
     case 'transfer':
       return (
-        <div>
-          <div class="bu-columns bu-is-mobile">
-            <div className="bu-column bu-is-4">From</div>
-            <div className="bu-column bu-is-4">Amount</div>
-            <div className="bu-column bu-is-4">To</div>
-          </div>
-          <div class="bu-columns bu-is-mobile">
-            <div className="bu-column bu-is-4">
+        <div className="bu-columns">
+          <div className="bu-column bu-is-4">
+            <DashboardCard subcard size="small" title="From">
               <NamedHash hash={parsed.source} type="address" />
-            </div>
-            <div className="bu-column bu-is-4">{lpsRound(parsed.lamports)}</div>
-            <div className="bu-column bu-is-4">
+            </DashboardCard>
+          </div>
+          <div className="bu-column bu-is-4">
+            <DashboardCard subcard size="small" title="Amount" value={lpsRound(parsed.lamports)} />
+          </div>
+          <div className="bu-column bu-is-4">
+            <DashboardCard subcard size="small" title="To">
               <NamedHash hash={parsed.destination} type="address" />
-            </div>
+            </DashboardCard>
           </div>
         </div>
       );
     case 'assign':
       return (
-        <div>
-          <TwoColumn
-            first="Account"
-            second={<NamedHash hash={parsed.account} type="address" alignRight />}
-          />
-          <TwoColumn
-            first="Owner"
-            second={<NamedHash hash={parsed.owner} type="address" alignRight />}
-          />
+        <div className="bu-columns">
+          <div className="bu-column bu-is-6">
+            <DashboardCard subcard size="small" title="Account">
+              <NamedHash hash={parsed.account} type="address" alignRight />
+            </DashboardCard>
+          </div>
+          <div className="bu-column bu-is-6">
+            <DashboardCard subcard size="small" title="Owner">
+              <NamedHash hash={parsed.owner} type="address" alignRight />
+            </DashboardCard>
+          </div>
         </div>
       );
     case 'allocate':
       return (
-        <div>
-          <TwoColumn
-            first="Account"
-            second={<NamedHash hash={parsed.account} type="address" alignRight />}
-          />
-          <TwoColumn first="Space (bytes)" second={parsed.space} />
+        <div className="bu-columns">
+          <div className="bu-column bu-is-6">
+            <DashboardCard subcard size="small" title="Account">
+              <NamedHash hash={parsed.account} type="address" alignRight />
+            </DashboardCard>
+          </div>
+          <div className="bu-column bu-is-6">
+            <DashboardCard subcard size="small" title="Space (bytes)">
+              {parsed.space}
+            </DashboardCard>
+          </div>
         </div>
       );
   }
