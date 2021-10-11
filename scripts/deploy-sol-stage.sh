@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+DOMAIN=stage.solarea.io
+
 set -e
 
 yarn sol:build
 yarn server:build
+
+cp -RL public/* dist/solarea-prod/
 
 SSH_STR=$F1
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
@@ -22,7 +26,7 @@ run_rsync() {
   --progress "$@"
 }
 
-run_rsync --delete dist/solarea-prod/ $SSH_STR:/var/www/solarea.io/
-run_rsync dist/server-prod/ config solarea package.json $SSH_STR:~/solarea/
+run_rsync --delete dist/solarea-prod/ $SSH_STR:/var/www/$DOMAIN/
+run_rsync dist/server-prod/ package.json solarea $SSH_STR:~/$DOMAIN/
 
-$SSH $SSH_STR ". .nvm/nvm.sh  && pm2 restart solarea"
+$SSH $SSH_STR ". .nvm/nvm.sh  && pm2 restart $DOMAIN"

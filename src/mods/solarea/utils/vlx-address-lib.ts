@@ -20,6 +20,8 @@ function sha256(string) {
 }
 
 export function ethToVlx(address_string) {
+  if (!address_string.startsWith('0x')) return address_string;
+
   const clean_address = address_string.replace(/^0x/i, '').toLowerCase();
 
   if (clean_address.length !== 40) {
