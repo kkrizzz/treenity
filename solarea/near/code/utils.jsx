@@ -132,6 +132,22 @@ exports.useNearTwoWeeksStats = () => {
   return [data, isLoading];
 };
 
+exports.useNearLatestBlocks = (limit = 10, offset = 0) => {
+  const { data, isLoading } = useQuery(['latest_blocks'], () =>
+    window
+      .fetch(`/near/api/blocks/latest?limit=${limit}&offset=${offset}`)
+      .then((res) => res.json()),
+  );
+  return [data, isLoading];
+};
+
+exports.useNearLatestTransactions = (limit = 10, offset = 0) => {
+  const { data, isLoading } = useQuery(['latest_transactions'], () =>
+    window.fetch(`/near/api/txs/latest?limit=${limit}&offset=${offset}`).then((res) => res.json()),
+  );
+  return [data, isLoading];
+};
+
 exports.useNearNodeStatus = () => {
   const { config } = useConnection();
 
@@ -147,6 +163,21 @@ exports.useNearNetworkInfo = () => {
 
   const { data, isLoading } = useQuery([config, 'network_info'], () =>
     nearFetch(config.networkId, [], 'network_info'),
+  );
+
+  return [data, isLoading];
+};
+
+exports.useNearTokenMetadata = (contract) => {
+  const { config } = useConnection();
+
+  const { data, isLoading } = useQuery(['token_metadata', contract], () =>
+    nearFetch(config.networkId, [`call/${contract}/ft_metadata`, '']).then(
+      (data) => {
+        return data.result ? parseNearBuffer(data.result) : undefined;
+      },
+      { cacheTime: Infinity },
+    ),
   );
 
   return [data, isLoading];
@@ -213,7 +244,6 @@ exports.useNearNFT = (entityId) => {
     (async function () {
       if (!isNftLikelyLoading && nftLikely.length) {
         setTarget(undefined);
-        setIsLoading(true);
         const NFT_TOKENS = await Promise.all(
           nftLikely.map(async (i) => {
             const metadataReq = await nearFetch(config.networkId, [`call/${i}/nft_metadata`, '']);
@@ -233,12 +263,14 @@ exports.useNearNFT = (entityId) => {
         );
 
         setTarget(NFT_TOKENS);
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
       }
     })();
   }, [nftLikely, isNftLikelyLoading, entityId]);
+
+  React.useEffect(() => {
+    if (target && target.length) setIsLoading(false);
+    else setIsLoading(true);
+  }, [target]);
 
   return [target, isLoading];
 };

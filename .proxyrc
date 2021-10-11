@@ -9,7 +9,7 @@
     "_target": "https://solarea.io/",
     "_changeOrigin": true
   },
-  "/velas/": {
+  "/near/api": {
     "target": "http://localhost:3100/",
     "_target": "https://solarea.io/",
     "_changeOrigin": true

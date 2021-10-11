@@ -2,6 +2,10 @@ const ScrollBox = ({ minWidth = 550, children }) => {
   useCSS(
     'scroll-box.css',
     css`
+      .scroll-box {
+        overflow-x: scroll;
+        overflow-y: hidden;
+      }
       @media screen and (max-width: ${minWidth}px) {
         .scroll-box {
           overflow-x: scroll;
@@ -15,11 +19,7 @@ const ScrollBox = ({ minWidth = 550, children }) => {
     `,
   );
 
-  return (
-    <div class="scroll-box">
-      <div>{children}</div>
-    </div>
-  );
+  return <div class="scroll-box">{children}</div>;
 };
 
 add(ScrollBox);

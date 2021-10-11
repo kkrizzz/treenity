@@ -1,27 +1,22 @@
 const TwoColumn = render('dev', 'two-column');
 const BulmaCard = render('dev', 'bulma-card');
+const Link = render('dev', 'link');
+const Hash = render('dev', 'hash');
+const TimeAgo = render('dev', 'time-ago');
 const Chart = render('dev', 'chart');
 const DashboardCard = render('dev', 'dashboard-card');
+const Search = render('near', 'search');
 const DashboardSection = render('dev', 'dashboard-section');
+const LayoutHeader = render('near', 'layout-header');
 const CoinPriceDashboardCard = render('dev', 'coingecko-price-dashboard-card');
 const nearUtils = await require('solarea://near/utils');
 const colors = { green: '#00C164', red: '#FF003D', blue: '#0B74FF' };
-
+const { ThemeProvider } = solarea;
+const Divider = render('near', 'divider');
+await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
+const Overview = render('near', 'overview');
 const smallTitleClass = 'bu-is-size-6 bu-has-text-grey-light bu-mb-2 bu-has-text-weight-bold';
-const SmallCard = ({ head, items }) => {
-  return (
-    <div class="bu-box">
-      <div className="bu-is-size-4 bu-has-text-black bu-mb-3">{head}</div>
-      {items &&
-        items.map((item, index) => (
-          <div className="bu-mb-2" key={index}>
-            <div className={smallTitleClass}>{item.title}</div>
-            <div className="bu-is-size-4 bu-has-text-black">{item.value}</div>
-          </div>
-        ))}
-    </div>
-  );
-};
+const Wrapper = render('near', 'wrapper');
 const styleForSmall = { fontSize: 20, color: '#788CBF', marginLeft: 8 };
 const PriceStats = ({ coinData }) => {
   const marketData = coinData.market_data;
@@ -31,16 +26,7 @@ const PriceStats = ({ coinData }) => {
   const color = priceChangePositive ? colors.green : colors.red;
 
   return (
-    <DashboardCard
-      title="NEAR price"
-      size="large"
-      info={
-        <span>
-          24h Vol
-          <br />${nearUtils.humanizeFormatter(marketData.total_volume.usd, 2)}
-        </span>
-      }
-    >
+    <DashboardCard title="NEAR price" size="medium">
       <span style={{ color }}>${marketData.current_price.usd}</span>
       <span style={styleForSmall}>
         <span>{priceChangePositive ? '↑' : '↓'}</span>
@@ -52,7 +38,7 @@ const PriceStats = ({ coinData }) => {
 
 const CirculatingSupply = ({ coinData }) => {
   return (
-    <DashboardCard title="Circulating supply Ⓝ" size="large">
+    <DashboardCard title="Circulating supply Ⓝ" size="medium">
       {nearUtils.humanizeFormatter(coinData.market_data.circulating_supply, 2)}
     </DashboardCard>
   );
@@ -61,72 +47,150 @@ const CirculatingSupply = ({ coinData }) => {
 const MarketCap = ({ coinData }) => {
   console.log(coinData.market_data.market_cap.usd);
   return (
-    <DashboardCard title="Circulating supply" size="large">
+    <DashboardCard title="Circulating supply" size="medium">
       ${nearUtils.humanizeFormatter(coinData.market_data.market_cap.usd, 2)}
     </DashboardCard>
+  );
+};
+
+const Block = ({ block: { block_height, block_timestamp, author_account_id } }) => {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center' }} class="bu-mb-1">
+      <div
+        style={{
+          height: '40px',
+          width: '40px',
+          background: '#c6c6c6',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        class="bu-mr-2"
+      >
+        BL
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <Hash type="new-block" hash={block_height} />
+        <div class="bu-is-size-7">
+          <TimeAgo date={new Date(block_timestamp / 1000000)} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Transc = ({ tx: { transaction_hash, block_timestamp } }) => {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center' }} class="bu-mb-1">
+      <div
+        style={{
+          height: '40px',
+          width: '40px',
+          background: '#c6c6c6',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        class="bu-mr-2"
+      >
+        TX
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div style={{ maxWidth: 150 }}>
+          <Hash type="new-transaction" hash={transaction_hash} />
+        </div>
+        <div class="bu-is-size-7">
+          <TimeAgo date={new Date(block_timestamp / 1000000)} />
+        </div>
+      </div>
+    </div>
   );
 };
 
 add(() => {
   const [nodeStatus, isNodeStatusLoading] = nearUtils.useNearNodeStatus();
   const [networkInfo, isNetworkInfoLoading] = nearUtils.useNearNetworkInfo();
-  const [near2weeksStats, isNear2weeksStatsLoading] = nearUtils.useNearTwoWeeksStats();
   const [nearCoinData, isNearCoinDataLoading] = nearUtils.useNearCoinData();
+  const [latestBlocks, isLatestBlocksLoading] = nearUtils.useNearLatestBlocks(10);
+  const [latestTransactions, isLatestTransactionsLoading] = nearUtils.useNearLatestTransactions(10);
 
-  if (
-    isNodeStatusLoading ||
-    isNetworkInfoLoading ||
-    isNear2weeksStatsLoading ||
-    isNearCoinDataLoading
-  )
+  if (isNodeStatusLoading || isNetworkInfoLoading || isNearCoinDataLoading)
     return 'Loading data ...';
 
-  const labels = near2weeksStats
-    .map((i) => new Date(i.from).toLocaleDateString('en-us', { day: 'numeric', month: 'short' }))
-    .reverse();
-
+  console.log(latestTransactions, latestBlocks);
   return (
-    <div>
-      <div className="bu-columns">
-        <div className="bu-column bu-is-two-fifths">
-          <div className="m-b-36">
-            <PriceStats coinData={nearCoinData} />
-          </div>
-          <div className="m-b-36">
-            <CirculatingSupply coinData={nearCoinData} />
-          </div>
-          <div className="m-b-36">
-            <MarketCap coinData={nearCoinData} />
+    <Wrapper>
+      <ThemeProvider
+        theme={{
+          borderRadius: '12px',
+          colors: {
+            main: 'black',
+            cardBG: 'var(--theme-card-bg-color)',
+            subcardBG: 'var(--theme-subcard-bg-color)',
+          },
+        }}
+      >
+        <Render id="explorer" name="theme-css" />
+        <LayoutHeader />
+        <div
+          style={{
+            background: '#cbd3e7',
+            paddingTop: '2rem',
+            paddingLeft: '0.25rem',
+            paddingRight: '0.25rem',
+            marginBottom: '0.75rem',
+          }}
+        >
+          <div class="bu-container bu-is-max-desktop">
+            <div class="bu-columns">
+              <div class="bu-column">
+                <Search />
+              </div>
+            </div>
+            <div className="bu-columns">
+              <div className="bu-column bu-is-4">
+                <PriceStats coinData={nearCoinData} />
+              </div>
+              <div className="bu-column bu-is-4">
+                <MarketCap coinData={nearCoinData} />
+              </div>
+              <div className="bu-column bu-is-4">
+                <CirculatingSupply coinData={nearCoinData} />
+              </div>
+            </div>
           </div>
         </div>
-        <div className="bu-column">
-          <DashboardSection title="Nodes">
-            <div className="bu-columns">
-              <div className="bu-column">
-                <DashboardCard title="Online" value={90} />
-              </div>
-              <div className="bu-column">
-                <DashboardCard title="Validators" value={nodeStatus.validators.length} />
-              </div>
+        <div className="bu-container bu-is-max-desktop ">
+          <div className="bu-columns">
+            <div className="bu-column bu-is-6 bu-mr-1">
+              <Overview>
+                <div className="bu-columns">
+                  <div className="bu-column custom-header bu-mb-3 bu-has-text-grey-darker bu-has-text-weight-bold">
+                    Latest blocks
+                  </div>
+                </div>
+                {!isLatestBlocksLoading && latestBlocks.map((i) => <Block block={i} />)}
+                <button className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16">
+                  Load more...
+                </button>
+              </Overview>
             </div>
-            <div className="bu-columns">
-              <div className="bu-column">
-                <DashboardCard title="Epoch progress" value={123} progress />
-              </div>
+            <div className="bu-column bu-is-6">
+              <Overview>
+                <div className="bu-columns">
+                  <div className="bu-column custom-header bu-mb-3 bu-has-text-grey-darker bu-has-text-weight-bold">
+                    Latest transactions
+                  </div>
+                </div>
+                {!isLatestTransactionsLoading && latestTransactions.map((i) => <Transc tx={i} />)}
+                <button className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16">
+                  Load more...
+                </button>
+              </Overview>
             </div>
-          </DashboardSection>
-          <DashboardSection title="Blocks">
-            <div className="bu-columns">
-              <div className="bu-column">
-                <DashboardCard title="Height" value={nodeStatus.sync_info.latest_block_height} />
-              </div>
-              <div className="bu-column">
-                <DashboardCard title="Avg.block time" value={0.99} />
-              </div>
-            </div>
-          </DashboardSection>
+          </div>
         </div>
-      </div>
-    </div>
+      </ThemeProvider>
+    </Wrapper>
   );
 });

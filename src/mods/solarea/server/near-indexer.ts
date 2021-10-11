@@ -1,4 +1,5 @@
 import { Application } from '@feathersjs/express';
+import _ from 'lodash';
 const { Pool, Client } = require('pg');
 const fetch = require('node-fetch');
 
@@ -14,22 +15,51 @@ client.connect();
 export function nearIndexer(app: Application) {
   app.post('/near/api/acctx', async (req, res) => {
     let { entityId, limit, offset = 0 } = req.body;
-    if (!(0 < limit && limit < 100)) limit = 10;
+    if (!limit) limit = 10;
     if (!(offset >= 0)) offset = 0;
 
-    const result = await client.query(`
-        SELECT * FROM transactions 
+    const transactions = await client.query(`
+        select *, array(
+            select json_agg(
+            json_build_object(
+            'receipt', row_to_json(receipts),
+            'receipt_action', row_to_json(action_receipt_actions),
+            'transaction_action', row_to_json(transaction_actions) 
+            )) from receipts
+            
+        JOIN action_receipt_actions
+        ON action_receipt_actions.receipt_id = receipts.receipt_id
         JOIN transaction_actions 
-        ON transactions.transaction_hash=transaction_actions.transaction_hash 
+        ON transaction_actions.transaction_hash = transactions.transaction_hash
+        WHERE originated_from_transaction_hash = transactions.transaction_hash)
+        as "actions"
+        from transactions
         WHERE signer_account_id='${entityId}'
         OR receiver_account_id='${entityId}'
+        ORDER BY block_timestamp DESC
         LIMIT ${limit}
         OFFSET ${offset}
-        ;
-      `);
+    `);
 
-    result.rows = result.rows.sort((a, b) => b.block_timestamp - a.block_timestamp);
-    res.send(result);
+    // const groupedByHash = _.groupBy(transactions.rows, 'transaction_hash');
+    //
+    // const targetData = _.map(groupedByHash, (receipts, hash) => {
+    //   const actions = _.groupBy(receipts, 'receipt_id');
+    //   return {
+    //     ..._.last(receipts),
+    //     receipts: receipts.map((receipt) => {
+    //       receipt.actions = actions[receipt.receipt_id];
+    //       return receipt;
+    //     }),
+    //   };
+    // });
+
+    const targetData = transactions.rows.map((i) => {
+      i.actions = i.actions[0];
+      return i;
+    });
+
+    res.send(targetData);
   });
   app.get('/near/api/todaystats', async (req, res) => {
     // let { entityId, limit, offset = 0, from_timestamp, to_timestamp } = req.body;
@@ -67,20 +97,29 @@ export function nearIndexer(app: Application) {
     const txId = req.params.id;
 
     const txWithBlock = await client.query(`
-        SELECT * FROM transactions
+        select *, array(
+            select json_agg(
+            json_build_object(
+            'receipt', row_to_json(receipts),
+            'receipt_action', row_to_json(action_receipt_actions),
+            'transaction_action', row_to_json(transaction_actions) 
+            )) from receipts
+            
+        JOIN action_receipt_actions
+        ON action_receipt_actions.receipt_id = receipts.receipt_id
+        JOIN transaction_actions 
+        ON transaction_actions.transaction_hash = transactions.transaction_hash
+        WHERE originated_from_transaction_hash = transactions.transaction_hash)
+        as "actions"
+        from transactions
         JOIN blocks
         ON transactions.included_in_block_hash = blocks.block_hash
-        WHERE transactions.transaction_hash='${txId}'
-        ;
-    `);
-
-    const txActions = await client.query(`
-        SELECT * FROM transaction_actions
         WHERE transaction_hash='${txId}'
         ;
     `);
 
-    txWithBlock.rows[0].actions = txActions.rows;
+    const tx = txWithBlock.rows[0];
+    tx.actions = tx.actions[0];
 
     res.send(txWithBlock.rows[0]);
   });
@@ -103,5 +142,35 @@ export function nearIndexer(app: Application) {
     block.rows[0].transactions = transactions.rows;
 
     res.send(block.rows[0]);
+  });
+
+  app.get('/near/api/blocks/latest', async (req, res) => {
+    let { limit, offset = 0 } = req.params;
+    if (!(0 < limit && limit < 100)) limit = 10;
+    if (!(offset >= 0)) offset = 0;
+
+    const latestBlocks = await client.query(`
+      SELECT * FROM blocks
+      ORDER BY block_timestamp DESC
+      LIMIT ${limit}
+      OFFSET ${offset}
+   `);
+
+    res.send(latestBlocks.rows);
+  });
+
+  app.get('/near/api/txs/latest', async (req, res) => {
+    let { limit, offset = 0 } = req.params;
+    if (!(0 < limit && limit < 100)) limit = 10;
+    if (!(offset >= 0)) offset = 0;
+
+    const latestTxs = await client.query(`
+      SELECT * FROM transactions
+      ORDER BY block_timestamp DESC
+      LIMIT ${limit}
+      OFFSET ${offset}
+   `);
+
+    res.send(latestTxs.rows);
   });
 }

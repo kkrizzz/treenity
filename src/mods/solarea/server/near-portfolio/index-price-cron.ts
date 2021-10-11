@@ -76,11 +76,11 @@ export const updatePrice = async (contractId, collection) => {
 };
 
 export const indexPriceCron = (app) => {
-  const priceCollection = app.services['near-token-price'];
-
-  TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
+  // const priceCollection = app.services['near-token-price'];
   //
-  // cron.schedule('30 0-59 * * * *', () => {
-  //   TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
-  // });
+  // TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
+  // //
+  // // cron.schedule('30 0-59 * * * *', () => {
+  // //   TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
+  // // });
 };

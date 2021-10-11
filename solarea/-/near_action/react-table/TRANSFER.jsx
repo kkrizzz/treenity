@@ -2,11 +2,11 @@ const Hash = render('dev', 'hash');
 const { nearHumanBalance } = await require('solarea://near/utils');
 
 add(({ tx, action }) => {
-  const receiverAccId = tx.receiver_account_id;
-  const signerAccId = tx.signer_account_id;
+  const receiverAccId = action.receipt_action.receipt_receiver_account_id;
+  const signerAccId = action.receipt_action.receipt_predecessor_account_id;
   return (
     <div>
-      Transferred {nearHumanBalance(action.args.deposit)} from{' '}
+      Transferred {nearHumanBalance(action.receipt_action.args.deposit)} from{' '}
       <div style={{ display: 'inline-block' }}>
         <Hash hash={signerAccId} type="account" />
       </div>{' '}

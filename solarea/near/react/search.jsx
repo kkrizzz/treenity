@@ -6,11 +6,11 @@ const search = (id) => {
   let exName;
 
   if (id.includes('.near')) {
-    exName = 'account';
+    exName = 'new-account';
   } else if (Number(id)) {
-    exName = 'block';
+    exName = 'new-block';
   } else {
-    exName = 'transaction';
+    exName = 'new-transaction';
   }
 
   console.log(Number(id));
