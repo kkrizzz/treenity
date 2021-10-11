@@ -70,7 +70,7 @@ const Block = ({ block: { block_height, block_timestamp, author_account_id } }) 
         BL
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <Hash type="new-block" hash={block_height} />
+        <Hash type="block" hash={block_height} />
         <div class="bu-is-size-7">
           <TimeAgo date={new Date(block_timestamp / 1000000)} />
         </div>
@@ -97,7 +97,7 @@ const Transc = ({ tx: { transaction_hash, block_timestamp } }) => {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <div style={{ maxWidth: 150 }}>
-          <Hash type="new-transaction" hash={transaction_hash} />
+          <Hash type="transaction" hash={transaction_hash} />
         </div>
         <div class="bu-is-size-7">
           <TimeAgo date={new Date(block_timestamp / 1000000)} />

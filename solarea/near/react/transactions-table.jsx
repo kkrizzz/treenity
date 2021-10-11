@@ -96,7 +96,7 @@ const txHashColumn = {
   dataIndex: 'transaction_hash',
   render: (hash) => (
     <div style={{ maxWidth: 100 }}>
-      <Hash hash={hash} type="new-transaction" />
+      <Hash hash={hash} type="transaction" />
     </div>
   ),
 };
@@ -106,7 +106,7 @@ const txFromColumn = {
   dataIndex: 'signer_account_id',
   render: (from) => (
     <div style={{ maxWidth: 200 }}>
-      <Hash hash={from} type="new-account" />
+      <Hash hash={from} type="account" />
     </div>
   ),
 };
@@ -116,7 +116,7 @@ const txToColumn = {
   dataIndex: 'receiver_account_id',
   render: (to, item) => (
     <div style={{ maxWidth: 200 }}>
-      <Hash hash={to} type="new-account" />
+      <Hash hash={to} type="account" />
     </div>
   ),
 };

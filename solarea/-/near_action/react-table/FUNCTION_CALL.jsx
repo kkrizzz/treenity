@@ -21,7 +21,7 @@ add(({ tx, action }) => {
           <TokenName contract={receiverAccountId} />
         </div>
         <div class="bu-mr-1 bu-is-flex">
-          from <Hash hash={predecessorAccountId} type="new-account" />
+          from <Hash hash={predecessorAccountId} type="account" />
         </div>
         <div class="bu-is-flex">
           to <Hash hash={receiptAction.args.args_json.receiver_id} />

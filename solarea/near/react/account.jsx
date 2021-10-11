@@ -4,149 +4,280 @@ const {
   useNearNFT,
   useNearAccTransactions,
   useNearTokens,
+  useNearCoinData,
 } = await require('solarea://near/utils');
-const BulmaCard = render('dev', 'bulma-card');
-const TwoColumn = render('dev', 'two-column');
+
+const NewAccountTokens = render('near', 'new-account-tokens');
 const Tabs = render('dev', 'tabs');
-const AccountTokens = render('near', 'account-tokens');
-const Hash = render('dev', 'hash');
 const Table = render('dev', 'table');
+const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
 const TransactionRow = render('near', 'transaction', 'react-table');
 const ScrollBox = render('dev', 'scroll-box');
-const AccountNfts = render('near', 'account-nfts');
-const Dropdown = render('dev', 'dropdown');
-const Icon = render('near_action', 'icon');
 const DashboardSection = render('dev', 'dashboard-section');
+const AccountNFTs = render('near', 'new-account-nfts');
 const DashboardCard = render('dev', 'dashboard-card');
 const AccountName = render('', 'name', 'react-text');
+const Overview = render('near', 'overview');
+const Token = render('near', 'token', 'react-list');
+const TokenAmount = render('near', 'token-amount', 'react-list');
 
 const { Buffer, borsh } = solarea;
 
+const Divider = render('near', 'divider');
+const Wrapper = render('near', 'wrapper');
+
+const LPS = 0.000000000000000000000001;
+
+const txHashColumn = {
+  title: 'Hash',
+  dataIndex: 'receipt',
+  render: (receipt) => (
+    <div style={{ maxWidth: 100 }}>
+      <NamedHash hash={receipt.originated_from_transaction_hash} type="transaction" />
+    </div>
+  ),
+};
+
+const txFromColumn = {
+  title: 'From',
+  dataIndex: 'receipt',
+  render: (receipt) => (
+    <div style={{ maxWidth: 200 }}>
+      <NamedHash hash={receipt.predecessor_account_id} type="account" />
+    </div>
+  ),
+};
+
+const txToColumn = {
+  title: 'To',
+  dataIndex: 'receipt',
+  render: (receipt) => (
+    <div style={{ maxWidth: 200 }}>
+      <NamedHash hash={receipt.receiver_account_id} type="account" />
+    </div>
+  ),
+};
+
+const txTimestampColumn = {
+  title: 'Timestamp',
+  dataIndex: 'receipt',
+  render: (receipt) => new Date(receipt.included_in_block_timestamp / 1000000).toLocaleString(),
+};
+
+const transactionColumns = {
+  unknown: [
+    txHashColumn,
+    txFromColumn,
+    txToColumn,
+    { title: 'Action', dataIndex: 'action_kind' },
+    txTimestampColumn,
+  ],
+  transfer: [
+    txHashColumn,
+    txFromColumn,
+    txToColumn,
+    {
+      title: 'Amount',
+      dataIndex: 'receipt_action',
+      render: (receiptAction) => (receiptAction.args.deposit * LPS).toFixed(6) + ' Ⓝ',
+    },
+    txTimestampColumn,
+  ],
+  tokenTransfers: [
+    txHashColumn,
+    {
+      title: 'Method',
+      dataIndex: 'transaction_action',
+      render: (transactionAction) => (
+        <div class="bu-tag" style={{ background: '#f3f6ff', color: '#000' }}>
+          {transactionAction.args.method_name}
+        </div>
+      ),
+    },
+    {
+      title: 'From',
+      dataIndex: 'receipt_action',
+      render: (receiptAction) => (
+        <Hash hash={receiptAction.receipt_predecessor_account_id} type="account" />
+      ),
+    },
+    {
+      title: 'To',
+      dataIndex: 'receipt_action',
+      render: (receiptAction) => (
+        <Hash hash={receiptAction.args.args_json.receiver_id} type="account" />
+      ),
+    },
+    {
+      title: 'Token',
+      dataIndex: 'receipt_action',
+      render: (receiptAction) => (
+        <div className="bu-has-text-left">
+          <Token contract={receiptAction.receipt_receiver_account_id} />
+        </div>
+      ),
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'receipt_action',
+      render: (receiptAction) => (
+        <TokenAmount
+          contract={receiptAction.receipt_receiver_account_id}
+          amount={receiptAction.args.args_json.amount}
+        />
+      ),
+    },
+    txTimestampColumn,
+  ],
+};
+
 add(({ entityId }) => {
-  const [accData, isLoading] = useNearAccount(entityId);
-  const [nftData, isNftDataLoading] = useNearNFT(entityId);
-  const [txs, isTxsLoading] = useNearAccTransactions(entityId, 99);
-  const [tokens, isTokensLoading] = useNearTokens(entityId);
+  if (entityId === 'system')
+    return (
+      <Wrapper>
+        <div class="bu-is-size-4 bu-is-flex bu-is-flex-direction-row bu-is-align-items-center bu-mb-5">
+          Account
+          <div class="bu-is-size-5 bu-has-text-grey bu-ml-2">{entityId}</div>
+        </div>
+      </Wrapper>
+    );
+  const [accData, isAccDataLoading] = useNearAccount(entityId);
+  const [txs, isTxsLoading] = useNearAccTransactions(entityId, 200, 0);
+  const [nearCoinData, isNearCoinDataLoading] = useNearCoinData();
 
-  console.log(txs, isTxsLoading);
+  if (isAccDataLoading) return <div>Loading . . .</div>;
 
-  if (isLoading || isTxsLoading) return <div>Loading . . .</div>;
+  console.log(txs);
 
-  const tokensTabs = [
-    {
-      name: 'NEP-141',
-      content: () => (isTokensLoading ? 'Loading tokens...' : <AccountTokens tokenData={tokens} />),
-    },
-    {
-      name: 'NEP-177',
-      content: () => (isNftDataLoading ? 'Loading nft...' : <AccountNfts nftData={nftData} />),
-    },
-  ];
-
-  useCSS(
-    'near-account.css',
-    css`
-      .inner-shadow {
-        box-shadow: inset 0px 0px 5px -2px rgba(0, 0, 0, 0.25);
-      }
-    `,
+  const AccountOverview = () => (
+    <Overview>
+      <div class="bu-columns">
+        <div class="bu-column custom-header bu-mb-3 bu-has-text-grey-darker bu-has-text-weight-bold">
+          Overview
+        </div>
+      </div>
+      <div class="bu-columns">
+        <div class="bu-column bu-is-4">Balance</div>
+        <div class="bu-column">{nearHumanBalance(accData.amount)}</div>
+      </div>
+      <Divider />
+      <div className="bu-columns">
+        <div className="bu-column bu-is-4">Near value</div>
+        <div className="bu-column">
+          {isNearCoinDataLoading
+            ? 'loading'
+            : '$' + (nearCoinData.market_data.current_price.usd * LPS * accData.amount).toFixed(4)}
+        </div>
+      </div>
+    </Overview>
   );
 
-  const TX_SORT_DATA = [
+  const MoreInfo = () => (
+    <Overview>
+      <div class="bu-columns">
+        <div class="bu-column custom-header bu-mb-3 bu-has-text-grey-darker bu-has-text-weight-bold">
+          Tokens
+        </div>
+      </div>
+      <div className="bu-column" style={{ maxHeight: 100, overflowY: 'auto' }}>
+        <NewAccountTokens entityId={entityId} />
+      </div>
+    </Overview>
+  );
+
+  const TX_ACTIONS_KIND = {
+    transfer: ['TRANSFER'],
+    tokenTransfers: ['FUNCTION_CALL'],
+  };
+
+  const tabs = [
     {
-      key: 'all',
-      name: 'All',
-      sort: undefined,
+      name: 'Transfers',
+      content: () => {
+        const transfersTxs = txs
+          .map((tx) => {
+            return tx.actions.filter(
+              ({ transaction_action, receipt }) =>
+                TX_ACTIONS_KIND.transfer.includes(transaction_action.action_kind) &&
+                receipt.predecessor_account_id !== 'system',
+            );
+          })
+          .flat();
+
+        if (transfersTxs.length)
+          return (
+            <ScrollBox>
+              <Table columns={transactionColumns.transfer} data={transfersTxs} />
+            </ScrollBox>
+          );
+        return 'No transfers';
+      },
     },
     {
-      key: 'fc_call',
-      name: <Icon i="FUNCTION_CALL" />,
-      sort: ['FUNCTION_CALL', 'DEPLOY_CONTRACT'],
+      name: 'Internal transfers',
+      content: () => {
+        const transfersTxs = txs
+          .map((i) => {
+            return i.actions.filter(({ receipt_action }) =>
+              TX_ACTIONS_KIND.transfer.includes(receipt_action.action_kind),
+            );
+          })
+          .flat();
+
+        if (transfersTxs.length)
+          return (
+            <ScrollBox>
+              <Table columns={transactionColumns.transfer} data={transfersTxs} />
+            </ScrollBox>
+          );
+        return 'No transfers';
+      },
     },
     {
-      key: 'transfer',
-      name: <Icon i="TRANSFER" />,
-      sort: ['TRANSFER'],
+      name: 'Token transfers',
+      content: () => {
+        const tokenTransfers = txs
+          .map((i) => {
+            return i.actions.filter(
+              ({ receipt_action, transaction_action }) =>
+                TX_ACTIONS_KIND.tokenTransfers.includes(receipt_action.action_kind) &&
+                (receipt_action.args.method_name === 'ft_transfer' ||
+                  receipt_action.args.method_name === 'ft_transfer_call') &&
+                transaction_action.args.method_name !== 'near_deposit',
+            );
+          })
+          .flat();
+        if (tokenTransfers.length)
+          return (
+            <ScrollBox>
+              <Table columns={transactionColumns.tokenTransfers} data={tokenTransfers} />
+            </ScrollBox>
+          );
+
+        return 'No token transfers';
+      },
     },
-    {
-      key: 'permissons',
-      name: <Icon i="ADD_KEY" />,
-      sort: ['ADD_KEY', 'DELETE_KEY'],
-    },
+    { name: 'NFTs', content: () => <AccountNFTs entityId={entityId} /> },
   ];
 
-  const [selectedTxFilter, setSelectedTxFilter] = React.useState(TX_SORT_DATA[0]);
-  const [limit, setLimit] = React.useState(10);
-
   return (
-    <div>
-      <DashboardSection title="Account overview">
-        <AccountName
-          id={entityId}
-          render={(item) => <DashboardCard title="Label">{item}</DashboardCard>}
-          fallback={() => null}
-        />
-        <div className="bu-columns">
-          <div className="bu-column bu-is-8">
-            <DashboardCard title="Address">
-              <Hash hash={entityId} type="address" />
-            </DashboardCard>
-          </div>
-          <div className="bu-column bu-is-4">
-            <DashboardCard title="Balance">{nearHumanBalance(accData.amount)}</DashboardCard>
-          </div>
+    <Wrapper>
+      <div class="bu-is-size-4 bu-is-flex bu-is-flex-direction-row bu-is-align-items-center bu-mb-5">
+        Account
+        <div class="bu-is-size-5 bu-has-text-grey bu-ml-2">{entityId}</div>
+      </div>
+      <div class="bu-columns">
+        <div class="bu-column bu-is-6">
+          <AccountOverview />
         </div>
-      </DashboardSection>
-      <DashboardSection title="Tokens">
-        <Tabs tabs={tokensTabs} />
-      </DashboardSection>
-      <DashboardSection
-        title={
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-            <div>Transactions</div>
-            <div class="bu-tags">
-              {TX_SORT_DATA.map((i) => (
-                <div
-                  onClick={() => setSelectedTxFilter(i)}
-                  class={`bu-tag ${i.key === selectedTxFilter.key ? 'bu-is-primary' : ''}`}
-                >
-                  {i.name}
-                </div>
-              ))}
-            </div>
-          </div>
-        }
-      >
-        <ScrollBox>
-          {selectedTxFilter.name === 'All'
-            ? txs.rows.slice(0, limit).map((i) => (
-                <DashboardCard
-                  key={`${i.transaction_hash}`}
-                  class="bu-box theme-inner-instruction inner-shadow"
-                >
-                  <TransactionRow tx={i} />
-                </DashboardCard>
-              ))
-            : txs.rows
-                .slice(0, limit)
-                .filter((i) => selectedTxFilter.sort.includes(i.action_kind))
-                .map((i) => (
-                  <DashboardCard
-                    key={`${i.transaction_hash}`}
-                    class="bu-box theme-inner-instruction inner-shadow"
-                  >
-                    <TransactionRow tx={i} />
-                  </DashboardCard>
-                ))}
-        </ScrollBox>
-        <button
-          className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16"
-          onClick={() => setLimit(limit + 10)}
-        >
-          Load more...
-        </button>
-      </DashboardSection>
-    </div>
+        <div class="bu-column bu-is-6">
+          <MoreInfo />
+        </div>
+      </div>
+      <div class="tabs-wrapper">
+        {isTxsLoading ? <div>Loading transactions ...</div> : <Tabs tabs={tabs} />}
+      </div>
+    </Wrapper>
   );
 });
