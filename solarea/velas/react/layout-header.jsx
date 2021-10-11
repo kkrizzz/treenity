@@ -45,7 +45,7 @@ add(() => {
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
       <div class="bu-container bu-is-max-desktop">
         <div className="bu-navbar-brand">
-          <Link className="bu-navbar-item" to="/explorer" style={{ color: 'black' }}>
+          <Link className="bu-navbar-item" to="/" style={{ color: 'black' }}>
             <Render id="velas" name="logo" color="var(--theme-main-oposit-color)" />
           </Link>
           <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme} />

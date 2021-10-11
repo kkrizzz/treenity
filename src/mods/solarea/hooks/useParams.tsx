@@ -13,23 +13,24 @@ export default function useParams() {
   let addr, name, context;
 
   // has 2 or more subdomains
-  if (names.length >= 4) {
-    let first, second;
-    [first, second, addr, context] = names;
-    addr = `${second}.${first}`;
-    context = paths[0];
-    // has one subdomain
-  } else if ((names[0] === 'work' && names[1] === 'medianet') || ['velas'].includes(names[2])) {
-    addr = paths[0] || names.join('.');
-    name = paths[1];
-    context = paths[2];
-  } else if (names.length === 3) {
-    addr = names[2];
-    name = paths[0];
-    context = paths[1];
-    // just domain name - 'meta.store'
-  } else if (paths.length === 0) {
-    addr = `${names[1]}.${names[0]}`;
+  // if (names.length >= 4) {
+  //   let first, second;
+  //   [first, second, addr, context] = names;
+  //   addr = `${second}.${first}`;
+  //   context = paths[0];
+  // has one subdomain
+  // } else if ((names[0] === 'work' && names[1] === 'medianet') || ['velas'].includes(names[2])) {
+  //   addr = paths[0] || names.join('.');
+  //   name = paths[1];
+  //   context = paths[2];
+  // } else if (names.length === 3) {
+  //   addr = names[2];
+  //   name = paths[0];
+  //   context = paths[1];
+  // just domain name - 'meta.store'
+  // } else
+  if (paths.length === 0) {
+    addr = hostname; //`${names[1]}.${names[0]}`;
     // url site.name/addr/name/context - address with name in context
   } else {
     addr = paths[0];

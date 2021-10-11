@@ -227,7 +227,7 @@ const SolanaTxView = (props) => {
           <div className="bu-columns">
             <div className="bu-column bu-is-12">
               <DashboardCard size="small" subcard title="Signature">
-                <Hash hash={signature} type="address" />
+                <Hash hash={signature} type="tx" />
               </DashboardCard>
             </div>
           </div>

@@ -5,8 +5,6 @@ set -e
 yarn sol:build
 yarn server:build
 
-cp -R public/* dist/solarea-prod/
-
 SSH_STR=$F1
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
@@ -24,7 +22,7 @@ run_rsync() {
   --progress "$@"
 }
 
-run_rsync --delete dist/solarea-prod/ $SSH_STR:/var/www/sol.treenity.pro/
-run_rsync dist/server-prod/ config package.json $SSH_STR:~/solarea/
+run_rsync --delete dist/solarea-prod/ $SSH_STR:/var/www/solarea.io/
+run_rsync dist/server-prod/ config solarea package.json $SSH_STR:~/solarea/
 
 $SSH $SSH_STR ". .nvm/nvm.sh  && pm2 restart solarea"
