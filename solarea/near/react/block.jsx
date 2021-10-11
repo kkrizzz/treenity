@@ -72,4 +72,22 @@ add(({ entityId }) => {
             second={new Date(blockFromIndexer.block_timestamp / 1000000).toLocaleString()}
           />
           <Divider />
-          <CustomTwoColumn first="Transactions" second={blockFromIndexer.transactions.length} /
+          <CustomTwoColumn first="Transactions" second={blockFromIndexer.transactions.length} />
+          <Divider />
+          <CustomTwoColumn
+            first="Validated by"
+            second={<Hash hash={blockFromIndexer.author_account_id} type="account" />}
+          />
+        </Overview>
+      </div>
+      <Overview>
+        <div className="bu-columns">
+          <div className="bu-column custom-header bu-mb-3 bu-has-text-grey-darker bu-has-text-weight-bold">
+            Transactions
+          </div>
+        </div>
+        <Table columns={tsxTableColumn} data={blockFromIndexer.transactions} />
+      </Overview>
+    </Wrapper>
+  );
+});
