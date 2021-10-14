@@ -53,9 +53,9 @@ add(({ children, query }) => {
         <div className="m-b-16">
           <Render id="near" name="layout-header" />
         </div>
-        <div className="bu-container">
+        <div className="bu-container bu-is-max-widescreen">
           <Render id="explorer" name="theme-css" />
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
             <div style={{ maxWidth: 400, minWidth: 350 }}>
               <Search />
             </div>
