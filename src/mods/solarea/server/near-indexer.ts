@@ -155,11 +155,23 @@ export function nearIndexer(app: Application) {
     if (!(offset >= 0)) offset = 0;
 
     const latestBlocks = await client.query(`
-      SELECT * FROM blocks
+      SELECT *, array(
+              SELECT json_agg(
+                json_build_object(
+                  'transactions', row_to_json(transactions)
+                )
+              ) from transactions
+              WHERE transactions.included_in_block_hash = blocks.block_hash
+            ) as "txs"
+      FROM blocks
       ORDER BY block_timestamp DESC
       LIMIT ${limit}
       OFFSET ${offset}
    `);
+
+    latestBlocks.rows.forEach((block) => {
+      block.txs = block?.txs[0]?.map((i) => i.transactions);
+    });
 
     res.send(latestBlocks.rows);
   });
