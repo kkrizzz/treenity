@@ -13,7 +13,7 @@ const client = new Client({
 client.connect();
 
 export function nearIndexer(app: Application) {
-  app.post('/near/api/acctx', async (req, res) => {
+  app.post('/api/near/acctx', async (req, res) => {
     let { entityId, limit, offset = 0 } = req.body;
     if (!limit) limit = 10;
     if (!(offset >= 0)) offset = 0;
@@ -65,7 +65,7 @@ export function nearIndexer(app: Application) {
 
     res.send(targetData);
   });
-  app.get('/near/api/todaystats', async (req, res) => {
+  app.get('/api/near/todaystats', async (req, res) => {
     // let { entityId, limit, offset = 0, from_timestamp, to_timestamp } = req.body;
     // if (!(0 < limit && limit < 100)) limit = 10;
     // if (!(offset >= 0)) offset = 0;
@@ -97,7 +97,7 @@ export function nearIndexer(app: Application) {
       totalAccsToday: totalAccsToday.rows[0].count,
     });
   });
-  app.get('/near/api/tx/:id', async (req, res) => {
+  app.get('/api/near/tx/:id', async (req, res) => {
     const txId = req.params.id;
 
     const txWithBlock = await client.query(`
@@ -128,7 +128,7 @@ export function nearIndexer(app: Application) {
 
     res.send(txWithBlock.rows[0]);
   });
-  app.get('/near/api/block/:id', async (req, res) => {
+  app.get('/api/near/block/:id', async (req, res) => {
     const blockHeight = req.params.id;
 
     const block = await client.query(`
@@ -149,7 +149,7 @@ export function nearIndexer(app: Application) {
     res.send(block.rows[0]);
   });
 
-  app.get('/near/api/blocks/latest', async (req, res) => {
+  app.get('/api/near/blocks/latest', async (req, res) => {
     let { limit, offset = 0 } = req.params;
     if (!(0 < limit && limit < 100)) limit = 10;
     if (!(offset >= 0)) offset = 0;
@@ -176,7 +176,7 @@ export function nearIndexer(app: Application) {
     res.send(latestBlocks.rows);
   });
 
-  app.get('/near/api/txs/latest', async (req, res) => {
+  app.get('/api/near/txs/latest', async (req, res) => {
     let { limit, offset = 0 } = req.params;
     if (!(0 < limit && limit < 100)) limit = 10;
     if (!(offset >= 0)) offset = 0;

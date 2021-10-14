@@ -28,6 +28,14 @@ const nearFetch = async (rpc, params, queryMethod = 'query', httpMethod = 'POST'
   ).result;
 };
 
+exports.useNearTokenPrice = (contractId) => {
+  const { data, isLoading } = solarea.useQuery(['token_price', contractId], () =>
+    fetch(`/api/near/token/${contractId}`).then((res) => res.json()),
+  );
+
+  return [data, isLoading];
+};
+
 const parseNearBuffer = (buffer) => {
   return JSON.parse(Buffer.from(buffer).toString('utf-8'));
 };
@@ -47,7 +55,7 @@ exports.useAccount = (entityId) => {
 exports.useNearAccTransactions = (entityId, limit, offset) => {
   const { data, isLoading } = useQuery([entityId, 'transactions'], () =>
     window
-      .fetch('/near/api/acctx', {
+      .fetch('/api/near/acctx', {
         method: 'POST',
         body: JSON.stringify({ entityId, limit, offset }),
         headers: {
@@ -88,7 +96,7 @@ exports.useNearCoinData = () => {
 
 exports.useNearStats = () => {
   const { data, isLoading } = useQuery(['near_tx_stats'], () =>
-    window.fetch('/near/api/todaystats').then((res) => res.json()),
+    window.fetch('/api/near/todaystats').then((res) => res.json()),
   );
 
   return [data, isLoading];
@@ -96,7 +104,7 @@ exports.useNearStats = () => {
 
 exports.useNearTx = (entityId) => {
   const { data, isLoading } = useQuery(['tx', entityId], () =>
-    window.fetch(`/near/api/tx/${entityId}`).then((res) => res.json()),
+    window.fetch(`/api/near/tx/${entityId}`).then((res) => res.json()),
   );
 
   return [data, isLoading];
@@ -104,7 +112,7 @@ exports.useNearTx = (entityId) => {
 
 exports.useNearBlockFromIndexer = (entityId) => {
   const { data, isLoading } = useQuery(['block', 'indexer', entityId], () =>
-    window.fetch(`/near/api/block/${entityId}`).then((res) => res.json()),
+    window.fetch(`/api/near/block/${entityId}`).then((res) => res.json()),
   );
   return [data, isLoading];
 };
@@ -126,24 +134,24 @@ exports.useNearBlockFromRPC = (entityId) => {
 
 exports.useNearTwoWeeksStats = () => {
   const { data, isLoading } = useQuery(['near_tx_stats_2week'], () =>
-    window.fetch('/near/api/2weekstats').then((res) => res.json()),
+    window.fetch('/api/near/2weekstats').then((res) => res.json()),
   );
 
   return [data, isLoading];
 };
 
 exports.useNearLatestBlocks = (limit = 10, offset = 0) => {
-  const { data, isLoading } = useQuery(['latest_blocks'], () =>
+  const { data, isLoading } = useQuery(['latest_blocks', limit, offset], () =>
     window
-      .fetch(`/near/api/blocks/latest?limit=${limit}&offset=${offset}`)
+      .fetch(`/api/near/blocks/latest?limit=${limit}&offset=${offset}`)
       .then((res) => res.json()),
   );
   return [data, isLoading];
 };
 
 exports.useNearLatestTransactions = (limit = 10, offset = 0) => {
-  const { data, isLoading } = useQuery(['latest_transactions'], () =>
-    window.fetch(`/near/api/txs/latest?limit=${limit}&offset=${offset}`).then((res) => res.json()),
+  const { data, isLoading } = useQuery(['latest_transactions', limit, offset], () =>
+    window.fetch(`/api/near/txs/latest?limit=${limit}&offset=${offset}`).then((res) => res.json()),
   );
   return [data, isLoading];
 };
