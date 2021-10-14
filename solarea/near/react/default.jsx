@@ -102,8 +102,8 @@ add(() => {
   const [latestBlocks, isLatestBlocksLoading] = nearUtils.useNearLatestBlocks(10);
   const [latestTransactions, isLatestTransactionsLoading] = nearUtils.useNearLatestTransactions(10);
 
-  if (isNodeStatusLoading || isNetworkInfoLoading || isNearCoinDataLoading)
-    return 'Loading data ...';
+  // if (isNodeStatusLoading || isNetworkInfoLoading || isNearCoinDataLoading)
+  //   return 'Loading data ...';
 
   console.log(latestTransactions, latestBlocks);
   return (
@@ -131,17 +131,21 @@ add(() => {
           <NearInfo className="bu-columns">
             <div className="bu-column">
               <DashboardCard size="medium" color={{ background: 'white' }}>
-                <div className="bu-columns">
-                  <div className="bu-column bu-is-4">
-                    <PriceStats coinData={nearCoinData} />
+                {isNodeStatusLoading || isNetworkInfoLoading || isNearCoinDataLoading ? (
+                  'Loading data ...'
+                ) : (
+                  <div className="bu-columns">
+                    <div className="bu-column bu-is-4">
+                      <PriceStats coinData={nearCoinData} />
+                    </div>
+                    <div className="bu-column bu-is-4">
+                      <MarketCap coinData={nearCoinData} />
+                    </div>
+                    <div className="bu-column bu-is-4">
+                      <CirculatingSupply coinData={nearCoinData} />
+                    </div>
                   </div>
-                  <div className="bu-column bu-is-4">
-                    <MarketCap coinData={nearCoinData} />
-                  </div>
-                  <div className="bu-column bu-is-4">
-                    <CirculatingSupply coinData={nearCoinData} />
-                  </div>
-                </div>
+                )}
               </DashboardCard>
             </div>
           </NearInfo>
