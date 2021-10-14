@@ -1,6 +1,7 @@
 const nearUtils = await require('solarea://near/utils');
 const TwoColumn = render('dev', 'two-column');
 const Link = render('dev', 'link');
+const TokenAmountPrice = render('near', 'token-amount-price', 'react-list');
 const DashboardCard = render('dev', 'dashboard-card');
 
 const tokensDecimalsPow = (amount, decimals, toFixed = 4) =>
@@ -16,14 +17,23 @@ const RenderTokens = ({ entityId }) => {
       tokenCollection.tokens !== '0' ? (
         <>
           <div class="bu-columns bu-is-mobile">
-            <div class="bu-column bu-is-flex bu-is-align-items-center">
+            <div class="bu-column bu-is-6 bu-is-flex bu-is-align-items-center">
               <img style={{ marginRight: 8 }} width={16} src={tokenCollection.metadata.icon} />
               <Link to={`/account/${tokenCollection.contract}`}>
                 {tokenCollection.metadata.name}
               </Link>
             </div>
-            <div class="bu-column bu-has-text-right">
+            <div class="bu-column bu-is-4 bu-has-text-right">
               {tokensDecimalsPow(tokenCollection.tokens, tokenCollection.metadata.decimals)}
+            </div>
+            <div class="bu-has-text-grey-dark bu-has-text-weight-bold bu-column bu-is-2 bu-has-text-right">
+              <TokenAmountPrice
+                contract={tokenCollection.contract}
+                amount={tokensDecimalsPow(
+                  tokenCollection.tokens,
+                  tokenCollection.metadata.decimals,
+                )}
+              />
             </div>
           </div>
           <Divider />

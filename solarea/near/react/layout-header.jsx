@@ -56,7 +56,6 @@ add(() => {
           >
             <Render id="near" name="logo" />
           </Link>
-          <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme} />
 
           <a
             onClick={(e) => menuRef.current.classList.toggle('bu-is-active')}
