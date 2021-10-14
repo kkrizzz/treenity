@@ -69,7 +69,10 @@ const Search = ({ onChange }) => {
             onChange={onSetValue}
             onKeyPress={(evt) => evt.code === 'Enter' && doSearch()}
           />
-          <span class="bu-icon bu-is-right">
+          <span
+            class="bu-icon bu-is-right"
+            style={{ top: 2, right: 4, cursor: 'pointer', pointerEvents: 'all' }}
+          >
             <div onClick={doSearch}>
               <Render id="icons" name="search" />
             </div>

@@ -47,7 +47,7 @@ add(() => {
 
   return (
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
-      <div class="bu-container">
+      <div class="bu-container  bu-is-max-widescreen">
         <div className="bu-navbar-brand">
           <Link
             className="bu-navbar-item"
