@@ -29,6 +29,7 @@ export function nearIndexer(app: Application) {
             JOIN action_receipt_actions
             ON action_receipt_actions.receipt_id = receipts.receipt_id
             WHERE originated_from_transaction_hash = transactions.transaction_hash
+            ORDER BY receipt_included_in_block_timestamp, index_in_action_receipt
         ) as "actions", array(
             select json_agg(
             json_build_object(
