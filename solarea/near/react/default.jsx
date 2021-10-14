@@ -134,7 +134,6 @@ add(() => {
         <LayoutHeader />
         <div
           style={{
-            background: '#cbd3e7',
             paddingTop: '2rem',
             paddingLeft: '0.25rem',
             paddingRight: '0.25rem',
@@ -171,7 +170,7 @@ add(() => {
                 </div>
                 {!isLatestBlocksLoading && latestBlocks.map((i) => <Block block={i} />)}
                 <button className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16">
-                  Load more...
+                  View more
                 </button>
               </Overview>
             </div>
@@ -184,7 +183,7 @@ add(() => {
                 </div>
                 {!isLatestTransactionsLoading && latestTransactions.map((i) => <Transc tx={i} />)}
                 <button className="bu-button bu-is-outlined bu-is-fullwidth bu-is-primary m-t-16">
-                  Load more...
+                  View more...
                 </button>
               </Overview>
             </div>

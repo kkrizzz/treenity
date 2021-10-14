@@ -47,7 +47,7 @@ add(({ entityId }) => {
             <div class="bu-columns">
               {nftCollection.tokens.map((i) => {
                 return (
-                  <div class="bu-column bu-is-4">
+                  <div class="bu-column bu-is-4 bu-is-half-tablet">
                     <img
                       src={
                         i.metadata.media.startsWith('bafy')

@@ -88,10 +88,10 @@ const transactionColumns = {
     txHashColumn,
     {
       title: 'Method',
-      dataIndex: 'transaction_action',
-      render: (transactionAction) => (
+      dataIndex: 'receipt_action',
+      render: (receiptAction) => (
         <div class="bu-tag" style={{ background: '#f3f6ff', color: '#000' }}>
-          {transactionAction.args.method_name}
+          {receiptAction.args.method_name}
         </div>
       ),
     },
@@ -198,8 +198,8 @@ add(({ entityId }) => {
         const transfersTxs = txs
           .map((tx) => {
             return tx.actions.filter(
-              ({ transaction_action, receipt }) =>
-                TX_ACTIONS_KIND.transfer.includes(transaction_action.action_kind) &&
+              ({ receipt, receipt_action }) =>
+                TX_ACTIONS_KIND.transfer.includes(receipt_action.action_kind) &&
                 receipt.predecessor_account_id !== 'system',
             );
           })
@@ -214,37 +214,37 @@ add(({ entityId }) => {
         return 'No transfers';
       },
     },
-    {
-      name: 'Internal transfers',
-      content: () => {
-        const transfersTxs = txs
-          .map((i) => {
-            return i.actions.filter(({ receipt_action }) =>
-              TX_ACTIONS_KIND.transfer.includes(receipt_action.action_kind),
-            );
-          })
-          .flat();
-
-        if (transfersTxs.length)
-          return (
-            <ScrollBox>
-              <Table columns={transactionColumns.transfer} data={transfersTxs} />
-            </ScrollBox>
-          );
-        return 'No transfers';
-      },
-    },
+    // {
+    //   name: 'Internal transfers',
+    //   content: () => {
+    //     const transfersTxs = txs
+    //       .map((i) => {
+    //         return i.actions.filter(({ receipt_action }) =>
+    //           TX_ACTIONS_KIND.transfer.includes(receipt_action.action_kind),
+    //         );
+    //       })
+    //       .flat();
+    //
+    //     if (transfersTxs.length)
+    //       return (
+    //         <ScrollBox>
+    //           <Table columns={transactionColumns.transfer} data={transfersTxs} />
+    //         </ScrollBox>
+    //       );
+    //     return 'No transfers';
+    //   },
+    // },
     {
       name: 'Token transfers',
       content: () => {
         const tokenTransfers = txs
           .map((i) => {
             return i.actions.filter(
-              ({ receipt_action, transaction_action }) =>
+              ({ receipt_action }) =>
                 TX_ACTIONS_KIND.tokenTransfers.includes(receipt_action.action_kind) &&
                 (receipt_action.args.method_name === 'ft_transfer' ||
                   receipt_action.args.method_name === 'ft_transfer_call') &&
-                transaction_action.args.method_name !== 'near_deposit',
+                receipt_action.args.method_name !== 'near_deposit',
             );
           })
           .flat();

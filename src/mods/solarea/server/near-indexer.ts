@@ -23,16 +23,19 @@ export function nearIndexer(app: Application) {
             select json_agg(
             json_build_object(
             'receipt', row_to_json(receipts),
-            'receipt_action', row_to_json(action_receipt_actions),
-            'transaction_action', row_to_json(transaction_actions) 
+            'receipt_action', row_to_json(action_receipt_actions)
             )) from receipts
             
-        JOIN action_receipt_actions
-        ON action_receipt_actions.receipt_id = receipts.receipt_id
-        JOIN transaction_actions 
-        ON transaction_actions.transaction_hash = transactions.transaction_hash
-        WHERE originated_from_transaction_hash = transactions.transaction_hash)
-        as "actions"
+            JOIN action_receipt_actions
+            ON action_receipt_actions.receipt_id = receipts.receipt_id
+            WHERE originated_from_transaction_hash = transactions.transaction_hash
+        ) as "actions", array(
+            select json_agg(
+            json_build_object(
+            'transaction_actions', row_to_json(transaction_actions) 
+            )) from transaction_actions
+        WHERE transaction_actions.transaction_hash = transactions.transaction_hash) as "tx_actions"
+              
         from transactions
         WHERE signer_account_id='${entityId}'
         OR receiver_account_id='${entityId}'
@@ -56,6 +59,7 @@ export function nearIndexer(app: Application) {
 
     const targetData = transactions.rows.map((i) => {
       i.actions = i.actions[0];
+      i.tx_actions = i.tx_actions[0].map((c) => c.transaction_actions);
       return i;
     });
 
@@ -97,25 +101,26 @@ export function nearIndexer(app: Application) {
     const txId = req.params.id;
 
     const txWithBlock = await client.query(`
-        select *, array(
-            select json_agg(
-            json_build_object(
+      SELECT *, array(
+        SELECT json_agg(
+          json_build_object(
             'receipt', row_to_json(receipts),
-            'receipt_action', row_to_json(action_receipt_actions),
-            'transaction_action', row_to_json(transaction_actions) 
-            )) from receipts
+            'receipt_action', row_to_json(action_receipt_actions)
+          )
+        ) from receipts
             
         JOIN action_receipt_actions
         ON action_receipt_actions.receipt_id = receipts.receipt_id
-        JOIN transaction_actions 
-        ON transaction_actions.transaction_hash = transactions.transaction_hash
-        WHERE originated_from_transaction_hash = transactions.transaction_hash)
-        as "actions"
-        from transactions
-        JOIN blocks
-        ON transactions.included_in_block_hash = blocks.block_hash
-        WHERE transaction_hash='${txId}'
-        ;
+        WHERE originated_from_transaction_hash = transactions.transaction_hash
+      ) as "actions"
+        
+      FROM transactions
+      JOIN transaction_actions 
+      ON transaction_actions.transaction_hash = transactions.transaction_hash
+      JOIN blocks
+      ON transactions.included_in_block_hash = blocks.block_hash
+      WHERE transactions.transaction_hash='${txId}'
+      ;
     `);
 
     const tx = txWithBlock.rows[0];

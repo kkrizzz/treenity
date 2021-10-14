@@ -4,6 +4,8 @@ const { nearHumanBalance } = await require('solarea://near/utils');
 add(({ tx, action }) => {
   const receiverAccId = action.receipt_action.receipt_receiver_account_id;
   const signerAccId = action.receipt_action.receipt_predecessor_account_id;
+  if (signerAccId === 'system') {
+  }
   return (
     <div>
       Transferred {nearHumanBalance(action.receipt_action.args.deposit)} from{' '}
