@@ -151,7 +151,7 @@ export function nearIndexer(app: Application) {
   });
 
   app.get('/api/near/blocks/latest', async (req, res) => {
-    let { limit, offset = 0 } = req.params;
+    let { limit, offset = 0 } = req.query;
     if (!(0 < limit && limit < 100)) limit = 10;
     if (!(offset >= 0)) offset = 0;
 
@@ -178,7 +178,7 @@ export function nearIndexer(app: Application) {
   });
 
   app.get('/api/near/txs/latest', async (req, res) => {
-    let { limit, offset = 0 } = req.params;
+    let { limit, offset = 0 } = req.query;
     if (!(0 < limit && limit < 100)) limit = 10;
     if (!(offset >= 0)) offset = 0;
 

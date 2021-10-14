@@ -4,7 +4,15 @@ const { numberWithSpaces } = await require('solarea://explorer/utils');
 const Link = render('dev', 'link');
 const FeCopy = render('icons', 'fe-copy');
 
-const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
+const Hash = ({
+  hash,
+  type,
+  children,
+  urlParams,
+  alignRight = false,
+  suffixLen = 4,
+  threshold = 15,
+}) => {
   useCSS(
     'hash.css',
     css`
@@ -47,9 +55,9 @@ const Hash = ({ hash, type, children, urlParams, alignRight = false }) => {
   const parsedHash = numberWithSpaces(hash);
 
   const fallback = (str = parsedHash) => {
-    if (str?.length >= 15) {
-      const start = str.slice(0, -4);
-      const end = str.slice(-4);
+    if (str?.length >= threshold) {
+      const start = suffixLen ? str.slice(0, -suffixLen) : str;
+      const end = suffixLen ? str.slice(-suffixLen) : '';
 
       return (
         <>
