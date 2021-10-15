@@ -11,7 +11,12 @@ const Divider = render('near', 'divider');
 
 const RenderTokens = ({ entityId }) => {
   const [tokenData, isTokenDataLoading] = nearUtils.useNearTokens(entityId);
-  if (isTokenDataLoading) return 'Loading tokens ...';
+  if (isTokenDataLoading)
+    return (
+      <div>
+        Loading tokens... <span className="spinner-grow spinner-grow-sm m-r-4" />
+      </div>
+    );
   return tokenData && tokenData.length ? (
     tokenData.map((tokenCollection) =>
       tokenCollection.tokens !== '0' ? (

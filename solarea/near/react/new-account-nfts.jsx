@@ -76,7 +76,10 @@ add(({ entityId }) => {
   return (
     <NftWrapper>
       {isNftDataLoading ? (
-        <div>Loading ...</div>
+        <div>
+          Loading ...
+          <span className="spinner-grow spinner-grow-sm m-r-4" />
+        </div>
       ) : nftData ? (
         nftData.map((nftCollection) => (
           <div>
