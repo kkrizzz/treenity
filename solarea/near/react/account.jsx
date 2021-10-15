@@ -34,7 +34,7 @@ const txHashColumn = {
   dataIndex: 'receipt',
   render: (receipt) => (
     <div style={{ maxWidth: 100 }}>
-      <NamedHash hash={receipt.originated_from_transaction_hash} type="transaction" />
+      <Hash hash={receipt.originated_from_transaction_hash} type="transaction" />
     </div>
   ),
 };
