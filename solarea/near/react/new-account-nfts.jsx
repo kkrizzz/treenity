@@ -31,7 +31,7 @@ add(({ entityId }) => {
     <NftWrapper>
       {isNftDataLoading ? (
         <div>Loading ...</div>
-      ) : (
+      ) : nftData ? (
         nftData.map((nftCollection) => (
           <div>
             <div
@@ -61,6 +61,8 @@ add(({ entityId }) => {
             </div>
           </div>
         ))
+      ) : (
+        <div>No NFTs</div>
       )}
     </NftWrapper>
   );
