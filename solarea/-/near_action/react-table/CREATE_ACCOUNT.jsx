@@ -1,3 +1,10 @@
+const Hash = render('dev', 'hash');
+
 add(({ tx, action }) => {
-  return `Created account ${tx.receiver_account_id}`;
+  return (
+    <div style={{ display: 'flex' }}>
+      Created account{' '}
+      <Hash hash={action.receipt_action.receipt_receiver_account_id} type="account" />
+    </div>
+  );
 });
