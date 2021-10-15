@@ -70,7 +70,7 @@ export function nearIndexer(app: Application) {
     // });
 
     const targetData = transactions.rows.map((i) => {
-      i.actions = i.actions[0].sort(sortByTimeThenId);
+      i.actions = i.actions[0]?.sort(sortByTimeThenId);
       i.tx_actions = i.tx_actions[0].map((c) => c.transaction_actions);
       return i;
     });
