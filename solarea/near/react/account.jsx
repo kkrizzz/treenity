@@ -211,7 +211,8 @@ add(({ entityId }) => {
               <Table columns={transactionColumns.transfer} data={transfersTxs} />
             </ScrollBox>
           );
-        return 'No transfers';
+
+        return <Overview>No transfers</Overview>;
       },
     },
     // {
@@ -255,7 +256,7 @@ add(({ entityId }) => {
             </ScrollBox>
           );
 
-        return 'No token transfers';
+        return <Overview>No token transfers</Overview>;
       },
     },
     { name: 'NFTs', content: () => <AccountNFTs entityId={entityId} /> },

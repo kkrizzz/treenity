@@ -12,7 +12,7 @@ const Divider = render('near', 'divider');
 const RenderTokens = ({ entityId }) => {
   const [tokenData, isTokenDataLoading] = nearUtils.useNearTokens(entityId);
   if (isTokenDataLoading) return 'Loading tokens ...';
-  return tokenData ? (
+  return tokenData && tokenData.length ? (
     tokenData.map((tokenCollection) =>
       tokenCollection.tokens !== '0' ? (
         <>

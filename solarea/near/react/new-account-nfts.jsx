@@ -8,6 +8,7 @@ const {
 
 const NftWrapper = styled.div`
   background: white;
+  font-size: 14px;
   padding: 0.75rem;
 
   .near-nft-token {
@@ -62,7 +63,7 @@ add(({ entityId }) => {
           </div>
         ))
       ) : (
-        <div>No NFTs</div>
+        <div style={{ fontSize: 14 }}>No NFTs</div>
       )}
     </NftWrapper>
   );

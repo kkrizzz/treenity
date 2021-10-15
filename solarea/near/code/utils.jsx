@@ -229,12 +229,16 @@ exports.useNearTokens = (entityId) => {
         ).filter((i) => i !== null);
 
         setTarget(TOKENS);
-        setIsLoading(false);
       } else {
         setIsLoading(false);
       }
     })();
   }, [tokensLikely, isTokensLikelyLoading, entityId]);
+
+  React.useEffect(() => {
+    if (target && target.length) setIsLoading(false);
+    else setIsLoading(true);
+  }, [target]);
 
   return [target, isLoading];
 };
