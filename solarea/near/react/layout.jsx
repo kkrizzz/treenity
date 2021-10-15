@@ -5,6 +5,7 @@ const Search = render('near', 'search');
 
 add(({ children, query }) => {
   const [id, name, context] = solarea.useParams();
+  solarea.useDocumentTitle('Near Explorer');
 
   if (['account', 'transaction', 'block'].includes(id)) {
     children = <Render {...query} entityId={name} id="near" context={context} name={id} />;

@@ -5,6 +5,7 @@ import bn from 'bn.js';
 
 import { parseRlp } from './evm/parse-rlp';
 import { useCluster, useConnection } from './hooks/useConnection';
+import useDocumentTitle from './hooks/useDocumentTitle';
 import { useGraphQL, fetchGraphQL } from './hooks/useGraphQL';
 import useParams from './hooks/useParams';
 import { useTransaction } from './hooks/useTransaction';
@@ -56,6 +57,7 @@ globalThis.solarea = {
   useInfiniteQuery,
   useGraphQL,
   useMetaplexNFT,
+  useDocumentTitle,
   fetchGraphQL,
   BufferLayout,
   SolanaLayout,
