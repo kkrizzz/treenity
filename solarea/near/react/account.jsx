@@ -143,7 +143,7 @@ add(({ entityId }) => {
       </Wrapper>
     );
   const [accData, isAccDataLoading] = useNearAccount(entityId);
-  const [txs, isTxsLoading] = useNearAccTransactions(entityId, 200, 0);
+  const [txs, isTxsLoading] = useNearAccTransactions(entityId, 50, 0);
   const [nearCoinData, isNearCoinDataLoading] = useNearCoinData();
 
   if (isAccDataLoading) return <div>Loading . . .</div>;
