@@ -163,7 +163,7 @@ add(({ entityId }) => {
       </div>
       <Divider />
       <div className="bu-columns">
-        <div className="bu-column bu-is-4">Near value</div>
+        <div className="bu-column bu-is-4">USD value</div>
         <div className="bu-column">
           {isNearCoinDataLoading
             ? 'loading'

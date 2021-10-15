@@ -86,6 +86,10 @@ export function indexRefFinanceTokensPrice(app: Application) {
         token_account_ids: { $all: [contractId, 'wrap.near'] },
       });
 
+      if (!tokenPool) {
+        return res.sendStatus(404);
+      }
+
       const wrapNearIndex = tokenPool.token_account_ids.findIndex((i) => i === 'wrap.near');
       const targetTokenIndex = tokenPool.token_account_ids.findIndex((i) => i === contractId);
       const tokenPriceInNear =
