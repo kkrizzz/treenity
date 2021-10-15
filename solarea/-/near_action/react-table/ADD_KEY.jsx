@@ -2,13 +2,13 @@ const Link = render('dev', 'link');
 const TxDesc = render('near', 'tx-description');
 
 add(({ tx, action }) => {
-  const args = action.args;
+  const args = action.receipt_action.args;
   const publicKey = args.public_key;
 
   const receiverId = args.access_key.permission.permission_details?.receiver_id;
 
   return (
-    <TxDesc tx={tx}>
+    <div>
       Access key added for contract{' '}
       <span style={{ marginLeft: 4 }}>
         <Link to={`account/${receiverId}`}>{receiverId}</Link>
@@ -23,6 +23,6 @@ add(({ tx, action }) => {
           </Link>
         </span>
       )}
-    </TxDesc>
+    </div>
   );
 });
