@@ -67,11 +67,43 @@ const txTimestampColumn = {
 
 const transactionColumns = {
   unknown: [
-    txHashColumn,
-    txFromColumn,
-    txToColumn,
-    { title: 'Action', dataIndex: 'action_kind' },
-    txTimestampColumn,
+    {
+      title: 'Hash',
+      dataIndex: 'transaction_hash',
+      render: (hash) => (
+        <div style={{ maxWidth: 100 }}>
+          <NamedHash hash={hash} type="transaction" />
+        </div>
+      ),
+    },
+    {
+      title: 'From',
+      dataIndex: 'actions',
+      render: (actions) => (
+        <div style={{ maxWidth: 100 }}>
+          <NamedHash hash={actions[0].receipt.predecessor_account_id} type="account" />
+        </div>
+      ),
+    },
+    {
+      title: 'To',
+      dataIndex: 'actions',
+      render: (actions) => (
+        <div style={{ maxWidth: 100 }}>
+          <NamedHash hash={actions[0].receipt.receiver_account_id} type="account" />
+        </div>
+      ),
+    },
+    {
+      title: 'Timestamp',
+      dataIndex: 'block_timestamp',
+      render: (timestamp) => new Date(timestamp / 1000000).toLocaleString(),
+    },
+    {
+      title: 'Action',
+      dataIndex: 'actions',
+      render: (actions) => actions[0].receipt_action.action_kind,
+    },
   ],
   transfer: [
     txHashColumn,
@@ -197,10 +229,13 @@ add(({ entityId }) => {
       content: () => {
         const transfersTxs = txs
           .map((tx) => {
-            return tx.actions.filter(
-              ({ receipt, receipt_action }) =>
-                TX_ACTIONS_KIND.transfer.includes(receipt_action.action_kind) &&
-                receipt.predecessor_account_id !== 'system',
+            return (
+              tx.actions &&
+              tx.actions.filter(
+                ({ receipt, receipt_action }) =>
+                  TX_ACTIONS_KIND.transfer.includes(receipt_action.action_kind) &&
+                  receipt.predecessor_account_id !== 'system',
+              )
             );
           })
           .flat();
@@ -257,6 +292,19 @@ add(({ entityId }) => {
           );
 
         return <Overview>No token transfers</Overview>;
+      },
+    },
+    {
+      name: 'Transactions',
+      content: () => {
+        if (txs.length)
+          return (
+            <ScrollBox>
+              <Table columns={transactionColumns.unknown} data={txs} />
+            </ScrollBox>
+          );
+
+        return <Overview>No transactions</Overview>;
       },
     },
     { name: 'NFTs', content: () => <AccountNFTs entityId={entityId} /> },
