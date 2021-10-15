@@ -12,6 +12,15 @@ const client = new Client({
 });
 client.connect();
 
+const sortByTimeThenId = (a, b) => {
+  const time =
+    a.receipt_action.receipt_included_in_block_timestamp -
+    b.receipt_action.receipt_included_in_block_timestamp;
+  return (
+    time || b.receipt_action.index_in_action_receipt - b.receipt_action.index_in_action_receipt
+  );
+};
+
 export function nearIndexer(app: Application) {
   app.post('/api/near/acctx', async (req, res) => {
     let { entityId, limit, offset = 0 } = req.body;
@@ -19,8 +28,9 @@ export function nearIndexer(app: Application) {
     if (!(offset >= 0)) offset = 0;
 
     const transactions = await client.query(`
-        select *, array(
-            select json_agg(
+        select *, 
+        array(
+          select json_agg(
             json_build_object(
             'receipt', row_to_json(receipts),
             'receipt_action', row_to_json(action_receipt_actions)
@@ -29,12 +39,14 @@ export function nearIndexer(app: Application) {
             JOIN action_receipt_actions
             ON action_receipt_actions.receipt_id = receipts.receipt_id
             WHERE originated_from_transaction_hash = transactions.transaction_hash
-        ) as "actions", array(
-            select json_agg(
-            json_build_object(
-            'transaction_actions', row_to_json(transaction_actions) 
-            )) from transaction_actions
-        WHERE transaction_actions.transaction_hash = transactions.transaction_hash) as "tx_actions"
+          ) as "actions", 
+        array(
+          SELECT json_agg(
+            json_build_object('transaction_actions', row_to_json(transaction_actions))
+          ) 
+          FROM transaction_actions
+          WHERE transaction_actions.transaction_hash = transactions.transaction_hash
+        ) as "tx_actions"
               
         from transactions
         WHERE signer_account_id='${entityId}'
@@ -58,7 +70,7 @@ export function nearIndexer(app: Application) {
     // });
 
     const targetData = transactions.rows.map((i) => {
-      i.actions = i.actions[0];
+      i.actions = i.actions[0].sort(sortByTimeThenId);
       i.tx_actions = i.tx_actions[0].map((c) => c.transaction_actions);
       return i;
     });
@@ -124,7 +136,7 @@ export function nearIndexer(app: Application) {
     `);
 
     const tx = txWithBlock.rows[0];
-    tx.actions = tx.actions[0];
+    tx.actions = tx.actions[0].sort(sortByTimeThenId);
 
     res.send(txWithBlock.rows[0]);
   });

@@ -62,16 +62,13 @@ add(({ entityId }) => {
         <div class="bu-columns">
           <div class="bu-column bu-is-2">Actions</div>
           <div class="bu-column bu-has-text-weight-bold">
-            {tx.actions
-              .slice(0)
-              .reverse()
-              .map((action) => (
-                <div class="bu-columns">
-                  <div class="bu-column">
-                    <Action name={action.receipt_action.action_kind} tx={tx} action={action} />
-                  </div>
+            {tx.actions.map((action) => (
+              <div class="bu-columns">
+                <div class="bu-column">
+                  <Action name={action.receipt_action.action_kind} tx={tx} action={action} />
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
         <Divider />
