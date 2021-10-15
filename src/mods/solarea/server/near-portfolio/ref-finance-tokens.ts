@@ -78,41 +78,46 @@ export function indexRefFinanceTokensPrice(app: Application) {
   const tokenMetadata = app.services['near-token-metadata'];
 
   app.get('/api/near/token/:contractId', async (req, res) => {
-    const { contractId } = req.params;
-    if (!contractId) return res.sendStatus(500);
+    try {
+      const { contractId } = req.params;
+      if (!contractId) return res.sendStatus(500);
 
-    const tokenPool = await priceCollection.Model.findOne({
-      token_account_ids: { $all: [contractId, 'wrap.near'] },
-    });
-
-    const wrapNearIndex = tokenPool.token_account_ids.findIndex((i) => i === 'wrap.near');
-    const targetTokenIndex = tokenPool.token_account_ids.findIndex((i) => i === contractId);
-    const tokenPriceInNear = tokenPool.amounts[wrapNearIndex] / tokenPool.amounts[targetTokenIndex];
-
-    const nearCurrentInfo = await fetch('https://api.coingecko.com/api/v3/coins/near').then((res) =>
-      res.json(),
-    );
-    const nearPrice = nearCurrentInfo.market_data.current_price.usd;
-
-    let targetTokenMetadata = await tokenMetadata.Model.findOne({ _id: contractId });
-
-    if (!targetTokenMetadata) {
-      targetTokenMetadata = JSON.parse(await getTokenMetadata(contractId));
-      await tokenMetadata.Model.insertOne({
-        _id: contractId,
-        ...targetTokenMetadata,
+      const tokenPool = await priceCollection.Model.findOne({
+        token_account_ids: { $all: [contractId, 'wrap.near'] },
       });
+
+      const wrapNearIndex = tokenPool.token_account_ids.findIndex((i) => i === 'wrap.near');
+      const targetTokenIndex = tokenPool.token_account_ids.findIndex((i) => i === contractId);
+      const tokenPriceInNear =
+        tokenPool.amounts[wrapNearIndex] / tokenPool.amounts[targetTokenIndex];
+
+      const nearCurrentInfo = await fetch(
+        'https://api.coingecko.com/api/v3/coins/near',
+      ).then((res) => res.json());
+      const nearPrice = nearCurrentInfo.market_data.current_price.usd;
+
+      let targetTokenMetadata = await tokenMetadata.Model.findOne({ _id: contractId });
+
+      if (!targetTokenMetadata) {
+        targetTokenMetadata = JSON.parse(await getTokenMetadata(contractId));
+        await tokenMetadata.Model.insertOne({
+          _id: contractId,
+          ...targetTokenMetadata,
+        });
+      }
+
+      const tokenPriceInNearInDecimals =
+        tokenPriceInNear * Math.pow(10, -Math.abs(24 - targetTokenMetadata.decimals));
+
+      res.status(200).send({
+        price: {
+          near: tokenPriceInNearInDecimals,
+          usd: tokenPriceInNearInDecimals * nearPrice,
+        },
+      });
+    } catch (e) {
+      res.sendStatus(500);
     }
-
-    const tokenPriceInNearInDecimals =
-      tokenPriceInNear * Math.pow(10, -Math.abs(24 - targetTokenMetadata.decimals));
-
-    res.status(200).send({
-      price: {
-        near: tokenPriceInNearInDecimals,
-        usd: tokenPriceInNearInDecimals * nearPrice,
-      },
-    });
   });
 
   fetchPools(priceCollection);
