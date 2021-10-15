@@ -24,7 +24,7 @@ add(({ tx, action }) => {
           from <Hash hash={predecessorAccountId} type="account" />
         </div>
         <div class="bu-is-flex">
-          to <Hash hash={receiptAction.args.args_json.receiver_id} />
+          to <Hash hash={receiptAction.args.args_json.receiver_id} type="account" />
         </div>
       </div>
     );
