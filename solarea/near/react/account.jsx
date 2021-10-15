@@ -72,7 +72,7 @@ const transactionColumns = {
       dataIndex: 'transaction_hash',
       render: (hash) => (
         <div style={{ maxWidth: 100 }}>
-          <NamedHash hash={hash} type="transaction" />
+          <Hash hash={hash} type="transaction" />
         </div>
       ),
     },
