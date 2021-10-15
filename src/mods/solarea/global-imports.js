@@ -21,6 +21,7 @@ import { ethToVlx, vlxToEth } from './utils/vlx-address-lib';
 import { useMetaplexNFT } from './hooks/useMetaplexNFT';
 import styled, { ThemeProvider } from 'styled-components';
 import * as nearContext from './hooks/near/useConnection';
+import { ConnectionProvider } from './hooks/useConnection';
 
 const borsh = require('borsh');
 
@@ -34,6 +35,7 @@ globalThis.React = preact;
 globalThis.ReactDOM = preact;
 globalThis.styled = styled;
 globalThis.solarea = {
+  ConnectionProvider,
   nearContext,
   bs58,
   bn,

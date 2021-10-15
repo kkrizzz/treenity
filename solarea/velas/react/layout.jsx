@@ -3,6 +3,7 @@ require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 const Footer = render('velas', 'footer');
 const Search = render('explorer', 'search');
 const ThemeProvider = render('explorer', 'theme-provider');
+const ConnectionProvider = solarea.ConnectionProvider;
 
 add(({ query, children }) => {
   useCSS(
@@ -32,16 +33,18 @@ add(({ query, children }) => {
   }
 
   return (
-    <ThemeProvider>
-      <Render id="explorer" name="theme-css" />
-      <Render id="velas" name="layout-header" />
-      <div class="bu-container bu-is-max-desktop explorer-layout m-b-16 m-t-16">
-        <Search />
-      </div>
-      {children}
-      <div class="m-t-32">
-        <Footer />
-      </div>
-    </ThemeProvider>
+    <ConnectionProvider cluster="https://mainnet.velas.com/rpc">
+      <ThemeProvider>
+        <Render id="explorer" name="theme-css" />
+        <Render id="velas" name="layout-header" />
+        <div class="bu-container bu-is-max-desktop explorer-layout m-b-16 m-t-16">
+          <Search />
+        </div>
+        {children}
+        <div class="m-t-32">
+          <Footer />
+        </div>
+      </ThemeProvider>
+    </ConnectionProvider>
   );
 });
