@@ -271,6 +271,8 @@ exports.useNearNFT = (entityId) => {
         );
 
         setTarget(NFT_TOKENS);
+      } else {
+        setIsLoading(false);
       }
     })();
   }, [nftLikely, isNftLikelyLoading, entityId]);
