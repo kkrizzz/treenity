@@ -35,7 +35,6 @@ const StyledTable = styled(Table).attrs(({ bordered, stripped }) => ({
   border-radius: ${(props) => props.theme.borderRadius};
   overflow: hidden;
   color: ${(props) => props.theme.colors.cardBG};
-  font-weight: bold;
   font-size: 16px;
   line-height: 20px;
   background-color: transparent !important;
@@ -52,7 +51,6 @@ const StyledTable = styled(Table).attrs(({ bordered, stripped }) => ({
   th {
     color: ${(props) => props.theme.colors.main} !important;
 
-    font-weight: 600 !important;
     font-size: 14px !important;
     padding: 20px 20px;
   }

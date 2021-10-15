@@ -2,7 +2,6 @@ const Wrapper = styled.div([
   css`
     .latest-info {
       background: white;
-      background: white;
       padding-left: 0.75rem;
       padding-top: 0.75rem;
       padding-bottom: 0.75rem;
@@ -57,7 +56,6 @@ const Wrapper = styled.div([
 
     tr td {
       font-size: 14px !important;
-      font-weight: 200 !important;
       padding: 0.75rem;
     }
   `,

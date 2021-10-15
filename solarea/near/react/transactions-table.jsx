@@ -83,7 +83,6 @@ const Wrapper = styled.div([
 
     tr td {
       font-size: 14px !important;
-      font-weight: 200 !important;
       padding: 0.75rem;
     }
   `,
