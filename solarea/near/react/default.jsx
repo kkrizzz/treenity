@@ -132,7 +132,9 @@ add(() => {
             <div className="bu-column">
               <DashboardCard size="medium" color={{ background: 'white' }}>
                 {isNodeStatusLoading || isNetworkInfoLoading || isNearCoinDataLoading ? (
-                  'Loading data ...'
+                  <div style={{ fontSize: 14 }}>
+                    Loading token data ... <span className="spinner-grow spinner-grow-sm m-r-4" />
+                  </div>
                 ) : (
                   <div className="bu-columns">
                     <div className="bu-column bu-is-4">

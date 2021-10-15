@@ -10,33 +10,31 @@ add(({ children, query }) => {
     children = <Render {...query} entityId={name} id="near" context={context} name={id} />;
   }
 
-  {
-    useCSS(
-      'near-theme',
-      css`
-        * {
-          --theme-main-bg-color: rgb(248, 249, 250) !important;
-        }
-      `,
+  useCSS(
+    'near-theme',
+    css`
+      * {
+        --theme-main-bg-color: rgb(248, 249, 250) !important;
+      }
+    `,
+  );
+  if (name === 'default')
+    return (
+      <ThemeProvider
+        theme={{
+          borderRadius: '12px',
+          colors: {
+            main: 'black',
+            cardBG: 'white',
+            subcardBG: 'var(--theme-subcard-bg-color)',
+          },
+        }}
+      >
+        <ConnectionProvider config="mainnet">
+          <Render id={id} context={context} />
+        </ConnectionProvider>
+      </ThemeProvider>
     );
-    if (name === 'default')
-      return (
-        <ThemeProvider
-          theme={{
-            borderRadius: '12px',
-            colors: {
-              main: 'black',
-              cardBG: 'white',
-              subcardBG: 'var(--theme-subcard-bg-color)',
-            },
-          }}
-        >
-          <ConnectionProvider config="mainnet">
-            <Render id={id} context={context} />
-          </ConnectionProvider>
-        </ThemeProvider>
-      );
-  }
 
   return (
     <ThemeProvider
