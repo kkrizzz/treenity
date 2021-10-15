@@ -277,7 +277,14 @@ add(({ entityId }) => {
         </div>
       </div>
       <div class="tabs-wrapper">
-        {isTxsLoading ? <div>Loading transactions ...</div> : <Tabs tabs={tabs} />}
+        {isTxsLoading ? (
+          <div>
+            Loading transactions ...
+            <span className="spinner-grow spinner-grow-sm m-r-4" />
+          </div>
+        ) : (
+          <Tabs tabs={tabs} />
+        )}
       </div>
     </Wrapper>
   );
