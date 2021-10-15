@@ -40,7 +40,7 @@ add(({ entityId }) => {
         <Divider />
         <CustomTwoColumn
           first="Block"
-          link={`/new-block/${tx.block_height}`}
+          link={`/block/${tx.block_height}`}
           second={tx.block_height}
         />
         <Divider />
