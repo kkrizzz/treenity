@@ -7,6 +7,7 @@ import { nearPortfolio } from './near-portfolio';
 import { currentPrice } from './near-portfolio/current-price';
 import './near-portfolio/ref-finance-tokens';
 import { indexRefFinanceTokensPrice } from './near-portfolio/ref-finance-tokens';
+import { indexPriceCron } from './velas-dextools/indexer';
 
 export function routesStartup(app: Application) {
   prettierFormat(app);
@@ -14,5 +15,6 @@ export function routesStartup(app: Application) {
   klinesProxy(app);
   nearIndexer(app);
   indexRefFinanceTokensPrice(app);
+  indexPriceCron(app);
   // nearPortfolio(app);
 }

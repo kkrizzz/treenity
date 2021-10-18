@@ -28,21 +28,6 @@ const NETWORKS = [
 ];
 
 add(() => {
-  const [, clusterUrl, setCluster] = solarea.useCluster();
-  const setNetwork = (url) => () => setCluster(url);
-  const [isDarkTheme, setIsDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
-
-  const custom = preact.useRef();
-  const setCustomUrl = () => {
-    const url = custom.current.value;
-    if (url.startsWith('http')) {
-      setCluster(url);
-    } else {
-      toast('Wrong cluster url format, should start with `http`', 3000, '#f14668');
-    }
-  };
-
-  const clusterName = NETWORKS.find((n) => n[1] === clusterUrl)?.[0] || clusterUrl;
   const menuRef = React.useRef();
 
   return (

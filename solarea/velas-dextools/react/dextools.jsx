@@ -114,7 +114,7 @@ class Datafeed {
 
 function useLoadMarkets(token) {
   return solarea.useQuery([token, 'markets'], () =>
-    fetch(`/velas/token/${token}/markets`).then((res) => res.json()),
+    fetch(`api/velas/token/${token}/markets`).then((res) => res.json()),
   );
 }
 
