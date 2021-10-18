@@ -41,16 +41,25 @@ const StyledTable = styled(Table).attrs(({ bordered, stripped }) => ({
   width: 100%;
 
   tbody {
-    background-color: ${(props) => props.theme.colors.cardBG};
+    background-color: ${(props) => props.theme.colors.cardBG} !important;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: ${(props) => props.theme.colors.cardBG} !important;
+  }
+  &.bu-is-striped tbody tr:nth-child(odd) {
+    background-color: ${(props) => props.theme.colors.subcardBG} !important;
   }
 
   thead {
-    background-color: ${(props) => props.theme.colors.cardBG};
+    background-color: ${(props) => props.theme.colors.cardBG} !important;
   }
   td,
   th {
+    border-color: transparent !important;
     color: ${(props) => props.theme.colors.main} !important;
 
+    font-weight: 600 !important;
     font-size: 14px !important;
     padding: 20px 20px;
   }
