@@ -210,18 +210,14 @@ add(({ token }) => {
                 </div>
               )}{' '}
             </div>
-          </DashboardCard>
-          <DashboardCard>
-            <div className="bu-button" style={{ display: 'flex', alignItems: 'center' }}>
-              <div class="bu-mr-2">
+            <div className="bu-button bu-mt-4" style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="bu-mr-2">
                 <Render id="velas-dextools" name="wagyu-logo" />
               </div>
               BUY/SELL
             </div>
           </DashboardCard>
-          <DashboardCard size="small">
-            <TokenData market={currentMarket} />
-          </DashboardCard>
+          <TokenData market={currentMarket} />
         </div>
         <div className="bu-column bu-is-8">
           <TradingView token={tokenPair} datafeed={datafeed} />

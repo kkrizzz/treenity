@@ -19,7 +19,7 @@ add(({ children }) => {
       </div>
       <div className="bu-container">
         <Render id="explorer" name="theme-css" />
-        <div class="bu-mb-3">
+        <div class="bu-mb-5">
           <Render id="velas-dextools" name="search" />
         </div>
         {children}

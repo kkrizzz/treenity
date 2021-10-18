@@ -1,4 +1,5 @@
 const TwoColumn = render('dev', 'two-column');
+const Table = render('dev', 'table');
 
 const queryMarketData = (market) => `
 query MyQuery {
@@ -38,7 +39,7 @@ const MarketData = ({ market }) => {
   const holders = marketInfo.holders[0].count; // чет не работает
 
   return (
-    <table className="bu-table" style={{ textAlign: 'left' }}>
+    <Table as="table" style={{ textAlign: 'left' }}>
       <tbody>
         {poolBalances.map((i) => (
           <tr>
@@ -55,7 +56,7 @@ const MarketData = ({ market }) => {
           <td>{holders}</td>
         </tr>
       </tbody>
-    </table>
+    </Table>
   );
 };
 
