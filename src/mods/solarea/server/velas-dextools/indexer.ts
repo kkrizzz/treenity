@@ -200,7 +200,7 @@ export const indexPriceCron = (app) => {
     time: 1,
   });
 
-  app.get('/velas/market/:base/:quote/trades', async (req, res) => {
+  app.get('/api/velas/market/:base/:quote/trades', async (req, res) => {
     const { base, quote } = req.params;
     const { offset } = req.query;
 
@@ -212,7 +212,7 @@ export const indexPriceCron = (app) => {
     res.send(trades);
   });
 
-  app.get('/velas/klines/:base/:quote', async (req, res) => {
+  app.get('/api/velas/klines/:base/:quote', async (req, res) => {
     try {
       const { base, quote } = req.params;
       const { from, to, interval = 1 } = req.query;
@@ -260,7 +260,7 @@ export const indexPriceCron = (app) => {
     }
   });
 
-  app.get('/velas/token/:token/markets', async (req, res) => {
+  app.get('/api/velas/token/:token/markets', async (req, res) => {
     try {
       const { token } = req.params;
 

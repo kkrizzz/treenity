@@ -36,7 +36,7 @@ add(() => {
         <div className="bu-navbar-brand">
           <Link
             className="bu-navbar-item"
-            to="/near"
+            to="/velas-dextools"
             style={{
               color: 'var(--theme-main-oposit-color)',
               display: 'flex',

@@ -12,7 +12,7 @@ function loadKlines(symbolInfo, resolution, from, to) {
   // console.log(symbolInfo, resolution, from, to);
   const { base, quote } = symbolInfo;
   return fetch(
-    `/velas/klines/${base.address}/${quote.address}?from=${from}&to=${to}&interval=${resolution}`,
+    `/api/velas/klines/${base.address}/${quote.address}?from=${from}&to=${to}&interval=${resolution}`,
   )
     .then((res) => res.json())
     .then((klines) => {
@@ -114,7 +114,7 @@ class Datafeed {
 
 function useLoadMarkets(token) {
   return solarea.useQuery([token, 'markets'], () =>
-    fetch(`api/velas/token/${token}/markets`).then((res) => res.json()),
+    fetch(`/api/velas/token/${token}/markets`).then((res) => res.json()),
   );
 }
 

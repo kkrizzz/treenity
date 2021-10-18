@@ -16,5 +16,4 @@ export function routesStartup(app: Application) {
   nearIndexer(app);
   indexRefFinanceTokensPrice(app);
   indexPriceCron(app);
-  // nearPortfolio(app);
 }
