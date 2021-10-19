@@ -13,3 +13,11 @@ exports.useLatestTokenTrades = (token) => {
 
   return [data, isLoading];
 };
+
+exports.useHotTokenPairs = () => {
+  const { data, isLoading } = solarea.useQuery(['hottest_pair'], () =>
+    fetch(`/api/velas/token/hot`).then((res) => res.json()),
+  );
+
+  return [data, isLoading];
+};

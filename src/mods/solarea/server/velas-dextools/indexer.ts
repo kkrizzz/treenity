@@ -17,6 +17,7 @@ const tokenInfoQuery = `
 query ($after: ISO8601DateTime!) {
   ethereum(network: velas_testnet) {
     dexTrades(
+      options: {limit: 10000},
       date: {after: $after}
     ) {
       block {
@@ -54,7 +55,7 @@ query ($after: ISO8601DateTime!) {
 
 const updateData = async (collection) => {
   const lastTrade = (await collection.find({ options: { sort: { time: -1 }, limit: 1 } }))?.[0];
-  const after = lastTrade?.time.toISOString() || '2020-01-01T00:00:00.000Z';
+  const after = lastTrade?.time.toISOString() || '2021-10-18T00:00:00.000Z';
 
   const params = { query: tokenInfoQuery, variables: { after } };
   const tokenDataBitQueryFetch = await fetch('https://graphql.bitquery.io/', {
@@ -198,6 +199,40 @@ export const indexPriceCron = (app) => {
     'base.address': 1,
     'quote.address': 1,
     time: 1,
+  });
+
+  app.get('/api/velas/token/hot', async (req, res) => {
+    const hottestPairs24hr = await priceCollection.Model.aggregate([
+      {
+        $match: {
+          time: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            base_symbol: '$base.symbol',
+            base_address: '$base.address',
+            quote_symbol: '$quote.symbol',
+            quote_address: '$quote.address',
+          },
+          price: { $last: '$qp' },
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]).toArray();
+
+    res.send(hottestPairs24hr);
   });
 
   app.get('/api/velas/market/:base/:quote/trades', async (req, res) => {
