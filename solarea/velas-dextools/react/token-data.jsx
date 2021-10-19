@@ -31,7 +31,12 @@ query MyQuery {
 const MarketData = ({ market }) => {
   const [marketData, isMarketDataLoading] = useBitQuery(queryMarketData(market));
 
-  if (isMarketDataLoading) return 'Loading ...';
+  if (isMarketDataLoading)
+    return (
+      <div style={{ padding: 20 }}>
+        Loading pool data ... <span className="spinner-grow spinner-grow-sm m-r-4" />{' '}
+      </div>
+    );
 
   const marketInfo = marketData.data.ethereum;
   const poolBalances = marketInfo.address[0].balances;
