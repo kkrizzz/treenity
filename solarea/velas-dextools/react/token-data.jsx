@@ -39,7 +39,7 @@ const MarketData = ({ market }) => {
   const holders = marketInfo.holders[0].count; // чет не работает
 
   return (
-    <Table as="table" style={{ textAlign: 'left' }}>
+    <Table stripped>
       <tbody>
         {poolBalances.map((i) => (
           <tr>

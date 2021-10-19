@@ -3,14 +3,20 @@ const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
 const { ThemeProvider } = solarea;
 
 add(({ children }) => {
+  useCSS(
+    'velas-dextools.css',
+    css`
+      --tv-color-platform-background: black;
+    `,
+  );
   return (
     <ThemeProvider
       theme={{
         borderRadius: '12px',
         colors: {
           main: 'black',
-          cardBG: 'white',
-          subcardBG: 'var(--theme-subcard-bg-color)',
+          subcardBG: '#f8faff',
+          cardBG: '#ffffff',
         },
       }}
     >
