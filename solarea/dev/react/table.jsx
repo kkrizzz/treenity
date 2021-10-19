@@ -1,4 +1,5 @@
-const Table = ({ columns = [], data = [], headless = false, className }) => {
+const Table = ({ columns = [], data = [], headless = false, rowStyle, className, children }) => {
+  if (children) return <table className={className}>{children}</table>;
   return (
     <table className={className}>
       {!headless && (
@@ -13,7 +14,7 @@ const Table = ({ columns = [], data = [], headless = false, className }) => {
 
       <tbody>
         {data.map((item, index) => (
-          <tr>
+          <tr style={rowStyle && rowStyle(item)}>
             {columns.map((column) => (
               <td style={{ textAlign: column.textAlign || 'left' }}>
                 {column.render
@@ -29,7 +30,7 @@ const Table = ({ columns = [], data = [], headless = false, className }) => {
 };
 
 const StyledTable = styled(Table).attrs(({ bordered, stripped }) => ({
-  className: `bu-table${bordered ? ' bu-is-bordered' : ''}${stripped ? ' bu-is-striped' : ''}`,
+  className: `${bordered ? 'bordered ' : ''}${stripped ? 'striped' : ''}`,
 }))`
   table-layout: ${({ fixed }) => (fixed ? 'fixed' : 'auto')};
   border-radius: ${(props) => props.theme.borderRadius};
@@ -41,27 +42,32 @@ const StyledTable = styled(Table).attrs(({ bordered, stripped }) => ({
   width: 100%;
 
   tbody {
-    background-color: ${(props) => props.theme.colors.cardBG} !important;
+    background-color: ${(props) => props.theme.colors.cardBG};
   }
 
   tbody tr:nth-child(even) {
-    background-color: ${(props) => props.theme.colors.cardBG} !important;
+    background-color: ${(props) => props.theme.colors.cardBG};
   }
-  &.bu-is-striped tbody tr:nth-child(odd) {
-    background-color: ${(props) => props.theme.colors.subcardBG} !important;
+  &.striped tbody tr:nth-child(odd) {
+    background-color: ${(props) => props.theme.colors.subcardBG};
   }
 
   thead {
-    background-color: ${(props) => props.theme.colors.cardBG} !important;
+    background-color: ${(props) => props.theme.colors.cardBG};
   }
   td,
   th {
-    border-color: transparent !important;
-    color: ${(props) => props.theme.colors.main} !important;
+    border-color: transparent;
+    color: ${(props) => props.theme.colors.main};
 
-    font-weight: 600 !important;
-    font-size: 14px !important;
+    font-weight: 600;
+    font-size: 14px;
     padding: 20px 20px;
+  }
+
+  &.bordered tr:not(:last-child) td,
+  &.bordered tr:not(:last-child) th {
+    border-bottom: ${(props) => props.theme.colors.cardBG} 1px solid;
   }
 `;
 

@@ -154,7 +154,7 @@ add(({ token }) => {
   const priceChange24hrValue = currentMarket.priceChange24hrValue;
   const isPriceFall = priceChange24hrPercent < 0;
   return (
-    <div>
+    <div class="p-b-8">
       <div class="bu-columns">
         <div class="bu-column" style={{ display: 'flex', alignItems: 'center' }}>
           <RandomImageWithNonce width={64} isEth address={currentMarket.base.address} />
@@ -189,7 +189,7 @@ add(({ token }) => {
       </div>
       <div className="bu-columns">
         <div class="bu-column bu-is-4" style={{ height: '100%' }}>
-          <DashboardCard title="Price">
+          <DashboardCard title="Price" subcard>
             <div class="bu-is-size-4">
               {isLoadingTrades ? (
                 'Loading price...'
@@ -200,31 +200,33 @@ add(({ token }) => {
                       color: isPriceFall ? '#de4b4b' : '#51c758',
                     }}
                   >
-                    {isPriceFall ? '↓' : '↑'}
                     {Number(trades[0].qp).toFixed(8)} {currentMarket.quote.symbol}
+                    {isPriceFall ? '↓' : '↑'}
                   </div>
-                  <div class="bu-is-size-6">
+                  <div style={{ color: 'gray', fontSize: '0.9rem' }}>
                     (24hr: {priceChange24hrPercent.toFixed(4) + '%'}){' '}
                     {Math.abs(priceChange24hrValue).toFixed(6)} {currentMarket.quote.symbol}
                   </div>
                 </div>
               )}{' '}
             </div>
-          </DashboardCard>
-          <DashboardCard>
+            <br />
+
             <div className="bu-button" style={{ display: 'flex', alignItems: 'center' }}>
-              <div class="bu-mr-2">
+              <div className="bu-mr-2">
                 <Render id="velas-dextools" name="wagyu-logo" />
               </div>
               BUY/SELL
             </div>
           </DashboardCard>
-          <DashboardCard size="small">
+          <DashboardCard size="small" subcard style={{ padding: 0 }}>
             <TokenData market={currentMarket} />
           </DashboardCard>
         </div>
         <div className="bu-column bu-is-8">
-          <TradingView token={tokenPair} datafeed={datafeed} />
+          <DashboardCard subcard style={{ padding: 4 }}>
+            <TradingView token={tokenPair} datafeed={datafeed} />
+          </DashboardCard>
         </div>
       </div>
       <LastTrades market={currentMarket} />
