@@ -180,10 +180,18 @@ add(({ token }) => {
                 </select>
               </div>
             </div>
-            <Hash hash={currentMarket.base.address} type="address" urlParams="chain=evm">
+            <Hash
+              hash={currentMarket.base.address}
+              type="custom"
+              customLink={`//velas.solarea.io/address/${currentMarket.base.address}`}
+            >
               <div class="bu-is-size-7">Contract</div>
             </Hash>
-            <Hash hash={currentMarket.base.address} type="address" urlParams="chain=evm">
+            <Hash
+              hash={currentMarket.market}
+              type="custom"
+              customLink={`//velas.solarea.io/address/${currentMarket.market}`}
+            >
               <div class="bu-is-size-7">Market</div>
             </Hash>
           </div>
