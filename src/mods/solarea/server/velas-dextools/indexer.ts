@@ -243,7 +243,17 @@ export const indexPriceCron = (app) => {
       },
     ]).toArray();
 
-    res.send(hottestPairs24hr);
+    let filteredPairs: any = [];
+
+    hottestPairs24hr.forEach((pair) => {
+      const inFilteredArrayIndex = filteredPairs.findIndex((item) => {
+        const inLabel = [item._id.base_address, item._id.quote_address];
+        return inLabel.includes(pair._id.base_address) && inLabel.includes(pair._id.quote_address);
+      });
+      if (inFilteredArrayIndex === -1) filteredPairs.push(pair);
+    });
+
+    res.send(filteredPairs);
   });
 
   app.get('/api/velas/market/:base/:quote/trades', async (req, res) => {
