@@ -1,5 +1,6 @@
 const { useBitQueryTokenInfo, useHotTokenPairs } = await require('solarea://velas-dextools/utils');
 const Hash = render('dev', 'hash');
+const Link = render('dev', 'link');
 const DashboardCard = render('dev', 'dashboard-card');
 const DashboardSection = render('dev', 'dashboard-section');
 
@@ -61,7 +62,6 @@ add(() => {
             style={{
               fontSize: '1rem',
               marginTop: 28,
-              padding: '0 0.75rem',
               fontWeight: 500,
             }}
           >
@@ -77,8 +77,7 @@ add(() => {
                 Loading hottest pairs...
                 <span className="spinner-grow spinner-grow-sm m-r-4" />
               </div>
-            ) : (
-              hotTokens &&
+            ) : hotTokens && hotTokens.length ? (
               hotTokens.map(
                 (
                   { _id: { base_address, base_symbol, quote_address, quote_symbol }, count, price },
@@ -87,12 +86,16 @@ add(() => {
                   <div className="bu-columns" style={styles[index]}>
                     <div className="bu-column bu-is-1">#{index + 1}</div>
                     <div className="bu-column" style={{ fontWeight: 700, color: '#464646' }}>
-                      {base_symbol}/{quote_symbol}
+                      <Link to={`/${base_address}`}>
+                        {base_symbol}/{quote_symbol}
+                      </Link>
                     </div>
                     <div className="bu-column  bu-is-3">{count} trades</div>
                   </div>
                 ),
               )
+            ) : (
+              'No token trades in last 24 hr'
             )}
           </div>
         </DashboardCard>
