@@ -47,7 +47,12 @@ query ($since: ISO8601DateTime!) {
           address
         }
       }
-
+      transaction {
+        hash
+        from: txFrom {
+          address
+        }
+      }
     }
   }
 }
@@ -92,6 +97,7 @@ const updateData = async (collection) => {
       base: dt.baseCurrency,
       quote: dt.quoteCurrency,
       side: dt.side,
+      tx: dt.transaction,
       // min: dt.min,
       // max: dt.max,
       // open: parseFloat(dt.open),

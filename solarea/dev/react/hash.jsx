@@ -8,6 +8,7 @@ const Hash = ({
   hash,
   type,
   children,
+  customLink,
   urlParams,
   alignRight = false,
   suffixLen = 4,
@@ -90,7 +91,7 @@ const Hash = ({
       <div className="hash-copy-content">
         {type ? (
           <Link
-            to={`/${type}/${hash}${urlParams ? `?${urlParams}` : ''}`}
+            to={customLink ? customLink : `/${type}/${hash}${urlParams ? `?${urlParams}` : ''}`}
             className="bu-tc-link bu-monospace"
           >
             {!!children

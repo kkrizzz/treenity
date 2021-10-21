@@ -1,5 +1,7 @@
 await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 const Table = render('dev', 'table');
+const Hash = render('dev', 'hash');
+const ScrollBox = render('dev', 'scroll-box');
 const { numberWithSpaces } = await require('solarea://explorer/utils');
 const { useLatestTokenTrades } = await require('solarea://velas-dextools/utils');
 
@@ -23,6 +25,27 @@ const columns = [
     dataIndex: 'qp',
     render: (num) => numberWithSpaces(num.toFixed(6)),
   },
+  {
+    title: 'From',
+    dataIndex: 'tx',
+    render: (tx) => {
+      const address = tx.from.address;
+      return (
+        <div style={{ maxWidth: 200 }}>
+          <Hash type="custom" hash={address} customLink={`//velas.solarea.io/account/${address}`} />
+        </div>
+      );
+    },
+  },
+  {
+    title: 'Hash',
+    dataIndex: 'tx',
+    render: (tx) => (
+      <div style={{ maxWidth: 100 }}>
+        <Hash type="custom" hash={tx.hash} customLink={`//velas.solarea.io/tx/${tx.hash}`} />
+      </div>
+    ),
+  },
 ];
 
 add(({ market }) => {
@@ -31,7 +54,7 @@ add(({ market }) => {
   const [data, isLoading] = useLatestTokenTrades(token);
   if (isLoading) return 'Loading trades ...';
   return (
-    <div style={{ padding: 0, borderRadius: 12 }} className="bu-card m-b-8">
+    <ScrollBox>
       <Table
         rowStyle={(item) => ({
           background: item.side === 'BUY' ? 'rgba(82,255,99,0.05)' : 'rgba(255,59,97,0.06)',
@@ -40,6 +63,6 @@ add(({ market }) => {
         columns={columns}
         data={data}
       />
-    </div>
+    </ScrollBox>
   );
 });

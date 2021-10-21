@@ -157,7 +157,9 @@ add(({ token }) => {
     <div class="p-b-8">
       <div class="bu-columns">
         <div class="bu-column" style={{ display: 'flex', alignItems: 'center' }}>
-          <RandomImageWithNonce width={64} isEth address={currentMarket.base.address} />
+          <div style={{ minWidth: 64 }}>
+            <RandomImageWithNonce width={64} isEth address={currentMarket.base.address} />
+          </div>
           <div
             class="bu-is-size-5 bu-ml-4"
             style={{ display: 'flex', justifyContent: 'flex-start' }}
