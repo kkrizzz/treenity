@@ -18,7 +18,7 @@ query ($since: ISO8601DateTime!) {
   ethereum(network: velas) {
     dexTrades(
       options: {limit: 10000},
-      date: {since: $since}
+      time: {since: $since, till: null}
     ) {
       block {
         timestamp{
@@ -61,9 +61,11 @@ query ($since: ISO8601DateTime!) {
 const updateData = async (collection) => {
   const lastTrade = (await collection.find({ options: { sort: { time: -1 }, limit: 1 } }))?.[0];
   const lastTradeTime = lastTrade?.time;
-  const since = lastTradeTime
-    ? new Date(lastTradeTime.getTime() + 1).toISOString()
-    : '2021-10-10T00:00:00.000Z';
+  const since =
+    (lastTradeTime
+      ? new Date(lastTradeTime.getTime() + 1000).toISOString()
+      : '2021-10-10T00:00:00.000Z'
+    ).slice(0, -5) + 'Z';
 
   const params = { query: tokenInfoQuery, variables: { since } };
   const tokenDataBitQueryFetch = await fetch('https://graphql.bitquery.io/', {
