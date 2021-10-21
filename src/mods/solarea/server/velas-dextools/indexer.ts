@@ -14,11 +14,11 @@ const TOKENS_TO_INDEX_PRICE = [
 ];
 
 const tokenInfoQuery = `
-query ($after: ISO8601DateTime!) {
-  ethereum(network: velas_testnet) {
+query ($since: ISO8601DateTime!) {
+  ethereum(network: velas) {
     dexTrades(
       options: {limit: 10000},
-      date: {after: $after}
+      date: {since: $since}
     ) {
       block {
         timestamp{
@@ -55,9 +55,12 @@ query ($after: ISO8601DateTime!) {
 
 const updateData = async (collection) => {
   const lastTrade = (await collection.find({ options: { sort: { time: -1 }, limit: 1 } }))?.[0];
-  const after = lastTrade?.time.toISOString() || '2021-10-18T00:00:00.000Z';
+  const lastTradeTime = lastTrade?.time;
+  const since = lastTradeTime
+    ? new Date(lastTradeTime.getTime() + 1).toISOString()
+    : '2021-10-10T00:00:00.000Z';
 
-  const params = { query: tokenInfoQuery, variables: { after } };
+  const params = { query: tokenInfoQuery, variables: { since } };
   const tokenDataBitQueryFetch = await fetch('https://graphql.bitquery.io/', {
     method: 'POST',
     cache: 'no-cache',
@@ -241,7 +244,7 @@ export const indexPriceCron = (app) => {
 
     const trades = await priceCollection.Model.find(
       { 'base.address': base, 'quote.address': quote },
-      { sort: { time: -1 }, limit: 100 },
+      { sort: { time: -1 }, limit: 100, offset },
     ).toArray();
 
     res.send(trades);

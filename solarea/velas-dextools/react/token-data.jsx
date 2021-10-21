@@ -3,7 +3,7 @@ const Table = render('dev', 'table');
 
 const queryMarketData = (market) => `
 query MyQuery {
-  ethereum(network: velas_testnet) {
+  ethereum(network: velas) {
     address(address: {is: "${market.market}"}) {
       balances(currency: {in: ["${market.base.address}", "${market.quote.address}"]}) {
         currency {
