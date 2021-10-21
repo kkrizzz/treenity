@@ -60,9 +60,12 @@ const StyledTable = styled(Table).attrs(({ bordered, stripped }) => ({
     border-color: transparent;
     color: ${(props) => props.theme.colors.main};
 
-    font-weight: 600;
     font-size: 14px;
     padding: 20px 20px;
+  }
+
+  th {
+    font-weight: 600;
   }
 
   &.bordered tr:not(:last-child) td,
