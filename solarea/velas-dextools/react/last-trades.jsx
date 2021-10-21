@@ -32,11 +32,7 @@ const columns = [
       const address = tx.from.address;
       return (
         <div style={{ maxWidth: 200 }}>
-          <Hash
-            type="custom"
-            hash={address}
-            customLink={`//velas.solarea.io/address/${address}`}
-          />
+          <Hash type="custom" hash={address} customLink={`//velas.solarea.io/address/${address}`} />
         </div>
       );
     },

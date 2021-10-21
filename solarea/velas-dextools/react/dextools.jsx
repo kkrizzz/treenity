@@ -213,13 +213,6 @@ add(({ token }) => {
               )}{' '}
             </div>
             <br />
-
-            <div className="bu-button" style={{ display: 'flex', alignItems: 'center' }}>
-              <div className="bu-mr-2">
-                <Render id="velas-dextools" name="wagyu-logo" />
-              </div>
-              BUY/SELL
-            </div>
           </DashboardCard>
           <DashboardCard size="small" subcard style={{ padding: 0 }}>
             <TokenData market={currentMarket} />
