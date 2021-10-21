@@ -9,6 +9,12 @@ add(({ children }) => {
       --tv-color-platform-background: black;
     `,
   );
+
+  const [id] = solarea.useParams();
+  if (id.length === 42 && id.startsWith('0x')) {
+    children = <Render id="velas-dextools" name="dextools" token={id} />;
+  }
+
   return (
     <ThemeProvider
       theme={{
