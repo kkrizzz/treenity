@@ -53,7 +53,7 @@ add(() => {
         <DashboardCard
           title={
             <span>
-              Hot pairs <span style={{ color: 'gray', fontSize: '0.8rem' }}>(24h)</span>
+              Hot pairs <span style={{ color: 'gray', fontSize: '0.8rem' }}>(5d)</span>
             </span>
           }
           size="large"

@@ -9,7 +9,7 @@ const search = (id) => {
     isToken = 'account';
   }
 
-  if (isToken) window.history.pushState({}, '', `/velas-dextools/dextools/?token=${id}`);
+  if (isToken) window.history.pushState({}, '', `/${id}`);
 };
 
 const Search = ({ onChange }) => {
