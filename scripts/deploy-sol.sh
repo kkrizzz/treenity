@@ -2,6 +2,7 @@
 
 set -e
 
+yarn clean:prod
 yarn sol:build
 yarn server:build
 

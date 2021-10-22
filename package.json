@@ -20,6 +20,7 @@
     "server:demon": "DEBUG=@feathersjs/transport-commons/*;NODE_ENV=development;NODE_CONFIG_DIR=./config/solarea nodemon dist/server-dev/node",
     "server:watch": "parcel watch --target node --dist-dir dist/server-dev/ src/server/index.ts",
     "clean": "rm -rf .parcel-cache dist",
+    "clean:prod": "rm -rf .parcel-cache dist/*-prod",
     "jest": "jest --forceExit",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lg": "parcel watch --target node --public-url ./src/logicEngine/test.ts",
