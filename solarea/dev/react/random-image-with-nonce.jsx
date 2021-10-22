@@ -2,24 +2,26 @@ const jazz = await require('https://unpkg.com/solarea-jazzicon@0.0.2/dist/index.
 const Jazzicon = jazz.default;
 
 add((props) => {
-  const { style, className } = props;
+  const { style, className, isEth } = props;
   const address = typeof props.address === 'string' ? props.address : props.address?.toBase58();
-  const isEth = props.isEth;
   const ref = React.useRef(null);
 
   React.useLayoutEffect(() => {
     if (address && ref.current) {
       ref.current.innerHTML = '';
       ref.current.className = className || '';
-      ref.current.replaceWith(
+      ref.current.appendChild(
         Jazzicon(
           props.width || 16,
           isEth
-            ? parseInt(props.address, 16)
+            ? parseInt(address.slice(5, 15), 16)
             : parseInt(solarea.bs58.decode(address).toString('hex').slice(5, 15), 16),
         ),
       );
     }
+    return () => {
+      ref.current.innerHTML = '';
+    };
   }, [address, style, className]);
 
   return <div ref={ref} style={props.style} />;

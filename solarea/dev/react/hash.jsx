@@ -89,7 +89,7 @@ const Hash = ({
       </div>
 
       <div className="hash-copy-content">
-        {type ? (
+        {type || customLink ? (
           <Link
             to={customLink ? customLink : `/${type}/${hash}${urlParams ? `?${urlParams}` : ''}`}
             className="bu-tc-link bu-monospace"

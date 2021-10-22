@@ -9,7 +9,8 @@ const TradingViewComponent = ({ token, datafeed }) => {
     widget.current = new TradingView.widget({
       // debug: true, // uncomment this line to see Library errors and warnings in the console
       symbol: token,
-      interval: '1',
+      interval: '60',
+      timeframe: '5D',
       datafeed,
       container,
       library_path: '/charting_library/',
@@ -19,11 +20,11 @@ const TradingViewComponent = ({ token, datafeed }) => {
         'left_toolbar',
         // 'header_widget',
         // 'control_bar',
-        // 'timeframes_toolbar',
+        'timeframes_toolbar',
         'legend_widget',
       ],
       charts_storage_api_version: '1.1',
-      client_id: 'tradingview.com',
+      client_id: 'solarea',
       user_id: 'public_user_id',
       load_last_chart: true,
       width: '100%',

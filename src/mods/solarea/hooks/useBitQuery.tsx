@@ -4,6 +4,6 @@ import { useGraphQL } from './useGraphQL';
 
 export function useBitQuery(code: string) {
   return useGraphQL(BITQUERY_BASE, code, {
-    'X-API-KEY': 'BQYuBhWWLDMGNQ7JbDU9BjOoYycCixU9',
+    'X-API-KEY': 'BQYnnYToTx5TrYrvKnSndyoBoBApLbN4',
   });
 }

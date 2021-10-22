@@ -14,7 +14,7 @@ export function fetchGraphQL(url: string, query: string, variables: any = {}, op
 }
 
 export function useGraphQL(url: string, code: string, headers) {
-  const { data, isLoading } = useQuery(code, () => fetchGraphQL(url, code, {}, headers));
+  const { data, isLoading } = useQuery(code, () => fetchGraphQL(url, code, {}, { headers }));
 
   return [data, isLoading];
 }

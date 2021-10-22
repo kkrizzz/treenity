@@ -38,10 +38,14 @@ const MarketData = ({ market }) => {
       </div>
     );
 
+  if (!marketData) {
+    return <div style={{ padding: 20 }}>Failed to load market data</div>;
+  }
+
   const marketInfo = marketData.data.ethereum;
   const poolBalances = marketInfo.address[0].balances;
-  const totalTrades = marketInfo.totalTrades[0].count; // чет не работает
-  const holders = marketInfo.holders[0].count; // чет не работает
+  const totalTrades = marketInfo.totalTrades[0].count;
+  const holders = marketInfo.holders[0].count;
 
   return (
     <Table stripped>

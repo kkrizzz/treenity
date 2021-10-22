@@ -1,5 +1,6 @@
 const LastTrades = render('velas-dextools', 'last-trades');
 const Hash = render('dev', 'hash');
+const Link = render('dev', 'link');
 const TokenData = render('velas-dextools', 'token-data');
 const CandleChart = render('velas-dextools', 'candle-chart');
 const DashboardCard = render('dev', 'dashboard-card');
@@ -20,6 +21,9 @@ add(({ token }) => {
   if (!markets.length) return <div>Token markets not found</div>;
 
   const [currentMarket, setMarket] = React.useState(markets[0]);
+  React.useEffect(() => {
+    setMarket(markets[0]);
+  }, [markets]);
 
   const { base, quote } = currentMarket;
   const tokenPair = `${base.address}/${quote.address}`;
@@ -53,16 +57,18 @@ add(({ token }) => {
       <div class="bu-columns">
         <div class="bu-column" style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ minWidth: 64 }}>
-            <RandomImageWithNonce width={64} isEth address={base.address} />
+            <RandomImageWithNonce width={64} isEth={true} address={base.address} />
+          </div>
+          <div className="bu-ml-3" style={{ fontSize: '1.5rem' }}>
+            {base.symbol} | <Link to={`/${quote.address}`}>{quote.symbol}</Link>
           </div>
           <div
-            class="bu-is-size-5 bu-ml-4"
+            class="bu-is-size-6 bu-ml-5"
             style={{ display: 'flex', justifyContent: 'flex-start' }}
           >
             <div>
               <div className="bu-select dextools-custom-select m-b-4">
                 <select
-                  style={{ color: 'black' }}
                   onChange={(e) =>
                     setMarket(markets.find((m) => m.market === e.currentTarget.value))
                   }

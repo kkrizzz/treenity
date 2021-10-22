@@ -50,7 +50,8 @@ class Datafeed {
     try {
       const klines = await loadKlines(symbolInfo, resolution, from, to);
 
-      onHistoryCallback(klines, { noData: false });
+      const noData = klines.length === 0;
+      onHistoryCallback(klines, { noData });
     } catch (err) {
       onErrorCallback(err);
     }
