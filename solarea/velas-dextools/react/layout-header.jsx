@@ -60,6 +60,11 @@ add(() => {
             <span aria-hidden="true"></span>
           </a>
         </div>
+        <div className="bu-navbar-end">
+          <NavLink className="bu-navbar-item" to="/dashboard">
+            Dashboard
+          </NavLink>
+        </div>
       </div>
     </nav>
   );

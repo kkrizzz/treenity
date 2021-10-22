@@ -10,9 +10,11 @@ add(({ children }) => {
     `,
   );
 
-  const [id] = solarea.useParams();
+  const [id, name, contexts] = solarea.useParams();
   if (id.length === 42 && id.startsWith('0x')) {
     children = <Render id="velas-dextools" name="dextools" token={id} />;
+  } else if (id === 'dashboard') {
+    children = <Render id="velas-dextools" name="dashboard" dashboardName={name} />;
   }
 
   return (
