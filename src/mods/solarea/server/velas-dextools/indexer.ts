@@ -216,7 +216,7 @@ export const indexPriceCron = (app) => {
     const hottestPairs24hr = await priceCollection.Model.aggregate([
       {
         $match: {
-          time: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+          time: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000 * 5) },
         },
       },
       {
