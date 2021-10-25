@@ -55,8 +55,8 @@ add(({ token }) => {
   return (
     <div class="p-b-8">
       <div class="bu-columns">
-        <div class="bu-column" style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ minWidth: 64 }}>
+        <div class="bu-column" style={{ display: 'flex', alignItems: 'center', flexFlow: 'wrap' }}>
+          <div style={{ minWidth: 64, padding: 4 }}>
             <RandomImageWithNonce width={64} isEth={true} address={base.address} />
           </div>
           <div className="bu-ml-3" style={{ fontSize: '1.5rem' }}>

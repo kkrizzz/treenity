@@ -29,7 +29,7 @@ const NETWORKS = [
 
 add(() => {
   const menuRef = React.useRef();
-
+  const [isActive, setIsActive] = React.useState(false);
   return (
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
       <div class="bu-container">
@@ -48,8 +48,9 @@ add(() => {
           </Link>
 
           <a
-            onClick={(e) => menuRef.current.classList.toggle('bu-is-active')}
+            onClick={(e) => setIsActive((val) => !val)}
             role="button"
+            style={{ marginLeft: 0 }}
             className="bu-navbar-burger"
             aria-label="menu"
             aria-expanded="false"
@@ -60,10 +61,15 @@ add(() => {
             <span aria-hidden="true"></span>
           </a>
         </div>
-        <div className="bu-navbar-end">
-          <NavLink className="bu-navbar-item" to="/dashboard">
-            Dashboard
-          </NavLink>
+        <div
+          id="solarea-layout-header"
+          className={`bu-navbar-menu ${isActive ? 'bu-is-active' : ''}`}
+        >
+          <div className="bu-navbar-end">
+            <NavLink className="bu-navbar-item" to="/dashboard">
+              Dashboard
+            </NavLink>
+          </div>
         </div>
       </div>
     </nav>
