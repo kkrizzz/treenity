@@ -26,11 +26,6 @@ add(() => {
   return (
     <div className="bu-columns">
       <div className="bu-column bu-is-6">
-        <DashboardCard title="About Velas dextools" size="large">
-          <div style={{ fontSize: '1rem', marginTop: 16, fontWeight: 500 }}>
-            View price charts for any token in your velas wallet
-          </div>
-        </DashboardCard>
         <DashboardSection style={{ marginLeft: 4 }} title="Features">
           <DashboardCard title="Pair explorer" size="large">
             <div style={{ fontSize: '1rem', marginTop: 16, fontWeight: 500, color: '#989898' }}>
@@ -83,7 +78,7 @@ add(() => {
                   { _id: { base_address, base_symbol, quote_address, quote_symbol }, count, price },
                   index,
                 ) => (
-                  <div className="bu-columns" style={styles[index]}>
+                  <div className="bu-columns bu-is-mobile" style={styles[index]}>
                     <div className="bu-column bu-is-1">#{index + 1}</div>
                     <div className="bu-column" style={{ fontWeight: 700, color: '#464646' }}>
                       <Link to={`/${base_address}?quote=${quote_address}`}>

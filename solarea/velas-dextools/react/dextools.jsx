@@ -1,10 +1,12 @@
 const LastTrades = render('velas-dextools', 'last-trades');
+const { toast } = await require('solarea://dev/toast');
 const Hash = render('dev', 'hash');
 const Link = render('dev', 'link');
 const TokenData = render('velas-dextools', 'token-data');
 const CandleChart = render('velas-dextools', 'candle-chart');
 const DashboardCard = render('dev', 'dashboard-card');
 const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
+const Icon = render('dashboard', 'icon');
 
 const { useLatestTokenTrades } = await require('solarea://velas-dextools/utils');
 
@@ -19,6 +21,40 @@ function useLoadMarkets(token) {
   return solarea.useQuery([token, 'markets'], () =>
     fetch(`/api/velas/token/${token}/markets`).then((res) => res.json()),
   );
+}
+
+async function addTokenToMetamask(address, symbol, decimals) {
+  try {
+    if (!ethereum) {
+      return toast('Metamask not found', 3000, '#f14668');
+    }
+    if (ethereum.chainId !== '0x6a') {
+      return toast(
+        'Please change network to Velas: https://support.velas.com/hc/en-150/articles/4405102780818-How-To-Configure-Metamask-for-Velas-Network-RPC',
+        3000,
+        '#f14668',
+      );
+    }
+    const wasAdded = await ethereum.request({
+      method: 'wallet_watchAsset',
+      params: {
+        type: 'ERC20', // Initially only supports ERC20, but eventually more!
+        options: {
+          address,
+          symbol,
+          decimals,
+        },
+      },
+    });
+
+    if (wasAdded) {
+      toast(`Token ${symbol} was successfully added`, 3000, '#56e7a3');
+    } else {
+      toast(`Token ${symbol} now added`, 3000, '#f14668');
+    }
+  } catch (error) {
+    toast('Something went wrong', 3000, '#f14668');
+  }
 }
 
 add(({ token }) => {
@@ -66,8 +102,14 @@ add(({ token }) => {
     <div class="p-b-8">
       <div class="bu-columns">
         <div class="bu-column" style={{ display: 'flex', alignItems: 'center', flexFlow: 'wrap' }}>
-          <div style={{ minWidth: 64, padding: 4 }}>
+          <div style={{ minWidth: 64, padding: 4, position: 'relative' }}>
             <RandomImageWithNonce width={64} isEth={true} address={base.address} />
+            <div
+              onClick={() => addTokenToMetamask(base.address, base.symbol, base.decimals)}
+              style={{ position: 'absolute', top: 0, right: 0 }}
+            >
+              <Icon type="metamask" />
+            </div>
           </div>
           <div className="bu-ml-3" style={{ fontSize: '1.5rem' }}>
             {base.symbol} | <Link to={`/${quote.address}`}>{quote.symbol}</Link>

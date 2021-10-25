@@ -50,7 +50,6 @@ add(() => {
           <a
             onClick={(e) => setIsActive((val) => !val)}
             role="button"
-            style={{ marginLeft: 0 }}
             className="bu-navbar-burger"
             aria-label="menu"
             aria-expanded="false"

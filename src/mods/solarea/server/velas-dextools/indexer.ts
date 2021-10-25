@@ -26,11 +26,13 @@ query ($since: ISO8601DateTime!) {
         }
       }
       baseCurrency {
+        decimals
         symbol
         address
       }
       baseAmount
       quoteCurrency {
+        decimals
         symbol
         address
       }
