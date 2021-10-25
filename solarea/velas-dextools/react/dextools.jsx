@@ -8,21 +8,12 @@ const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
 
 const { useLatestTokenTrades } = await require('solarea://velas-dextools/utils');
 
-const StyledSelect = styled.select`
-  color: red !important;
-  &:hover {
-    color: pink;
-  }
-  &:after {
-    content: ' 🦄';
-  }
-  &::after {
-    color: red;
-  }
-  &:hover:after {
-    color: pink;
-  }
-`;
+function insertUrlParam(key, value) {
+  let searchParams = new URLSearchParams(window.location.search);
+  searchParams.set(key, value);
+  let newurl = '?' + searchParams.toString();
+  window.history.replaceState(null, '', newurl);
+}
 
 function useLoadMarkets(token) {
   return solarea.useQuery([token, 'markets'], () =>
@@ -32,14 +23,17 @@ function useLoadMarkets(token) {
 
 add(({ token }) => {
   const { data: markets, isLoading: isMarketsLoading } = useLoadMarkets(token);
+  const { quote: quoteTokenParam } = solarea.useQueryParams();
 
   if (isMarketsLoading) return <div>Loading markets ...</div>;
   if (!markets.length) return <div>Token markets not found</div>;
 
   const [currentMarket, setMarket] = React.useState(markets[0]);
+
   React.useEffect(() => {
-    setMarket(markets[0]);
-  }, [markets]);
+    const targetMarket = markets.find((i) => i.quote.address === quoteTokenParam) || markets[0];
+    setMarket(targetMarket);
+  }, [markets, quoteTokenParam]);
 
   const { base, quote } = currentMarket;
   const tokenPair = `${base.address}/${quote.address}`;
@@ -81,8 +75,8 @@ add(({ token }) => {
   return (
     <div class="p-b-8">
       <div class="bu-columns">
-        <div class="bu-column" style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ minWidth: 64 }}>
+        <div class="bu-column" style={{ display: 'flex', alignItems: 'center', flexFlow: 'wrap' }}>
+          <div style={{ minWidth: 64, padding: 4 }}>
             <RandomImageWithNonce width={64} isEth={true} address={base.address} />
           </div>
           <div className="bu-ml-3" style={{ fontSize: '1.5rem' }}>
@@ -95,9 +89,12 @@ add(({ token }) => {
             <div>
               <div className="bu-select dextools-custom-select m-b-4">
                 <select
-                  onChange={(e) =>
-                    setMarket(markets.find((m) => m.market === e.currentTarget.value))
-                  }
+                  value={currentMarket.market}
+                  onChange={(e) => {
+                    const targetMarket = markets.find((m) => m.market === e.currentTarget.value);
+                    setMarket(targetMarket);
+                    insertUrlParam('quote', targetMarket.quote.address);
+                  }}
                 >
                   {markets.map((m) => (
                     <option value={m.market}>
