@@ -86,7 +86,7 @@ add(() => {
                   <div className="bu-columns" style={styles[index]}>
                     <div className="bu-column bu-is-1">#{index + 1}</div>
                     <div className="bu-column" style={{ fontWeight: 700, color: '#464646' }}>
-                      <Link to={`/${base_address}`}>
+                      <Link to={`/${base_address}?quote=${quote_address}`}>
                         {base_symbol}/{quote_symbol}
                       </Link>
                     </div>

@@ -23,6 +23,7 @@ import { useMetaplexNFT } from './hooks/useMetaplexNFT';
 import styled, { ThemeProvider } from 'styled-components';
 import * as nearContext from './hooks/near/useConnection';
 import { ConnectionProvider } from './hooks/useConnection';
+import useQueryParams from './hooks/useQueryParams';
 
 const borsh = require('borsh');
 
@@ -46,6 +47,7 @@ globalThis.solarea = {
   Buffer,
   useTransaction,
   useBlock,
+  useQueryParams,
   useLocalStorageState,
   useCluster,
   useParams,
