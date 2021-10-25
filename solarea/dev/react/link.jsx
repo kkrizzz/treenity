@@ -1,3 +1,11 @@
+const StyledLink = styled.a`
+  color: var(--theme-a-color);
+
+  &:hover {
+    color: var(--theme-a-hover-color);
+  }
+`;
+
 add(function Link({ to, onClick, children, className = '', style }) {
   const external = to.startsWith('http') || to.startsWith('//');
   const go = external
@@ -9,8 +17,8 @@ add(function Link({ to, onClick, children, className = '', style }) {
       };
 
   return (
-    <a onClick={go} href={to} className={className} style={style}>
+    <StyledLink onClick={go} href={to} className={className} style={style}>
       {children}
-    </a>
+    </StyledLink>
   );
 });
