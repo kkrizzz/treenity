@@ -8,6 +8,22 @@ const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
 
 const { useLatestTokenTrades } = await require('solarea://velas-dextools/utils');
 
+const StyledSelect = styled.select`
+  color: red !important;
+  &:hover {
+    color: pink;
+  }
+  &:after {
+    content: ' 🦄';
+  }
+  &::after {
+    color: red;
+  }
+  &:hover:after {
+    color: pink;
+  }
+`;
+
 function useLoadMarkets(token) {
   return solarea.useQuery([token, 'markets'], () =>
     fetch(`/api/velas/token/${token}/markets`).then((res) => res.json()),
@@ -35,8 +51,18 @@ add(({ token }) => {
     'dextools-custom-select',
     css`
       .dextools-custom-select select {
+        color: var(--theme-a-color) !important;
         background: transparent;
         border: none;
+      }
+      .dextools-custom-select:after {
+        border-color: var(--theme-a-color) !important;
+      }
+      .dextools-custom-select:hover:after {
+        border-color: var(--theme-a-hover-color) !important;
+      }
+      .dextools-custom-select select:hover {
+        color: var(--theme-a-hover-color) !important;
       }
       .dextools-custom-select select:active {
         border: none;

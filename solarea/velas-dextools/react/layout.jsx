@@ -3,10 +3,25 @@ const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
 const { ThemeProvider } = solarea;
 
 add(({ children }) => {
+  const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
   useCSS(
     'velas-dextools.css',
     css`
-      --tv-color-platform-background: black;
+      * {
+        --tv-color-platform-background: black !important;
+      }
+
+      .bu-navbar-item,
+      .bu-navbar-link {
+        color: var(--theme-main-oposit-color) !important;
+        font-weight: 600;
+        font-size: 16px;
+      }
+      a.bu-navbar-item:hover,
+      a.bu-navbar-item:focus {
+        background: transparent !important;
+        color: var(--theme-a-color) !important;
+      }
     `,
   );
 
@@ -19,14 +34,25 @@ add(({ children }) => {
 
   return (
     <ThemeProvider
-      theme={{
-        borderRadius: '12px',
-        colors: {
-          main: 'black',
-          subcardBG: '#f8faff',
-          cardBG: '#ffffff',
-        },
-      }}
+      theme={
+        isDarkTheme
+          ? {
+              borderRadius: '12px',
+              colors: {
+                main: 'white',
+                subcardBG: 'var(--theme-subcard-bg-color)',
+                cardBG: 'var(--theme-card-bg-color)',
+              },
+            }
+          : {
+              borderRadius: '12px',
+              colors: {
+                main: 'black',
+                subcardBG: '#f8faff',
+                cardBG: '#ffffff',
+              },
+            }
+      }
     >
       <div className="m-b-8">
         <Render id="velas-dextools" name="layout-header" />

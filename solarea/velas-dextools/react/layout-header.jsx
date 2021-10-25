@@ -28,6 +28,7 @@ const NETWORKS = [
 ];
 
 add(() => {
+  const [isDarkTheme, setIsDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
   const menuRef = React.useRef();
 
   return (
@@ -46,6 +47,7 @@ add(() => {
             <Render id="velas" name="logo" />
             <div class="bu-is-size-6 bu-ml-2">DEXTOOLS</div>
           </Link>
+          <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme} />
 
           <a
             onClick={(e) => menuRef.current.classList.toggle('bu-is-active')}
