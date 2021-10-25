@@ -6,11 +6,11 @@ const DashboardSection = render('dev', 'dashboard-section');
 
 const styles = [
   {
-    background: 'rgba(255,215,0,0.9)',
+    background: 'rgba(246,220,126,0.79)',
     color: 'black',
     borderRadius: 8,
     marginBottom: '1rem',
-  }
+  },
 ];
 
 add(() => {

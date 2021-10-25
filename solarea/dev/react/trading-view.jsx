@@ -42,9 +42,9 @@ const TradingViewComponent = ({ token, datafeed }) => {
   React.useEffect(() => {
     if (!widget.current || !widget.current._ready) return;
     widget.current.changeTheme(isDarkTheme ? 'Dark' : 'Light');
-    widget.current.addCustomCSSFile(URL.createObjectURL(getBlob()));
 
     setTimeout(() => {
+      widget.current.addCustomCSSFile(URL.createObjectURL(getBlob()));
       widget.current.applyOverrides({
         'paneProperties.background': getComputedStyle(document.documentElement)
           .getPropertyValue('--theme-subcard-bg-color')

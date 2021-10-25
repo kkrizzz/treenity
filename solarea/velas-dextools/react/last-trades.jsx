@@ -57,7 +57,7 @@ add(({ market }) => {
     <ScrollBox>
       <Table
         rowStyle={(item) => ({
-          background: item.side === 'BUY' ? 'rgba(82,255,99,0.05)' : 'rgba(255,59,97,0.06)',
+          background: item.side === 'BUY' ? 'rgba(82,255,99,0.14)' : 'rgba(255,59,97,0.14)',
         })}
         bordered
         columns={columns}

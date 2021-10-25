@@ -47,7 +47,6 @@ add(() => {
             <Render id="velas" name="logo" />
             <div class="bu-is-size-6 bu-ml-2">DEXTOOLS</div>
           </Link>
-          <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme} />
 
           <a
             onClick={(e) => setIsActive((val) => !val)}
@@ -69,6 +68,11 @@ add(() => {
           <div className="bu-navbar-end">
             <NavLink className="bu-navbar-item" to="/dashboard">
               Dashboard
+            </NavLink>
+            <NavLink className="bu-navbar-item">
+              <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme}>
+                {isDarkTheme ? '🌙' : '☀'}️
+              </Switch>
             </NavLink>
           </div>
         </div>
