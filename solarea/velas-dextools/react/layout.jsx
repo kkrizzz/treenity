@@ -57,7 +57,7 @@ add(({ children }) => {
       <div className="m-b-8">
         <Render id="velas-dextools" name="layout-header" />
       </div>
-      <div className="bu-container">
+      <div className="bu-container" style={{ overflowX: 'hidden' }}>
         <Render id="explorer" name="theme-css" />
         <div class="bu-mb-5">
           <Render id="velas-dextools" name="search" />

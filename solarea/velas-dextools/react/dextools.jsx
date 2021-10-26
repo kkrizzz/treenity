@@ -30,8 +30,8 @@ async function addTokenToMetamask(address, symbol, decimals) {
     }
     if (ethereum.chainId !== '0x6a') {
       return toast(
-        'Please change network to Velas: https://support.velas.com/hc/en-150/articles/4405102780818-How-To-Configure-Metamask-for-Velas-Network-RPC',
-        3000,
+        'Please change network to Velas: \n\nhttps://support.velas.com/hc/en-150/articles/4405102780818-How-To-Configure-Metamask-for-Velas-Network-RPC',
+        10000,
         '#f14668',
       );
     }
@@ -48,9 +48,9 @@ async function addTokenToMetamask(address, symbol, decimals) {
     });
 
     if (wasAdded) {
-      toast(`Token ${symbol} was successfully added`, 3000, '#56e7a3');
+      return toast(`Token ${symbol} was successfully added`, 3000, '#56e7a3');
     } else {
-      toast(`Token ${symbol} now added`, 3000, '#f14668');
+      return toast(`Token ${symbol} now added`, 3000, '#f14668');
     }
   } catch (error) {
     toast('Something went wrong', 3000, '#f14668');
