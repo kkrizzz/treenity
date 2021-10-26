@@ -48,21 +48,32 @@ const columns = [
   },
 ];
 
+const Wrapper = styled.div([
+  css`
+    td {
+      color: inherit !important;
+    }
+  `,
+]);
+
 add(({ market }) => {
   const { base, quote } = market;
   const token = `${base.address}/${quote.address}`;
   const [data, isLoading] = useLatestTokenTrades(token);
   if (isLoading) return 'Loading trades ...';
   return (
-    <ScrollBox>
-      <Table
-        rowStyle={(item) => ({
-          background: item.side === 'BUY' ? 'rgba(82,255,99,0.14)' : 'rgba(255,59,97,0.14)',
-        })}
-        bordered
-        columns={columns}
-        data={data}
-      />
-    </ScrollBox>
+    <Wrapper>
+      <ScrollBox>
+        <Table
+          rowStyle={(item) => ({
+            fontWeight: '700',
+            color: item.side === 'BUY' ? 'rgba(0, 193, 100, 1)' : 'rgba(255, 75, 119, 1)',
+          })}
+          bordered
+          columns={columns}
+          data={data}
+        />
+      </ScrollBox>
+    </Wrapper>
   );
 });
