@@ -4,6 +4,14 @@ await require('https://cdnjs.cloudflare.com/ajax/libs/antd/4.17.0-alpha.3/antd.m
 const { Option } = Select;
 
 const CustomSelect = ({ options, name, id, defaultValue }) => {
+  useCSS(
+    'edit-component-form.css',
+    css`
+      body {
+        background: transparent;
+      }
+    `,
+  );
   const [value, setValue] = React.useState([]);
   return (
     <>

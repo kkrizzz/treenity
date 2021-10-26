@@ -36,6 +36,11 @@ const themeCss = css`
     color: var(--theme-main-color);
   }
 
+  body {
+    background: transparent !important;
+    color: var(--theme-main-color) !important;
+  }
+
   html {
     padding: 0;
     margin: 0;
@@ -138,7 +143,8 @@ const themeCss = css`
   .bu-button {
     border-radius: 11px !important;
   }
-  .bu-button.bu-is-primary {
+  .bu-button.bu-is-primary,
+  .bu-button.bu-is-link {
     background-color: var(--theme-a-color) !important;
   }
   .bu-button.bu-is-primary.bu-is-outlined:hover {
