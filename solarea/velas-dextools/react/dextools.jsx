@@ -197,17 +197,19 @@ add(({ token }) => {
               )}{' '}
             </div>
             <br />
-            <WaguySwapBuyButton
-              className="bu-button"
-              style={{
-                display: 'flex',
-              }}
-            >
-              <div className="bu-mr-2">
-                <Render id="velas-dextools" name="wagyu-logo" />
-              </div>
-              BUY/SELL
-            </WaguySwapBuyButton>
+            <a href={`https://wagyuswap.app/swap/${base.address}`} target="_blank">
+              <WaguySwapBuyButton
+                className="bu-button"
+                style={{
+                  display: 'flex',
+                }}
+              >
+                <div className="bu-mr-2">
+                  <Render id="velas-dextools" name="wagyu-logo" />
+                </div>
+                BUY/SELL
+              </WaguySwapBuyButton>
+            </a>
           </DashboardCard>
           <DashboardCard size="small" subcard style={{ padding: 0 }}>
             <TokenData market={currentMarket} />

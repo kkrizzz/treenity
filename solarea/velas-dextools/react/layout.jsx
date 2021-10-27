@@ -43,7 +43,7 @@ add(({ children }) => {
                 subcardBG: 'var(--theme-subcard-bg-color)',
                 cardBG: 'var(--theme-card-bg-color)',
                 wagyuswapLinkColor: 'white',
-                wagyuswapLinkBg: '#1b2845',
+                wagyuswapLinkBg: '#273249',
               },
             }
           : {
