@@ -285,7 +285,7 @@ const newDarkThemeVars = css`
 `;
 
 add(() => {
-  const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', true);
+  const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
   useCSS(
     `${isDarkTheme ? 'dark' : 'light'}-theme-variables.css`,
     isDarkTheme ? newDarkThemeVars : lightThemeVars,
