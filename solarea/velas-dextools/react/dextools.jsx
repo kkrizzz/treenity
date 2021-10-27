@@ -57,6 +57,15 @@ async function addTokenToMetamask(address, symbol, decimals) {
   }
 }
 
+const WaguySwapBuyButton = styled.div`
+  background: ${(props) => props.theme.colors.wagyuswapLinkBg};
+  color: ${(props) => props.theme.colors.wagyuswapLinkColor};
+  border-color: rgba(156, 169, 180, 0.41);
+  &:hover {
+    color: ${(props) => props.theme.colors.wagyuswapLinkColor};
+  }
+`;
+
 add(({ token }) => {
   const { data: markets, isLoading: isMarketsLoading } = useLoadMarkets(token);
   const { quote: quoteTokenParam } = solarea.useQueryParams();
@@ -122,7 +131,8 @@ add(({ token }) => {
             </div>
           </div>
           <div className="bu-ml-3" style={{ fontSize: '1.5rem' }}>
-            {base.symbol} | <Link to={`/${quote.address}`}>{quote.symbol}</Link>
+            {base.symbol} |{' '}
+            <Link to={`/${quote.address}?quote=${base.address}`}>{quote.symbol}</Link>
           </div>
           <div
             class="bu-is-size-6 bu-ml-5"
@@ -187,6 +197,17 @@ add(({ token }) => {
               )}{' '}
             </div>
             <br />
+            <WaguySwapBuyButton
+              className="bu-button"
+              style={{
+                display: 'flex',
+              }}
+            >
+              <div className="bu-mr-2">
+                <Render id="velas-dextools" name="wagyu-logo" />
+              </div>
+              BUY/SELL
+            </WaguySwapBuyButton>
           </DashboardCard>
           <DashboardCard size="small" subcard style={{ padding: 0 }}>
             <TokenData market={currentMarket} />

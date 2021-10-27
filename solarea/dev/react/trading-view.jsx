@@ -25,7 +25,6 @@ const TradingViewComponent = ({ token, datafeed }) => {
         --tv-color-toolbar-button-background-hover: ${bgColor2};
         --tv-color-platform-background: ${bgColor};
         --tv-color-pane-background: ${bgColor};`;
-    console.log(isDarkTheme, style);
     return new Blob(
       [
         `:root:not(.theme-dark) {
@@ -41,8 +40,6 @@ const TradingViewComponent = ({ token, datafeed }) => {
   };
 
   React.useEffect(() => {
-    console.log(isDarkTheme, ' - ', widget.current._ready);
-
     if (!widget.current || !widget.current._ready) return;
 
     widget.current.changeTheme(isDarkTheme ? 'Dark' : 'Light');
