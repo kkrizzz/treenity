@@ -7,8 +7,10 @@ exports.useTokenInfo = (token) => {
 };
 
 exports.useLatestTokenTrades = (token) => {
-  const { data, isLoading } = solarea.useQuery(['market_trades', token], () =>
-    fetch(`/api/velas/market/${token}/trades`).then((res) => res.json()),
+  const { data, isLoading } = solarea.useQuery(
+    ['market_trades', token],
+    () => fetch(`/api/velas/market/${token}/trades`).then((res) => res.json()),
+    { refetchInterval: 30000 },
   );
 
   return [data, isLoading];
