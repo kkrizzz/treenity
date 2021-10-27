@@ -125,7 +125,7 @@ add(({ token }) => {
             <RandomImageWithNonce width={64} isEth={true} address={base.address} />
             <div
               onClick={() => addTokenToMetamask(base.address, base.symbol, base.decimals)}
-              style={{ position: 'absolute', top: 0, right: 0 }}
+              style={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer' }}
             >
               <Icon type="metamask" />
             </div>
