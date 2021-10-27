@@ -6,7 +6,7 @@ const getColorFromTheme = (varName) =>
 const TradingViewComponent = ({ token, datafeed }) => {
   const widget = React.useRef();
 
-  const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', true);
+  const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
 
   const container = React.useMemo(() => 'tv_chart_container_' + Math.random().toString().slice(2), [
     token,
