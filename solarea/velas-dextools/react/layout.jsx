@@ -3,7 +3,7 @@ const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
 const { ThemeProvider } = solarea;
 
 add(({ children }) => {
-  const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
+  const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', true);
   useCSS(
     'velas-dextools.css',
     css`
