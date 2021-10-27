@@ -210,8 +210,8 @@ const lightThemeVars = css`
 
     --theme-card-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
 
-    --theme-success-color: #00d1b2;
-    --theme-error-color: red;
+    --theme-success-color: #00c164;
+    --theme-error-color: #ff003d;
 
     --theme-inner-card-color: var(--theme-main-color);
     --theme-inner-card-bg: #f3f3f3;
