@@ -36,7 +36,7 @@ const darkTheme = {
   },
 };
 const CustomThemeProvider = ({ children }) => {
-  const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
+  const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', true);
 
   return <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>{children}</ThemeProvider>;
 };

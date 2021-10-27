@@ -28,7 +28,7 @@ const NETWORKS = [
 ];
 
 add(() => {
-  const [isDarkTheme, setIsDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
+  const [isDarkTheme, setIsDarkTheme] = solarea.useLocalStorageState('dark_theme', true);
   const menuRef = React.useRef();
   const [isActive, setIsActive] = React.useState(false);
   return (
