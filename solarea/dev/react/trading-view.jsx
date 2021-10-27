@@ -1,5 +1,8 @@
 const TradingView = await require('/charting_library/charting_library.standalone.js');
 
+const getColorFromTheme = (varName) =>
+  getComputedStyle(document.documentElement).getPropertyValue(varName).replace(' ', '');
+
 const TradingViewComponent = ({ token, datafeed }) => {
   const widget = React.useRef();
 
@@ -8,6 +11,30 @@ const TradingViewComponent = ({ token, datafeed }) => {
   const container = React.useMemo(() => 'tv_chart_container_' + Math.random().toString().slice(2), [
     token,
   ]);
+
+  const changeCartStyle = () => {
+    widget.current.addCustomCSSFile(URL.createObjectURL(getBlob()));
+    widget.current.applyOverrides({
+      'paneProperties.background': getColorFromTheme('--theme-subcard-bg-color'),
+      'paneProperties.backgroundType': 'solid',
+      'candleStyle.upColor': getColorFromTheme('--theme-success-color'),
+      'candleStyle.downColor': getColorFromTheme('--theme-error-color'),
+      'candleStyle.borderUpColor': getColorFromTheme('--theme-success-color'),
+      'candleStyle.borderDownColor': getColorFromTheme('--theme-error-color'),
+    });
+    widget.current
+      .activeChart()
+      .getAllStudies()
+      .forEach(({ name, id }) => {
+        if (name === 'Volume') {
+          const currentStudy = widget.current.activeChart().getStudyById(id);
+          currentStudy.applyOverrides({
+            'volume.color.0': getColorFromTheme('--theme-error-color'),
+            'volume.color.1': getColorFromTheme('--theme-success-color'),
+          });
+        }
+      });
+  };
 
   let getBlob = () => {
     const bgColor = getComputedStyle(document.documentElement).getPropertyValue(
@@ -25,7 +52,6 @@ const TradingViewComponent = ({ token, datafeed }) => {
         --tv-color-toolbar-button-background-hover: ${bgColor2};
         --tv-color-platform-background: ${bgColor};
         --tv-color-pane-background: ${bgColor};`;
-    console.log(isDarkTheme, style);
     return new Blob(
       [
         `:root:not(.theme-dark) {
@@ -41,21 +67,9 @@ const TradingViewComponent = ({ token, datafeed }) => {
   };
 
   React.useEffect(() => {
-    console.log(isDarkTheme, ' - ', widget.current._ready);
-
     if (!widget.current || !widget.current._ready) return;
-
     widget.current.changeTheme(isDarkTheme ? 'Dark' : 'Light');
-
-    setTimeout(() => {
-      widget.current.addCustomCSSFile(URL.createObjectURL(getBlob()));
-      widget.current.applyOverrides({
-        'paneProperties.background': getComputedStyle(document.documentElement)
-          .getPropertyValue('--theme-subcard-bg-color')
-          .replace(' ', ''),
-        'paneProperties.backgroundType': 'solid',
-      });
-    }, 0);
+    setTimeout(changeCartStyle, 0);
   }, [isDarkTheme]);
 
   React.useLayoutEffect(() => {
@@ -70,6 +84,10 @@ const TradingViewComponent = ({ token, datafeed }) => {
       library_path: '/charting_library/',
       locale: 'en',
       // enabled_features: ['study_templates'],
+      studies_overrides: {
+        'volume.volume.color.0': getColorFromTheme('--theme-error-color'),
+        'volume.volume.color.1': getColorFromTheme('--theme-success-color'),
+      },
       disabled_features: [
         'left_toolbar',
         // 'header_widget',
@@ -84,15 +102,7 @@ const TradingViewComponent = ({ token, datafeed }) => {
       width: '100%',
     });
 
-    widget.current.onChartReady(() => {
-      widget.current.addCustomCSSFile(URL.createObjectURL(getBlob()));
-      widget.current.applyOverrides({
-        'paneProperties.background': getComputedStyle(document.documentElement)
-          .getPropertyValue('--theme-subcard-bg-color')
-          .replace(' ', ''),
-        'paneProperties.backgroundType': 'solid',
-      });
-    });
+    widget.current.onChartReady(changeCartStyle);
 
     // debugger;
   }, [token]);
