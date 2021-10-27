@@ -3,9 +3,9 @@ add(function Modal({ children, visible, onClose }) {
     'modal.css',
     css`
       .bu-modal-content {
-        background: white;
+        background: var(--theme-card-bg-color);
         min-height: 60vh;
-        border-radius: 0.25rem;
+        border-radius: 12px;
       }
     `,
   );

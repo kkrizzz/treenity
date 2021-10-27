@@ -1,4 +1,6 @@
 const EditForm = render('draggable-dashboard', 'edit-form');
+const DashboardSection = render('dev', 'dashboard-section');
+const DashboardCard = render('dev', 'dashboard-card');
 
 add(function AddComponentList({ onAdd, availableComponentsIDs, componentsBaseId }) {
   const [chosenComponent, setChosenComponent] = React.useState(null);
@@ -22,7 +24,7 @@ add(function AddComponentList({ onAdd, availableComponentsIDs, componentsBaseId 
     'add-component-list.css',
     css`
       .add-component-list {
-        padding: 8px 16px;
+        padding: 16px;
         overflow-y: auto;
         min-height: 100%;
       }
@@ -67,13 +69,18 @@ add(function AddComponentList({ onAdd, availableComponentsIDs, componentsBaseId 
 
   return (
     <div className="add-component-list">
-      <div className="bu-py-2">Select component to add to dashboard</div>
-      {availableComponents.map((component) => (
-        <div className="bu-card" onClick={() => setChosenComponent(component)}>
-          <div className="bu-is-size-5 bu-has-text-weight-bold">{component.name}</div>
-          <div className="bu-is-size-6">{component.description}</div>
-        </div>
-      ))}
+      <DashboardSection title="Select component to add to dashboard">
+        {availableComponents.map((component) => (
+          <DashboardCard subcard>
+            <div onClick={() => setChosenComponent(component)}>
+              <div className="bu-is-size-5 bu-has-text-weight-bold">{component.name}</div>
+              <div className="bu-is-size-6" style={{ fontWeight: 400 }}>
+                {component.description}
+              </div>
+            </div>
+          </DashboardCard>
+        ))}
+      </DashboardSection>
     </div>
   );
 });

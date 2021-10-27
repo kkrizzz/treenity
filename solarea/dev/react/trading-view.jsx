@@ -1,10 +1,9 @@
-const TradingView = await require('/charting_library/charting_library.standalone.js');
+const TradingView = await require('http://velas-dextools.localhost:3102/charting_library/charting_library.js');
 
 const TradingViewComponent = ({ token, datafeed }) => {
   const widget = React.useRef();
 
   const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
-  console.log(isDarkTheme);
 
   const container = React.useMemo(() => 'tv_chart_container_' + Math.random().toString().slice(2), [
     token,
@@ -26,6 +25,7 @@ const TradingViewComponent = ({ token, datafeed }) => {
         --tv-color-toolbar-button-background-hover: ${bgColor2};
         --tv-color-platform-background: ${bgColor};
         --tv-color-pane-background: ${bgColor};`;
+    console.log(isDarkTheme, style);
     return new Blob(
       [
         `:root:not(.theme-dark) {
@@ -39,8 +39,12 @@ const TradingViewComponent = ({ token, datafeed }) => {
       { type: 'text/css' },
     );
   };
+
   React.useEffect(() => {
+    console.log(isDarkTheme, ' - ', widget.current._ready);
+
     if (!widget.current || !widget.current._ready) return;
+
     widget.current.changeTheme(isDarkTheme ? 'Dark' : 'Light');
 
     setTimeout(() => {
@@ -52,30 +56,13 @@ const TradingViewComponent = ({ token, datafeed }) => {
         'paneProperties.backgroundType': 'solid',
       });
     }, 0);
-    // console.log(isDarkTheme, ' ---');
-    // debugger;
-    // widget.applyOverrides({ 'mainSeriesProperties.minTick': 'default' });
-    // ;
-  }, [isDarkTheme, widget.current]);
-  // React.useEffect(() => {
-  //   debugger;
-  //   if (!widget.current || !widget.current._ready) return;
-  //   setTimeout(() => {
-  //     widget.current.applyOverrides({
-  //       'paneProperties.background': getComputedStyle(document.documentElement)
-  //         .getPropertyValue('--theme-subcard-bg-color')
-  //         .replace(' ', ''),
-  //       'paneProperties.backgroundType': 'solid',
-  //     });
-  //   }, 0);
-  // }, [widget.current]);
+  }, [isDarkTheme]);
 
   React.useLayoutEffect(() => {
     widget.current = new TradingView.widget({
       custom_css_url: URL.createObjectURL(getBlob()),
       // debug: true, // uncomment this line to see Library errors and warnings in the console
       symbol: token,
-      theme: isDarkTheme ? 'Dark' : 'Light',
       interval: '60',
       timeframe: '5D',
       datafeed,
@@ -98,6 +85,7 @@ const TradingViewComponent = ({ token, datafeed }) => {
     });
 
     widget.current.onChartReady(() => {
+      widget.current.addCustomCSSFile(URL.createObjectURL(getBlob()));
       widget.current.applyOverrides({
         'paneProperties.background': getComputedStyle(document.documentElement)
           .getPropertyValue('--theme-subcard-bg-color')
