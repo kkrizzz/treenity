@@ -312,7 +312,7 @@ export const indexPriceCron = (app) => {
         interval,
       );
 
-      res.send(candles);
+      res.send(candles[0]);
     } catch (e) {
       res.statusCode(404).send('Last candles not found');
     }
