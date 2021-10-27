@@ -3,13 +3,14 @@ const { bs58 } = solarea;
 const Link = render('dev', 'link');
 
 const search = (id) => {
+  if (!id) return;
   let isToken;
 
   if (id.startsWith('0x')) {
     isToken = 'account';
   }
 
-  if (isToken) window.history.pushState({}, '', `/${id}`);
+  if (isToken) window.history.pushState({}, '', `/${id.toLowerCase()}`);
 };
 
 const Search = ({ onChange }) => {
