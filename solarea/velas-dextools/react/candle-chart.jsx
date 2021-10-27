@@ -31,19 +31,15 @@ const configurationData = {
 };
 
 class Datafeed {
-  // _markets = [];
-  _market;
-  _conf = {
-    exchanges: [],
-  };
-
   constructor(market, conf) {
+    this._conf = {
+      exchanges: [],
+    };
     this._market = market;
 
     if (conf.exchanges) {
       this._conf.exchanges.push(...conf.exchanges);
     }
-    // this._markets = markets;
   }
 
   async getBars(symbolInfo, resolution, { from, to }, onHistoryCallback, onErrorCallback) {

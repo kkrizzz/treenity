@@ -1,4 +1,4 @@
-const TradingView = await require('/charting_library/charting_library.standalone.js');
+const TradingView = await require('http://velas-dextools.localhost:3102/charting_library/charting_library.js');
 
 const TradingViewComponent = ({ token, datafeed }) => {
   const widget = React.useRef();
