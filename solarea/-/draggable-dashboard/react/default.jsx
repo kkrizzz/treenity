@@ -3,6 +3,8 @@ const Icon = render('dashboard', 'icon');
 const ComponentList = render('draggable-dashboard', 'component-list');
 const Modal = render('dashboard', 'modal');
 const EditForm = render('draggable-dashboard', 'edit-form');
+const DashboardSection = render('dev', 'dashboard-section');
+const DashboardCard = render('dev', 'dashboard-card');
 const AddComponentList = render('draggable-dashboard', 'add-component-list');
 
 add(({ availableComponentsIDs, componentsBaseId, dashboardName }) => {
@@ -66,13 +68,10 @@ add(({ availableComponentsIDs, componentsBaseId, dashboardName }) => {
           onChange={(components) => setComponents(components)}
         />
         {!components.length && (
-          <div
-            className="bu-notification bu-is-info bu-is-light"
-            style={{ width: 'max-content', margin: '40vh auto' }}
-          >
+          <DashboardCard style={{ width: 'max-content', margin: '40vh auto' }} size="small">
             There are still no components here, but you can add a new one by clicking the "Add"
             button.
-          </div>
+          </DashboardCard>
         )}
       </div>
 
