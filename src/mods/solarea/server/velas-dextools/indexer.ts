@@ -206,6 +206,43 @@ export const updateTokenData = async (address, smartContract, trades, collection
   }
 };
 
+async function aggregateCandles(priceCollection, base, quote, from, to, interval) {
+  return await priceCollection.Model.aggregate([
+    {
+      $match: {
+        'base.address': base,
+        'quote.address': quote,
+        time: { $gt: from, $lte: to },
+      },
+    },
+    {
+      $project: {
+        frame: {
+          $trunc: {
+            $divide: [{ $subtract: ['$time', new Date('1970-01-01')] }, interval * 60 * 1000],
+          },
+        },
+        time: 1,
+        qp: 1,
+        amount: 1,
+      },
+    },
+    { $sort: { time: 1 } },
+    {
+      $group: {
+        _id: '$frame',
+        time: { $first: '$time' },
+        open: { $first: '$qp' },
+        close: { $last: '$qp' },
+        high: { $max: '$qp' },
+        low: { $min: '$qp' },
+        vol: { $sum: '$amount' },
+      },
+    },
+    { $sort: { time: 1 } },
+  ]).toArray();
+}
+
 export const indexPriceCron = (app) => {
   const priceCollection = app.services['velas-dextools'];
   priceCollection.Model.createIndex({
@@ -258,6 +295,29 @@ export const indexPriceCron = (app) => {
     res.send(filteredPairs);
   });
 
+  app.get('/api/velas/market/:base/:quote/lastkline', async (req, res) => {
+    try {
+      const { base, quote } = req.params;
+      const { interval = 1 } = req.query;
+
+      const nowDate = new Date();
+      const fromDate = new Date(nowDate.getTime() - Number(interval) * 1000 * 60);
+
+      const candles = await aggregateCandles(
+        priceCollection,
+        base,
+        quote,
+        fromDate,
+        nowDate,
+        interval,
+      );
+
+      res.send(candles);
+    } catch (e) {
+      res.statusCode(404).send('Last candles not found');
+    }
+  });
+
   app.get('/api/velas/market/:base/:quote/trades', async (req, res) => {
     const { base, quote } = req.params;
     const { offset } = req.query;
@@ -278,40 +338,14 @@ export const indexPriceCron = (app) => {
       const fromDate = new Date((from || 0) * 1000);
       const toDate = to ? new Date(to * 1000) : new Date();
 
-      const klines = await priceCollection.Model.aggregate([
-        {
-          $match: {
-            'base.address': base,
-            'quote.address': quote,
-            time: { $gt: fromDate, $lte: toDate },
-          },
-        },
-        {
-          $project: {
-            frame: {
-              $trunc: {
-                $divide: [{ $subtract: ['$time', new Date('1970-01-01')] }, interval * 60 * 1000],
-              },
-            },
-            time: 1,
-            qp: 1,
-            amount: 1,
-          },
-        },
-        { $sort: { time: 1 } },
-        {
-          $group: {
-            _id: '$frame',
-            time: { $first: '$time' },
-            open: { $first: '$qp' },
-            close: { $last: '$qp' },
-            high: { $max: '$qp' },
-            low: { $min: '$qp' },
-            vol: { $sum: '$amount' },
-          },
-        },
-        { $sort: { time: 1 } },
-      ]).toArray();
+      const klines = await aggregateCandles(
+        priceCollection,
+        base,
+        quote,
+        fromDate,
+        toDate,
+        interval,
+      );
       return res.send(klines);
     } catch (e) {
       console.error(e);
