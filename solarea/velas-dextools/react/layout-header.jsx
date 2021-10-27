@@ -35,19 +35,28 @@ add(() => {
     <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
       <div class="bu-container">
         <div className="bu-navbar-brand">
-          <Link
-            className="bu-navbar-item"
-            to="/"
-            style={{
-              color: 'var(--theme-main-oposit-color)',
-              display: 'flex',
-              alignItems: 'flex-end',
-            }}
-          >
-            <Render id="velas" name="logo" />
-            <div class="bu-is-size-6 bu-ml-2">DEXTOOLS</div>
-          </Link>
-
+          <div className="bu-navbar-item" style={{ alignItems: 'end' }}>
+            <Link
+              to="/"
+              style={{
+                color: 'var(--theme-main-oposit-color)',
+                display: 'flex',
+                alignItems: 'flex-end',
+              }}
+            >
+              <Render id="velas" name="logo" />
+            </Link>
+            <Link
+              to="https://defi.parts"
+              style={{
+                color: 'var(--theme-main-oposit-color)',
+                display: 'flex',
+                alignItems: 'flex-end',
+              }}
+            >
+              <div className="bu-is-size-6 bu-ml-2">.defi.parts</div>
+            </Link>
+          </div>
           <a
             onClick={(e) => setIsActive((val) => !val)}
             role="button"
