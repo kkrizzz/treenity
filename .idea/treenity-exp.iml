@@ -10,6 +10,18 @@
       <excludeFolder url="file://$MODULE_DIR$/legacy" />
       <excludeFolder url="file://$MODULE_DIR$/src/mods/solarea/program/target" />
       <excludeFolder url="file://$MODULE_DIR$/.parcel-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/near.localhost" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/near.solarea.io" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/solana.localhost" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/solana.solarea.io" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/velas-dextools.localhost" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/velas-dextools.solarea.io" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/velas-tools.localhost" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/velas-tools.solarea.io" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/velas.localhost" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/velas.solarea.io" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/stage.solarea.io" />
+      <excludeFolder url="file://$MODULE_DIR$/solarea/-/velas.defi.parts" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
