@@ -1,4 +1,4 @@
-const TradingView = await require('/charting_library/charting_library.standalone.js');
+const TradingView = await require('/charting_library/charting_library.js');
 
 const getColorFromTheme = (varName) =>
   getComputedStyle(document.documentElement).getPropertyValue(varName).replace(' ', '');

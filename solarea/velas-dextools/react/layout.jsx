@@ -42,6 +42,8 @@ add(({ children }) => {
                 main: 'white',
                 subcardBG: 'var(--theme-subcard-bg-color)',
                 cardBG: 'var(--theme-card-bg-color)',
+                wagyuswapLinkColor: 'white',
+                wagyuswapLinkBg: '#273249',
               },
             }
           : {
@@ -50,6 +52,8 @@ add(({ children }) => {
                 main: 'black',
                 subcardBG: '#f8faff',
                 cardBG: '#ffffff',
+                wagyuswapLinkColor: 'blackr',
+                wagyuswapLinkBg: 'white',
               },
             }
       }

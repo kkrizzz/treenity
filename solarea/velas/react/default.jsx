@@ -1,4 +1,5 @@
 const DashboardCard = render('dev', 'dashboard-card');
+const Hash = render('dev', 'hash');
 const DashboardSection = render('dev', 'dashboard-section');
 const LPS = 0.000000001;
 
@@ -137,7 +138,10 @@ const ClusterStats = ({}) => {
               <DashboardCard title="Slot" value={epochInfo.absoluteSlot} />
             </div>
             <div className="bu-column bu-is-4">
-              <DashboardCard title="Block height" value={epochInfo.blockHeight} />
+              <DashboardCard
+                title="Block height"
+                value={<Hash hash={epochInfo.blockHeight} type="block" />}
+              />
             </div>
             <div className="bu-column bu-is-4">
               <DashboardCard title="Epoch" value={epochInfo.epoch} />

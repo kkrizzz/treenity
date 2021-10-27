@@ -31,19 +31,16 @@ const configurationData = {
 };
 
 class Datafeed {
-  // _markets = [];
-  _market;
-  _conf = {
-    exchanges: [],
-  };
-
   constructor(market, conf) {
+    this._conf = {
+      exchanges: [],
+    };
     this._market = market;
 
     if (conf.exchanges) {
       this._conf.exchanges.push(...conf.exchanges);
     }
-    // this._markets = markets;
+    this._intervals = {};
   }
 
   async getBars(symbolInfo, resolution, { from, to }, onHistoryCallback, onErrorCallback) {
@@ -98,8 +95,22 @@ class Datafeed {
     setTimeout(() => onSymbolResolvedCallback(symbolInfo));
   }
 
-  unsubscribeBars(...args) {
-    console.log('unsubscribeBars', ...args);
+  subscribeBars(symbolInfo, resolution, onRealtimeCallback, subscriberUID) {
+    this._intervals[subscriberUID] = setInterval(async () => {
+      const kline = await fetch(
+        `/api/velas/market/${symbolInfo.base}/${symbolInfo.quote}/lastkline?interval=${resolution}`,
+      ).then((r) => r.json());
+      if (kline.length) {
+        const [k] = kline;
+        k.time = new Date(k.time).getTime();
+        k.volume = k.vol;
+        onRealtimeCallback(k);
+      }
+    }, 30 * 1000);
+  }
+
+  unsubscribeBars(subscriberUID) {
+    clearInterval(this._intervals[subscriberUID]);
   }
 }
 

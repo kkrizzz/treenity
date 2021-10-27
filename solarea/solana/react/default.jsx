@@ -138,7 +138,10 @@ const ClusterStats = ({}) => {
               <DashboardCard title="Slot" value={epochInfo.absoluteSlot} />
             </div>
             <div className="bu-column bu-is-4">
-              <DashboardCard title="Block height" value={epochInfo.blockHeight} />
+              <DashboardCard
+                title="Block height"
+                value={<Hash hash={epochInfo.blockHeight} type="block" />}
+              />
             </div>
             <div className="bu-column bu-is-4">
               <DashboardCard title="Epoch" value={epochInfo.epoch} />
