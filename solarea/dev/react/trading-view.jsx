@@ -13,14 +13,16 @@ const TradingViewComponent = ({ token, datafeed }) => {
   ]);
 
   const changeCartStyle = () => {
+    const successColor = getColorFromTheme('--theme-success-color');
+    const errorColor = getColorFromTheme('--theme-error-color');
     widget.current.addCustomCSSFile(URL.createObjectURL(getBlob()));
     widget.current.applyOverrides({
       'paneProperties.background': getColorFromTheme('--theme-subcard-bg-color'),
       'paneProperties.backgroundType': 'solid',
-      'candleStyle.upColor': getColorFromTheme('--theme-success-color'),
-      'candleStyle.downColor': getColorFromTheme('--theme-error-color'),
-      'candleStyle.borderUpColor': getColorFromTheme('--theme-success-color'),
-      'candleStyle.borderDownColor': getColorFromTheme('--theme-error-color'),
+      'candleStyle.upColor': successColor,
+      'candleStyle.downColor': errorColor,
+      'candleStyle.borderUpColor': successColor,
+      'candleStyle.borderDownColor': errorColor,
     });
     widget.current
       .activeChart()
@@ -29,23 +31,17 @@ const TradingViewComponent = ({ token, datafeed }) => {
         if (name === 'Volume') {
           const currentStudy = widget.current.activeChart().getStudyById(id);
           currentStudy.applyOverrides({
-            'volume.color.0': getColorFromTheme('--theme-error-color'),
-            'volume.color.1': getColorFromTheme('--theme-success-color'),
+            'volume.color.0': errorColor,
+            'volume.color.1': successColor,
           });
         }
       });
   };
 
   let getBlob = () => {
-    const bgColor = getComputedStyle(document.documentElement).getPropertyValue(
-      '--theme-subcard-bg-color',
-    );
-    const bgColor2 = getComputedStyle(document.documentElement).getPropertyValue(
-      '--theme-card-bg-color',
-    );
-    const mainColor = getComputedStyle(document.documentElement).getPropertyValue(
-      '--theme-main-color',
-    );
+    const bgColor = getColorFromTheme('--theme-subcard-bg-color');
+    const bgColor2 = getColorFromTheme('--theme-card-bg-color');
+    const mainColor = getColorFromTheme('--theme-main-color');
     const style = `
         --tv-color-toolbar-button-text: ${mainColor};
         --tv-color-toolbar-button-text-hover: ${mainColor};
