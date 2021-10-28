@@ -207,19 +207,22 @@ export const updateTokenData = async (address, smartContract, trades, collection
 };
 
 async function aggregateCandles(priceCollection, base, quote, from, to, interval) {
+  const inter = interval * 1000 * 60;
+  from = new Date(Math.ceil(from.getTime() / inter) * inter);
+
   return await priceCollection.Model.aggregate([
     {
       $match: {
         'base.address': base,
         'quote.address': quote,
-        time: { $gt: from, $lte: to },
+        time: { $gte: from, $lte: to },
       },
     },
     {
       $project: {
         frame: {
           $trunc: {
-            $divide: [{ $subtract: ['$time', new Date('1970-01-01')] }, interval * 60 * 1000],
+            $divide: [{ $subtract: ['$time', new Date('1970-01-01')] }, inter],
           },
         },
         time: 1,
@@ -294,6 +297,35 @@ export const indexPriceCron = (app) => {
 
     res.send(filteredPairs);
   });
+
+  // app.get('/api/velas/market/add', async (req, res) => {
+  //   await priceCollection.Model.insertOne({
+  //     qp: Math.random() * 10,
+  //     amount: Math.random() * 100,
+  //     time: new Date(),
+  //     market: '0x1e4cf38d767364bff986658c620302010d338bf0',
+  //     exchange: '0x90594eaff8567c16cf27528181d99a125b8d5cf3',
+  //     base: {
+  //       decimals: 18,
+  //       symbol: 'WAG',
+  //       address: '0x40c8002c2887ade2297ad48d9dc101de08bd104c',
+  //     },
+  //     quote: {
+  //       decimals: 18,
+  //       symbol: 'WVLX',
+  //       address: '0x485f49e0764c305dc6fc1da2e5b786f65f8c95aa',
+  //     },
+  //     side: Math.random() >= 0.5 ? 'SELL' : 'BUY',
+  //     tx: {
+  //       hash: '0x5413609763ed20b700e0f0dc6b3905f7fbd8223a5c05a37b4678cbf6bab936ea',
+  //       from: {
+  //         address: '0x3812d358fd62667db446e2b895422b762bab690f',
+  //       },
+  //     },
+  //   });
+  //
+  //   return res.send('Its ok');
+  // });
 
   app.get('/api/velas/market/:base/:quote/lastkline', async (req, res) => {
     try {
