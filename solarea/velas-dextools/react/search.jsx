@@ -2,6 +2,30 @@ const { bs58 } = solarea;
 
 const Link = render('dev', 'link');
 
+function buildOptions(string, poolList) {
+  if (string.length === 0) return [];
+
+  string = string.toLowerCase();
+
+  const options = [];
+
+  poolList.forEach((i) => {
+    const baseSymbol = i.base.symbol;
+    const quoteSymbol = i.quote.symbol;
+
+    if (baseSymbol.toLowerCase().includes(string)) {
+      options.push({
+        label: `${baseSymbol}/${quoteSymbol}`,
+        pathname: `/${i.base.address}?quote=${i.quote.address}`,
+      });
+    }
+  });
+
+  if (options.length > 0) return options;
+
+  return options;
+}
+
 const search = (id) => {
   if (!id) return;
   let isToken;
@@ -14,7 +38,15 @@ const search = (id) => {
 };
 
 const Search = ({ onChange }) => {
+  const { data: poolList, isLoading: isPoolListLoading } = solarea.useQuery(
+    ['pool-list', 'velas-mainnet'],
+    () => fetch('/api/velas/poollist').then((res) => res.json()),
+  );
+
   const [value, setValue] = React.useState('');
+
+  const results = poolList ? buildOptions(value, poolList) : [];
+
   const onSetValue = (evt) => {
     setValue(evt.target.value);
   };
@@ -52,7 +84,7 @@ const Search = ({ onChange }) => {
 
   return (
     <p className="bu-control bu-has-icons-right explorer-layout-input">
-      <div class={`bu-dropdown`} style={{ width: '100%' }}>
+      <div class={`bu-dropdown ${results.length ? 'bu-is-active' : ''}`} style={{ width: '100%' }}>
         <div style={{ flex: 1 }}>
           <input
             id="exp-l-id"
@@ -75,7 +107,18 @@ const Search = ({ onChange }) => {
           id="search-dropdown"
           style={{ width: '100%' }}
           role="menu"
-        ></div>
+        >
+          <div className="bu-dropdown-content">
+            {results.map((r) => (
+              <div className="bu-dropdown-item">
+                <Link to={r.pathname} onClick={() => setValue('')}>
+                  {r.label}
+                  <br />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </p>
   );

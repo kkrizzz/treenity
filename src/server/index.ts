@@ -64,6 +64,7 @@ async function main() {
   app.collection('near-token-price');
   app.collection('near-token-metadata');
   app.collection('velas-dextools');
+  app.collection('velas-dextools-pools');
   const tree = app
     .use('tree', new TreeService())
     .service('tree')

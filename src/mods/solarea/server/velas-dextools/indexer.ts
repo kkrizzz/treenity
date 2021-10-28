@@ -60,7 +60,7 @@ query ($since: ISO8601DateTime!) {
 }
 `;
 
-const updateData = async (collection) => {
+const updateData = async (collection, poolsCollection) => {
   const lastTrade = (await collection.find({ options: { sort: { time: -1 }, limit: 1 } }))?.[0];
   const lastTradeTime = lastTrade?.time;
   const since =
@@ -110,6 +110,24 @@ const updateData = async (collection) => {
       // trades: dt.trades,
       // i: 5 * 60,
     };
+
+    const pool = {
+      base: kline.base,
+      quote: kline.quote,
+      market: kline.market,
+      createdAt: new Date(),
+    };
+
+    await poolsCollection.Model.replaceOne(
+      {
+        'base.address': pool.base.address,
+        'quote.address': pool.quote.address,
+        market: pool.market,
+      },
+      pool,
+      { upsert: true },
+    );
+
     await collection.create(kline);
   }
 
@@ -248,10 +266,20 @@ async function aggregateCandles(priceCollection, base, quote, from, to, interval
 
 export const indexPriceCron = (app) => {
   const priceCollection = app.services['velas-dextools'];
+  const poolsCollection = app.services['velas-dextools-pools'];
+
   priceCollection.Model.createIndex({
     'base.address': 1,
     'quote.address': 1,
     time: 1,
+  });
+
+  app.get('/api/velas/poollist', async (req, res) => {
+    try {
+      res.send(await poolsCollection.Model.find().toArray());
+    } catch (e) {
+      res.statusCode(500).send('Pool list not found')
+    }
   });
 
   app.get('/api/velas/token/hot', async (req, res) => {
@@ -442,10 +470,10 @@ export const indexPriceCron = (app) => {
     }
   });
 
-  updateData(priceCollection).catch(console.error);
+  updateData(priceCollection, poolsCollection).catch(console.error);
 
   cron.schedule('*/30 * * * * *', async () => {
-    await updateData(priceCollection).catch((err) => {
+    await updateData(priceCollection, poolsCollection).catch((err) => {
       console.error('Velas klines update', err);
       throw err;
     });
