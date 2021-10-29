@@ -19,6 +19,12 @@ query MyQuery {
     ) {
       count
     }
+    totalSupply: transfers(
+      currency: {is: "${market.base.address}"}
+      sender: {is: "0x0000000000000000000000000000000000000000"}
+    ) {
+      amount
+    }
     holders: transfers(
       currency: {is: "${market.base.address}"}
     ) {
@@ -46,6 +52,10 @@ const MarketData = ({ market }) => {
   const poolBalances = marketInfo.address[0].balances;
   const totalTrades = marketInfo.totalTrades[0].count;
   const holders = marketInfo.holders[0].count;
+  const totalSupply =
+    market.base.address === '0x485f49e0764c305dc6fc1da2e5b786f65f8c95aa'
+      ? '2.2B'
+      : marketInfo.totalSupply[0].amount;
 
   return (
     <Table stripped>
@@ -63,6 +73,10 @@ const MarketData = ({ market }) => {
         <tr>
           <td>{`${market.base.symbol} holders`} </td>
           <td>{holders}</td>
+        </tr>
+        <tr>
+          <td>{`${market.base.symbol} supply`} </td>
+          <td>{totalSupply}</td>
         </tr>
       </tbody>
     </Table>
