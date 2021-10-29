@@ -24,6 +24,14 @@ addComponent(JsonGraphQlMeta, 'service', {}, ({ value }) => {
     const request = await fetch(value.jsonUrl);
     const json = await request.json();
 
+    json.tokens.forEach((token) =>
+      Object.keys(token).forEach((i) => {
+        if (i.includes('-')) {
+          delete token[i];
+        }
+      }),
+    );
+
     app.use(value.baseUrl, jsonGraphqlExpress({ tokens: json.tokens }));
 
     return () => undefined;
