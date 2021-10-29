@@ -18,7 +18,8 @@ const columns = [
   {
     title: 'Amount',
     dataIndex: 'amount',
-    render: (num) => numberWithSpaces(num.toFixed(6)),
+    render: (num, { qp }) =>
+      `${numberWithSpaces(num.toFixed(6))} → ${numberWithSpaces((num / qp).toFixed(6))}`,
   },
   {
     title: 'Price',
