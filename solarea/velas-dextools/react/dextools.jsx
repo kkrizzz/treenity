@@ -1,7 +1,9 @@
 const LastTrades = render('velas-dextools', 'last-trades');
+const PoolActivity = render('velas-dextools', 'pool-activity');
 const { toast } = await require('solarea://dev/toast');
 const Hash = render('dev', 'hash');
 const Link = render('dev', 'link');
+const Tabs = render('dev', 'tabs');
 const TokenData = render('velas-dextools', 'token-data');
 const CandleChart = render('velas-dextools', 'candle-chart');
 const DashboardCard = render('dev', 'dashboard-card');
@@ -114,6 +116,17 @@ add(({ token }) => {
     `,
   );
 
+  const tabs = [
+    {
+      name: 'Trades',
+      content: () => <LastTrades market={currentMarket} />,
+    },
+    {
+      name: 'Pools activity',
+      content: () => <PoolActivity market={currentMarket} />,
+    },
+  ];
+
   const priceChange24hrPercent = currentMarket.priceChange24hrPercent;
   const priceChange24hrValue = currentMarket.priceChange24hrValue;
   const isPriceFall = priceChange24hrPercent < 0;
@@ -221,7 +234,7 @@ add(({ token }) => {
           </DashboardCard>
         </div>
       </div>
-      <LastTrades market={currentMarket} />
+      <Tabs tabs={tabs} />
     </div>
   );
 });

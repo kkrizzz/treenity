@@ -23,3 +23,15 @@ exports.useHotTokenPairs = () => {
 
   return [data, isLoading];
 };
+
+/* {
+  type: add remove
+  token:
+} */
+exports.useLiquidityPoolsActivity = (base, quote, limit) => {
+  const { data, isLoading } = solarea.useQuery([base, quote, 'liquidity_pools_activity'], () =>
+    fetch(`/api/velas/market/${base}/${quote}/liquidity?limit=${limit}`).then((res) => res.json()),
+  );
+
+  return [data, isLoading];
+};
