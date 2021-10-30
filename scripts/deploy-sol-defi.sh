@@ -26,5 +26,6 @@ run_rsync() {
 
 run_rsync --delete dist/solarea-prod/ $SSH_STR:/var/www/$DOMAIN/
 run_rsync dist/server-prod/ config solarea package.json $SSH_STR:~/$DOMAIN/
+#run_rsync config/solarea/ $SSH_STR:~/$DOMAIN/config/
 
 $SSH $SSH_STR ". .nvm/nvm.sh  && pm2 restart solarea"

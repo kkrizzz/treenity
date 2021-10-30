@@ -2,16 +2,6 @@ import * as _ from 'lodash';
 
 const fetch = require('node-fetch');
 
-// Velas Testnet
-const TOKENS_TO_INDEX_PRICE = [
-  '0xe2172a8e1762ae9962a59ee88a731522a61a4cc9', // BUSD
-  '0x6ef054b3e3c3c83e14527e8fa593c2c4435a6ea4', // USDT
-  '0x598491beadf07e27b7ef0090c6a7e8e5ee0f3ab7', // WAG
-  '0xc119b1d91b44012db8d0ac5537f04c7fd7629c84', // SYX
-  '0x297170abcfc7acea729ce128e1326be125a7f982', // WAGYU
-  '0x78f18612775a2c54efc74c2911542aa034fe8d3f', // wVLX
-];
-
 const tokenInfoQuery = `
 query ($since: ISO8601DateTime!) {
   ethereum(network: velas) {

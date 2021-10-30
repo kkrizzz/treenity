@@ -14,12 +14,12 @@ const Wrapper = styled.div([
 ]);
 
 const tokenToDecimals = (amount, decimals) => {
-  return Math.pow(10, -decimals) * amount;
+  return parseInt(amount) / Math.pow(10, decimals);
 };
 
 add(({ market }) => {
   const { base, quote } = market;
-  const [data, isLoading] = useLiquidityPoolsActivity(base, quote, 10);
+  const [data, isLoading] = useLiquidityPoolsActivity(base.address, quote.address, 10);
 
   const columns = [
     {
@@ -30,12 +30,12 @@ add(({ market }) => {
     {
       title: `Amount ${base.symbol}`,
       dataIndex: 'amountAMin',
-      render: (num) => numberWithSpaces(num.toFixed(6)),
+      render: (num) => numberWithSpaces(tokenToDecimals(num, base.decimals).toFixed(6)),
     },
     {
       title: `Amount ${quote.symbol}`,
       dataIndex: 'amountBMin',
-      render: (num) => numberWithSpaces(num.toFixed(6)),
+      render: (num) => numberWithSpaces(tokenToDecimals(num, quote.decimals).toFixed(6)),
     },
     {
       title: 'Date',

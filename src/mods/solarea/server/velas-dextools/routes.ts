@@ -41,6 +41,7 @@ async function aggregateCandles(priceCollection, base, quote, from, to, interval
 export default async function applyRoutes(app) {
   const priceCollection = app.services['velas-dextools'];
   const poolsCollection = app.services['velas-dextools-pools'];
+  const liquidityCollection = app.services['velas-dextools-liquidity'];
 
   app.get('/api/velas/poollist', async (req, res) => {
     try {
@@ -52,14 +53,19 @@ export default async function applyRoutes(app) {
 
   app.get('/api/velas/market/:base/:quote/liquidity', async (req, res) => {
     const { base, quote } = req.params;
-    const { offset } = req.query;
+    const { limit, offset = 0 } = req.query;
 
-    const trades = await priceCollection.Model.find(
-      { 'base.address': base, 'quote.address': quote },
-      { sort: { time: -1 }, limit: 100, offset },
+    const liquidity = await liquidityCollection.Model.find(
+      {
+        $or: [
+          { tokenA: base, tokenB: quote },
+          { tokenA: quote, tokenB: base },
+        ],
+      },
+      { sort: { time: -1 }, limit: parseInt(limit), offset: parseInt(offset) },
     ).toArray();
 
-    res.send(trades);
+    res.send(liquidity);
   });
 
   app.get('/api/velas/token/hot', async (req, res) => {

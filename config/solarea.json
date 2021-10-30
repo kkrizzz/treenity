@@ -1,6 +1,9 @@
 {
   "host": "localhost",
   "port": "5000",
-  "mongodb": "mongodb://localhost:27017/solarea"
+  "mongodb": "mongodb://localhost:27017/solarea",
+  "bitquery": {
+    "key": "BQYuBhWWLDMGNQ7JbDU9BjOoYycCixU9"
+  }
 }
 
