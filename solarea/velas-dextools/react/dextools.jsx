@@ -226,7 +226,7 @@ add(({ token }) => {
                 justifyContent: 'space-between',
               }}
             >
-              <div className="bu-is-size-4" style={{ marginTop: 22 }}>
+              <div className="bu-is-size-4" style={{ marginTop: 4 }}>
                 {isLoadingTrades ? (
                   'Loading price...'
                 ) : (

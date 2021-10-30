@@ -101,7 +101,7 @@ const Search = ({ onChange }) => {
           <input
             id="exp-l-id"
             className="bu-input bu-is-rounded remove-border"
-            placeholder="Search for tokens ..."
+            placeholder="Search for tokens by name or address ..."
             aria-haspopup="true"
             aria-controls="search-dropdown"
             value={value}

@@ -33,7 +33,7 @@ add(({ children }) => {
       <div style={{ marginBottom: 24 }}>
         <Render id="velas-dextools" name="layout-header" />
       </div>
-      <div className="bu-container">
+      <div className="bu-container bu-is-max-widescreen">
         <div style={{ marginBottom: 36 }}>
           <Render id="velas-dextools" name="search" />
         </div>

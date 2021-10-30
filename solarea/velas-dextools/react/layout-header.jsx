@@ -38,7 +38,7 @@ add(() => {
       aria-label="main navigation"
       style={{ background: 'var(--theme-card-bg-color)' }}
     >
-      <div class="bu-container">
+      <div class="bu-container bu-is-max-widescreen">
         <div className="bu-navbar-brand">
           <div className="bu-navbar-item" style={{ alignItems: 'end' }}>
             <Link
