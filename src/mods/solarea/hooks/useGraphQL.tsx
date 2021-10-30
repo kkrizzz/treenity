@@ -13,8 +13,8 @@ export function fetchGraphQL(url: string, query: string, variables: any = {}, op
   }).then((res) => res.json());
 }
 
-export function useGraphQL(url: string, code: string, headers) {
-  const { data, isLoading } = useQuery(code, () => fetchGraphQL(url, code, {}, { headers }));
+export function useGraphQL(url: string, code: string, { headers = {}, variables = {} } = {}) {
+  const { data, isLoading } = useQuery(code, () => fetchGraphQL(url, code, variables, { headers }));
 
   return [data, isLoading];
 }
