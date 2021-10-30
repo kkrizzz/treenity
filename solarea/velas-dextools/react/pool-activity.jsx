@@ -21,6 +21,13 @@ add(({ market }) => {
   const { base, quote } = market;
   const [data, isLoading] = useLiquidityPoolsActivity(base.address, quote.address, 10);
 
+  if (isLoading) return 'Loading pool activity ...';
+
+  const tokens = {
+    tokenA: base.address === data[0].tokenA ? base : quote,
+    tokenB: quote.address === data[0].tokenB ? quote : base,
+  };
+
   const columns = [
     {
       title: 'Type',
@@ -28,14 +35,20 @@ add(({ market }) => {
       render: (type) => <span>{type.toUpperCase()}</span>,
     },
     {
-      title: `Amount ${base.symbol}`,
+      title: `Amount ${tokens.tokenA.symbol}`,
       dataIndex: 'amountAMin',
-      render: (num) => numberWithSpaces(tokenToDecimals(num, base.decimals).toFixed(6)),
+      render: (amountAMin, activity) => {
+        const num = activity.tokenA === tokens.tokenA.symbol ? amountAMin : activity.amountAMin;
+        return numberWithSpaces(tokenToDecimals(num, tokens.tokenA.decimals).toFixed(6));
+      },
     },
     {
-      title: `Amount ${quote.symbol}`,
+      title: `Amount ${tokens.tokenB.symbol}`,
       dataIndex: 'amountBMin',
-      render: (num) => numberWithSpaces(tokenToDecimals(num, quote.decimals).toFixed(6)),
+      render: (amountBMin, activity) => {
+        const num = activity.tokenB === tokens.tokenB.symbol ? amountBMin : activity.amountBMin;
+        return numberWithSpaces(tokenToDecimals(num, tokens.tokenB.decimals).toFixed(6));
+      },
     },
     {
       title: 'Date',
@@ -44,7 +57,6 @@ add(({ market }) => {
     },
   ];
 
-  if (isLoading) return 'Loading pool activity ...';
   return (
     <Wrapper>
       <ScrollBox>
