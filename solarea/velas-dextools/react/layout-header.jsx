@@ -59,7 +59,9 @@ add(() => {
                 alignItems: 'flex-end',
               }}
             >
-              <div className="bu-is-size-6 bu-ml-2">.defi.parts</div>
+              <div className="bu-is-size-6 bu-ml-2" style={{ color: 'var(--theme-a-hover-color)' }}>
+                .defi.parts
+              </div>
             </Link>
           </div>
           <a
