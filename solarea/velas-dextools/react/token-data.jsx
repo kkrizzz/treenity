@@ -58,28 +58,46 @@ const MarketData = ({ market }) => {
       : marketInfo.totalSupply[0].amount;
 
   return (
-    <Table stripped>
-      <tbody>
-        {poolBalances.map((i) => (
-          <tr>
-            <td>{`Pooled ${i.currency.symbol}`}</td>
-            <td>{i.value}</td>
-          </tr>
-        ))}
-        <tr>
-          <td>Total trades</td>
-          <td>{totalTrades}</td>
-        </tr>
-        <tr>
-          <td>{`${market.base.symbol} holders`} </td>
-          <td>{holders}</td>
-        </tr>
-        <tr>
-          <td>{`${market.base.symbol} supply`} </td>
-          <td>{totalSupply}</td>
-        </tr>
-      </tbody>
-    </Table>
+    <div
+      style={{
+        padding: 20,
+        minHeight: 256,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}
+    >
+      {poolBalances.map((i) => (
+        <div className="bu-columns">
+          <div
+            className="bu-column"
+            style={{ color: '#A1AAB3', wontWeight: 500 }}
+          >{`Pooled ${i.currency.symbol}`}</div>
+          <div className="bu-column">{i.value}</div>
+        </div>
+      ))}
+      <div className="bu-columns">
+        <div className="bu-column" style={{ color: '#A1AAB3', wontWeight: 500 }}>
+          Total trades
+        </div>
+        <div className="bu-column">{totalTrades}</div>
+      </div>
+
+      <div className="bu-columns">
+        <div
+          className="bu-column"
+          style={{ color: '#A1AAB3', wontWeight: 500 }}
+        >{`${market.base.symbol} holders`}</div>
+        <div className="bu-column">{holders}</div>
+      </div>
+      <div className="bu-columns">
+        <div
+          className="bu-column"
+          style={{ color: '#A1AAB3', wontWeight: 500 }}
+        >{`${market.base.symbol} supply`}</div>
+        <div className="bu-column">{totalSupply}</div>
+      </div>
+    </div>
   );
 };
 

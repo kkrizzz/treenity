@@ -1,13 +1,14 @@
 const LastTrades = render('velas-dextools', 'last-trades');
 const PoolActivity = render('velas-dextools', 'pool-activity');
 const { toast } = await require('solarea://dev/toast');
-const Hash = render('dev', 'hash');
+const Hash = render('velas-dextools', 'hash');
 const Link = render('dev', 'link');
-const Tabs = render('dev', 'tabs');
+const Tabs = render('velas-dextools', 'tabs');
 const TokenData = render('velas-dextools', 'token-data');
 const CandleChart = render('velas-dextools', 'candle-chart');
 const DashboardCard = render('dev', 'dashboard-card');
 const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
+const TokenPair = render('velas-dextools', 'token-pair');
 const Icon = render('dashboard', 'icon');
 
 const { useLatestTokenTrades } = await require('solarea://velas-dextools/utils');
@@ -59,12 +60,18 @@ async function addTokenToMetamask(address, symbol, decimals) {
   }
 }
 
-const WaguySwapBuyButton = styled.div`
-  background: ${(props) => props.theme.colors.wagyuswapLinkBg};
-  color: ${(props) => props.theme.colors.wagyuswapLinkColor};
-  border-color: rgba(156, 169, 180, 0.41);
-  &:hover {
-    color: ${(props) => props.theme.colors.wagyuswapLinkColor};
+const WaguySwapBuyButton = styled.button`
+  background: #5ea7de;
+  width: 100%;
+  height: 48px;
+  color: white;
+  border: none;
+  transition: filter 200ms ease-in-out;
+
+  &:hover,
+  &:focus {
+    filter: brightness(110%);
+    color: white;
   }
 `;
 
@@ -134,107 +141,157 @@ add(({ token }) => {
     <div class="p-b-8">
       <div class="bu-columns">
         <div class="bu-column" style={{ display: 'flex', alignItems: 'center', flexFlow: 'wrap' }}>
-          <div style={{ minWidth: 64, padding: 4, position: 'relative' }}>
-            <RandomImageWithNonce width={64} isEth={true} address={base.address} />
-            <div
-              onClick={() => addTokenToMetamask(base.address, base.symbol, base.decimals)}
-              style={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer' }}
-            >
-              <Icon type="metamask" />
-            </div>
-          </div>
-          <div className="bu-ml-3" style={{ fontSize: '1.5rem' }}>
-            {base.symbol} |{' '}
-            <Link to={`/${quote.address}?quote=${base.address}`}>{quote.symbol}</Link>
-          </div>
           <div
             class="bu-is-size-6 bu-ml-5"
-            style={{ display: 'flex', justifyContent: 'flex-start' }}
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              flexFlow: 'wrap',
+              gap: 20,
+            }}
           >
-            <div>
-              <div className="bu-select dextools-custom-select m-b-4">
-                <select
-                  value={currentMarket.market}
-                  onChange={(e) => {
-                    const targetMarket = markets.find((m) => m.market === e.currentTarget.value);
-                    setMarket(targetMarket);
-                    insertUrlParam('quote', targetMarket.quote.address);
-                  }}
-                >
-                  {markets.map((m) => (
-                    <option value={m.market}>
-                      {m.base.symbol}/{m.quote.symbol}
-                    </option>
-                  ))}
-                </select>
+            <div style={{ minWidth: 64, padding: 4, position: 'relative' }}>
+              <RandomImageWithNonce width={64} isEth={true} address={base.address} />
+              <div
+                onClick={() => addTokenToMetamask(base.address, base.symbol, base.decimals)}
+                style={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer' }}
+              >
+                <Icon type="metamask" />
               </div>
             </div>
+
+            <TokenPair
+              base={base.symbol}
+              markets={markets}
+              currentMarket={currentMarket.market}
+              onSwap={() =>
+                window.history.pushState({}, '', `/${quote.address}?quote=${base.address}`)
+              }
+              onMarketChange={(value) => {
+                const targetMarket = markets.find((m) => m.market === value);
+                setMarket(targetMarket);
+                insertUrlParam('quote', targetMarket.quote.address);
+              }}
+            />
             <Hash
               hash={base.address}
               type="custom"
               customLink={`//velas.solarea.io/address/${base.address}`}
             >
-              <div class="bu-is-size-7">Contract</div>
+              <div
+                style={{
+                  color: 'var(--theme-main-color)',
+                  fontFamily: 'var(--theme-font)',
+                  fontSize: 16,
+                }}
+              >
+                Contract
+              </div>
             </Hash>
             <Hash
               hash={currentMarket.market}
               type="custom"
               customLink={`//velas.solarea.io/address/${currentMarket.market}`}
             >
-              <div class="bu-is-size-7">Market</div>
+              <div
+                style={{
+                  color: 'var(--theme-main-color)',
+                  fontFamily: 'var(--theme-font)',
+                  fontSize: 16,
+                }}
+              >
+                Market
+              </div>
             </Hash>
           </div>
         </div>
       </div>
       <div className="bu-columns">
-        <div class="bu-column bu-is-4" style={{ height: '100%' }}>
-          <DashboardCard title="Price" subcard>
-            <div class="bu-is-size-4">
-              {isLoadingTrades ? (
-                'Loading price...'
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div class="bu-column bu-is-5">
+          <DashboardCard
+            title="Price"
+            size="large"
+            subcard
+            style={{
+              height: 256,
+            }}
+          >
+            <div
+              style={{
+                height: 190,
+                padding: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div className="bu-is-size-4" style={{ marginTop: 22 }}>
+                {isLoadingTrades ? (
+                  'Loading price...'
+                ) : (
                   <div
                     style={{
-                      color: isPriceFall ? '#de4b4b' : '#51c758',
+                      display: 'flex',
+                      flexDirection: 'column',
                     }}
                   >
-                    {Number(trades[0].qp).toFixed(8)} {quote.symbol}
-                    {isPriceFall ? '↓' : '↑'}
+                    <div>
+                      <span
+                        style={{
+                          color: isPriceFall
+                            ? 'var(--theme-success-color)'
+                            : 'var(--theme-error-color)',
+                          fontSize: 32,
+                        }}
+                      >
+                        {Number(trades[0].qp).toFixed(8)}{' '}
+                      </span>
+                      <span
+                        style={{
+                          color: '#A1AAB3',
+                        }}
+                      >
+                        {quote.symbol}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        color: isPriceFall
+                          ? 'var(--theme-success-color)'
+                          : 'var(--theme-error-color)',
+                        fontSize: '0.9rem',
+                      }}
+                    >
+                      (24hr: {priceChange24hrPercent.toFixed(4) + '%'}){' '}
+                      {Math.abs(priceChange24hrValue).toFixed(6)} {quote.symbol}
+                    </div>
                   </div>
-                  <div style={{ color: 'gray', fontSize: '0.9rem' }}>
-                    (24hr: {priceChange24hrPercent.toFixed(4) + '%'}){' '}
-                    {Math.abs(priceChange24hrValue).toFixed(6)} {quote.symbol}
-                  </div>
-                </div>
-              )}{' '}
+                )}
+              </div>
+
+              <a href={`https://wagyuswap.app/swap/${base.address}`} target="_blank">
+                <WaguySwapBuyButton className="bu-button">BUY/SELL</WaguySwapBuyButton>
+              </a>
             </div>
-            <br />
-            <a href={`https://wagyuswap.app/swap/${base.address}`} target="_blank">
-              <WaguySwapBuyButton
-                className="bu-button"
-                style={{
-                  display: 'flex',
-                }}
-              >
-                <div className="bu-mr-2">
-                  <Render id="velas-dextools" name="wagyu-logo" />
-                </div>
-                BUY/SELL
-              </WaguySwapBuyButton>
-            </a>
           </DashboardCard>
           <DashboardCard size="small" subcard style={{ padding: 0 }}>
             <TokenData market={currentMarket} />
           </DashboardCard>
         </div>
-        <div className="bu-column bu-is-8">
-          <DashboardCard subcard style={{ padding: 4 }}>
-            <CandleChart token={tokenSymbols} base={base.address} quote={quote.address} />
+        <div className="bu-column bu-is-7">
+          <DashboardCard subcard>
+            <div style={{ margin: 0 }}>
+              <CandleChart token={tokenSymbols} base={base.address} quote={quote.address} />
+            </div>
           </DashboardCard>
         </div>
       </div>
-      <Tabs tabs={tabs} />
+      <DashboardCard subcard>
+        <div style={{ margin: '-12px -16px' }}>
+          <Tabs tabs={tabs} />
+        </div>
+      </DashboardCard>
     </div>
   );
 });

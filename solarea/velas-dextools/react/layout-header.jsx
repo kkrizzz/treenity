@@ -32,7 +32,12 @@ add(() => {
   const menuRef = React.useRef();
   const [isActive, setIsActive] = React.useState(false);
   return (
-    <nav className="bu-navbar p-t-8 p-b-8" role="navigation" aria-label="main navigation">
+    <nav
+      className="bu-navbar p-t-8 p-b-8"
+      role="navigation"
+      aria-label="main navigation"
+      style={{ background: 'var(--theme-card-bg-color)' }}
+    >
       <div class="bu-container">
         <div className="bu-navbar-brand">
           <div className="bu-navbar-item" style={{ alignItems: 'end' }}>
@@ -79,7 +84,7 @@ add(() => {
               Dashboard
             </NavLink>
             <NavLink className="bu-navbar-item">
-              <Switch className="bu-navbar-item" value={isDarkTheme} onChange={setIsDarkTheme}>
+              <Switch value={isDarkTheme} onChange={setIsDarkTheme}>
                 {isDarkTheme ? '🌙' : '☀'}️
               </Switch>
             </NavLink>

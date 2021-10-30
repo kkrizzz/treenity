@@ -1,16 +1,12 @@
 await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 const RandomImageWithNonce = render('dev', 'random-image-with-nonce');
-const { ThemeProvider } = solarea;
+const ThemeProvider = render('velas-dextools', 'theme-provider');
 
 add(({ children }) => {
   const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
   useCSS(
     'velas-dextools.css',
     css`
-      * {
-        --tv-color-platform-background: black !important;
-      }
-
       .bu-navbar-item,
       .bu-navbar-link {
         color: var(--theme-main-oposit-color) !important;
@@ -33,37 +29,12 @@ add(({ children }) => {
   }
 
   return (
-    <ThemeProvider
-      theme={
-        isDarkTheme
-          ? {
-              borderRadius: '12px',
-              colors: {
-                main: 'white',
-                subcardBG: 'var(--theme-subcard-bg-color)',
-                cardBG: 'var(--theme-card-bg-color)',
-                wagyuswapLinkColor: 'white',
-                wagyuswapLinkBg: '#273249',
-              },
-            }
-          : {
-              borderRadius: '12px',
-              colors: {
-                main: 'black',
-                subcardBG: '#f8faff',
-                cardBG: '#ffffff',
-                wagyuswapLinkColor: 'blackr',
-                wagyuswapLinkBg: 'white',
-              },
-            }
-      }
-    >
-      <div className="m-b-8">
+    <ThemeProvider>
+      <div style={{ marginBottom: 24 }}>
         <Render id="velas-dextools" name="layout-header" />
       </div>
-      <div className="bu-container" style={{ overflowX: 'hidden' }}>
-        <Render id="explorer" name="theme-css" />
-        <div class="bu-mb-5">
+      <div className="bu-container">
+        <div style={{ marginBottom: 36 }}>
           <Render id="velas-dextools" name="search" />
         </div>
         {children}

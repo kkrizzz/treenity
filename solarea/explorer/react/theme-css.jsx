@@ -39,6 +39,7 @@ const themeCss = css`
   body {
     background: transparent !important;
     color: var(--theme-main-color) !important;
+    overflow-x: hidden;
   }
 
   html {
@@ -118,7 +119,7 @@ const themeCss = css`
   }
 
   .bu-navbar {
-    background-color: var(--theme-main-bg-color) !important;
+    background-color: var(--theme-main-bg-color);
   }
   .bu-navbar-item,
   .bu-navbar-link {
@@ -284,11 +285,11 @@ const newDarkThemeVars = css`
   }
 `;
 
-add(() => {
+add(({ customThemeVars }) => {
   const [isDarkTheme] = solarea.useLocalStorageState('dark_theme', false);
   useCSS(
     `${isDarkTheme ? 'dark' : 'light'}-theme-variables.css`,
-    isDarkTheme ? newDarkThemeVars : lightThemeVars,
+    customThemeVars || (isDarkTheme ? newDarkThemeVars : lightThemeVars),
   );
 
   useCSS(

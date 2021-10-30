@@ -5,13 +5,31 @@ const ScrollBox = render('dev', 'scroll-box');
 const { numberWithSpaces } = await require('solarea://explorer/utils');
 const { useLiquidityPoolsActivity } = await require('solarea://velas-dextools/utils');
 
-const Wrapper = styled.div([
-  css`
-    td {
-      color: inherit !important;
-    }
-  `,
-]);
+const CustomTable = styled.div`
+  thead {
+    border-bottom: 1px solid var(--theme-main-border-color);
+  }
+
+  td {
+    color: inherit !important;
+  }
+
+  thead > tr > th {
+    color: var(--theme-main-content-color);
+  }
+
+  tbody {
+    background-color: ${(props) => props.theme.colors.subcardBG} !important;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: ${(props) => props.theme.colors.subcardBG} !important;
+  }
+
+  thead {
+    background-color: ${(props) => props.theme.colors.subcardBG} !important;
+  }
+`;
 
 const tokenToDecimals = (amount, decimals) => {
   return parseInt(amount) / Math.pow(10, decimals);
@@ -58,18 +76,21 @@ add(({ market }) => {
   ];
 
   return (
-    <Wrapper>
+    <CustomTable>
       <ScrollBox>
         <Table
           rowStyle={(item) => ({
             fontWeight: '700',
-            color: item.type === 'add' ? 'rgba(0, 193, 100, 1)' : 'rgba(255, 75, 119, 1)',
+            color:
+              item.side === 'BUY'
+                ? 'var(--theme-success-secondary-color)'
+                : 'var(--theme-error-secondary-color)',
           })}
           bordered
           columns={columns}
           data={data}
         />
       </ScrollBox>
-    </Wrapper>
+    </CustomTable>
   );
 });

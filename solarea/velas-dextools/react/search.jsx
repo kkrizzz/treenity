@@ -59,12 +59,24 @@ const Search = ({ onChange }) => {
   useCSS(
     'explorer-search.css',
     css`
+      .explorer-layout-input .bu-input {
+        background: var(--theme-card-bg-color) !important;
+        color: var(--theme-main-color) !important;
+      }
+      .explorer-layout-input .bu-input::placeholder {
+        color: var(--theme-main-color) !important;
+        opacity: 40%;
+      }
+      .explorer-layout-input .bu-input:focus ~ .bu-icon {
+        color: inherit !important;
+      }
+
       .explorer-layout-input {
         flex: 1;
         box-sizing: border-box;
       }
       .remove-border {
-        border-radius: 16px !important;
+        border-radius: 6px !important;
         box-shadow: var(--theme-card-shadow);
         border: none;
         outline: none;
@@ -93,10 +105,11 @@ const Search = ({ onChange }) => {
             aria-haspopup="true"
             aria-controls="search-dropdown"
             value={value}
+            style={{ paddingLeft: 40 }}
             onChange={onSetValue}
             onKeyPress={(evt) => evt.code === 'Enter' && doSearch()}
           />
-          <span class="bu-icon bu-is-right" style={{ top: 2, right: 2 }}>
+          <span class="bu-icon bu-is-left" style={{ top: 2, left: 2 }}>
             <div onClick={doSearch}>
               <Render id="icons" name="search" />
             </div>
