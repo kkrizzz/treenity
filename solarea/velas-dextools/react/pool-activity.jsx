@@ -5,6 +5,19 @@ const ScrollBox = render('dev', 'scroll-box');
 const { numberWithSpaces } = await require('solarea://explorer/utils');
 const { useLiquidityPoolsActivity } = await require('solarea://velas-dextools/utils');
 
+const PlusIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="5.5" x2="5.5" y2="11" stroke="currentColor" />
+    <line x1="11" y1="5.5" y2="5.5" stroke="currentColor" />
+  </svg>
+);
+
+const MinusIcon = () => (
+  <svg width="10" height="1" viewBox="0 0 10 1" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="10" y1="0.5" y2="0.5" stroke="currentColor" />
+  </svg>
+);
+
 const CustomTable = styled.div`
   thead {
     border-bottom: 1px solid var(--theme-main-border-color);
@@ -78,6 +91,8 @@ add(({ market }) => {
   return (
     <CustomTable>
       <ScrollBox>
+        <PlusIcon />
+        <MinusIcon />
         <Table
           rowStyle={(item) => ({
             fontWeight: '700',
