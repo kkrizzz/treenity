@@ -9,27 +9,5 @@ export default function WalletConnect() {
   const { autoConnect, setAutoConnect } = states;
   const publicKey = (connected && wallet?.publicKey?.toBase58()) || '';
 
-  return (
-    <Drawer>
-      <div className="wallet-connect">
-        {publicKey && <div className="wallet-connect-btn wallet-connect-acc">{publicKey}</div>}
-        <div className="wallet-connect-btn" onClick={connected ? disconnect : connect}>
-          {connected ? 'Disconnect' : 'Connect'}
-        </div>
-        <b />
-        <div className="wallet-connect-btn">
-          <a href="?edit">Edit page</a>
-        </div>
-        <div className="wallet-connect-btn">
-          Autoconnect{' '}
-          <input
-            className="checkbox"
-            checked={autoConnect as boolean}
-            onChange={() => setAutoConnect(!autoConnect)}
-            type="checkbox"
-          />
-        </div>
-      </div>
-    </Drawer>
-  );
+  return null;
 }
