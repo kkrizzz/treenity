@@ -24,6 +24,12 @@ query ($after: ISO8601DateTime!) {
           unixtime
         }
       }
+      transaction {
+        txFrom {
+          address
+        }
+        hash
+      }
     }
   }
 }
@@ -62,10 +68,13 @@ export default async function updateLiquidityData(app) {
   for (let i = 0; i < calls.length; i++) {
     const call = calls[i];
     const method = call.smartContractMethod.name;
+    const tx = call.transaction;
 
     const entry: any = {
       type: method.startsWith('add') ? 'add' : 'remove',
       time: new Date(call.block.timestamp.unixtime * 1000),
+      hash: tx.hash,
+      from: tx.txFrom.address,
     };
     call.arguments.reduce((o, arg) => ((o[arg.argument] = arg.value), o), entry);
 
