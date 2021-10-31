@@ -82,9 +82,10 @@ add(() => {
           className={`bu-navbar-menu ${isActive ? 'bu-is-active' : ''}`}
         >
           <div className="bu-navbar-end" style={{ alignItems: 'center' }}>
-            {' '}
             <Link
-              to=""
+              to="https://twitter.com/defiparts"
+              type="custom"
+              target="_blank"
               style={{
                 height: 'fit-content',
                 marginLeft: '1rem',
@@ -92,17 +93,19 @@ add(() => {
                 color: isDarkTheme ? 'white' : 'black',
               }}
             >
-              <Render id="icons" name="telegram" />
+              <Render id="icons" name="twitter" />
             </Link>
             <Link
-              to=""
+              to="https://t.me/defiparts_chat"
+              type="custom"
+              target="_blank"
               style={{
                 color: isDarkTheme ? 'white' : 'black',
                 height: 'fit-content',
                 marginRight: 16,
               }}
             >
-              <Render id="icons" name="twitter" />
+              <Render id="icons" name="telegram" />
             </Link>
             <NavLink className="bu-navbar-item" to="/dashboard">
               Dashboard
