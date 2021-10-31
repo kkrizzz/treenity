@@ -247,13 +247,15 @@ add(({ token }) => {
                             ? 'var(--theme-success-color)'
                             : 'var(--theme-error-color)',
                           fontSize: 32,
+                          fontWeight: 700,
                         }}
                       >
                         {Number(trades[0].qp).toFixed(8)}{' '}
                       </span>
                       <span
                         style={{
-                          color: '#A1AAB3',
+                          color: '#3C5269',
+                          fontWeight: 700,
                         }}
                       >
                         {quote.symbol}
@@ -275,7 +277,9 @@ add(({ token }) => {
               </div>
 
               <Link to={`https://exchange.wagyuswap.app/swap/${base.address}`} target="_blank">
-                <WaguySwapBuyButton className="bu-button">BUY/SELL</WaguySwapBuyButton>
+                <WaguySwapBuyButton className="bu-button" style={{ fontSize: 20, fontWeight: 700 }}>
+                  BUY/SELL
+                </WaguySwapBuyButton>
               </Link>
             </div>
           </DashboardCard>
