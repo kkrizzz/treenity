@@ -76,6 +76,34 @@ const WaguySwapBuyButton = styled.button`
   }
 `;
 
+const HeaderHash = styled(Hash)`
+  @media screen and (max-width: 480px) {
+    padding-top: 1rem;
+  }
+`;
+
+const PriceCard = styled(DashboardCard)`
+  height: 256px;
+`;
+
+const PriceCardInner = styled.div`
+  height: 190px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const IconContainer = styled.div`
+  width: 64px;
+  height: 64px;
+  position: relative;
+
+  @media screen and (max-width: 480px) {
+    margin-left: 1rem;
+  }
+`;
+
 add(({ token }) => {
   const { data: markets, isLoading: isMarketsLoading } = useLoadMarkets(token);
   const { quote: quoteTokenParam } = solarea.useQueryParams();
@@ -150,7 +178,7 @@ add(({ token }) => {
               flexFlow: 'wrap',
             }}
           >
-            <div style={{ minWidth: 64, padding: 4, position: 'relative' }}>
+            <IconContainer>
               <TokenLogo address={base.address} />
               <div
                 onClick={() => addTokenToMetamask(base.address, base.symbol, base.decimals)}
@@ -158,7 +186,7 @@ add(({ token }) => {
               >
                 <Icon type="metamask" />
               </div>
-            </div>
+            </IconContainer>
 
             <TokenPair
               className="bu-ml-4"
@@ -174,62 +202,47 @@ add(({ token }) => {
                 insertUrlParam('quote', targetMarket.quote.address);
               }}
             />
-            <div className="bu-ml-4">
-              <Hash
-                hash={base.address}
-                type="custom"
-                customLink={`//velas.solarea.io/address/${base.address}`}
+            <HeaderHash
+              hash={base.address}
+              type="custom"
+              customLink={`//velas.solarea.io/address/${base.address}`}
+              target="_blank"
+              className="bu-ml-4"
+            >
+              <div
+                style={{
+                  color: 'var(--theme-main-color)',
+                  fontFamily: 'var(--theme-font)',
+                  fontSize: 16,
+                }}
               >
-                <div
-                  style={{
-                    color: 'var(--theme-main-color)',
-                    fontFamily: 'var(--theme-font)',
-                    fontSize: 16,
-                  }}
-                >
-                  Contract
-                </div>
-              </Hash>
-            </div>
-            <div className="bu-ml-4">
-              <Hash
-                hash={currentMarket.market}
-                type="custom"
-                customLink={`//velas.solarea.io/address/${currentMarket.market}`}
+                Contract
+              </div>
+            </HeaderHash>
+            <HeaderHash
+              hash={currentMarket.market}
+              type="custom"
+              customLink={`//velas.solarea.io/address/${currentMarket.market}`}
+              target="_blank"
+              className="bu-ml-4"
+            >
+              <div
+                style={{
+                  color: 'var(--theme-main-color)',
+                  fontFamily: 'var(--theme-font)',
+                  fontSize: 16,
+                }}
               >
-                <div
-                  style={{
-                    color: 'var(--theme-main-color)',
-                    fontFamily: 'var(--theme-font)',
-                    fontSize: 16,
-                  }}
-                >
-                  Market
-                </div>
-              </Hash>
-            </div>
+                Market
+              </div>
+            </HeaderHash>
           </div>
         </div>
       </div>
       <div className="bu-columns">
         <div class="bu-column bu-is-5">
-          <DashboardCard
-            title="Price"
-            size="large"
-            subcard
-            style={{
-              height: 256,
-            }}
-          >
-            <div
-              style={{
-                height: 190,
-                padding: 4,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
+          <PriceCard title="Price" size="large" subcard>
+            <PriceCardInner>
               <div className="bu-is-size-4" style={{ marginTop: 4 }}>
                 {isLoadingTrades ? (
                   'Loading price...'
@@ -247,13 +260,15 @@ add(({ token }) => {
                             ? 'var(--theme-success-color)'
                             : 'var(--theme-error-color)',
                           fontSize: 32,
+                          fontWeight: 700,
                         }}
                       >
                         {Number(trades[0].qp).toFixed(8)}{' '}
                       </span>
                       <span
                         style={{
-                          color: '#A1AAB3',
+                          color: '#3C5269',
+                          fontWeight: 700,
                         }}
                       >
                         {quote.symbol}
@@ -275,10 +290,12 @@ add(({ token }) => {
               </div>
 
               <Link to={`https://exchange.wagyuswap.app/swap/${base.address}`} target="_blank">
-                <WaguySwapBuyButton className="bu-button">BUY/SELL</WaguySwapBuyButton>
+                <WaguySwapBuyButton className="bu-button" style={{ fontSize: 20, fontWeight: 700 }}>
+                  BUY/SELL
+                </WaguySwapBuyButton>
               </Link>
-            </div>
-          </DashboardCard>
+            </PriceCardInner>
+          </PriceCard>
           <DashboardCard size="small" subcard style={{ padding: 0 }}>
             <TokenData market={currentMarket} />
           </DashboardCard>

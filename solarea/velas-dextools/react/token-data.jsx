@@ -37,7 +37,7 @@ query MyQuery {
 const nameStyle = { color: '#A1AAB3', fяontWeight: 500 };
 const valueStyle = { fontWeight: 700 };
 const Line = ({ name, children }) => (
-  <div className="bu-columns">
+  <div className="bu-columns bu-is-mobile">
     <div className="bu-column" style={nameStyle}>
       {name}
     </div>

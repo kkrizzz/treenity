@@ -37,6 +37,7 @@ const StyledTokenPair = styled.div`
     background: ${(props) => props.theme.colors.cardBG};
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    padding: 0;
   }
   & > button:hover {
     filter: brightness(95%);
@@ -70,7 +71,7 @@ const StyledTokenPair = styled.div`
 `;
 
 const ChangeIcon = () => (
-  <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="16" height="16" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M0.666748 1.66666V5.66666M0.666748 5.66666H4.66675M0.666748 5.66666L3.76008 2.75999C4.47658 2.04314 5.363 1.51947 6.33662 1.23784C7.31024 0.956222 8.33934 0.925829 9.32789 1.1495C10.3164 1.37317 11.2322 1.84362 11.9898 2.51694C12.7473 3.19026 13.322 4.04452 13.6601 4.99999M15.3334 12.3333V8.33333M15.3334 8.33333H11.3334M15.3334 8.33333L12.2401 11.24C11.5236 11.9569 10.6372 12.4805 9.66354 12.7621C8.68992 13.0438 7.66082 13.0742 6.67227 12.8505C5.68372 12.6268 4.76795 12.1564 4.01039 11.483C3.25284 10.8097 2.67819 9.95547 2.34008 8.99999"
       stroke="currentColor"

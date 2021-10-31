@@ -25,6 +25,7 @@ add(
     color,
     subcard = false,
     style = {},
+    className,
   }) => {
     const defaultColor = subcard ? 'var(--theme-subcard-bg-color)' : 'var(--theme-card-bg-color)';
 
@@ -90,7 +91,7 @@ add(
       <div
         className={`dashboard-card dashboard-card_${size} ${
           subcard ? 'dashboard-card_subcard' : ''
-        }`}
+        } ${className}`}
         style={{
           background: gradient
             ? `radial-gradient( 300% 300% at 300% 250%, ${

@@ -39,7 +39,6 @@ const themeCss = css`
   body {
     background: transparent !important;
     color: var(--theme-main-color) !important;
-    overflow-x: hidden;
   }
 
   html {
@@ -187,6 +186,12 @@ const themeCss = css`
       background: var(--theme-subcard-bg-color);
       border-radius: var(--theme-border-radus) x !important;
       //box-shadow: var(--theme-card-shadow) !important;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    .bu-container {
+      overflow: hidden;
     }
   }
 `;
