@@ -1,6 +1,6 @@
 await require('https://unpkg.com/@solarea/bulma@0.9.3/all/bulma.prefixed.css');
 const Table = render('dev', 'table');
-const Hash = render('dev', 'hash');
+const Hash = render('velas-dextools', 'hash');
 const ScrollBox = render('dev', 'scroll-box');
 const { numberWithSpaces } = await require('solarea://explorer/utils');
 const { useLiquidityPoolsActivity } = await require('solarea://velas-dextools/utils');

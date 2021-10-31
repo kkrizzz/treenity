@@ -87,7 +87,7 @@ add(() => {
             </NavLink>
             <NavLink className="bu-navbar-item">
               <Switch value={isDarkTheme} onChange={setIsDarkTheme}>
-                <div style={{ marginTop: 2 }}>{isDarkTheme ? '🌙' : '☀️'}️</div>
+                <div style={{ marginTop: 2 }}>{isDarkTheme ? '🌙' : '☀️️'}️</div>
               </Switch>
             </NavLink>
           </div>

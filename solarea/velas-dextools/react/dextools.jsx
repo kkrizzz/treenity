@@ -147,7 +147,6 @@ add(({ token }) => {
               justifyContent: 'flex-start',
               alignItems: 'center',
               flexFlow: 'wrap',
-              gap: 20,
             }}
           >
             <div style={{ minWidth: 64, padding: 4, position: 'relative' }}>
@@ -161,6 +160,7 @@ add(({ token }) => {
             </div>
 
             <TokenPair
+              className="bu-ml-4"
               base={base.symbol}
               markets={markets}
               currentMarket={currentMarket.market}
@@ -173,36 +173,40 @@ add(({ token }) => {
                 insertUrlParam('quote', targetMarket.quote.address);
               }}
             />
-            <Hash
-              hash={base.address}
-              type="custom"
-              customLink={`//velas.solarea.io/address/${base.address}`}
-            >
-              <div
-                style={{
-                  color: 'var(--theme-main-color)',
-                  fontFamily: 'var(--theme-font)',
-                  fontSize: 16,
-                }}
+            <div className="bu-ml-4">
+              <Hash
+                hash={base.address}
+                type="custom"
+                customLink={`//velas.solarea.io/address/${base.address}`}
               >
-                Contract
-              </div>
-            </Hash>
-            <Hash
-              hash={currentMarket.market}
-              type="custom"
-              customLink={`//velas.solarea.io/address/${currentMarket.market}`}
-            >
-              <div
-                style={{
-                  color: 'var(--theme-main-color)',
-                  fontFamily: 'var(--theme-font)',
-                  fontSize: 16,
-                }}
+                <div
+                  style={{
+                    color: 'var(--theme-main-color)',
+                    fontFamily: 'var(--theme-font)',
+                    fontSize: 16,
+                  }}
+                >
+                  Contract
+                </div>
+              </Hash>
+            </div>
+            <div className="bu-ml-4">
+              <Hash
+                hash={currentMarket.market}
+                type="custom"
+                customLink={`//velas.solarea.io/address/${currentMarket.market}`}
               >
-                Market
-              </div>
-            </Hash>
+                <div
+                  style={{
+                    color: 'var(--theme-main-color)',
+                    fontFamily: 'var(--theme-font)',
+                    fontSize: 16,
+                  }}
+                >
+                  Market
+                </div>
+              </Hash>
+            </div>
           </div>
         </div>
       </div>
