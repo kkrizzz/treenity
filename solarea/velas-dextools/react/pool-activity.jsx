@@ -7,14 +7,35 @@ const { useLiquidityPoolsActivity } = await require('solarea://velas-dextools/ut
 
 const PlusIcon = () => (
   <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <line x1="5.5" x2="5.5" y2="11" stroke="currentColor" />
-    <line x1="11" y1="5.5" y2="5.5" stroke="currentColor" />
+    <line
+      x1="5.5"
+      x2="5.5"
+      y2="11"
+      stroke="var(--theme-success-color)"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <line
+      x1="11"
+      y1="5.5"
+      y2="5.5"
+      stroke="var(--theme-success-color)"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
 const MinusIcon = () => (
-  <svg width="10" height="1" viewBox="0 0 10 1" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <line x1="10" y1="0.5" y2="0.5" stroke="currentColor" />
+  <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <line
+      x1="11"
+      y1="5.5"
+      y2="5.5"
+      stroke="var(--theme-error-color)"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -61,12 +82,27 @@ add(({ market }) => {
 
   const columns = [
     {
+      title: '',
+      dataIndex: 'type',
+
+      render: (type) => (type === 'add' ? <PlusIcon /> : <MinusIcon />),
+    },
+    {
+      title: 'Date',
+      dataIndex: 'time',
+      render: (time) => (
+        <span style={{ color: 'var(--theme-main-content-color)' }}>
+          {new Date(time).toLocaleString()}
+        </span>
+      ),
+    },
+    {
       title: 'Type',
       dataIndex: 'type',
       render: (type) => <span>{type.toUpperCase()}</span>,
     },
     {
-      title: `Amount ${tokens.tokenA.symbol}`,
+      title: `${tokens.tokenA.symbol} amount`,
       dataIndex: 'amountAMin',
       render: (amountAMin, activity) => {
         const num = activity.tokenA === tokens.tokenA.symbol ? amountAMin : activity.amountAMin;
@@ -74,7 +110,7 @@ add(({ market }) => {
       },
     },
     {
-      title: `Amount ${tokens.tokenB.symbol}`,
+      title: `${tokens.tokenB.symbol} amount`,
       dataIndex: 'amountBMin',
       render: (amountBMin, activity) => {
         const num = activity.tokenB === tokens.tokenB.symbol ? amountBMin : activity.amountBMin;
@@ -82,22 +118,34 @@ add(({ market }) => {
       },
     },
     {
-      title: 'Date',
-      dataIndex: 'time',
-      render: (time) => new Date(time).toLocaleString(),
+      title: 'From',
+      dataIndex: 'from',
+      render: (from) => {
+        return (
+          <div style={{ maxWidth: 120 }}>
+            <Hash type="custom" hash={from} customLink={`//velas.solarea.io/address/${from}`} />
+          </div>
+        );
+      },
+    },
+    {
+      title: 'Hash',
+      dataIndex: 'hash',
+      render: (hash) => (
+        <div style={{ maxWidth: 120 }}>
+          <Hash type="custom" hash={hash} customLink={`//velas.solarea.io/tx/${hash}`} />
+        </div>
+      ),
     },
   ];
 
   return (
     <CustomTable>
       <ScrollBox>
-        <PlusIcon />
-        <MinusIcon />
         <Table
           rowStyle={(item) => ({
-            fontWeight: '700',
             color:
-              item.side === 'BUY'
+              item.type === 'add'
                 ? 'var(--theme-success-secondary-color)'
                 : 'var(--theme-error-secondary-color)',
           })}
