@@ -6,7 +6,7 @@ const StyledLink = styled.a`
   }
 `;
 
-add(function Link({ to, onClick, children, className = '', style }) {
+add(function Link({ to, onClick, children, className = '', style, target }) {
   const external = to.startsWith('http') || to.startsWith('//');
   const go = external
     ? undefined
@@ -17,7 +17,7 @@ add(function Link({ to, onClick, children, className = '', style }) {
       };
 
   return (
-    <StyledLink onClick={go} href={to} className={className} style={style}>
+    <StyledLink onClick={go} href={to} className={className} style={style} target={target}>
       {children}
     </StyledLink>
   );

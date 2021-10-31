@@ -273,9 +273,9 @@ add(({ token }) => {
                 )}
               </div>
 
-              <a href={`https://wagyuswap.app/swap/${base.address}`} target="_blank">
+              <Link to={`https://exchange.wagyuswap.app/swap/${base.address}`} target="_blank">
                 <WaguySwapBuyButton className="bu-button">BUY/SELL</WaguySwapBuyButton>
-              </a>
+              </Link>
             </div>
           </DashboardCard>
           <DashboardCard size="small" subcard style={{ padding: 0 }}>
