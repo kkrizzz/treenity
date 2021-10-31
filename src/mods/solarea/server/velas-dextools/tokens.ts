@@ -58,7 +58,7 @@ export default async function updateTokensData(app) {
   const since =
     (lastTradeTime
       ? new Date(lastTradeTime.getTime() + 1000).toISOString()
-      : '2021-10-10T00:00:00.000Z'
+      : '2021-10-31T20:00:00.000Z'
     ).slice(0, -5) + 'Z';
 
   const params = { query: tokenInfoQuery, variables: { since } };

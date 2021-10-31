@@ -69,11 +69,17 @@ const tokenToDecimals = (amount, decimals) => {
   return parseInt(amount) / Math.pow(10, decimals);
 };
 
+const Info = styled.div`
+  padding: 1rem;
+  font-size: 1rem;
+`;
+
 add(({ market }) => {
   const { base, quote } = market;
   const [data, isLoading] = useLiquidityPoolsActivity(base.address, quote.address, 10);
 
-  if (isLoading) return 'Loading pool activity ...';
+  if (isLoading) return <Info>Loading pool activity ...</Info>;
+  if (!data || !data.length) return <Info>No pool activity found</Info>;
 
   const tokens = {
     tokenA: base.address === data[0].tokenA ? base : quote,
