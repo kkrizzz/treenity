@@ -72,7 +72,7 @@ add(
           font-weight: 600;
         }
         .dashboard-card__content {
-          font-weight: bold;
+          font-weight: 500;
         }
         .dashboard-card__content:empty {
           display: none;

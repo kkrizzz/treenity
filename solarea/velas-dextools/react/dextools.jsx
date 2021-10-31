@@ -141,7 +141,7 @@ add(({ token }) => {
       <div class="bu-columns">
         <div class="bu-column" style={{ display: 'flex', alignItems: 'center', flexFlow: 'wrap' }}>
           <div
-            class="bu-is-size-6 bu-ml-5"
+            class="bu-is-size-6"
             style={{
               display: 'flex',
               justifyContent: 'flex-start',

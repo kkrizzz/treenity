@@ -127,7 +127,6 @@ add(({ market }) => {
       <CustomTable>
         <Table
           rowStyle={(item) => ({
-            fontWeight: '700',
             color:
               item.side === 'BUY'
                 ? 'var(--theme-success-secondary-color)'
