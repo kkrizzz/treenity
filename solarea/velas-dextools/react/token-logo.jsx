@@ -10,11 +10,9 @@ const useTokenLogo = (address) => {
   const { data, isLoading } = solarea.useQuery(
     ['token_logo', address],
     () =>
-      fetch(tokenLogoUrl)
-        .then((res) => {
-          res.blob();
-        })
-        .catch((e) => undefined),
+      fetch(tokenLogoUrl).then((res) => {
+        return res.blob();
+      }),
     { retry: false },
   );
 
@@ -26,10 +24,10 @@ add(({ address }) => {
   if (isTokenImgLoading) return <span className="spinner-grow spinner-grow-sm m-r-4" />;
 
   const imgUrl = tokenImg ? URL.createObjectURL(tokenImg) : undefined;
-  console.log(tokenImg);
+
   return (
     <div>
-      {tokenImg ? (
+      {tokenImg && tokenImg.size > 14 ? (
         <img src={imgUrl} width={63} />
       ) : (
         <RandomImageWithNonce width={64} isEth={true} address={address} />
