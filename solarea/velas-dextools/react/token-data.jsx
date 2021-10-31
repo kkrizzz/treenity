@@ -34,6 +34,19 @@ query MyQuery {
 }
 `;
 
+const nameStyle = { color: '#A1AAB3', fяontWeight: 500 };
+const valueStyle = { fontWeight: 700 };
+const Line = ({ name, children }) => (
+  <div className="bu-columns">
+    <div className="bu-column" style={nameStyle}>
+      {name}
+    </div>
+    <div className="bu-column" style={valueStyle}>
+      {children}
+    </div>
+  </div>
+);
+
 const MarketData = ({ market }) => {
   const [marketData, isMarketDataLoading] = useBitQuery(queryMarketData(market));
 
@@ -68,35 +81,11 @@ const MarketData = ({ market }) => {
       }}
     >
       {poolBalances.map((i) => (
-        <div className="bu-columns">
-          <div
-            className="bu-column"
-            style={{ color: '#A1AAB3', wontWeight: 500 }}
-          >{`Pooled ${i.currency.symbol}`}</div>
-          <div className="bu-column">{i.value}</div>
-        </div>
+        <Line name={`Pooled ${i.currency.symbol}`}>{i.value}</Line>
       ))}
-      <div className="bu-columns">
-        <div className="bu-column" style={{ color: '#A1AAB3', wontWeight: 500 }}>
-          Total trades
-        </div>
-        <div className="bu-column">{totalTrades}</div>
-      </div>
-
-      <div className="bu-columns">
-        <div
-          className="bu-column"
-          style={{ color: '#A1AAB3', wontWeight: 500 }}
-        >{`${market.base.symbol} holders`}</div>
-        <div className="bu-column">{holders}</div>
-      </div>
-      <div className="bu-columns">
-        <div
-          className="bu-column"
-          style={{ color: '#A1AAB3', wontWeight: 500 }}
-        >{`${market.base.symbol} supply`}</div>
-        <div className="bu-column">{totalSupply}</div>
-      </div>
+      <Line name="Total trades">{totalTrades}</Line>
+      <Line name={`${market.base.symbol} holders`}>{holders}</Line>
+      <Line name={`${market.base.symbol} supply`}>{totalSupply.toFixed(6)}</Line>
     </div>
   );
 };
