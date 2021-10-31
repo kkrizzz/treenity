@@ -11,6 +11,7 @@ const useTokenLogo = (address) => {
     ['token_logo', address],
     () =>
       fetch(tokenLogoUrl).then((res) => {
+        if (res.status !== 200) return undefined;
         return res.blob();
       }),
     { retry: false },
@@ -21,14 +22,14 @@ const useTokenLogo = (address) => {
 
 add(({ address }) => {
   const [tokenImg, isTokenImgLoading] = useTokenLogo(address);
-  if (isTokenImgLoading) return <span className="spinner-grow spinner-grow-sm m-r-4" />;
+  if (isTokenImgLoading) return <div className="spinner-grow spinner-grow-sm m-r-4" />;
 
   const imgUrl = tokenImg ? URL.createObjectURL(tokenImg) : undefined;
 
   return (
     <div>
-      {tokenImg && tokenImg.size > 14 ? (
-        <img src={imgUrl} width={63} />
+      {imgUrl ? (
+        <img src={imgUrl} width={64} />
       ) : (
         <RandomImageWithNonce width={64} isEth={true} address={address} />
       )}
