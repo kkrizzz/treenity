@@ -66,7 +66,7 @@ const MarketData = ({ market }) => {
   const totalTrades = marketInfo.totalTrades[0].count;
   const holders = marketInfo.holders[0].count;
   const totalSupply =
-    market.base.address === '0x485f49e0764c305dc6fc1da2e5b786f65f8c95aa'
+    market.base.address === '0xaBf26902Fd7B624e0db40D31171eA9ddDf078351'
       ? '2.2B'
       : marketInfo.totalSupply[0].amount.toFixed(3);
 

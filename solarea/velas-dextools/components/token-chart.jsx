@@ -5,11 +5,11 @@ exports.props = [
     type: 'select',
     options: [
       {
-        value: '0x40c8002c2887ade2297ad48d9dc101de08bd104c',
+        value: '0xaBf26902Fd7B624e0db40D31171eA9ddDf078351',
         label: 'WAG',
       },
       {
-        value: '0x485f49e0764c305dc6fc1da2e5b786f65f8c95aa',
+        value: '0xc579d1f3cf86749e05cd06f7ade17856c2ce3126',
         label: 'wVLX',
       },
       {
@@ -28,11 +28,11 @@ exports.props = [
         label: 'USDC',
       },
       {
-        value: '0x40c8002c2887ade2297ad48d9dc101de08bd104c',
+        value: '0xaBf26902Fd7B624e0db40D31171eA9ddDf078351',
         label: 'WAG',
       },
       {
-        value: '0x485f49e0764c305dc6fc1da2e5b786f65f8c95aa',
+        value: '0xc579D1f3CF86749E05CD06f7ADe17856c2CE3126',
         label: 'wVLX',
       },
     ],
