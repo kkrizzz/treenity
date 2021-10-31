@@ -37,13 +37,10 @@ const StyledTokenPair = styled.div`
     background: ${(props) => props.theme.colors.cardBG};
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    padding: 0;
   }
   & > button:hover {
     filter: brightness(95%);
-  }
-  & > button > svg {
-    width: 16px;
-    height: 16px;
   }
 
   .dextools-custom-select select {
