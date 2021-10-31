@@ -81,9 +81,9 @@ const ChangeIcon = () => (
   </svg>
 );
 
-const TokenPair = ({ base, markets, currentMarket, onSwap, onMarketChange }) => {
+const TokenPair = ({ base, markets, currentMarket, onSwap, onMarketChange, className }) => {
   return (
-    <StyledTokenPair>
+    <StyledTokenPair className={className}>
       <div>{base}</div>
       <button title="Swap" onClick={onSwap}>
         <ChangeIcon />

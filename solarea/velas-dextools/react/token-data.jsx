@@ -68,7 +68,7 @@ const MarketData = ({ market }) => {
   const totalSupply =
     market.base.address === '0x485f49e0764c305dc6fc1da2e5b786f65f8c95aa'
       ? '2.2B'
-      : marketInfo.totalSupply[0].amount;
+      : marketInfo.totalSupply[0].amount.toFixed(3);
 
   return (
     <div
@@ -85,7 +85,7 @@ const MarketData = ({ market }) => {
       ))}
       <Line name="Total trades">{totalTrades}</Line>
       <Line name={`${market.base.symbol} holders`}>{holders}</Line>
-      <Line name={`${market.base.symbol} supply`}>{totalSupply.toFixed(6)}</Line>
+      <Line name={`${market.base.symbol} supply`}>{totalSupply}</Line>
     </div>
   );
 };
