@@ -74,7 +74,7 @@ const Hash = ({
 
   const copyHash = () => {
     copyTextToClipboard(hash).then(
-      () => toast('Copied'),
+      () => toast(`Copied ${hash}`),
       () => error('Cant copy'),
     );
   };
