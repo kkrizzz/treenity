@@ -51,7 +51,7 @@ export default async function applyRoutes(app) {
     }
   });
 
-  app.get('/api/velas/market/:base/:quote/liquidity', async (req, res) => {
+  app.get('/api/velas/market/:quote/:base/liquidity', async (req, res) => {
     const { base, quote } = req.params;
     const { limit, offset = 0 } = req.query;
 
@@ -164,7 +164,7 @@ export default async function applyRoutes(app) {
     }
   });
 
-  app.get('/api/velas/market/:base/:quote/trades', async (req, res) => {
+  app.get('/api/velas/market/:quote/:base/trades', async (req, res) => {
     const { base, quote } = req.params;
     const { offset } = req.query;
 
@@ -176,7 +176,7 @@ export default async function applyRoutes(app) {
     res.send(trades);
   });
 
-  app.get('/api/velas/klines/:base/:quote', async (req, res) => {
+  app.get('/api/velas/klines/:quote/:base', async (req, res) => {
     try {
       const { base, quote } = req.params;
       const { from, to, interval = 1 } = req.query;

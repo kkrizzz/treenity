@@ -1,4 +1,4 @@
-exports.useTokenInfo = (token) => {
+exports.useTokenInfo = (quote, base) => {
   const { data, isLoading } = solarea.useQuery([token, 'velas-token-data'], () =>
     fetch(`/api/velas/token/${token}`).then((res) => res.json()),
   );
@@ -6,10 +6,10 @@ exports.useTokenInfo = (token) => {
   return [data, isLoading];
 };
 
-exports.useLatestTokenTrades = (token) => {
+exports.useLatestTokenTrades = (quote, base) => {
   const { data, isLoading } = solarea.useQuery(
-    ['market_trades', token],
-    () => fetch(`/api/velas/market/${token}/trades`).then((res) => res.json()),
+    ['market_trades', `${quote}_${base}`],
+    () => fetch(`/api/velas/market/${quote}/${base}/trades`).then((res) => res.json()),
     { refetchInterval: 30000 },
   );
 
@@ -28,9 +28,9 @@ exports.useHotTokenPairs = () => {
   type: add remove
   token:
 } */
-exports.useLiquidityPoolsActivity = (base, quote, limit) => {
+exports.useLiquidityPoolsActivity = (quote, base, limit) => {
   const { data, isLoading } = solarea.useQuery([base, quote, 'liquidity_pools_activity'], () =>
-    fetch(`/api/velas/market/${base}/${quote}/liquidity?limit=${limit}`).then((res) => res.json()),
+    fetch(`/api/velas/market/${quote}/${base}/liquidity?limit=${limit}`).then((res) => res.json()),
   );
 
   return [data, isLoading];

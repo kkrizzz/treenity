@@ -28,60 +28,6 @@ const ArrowDown = () => (
   </svg>
 );
 
-const columns = [
-  {
-    title: '',
-    dataIndex: 'side',
-
-    render: (side) => (side === 'BUY' ? <ArrowUp /> : <ArrowDown />),
-  },
-  {
-    title: 'Date',
-    dataIndex: 'time',
-    render: (time) => (
-      <span style={{ color: 'var(--theme-main-content-color)' }}>
-        {new Date(time).toLocaleString()}
-      </span>
-    ),
-  },
-  {
-    title: 'Side',
-    dataIndex: 'side',
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'amount',
-    render: (num, { qp }) =>
-      `${numberWithSpaces(num.toFixed(6))} → ${numberWithSpaces((num / qp).toFixed(6))}`,
-  },
-  {
-    title: 'Price',
-    dataIndex: 'qp',
-    render: (num) => numberWithSpaces(num.toFixed(6)),
-  },
-  {
-    title: 'From',
-    dataIndex: 'tx',
-    render: (tx) => {
-      const address = tx.from.address;
-      return (
-        <div style={{ maxWidth: 150 }}>
-          <Hash type="custom" hash={address} customLink={`//velas.solarea.io/address/${address}`} />
-        </div>
-      );
-    },
-  },
-  {
-    title: 'Hash',
-    dataIndex: 'tx',
-    render: (tx) => (
-      <div style={{ maxWidth: 150 }}>
-        <Hash type="custom" hash={tx.hash} customLink={`//velas.solarea.io/tx/${tx.hash}`} />
-      </div>
-    ),
-  },
-];
-
 const CustomTable = styled.div`
   thead {
     border-bottom: 1px solid var(--theme-main-border-color);
@@ -110,9 +56,72 @@ const CustomTable = styled.div`
 
 add(({ market }) => {
   const { base, quote } = market;
-  const token = `${base.address}/${quote.address}`;
-  const [data, isLoading] = useLatestTokenTrades(token);
+  const [data, isLoading] = useLatestTokenTrades(base.address, quote.address);
   if (isLoading) return 'Loading trades ...';
+
+  const columns = [
+    {
+      title: '',
+      dataIndex: 'side',
+
+      render: (side) => (side === 'BUY' ? <ArrowUp /> : <ArrowDown />),
+    },
+    {
+      title: 'Date',
+      dataIndex: 'time',
+      render: (time) => (
+        <span style={{ color: 'var(--theme-main-content-color)' }}>
+          {new Date(time).toLocaleString()}
+        </span>
+      ),
+    },
+    {
+      title: 'Side',
+      dataIndex: 'side',
+    },
+    {
+      title: `${base.symbol}`,
+      dataIndex: 'amount',
+      render: (num, { qp }) => numberWithSpaces(num.toFixed(6)),
+    },
+
+    {
+      title: `Total ${quote.symbol}`,
+      dataIndex: 'amount',
+      render: (num, { qp }) => numberWithSpaces((num / qp).toFixed(6)),
+    },
+    {
+      title: 'Price',
+      dataIndex: 'qp',
+      render: (num) => numberWithSpaces((1 / num).toFixed(6)),
+    },
+    {
+      title: 'From',
+      dataIndex: 'tx',
+      render: (tx) => {
+        const address = tx.from.address;
+        return (
+          <div style={{ maxWidth: 120 }}>
+            <Hash
+              type="custom"
+              hash={address}
+              customLink={`//velas.solarea.io/address/${address}`}
+            />
+          </div>
+        );
+      },
+    },
+    {
+      title: 'Hash',
+      dataIndex: 'tx',
+      render: (tx) => (
+        <div style={{ maxWidth: 120 }}>
+          <Hash type="custom" hash={tx.hash} customLink={`//velas.solarea.io/tx/${tx.hash}`} />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <ScrollBox>
       <CustomTable>

@@ -90,10 +90,9 @@ add(({ token }) => {
   }, [markets, quoteTokenParam]);
 
   const { base, quote } = currentMarket;
-  const tokenPair = `${base.address}/${quote.address}`;
   const tokenSymbols = `${base.symbol}/${quote.symbol}`;
 
-  const [trades, isLoadingTrades] = useLatestTokenTrades(tokenPair);
+  const [trades, isLoadingTrades] = useLatestTokenTrades(quote.address, base.address);
 
   useCSS(
     'dextools-custom-select',

@@ -3,7 +3,7 @@ const TradingView = render('dev', 'trading-view');
 function loadKlines(symbolInfo, resolution, from, to) {
   // console.log(symbolInfo, resolution, from, to);
   const { base, quote } = symbolInfo;
-  return fetch(`/api/velas/klines/${base}/${quote}?from=${from}&to=${to}&interval=${resolution}`)
+  return fetch(`/api/velas/klines/${quote}/${base}?from=${from}&to=${to}&interval=${resolution}`)
     .then((res) => res.json())
     .then((klines) => {
       klines.forEach((k, index) => {
@@ -98,7 +98,7 @@ class Datafeed {
   subscribeBars(symbolInfo, resolution, onRealtimeCallback, subscriberUID) {
     this._intervals[subscriberUID] = setInterval(async () => {
       const kline = await fetch(
-        `/api/velas/market/${symbolInfo.base}/${symbolInfo.quote}/lastkline?interval=${resolution}`,
+        `/api/velas/market/${symbolInfo.quote}/${symbolInfo.base}/lastkline?interval=${resolution}`,
       ).then((r) => r.json());
       if (kline.length) {
         const [k] = kline;
