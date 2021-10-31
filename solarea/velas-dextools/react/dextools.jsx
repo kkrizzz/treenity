@@ -4,6 +4,7 @@ const { toast } = await require('solarea://dev/toast');
 const Hash = render('velas-dextools', 'hash');
 const Link = render('dev', 'link');
 const Tabs = render('velas-dextools', 'tabs');
+const TokenLogo = render('velas-dextools', 'token-logo');
 const TokenData = render('velas-dextools', 'token-data');
 const CandleChart = render('velas-dextools', 'candle-chart');
 const DashboardCard = render('dev', 'dashboard-card');
@@ -151,7 +152,7 @@ add(({ token }) => {
             }}
           >
             <div style={{ minWidth: 64, padding: 4, position: 'relative' }}>
-              <RandomImageWithNonce width={64} isEth={true} address={base.address} />
+              <TokenLogo address={base.address} />
               <div
                 onClick={() => addTokenToMetamask(base.address, base.symbol, base.decimals)}
                 style={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer' }}
