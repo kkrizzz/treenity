@@ -51,6 +51,40 @@ export default async function applyRoutes(app) {
     }
   });
 
+  app.get('/api/velas/importantactions', async (req, res) => {
+    const { limit = 0 } = req.query;
+
+    try {
+      const latestBigSwaps = await priceCollection.Model.find(
+        { amount: { $gte: 10000 } },
+        { limit: Number(limit) },
+      ).toArray();
+
+      const nowDate = new Date();
+      const fiveDaysAgoDate = new Date(nowDate.getTime() - 24 * 60 * 60 * 1000 * 5);
+
+      const latestNewPools = await poolsCollection.Model.find(
+        { createdAt: { $gte: fiveDaysAgoDate } },
+        { limit: Number(limit) },
+      ).toArray();
+
+      latestBigSwaps.forEach((i) => (i.actionType = 'bigSwap'));
+      latestNewPools.forEach((i) => (i.actionType = 'newPool'));
+
+      const actions = latestBigSwaps.concat(latestNewPools).sort((a, b) => {
+        const aTime = ((a.time && new Date(a.time)) || a.createdAt).getTime();
+        const bTime = ((b.time && new Date(b.time)) || b.createdAt).getTime();
+
+        return bTime - aTime;
+      });
+
+      res.send(actions);
+    } catch (e) {
+      console.log(e);
+      res.status(500).send(e);
+    }
+  });
+
   app.get('/api/velas/market/:quote/:base/liquidity', async (req, res) => {
     const { base, quote } = req.params;
     const { limit, offset = 0 } = req.query;

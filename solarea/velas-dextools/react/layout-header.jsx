@@ -40,7 +40,7 @@ add(() => {
     >
       <div class="bu-container bu-is-max-widescreen">
         <div className="bu-navbar-brand">
-          <div className="bu-navbar-item" style={{ alignItems: 'end' }}>
+          <div className="bu-navbar-item" style={{ alignItems: 'flex-end' }}>
             <Link
               to="/"
               style={{
@@ -81,7 +81,29 @@ add(() => {
           id="solarea-layout-header"
           className={`bu-navbar-menu ${isActive ? 'bu-is-active' : ''}`}
         >
-          <div className="bu-navbar-end">
+          <div className="bu-navbar-end" style={{ alignItems: 'center' }}>
+            {' '}
+            <Link
+              to=""
+              style={{
+                height: 'fit-content',
+                marginLeft: '1rem',
+                marginRight: 8,
+                color: isDarkTheme ? 'white' : 'black',
+              }}
+            >
+              <Render id="icons" name="telegram" />
+            </Link>
+            <Link
+              to=""
+              style={{
+                color: isDarkTheme ? 'white' : 'black',
+                height: 'fit-content',
+                marginRight: 16,
+              }}
+            >
+              <Render id="icons" name="twitter" />
+            </Link>
             <NavLink className="bu-navbar-item" to="/dashboard">
               Dashboard
             </NavLink>
