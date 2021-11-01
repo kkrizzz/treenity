@@ -43,7 +43,7 @@ export default async function updateLiquidityData(app) {
   const after =
     (lastEntryTime
       ? new Date(lastEntryTime.getTime() + 1000).toISOString()
-      : '2021-10-10T00:00:00.000Z'
+      : '2021-10-31T20:00:00.000Z'
     ).slice(0, -5) + 'Z';
 
   const params = { query: tokenInfoQuery, variables: { after } };
@@ -79,7 +79,7 @@ export default async function updateLiquidityData(app) {
     call.arguments.reduce((o, arg) => ((o[arg.argument] = arg.value), o), entry);
 
     if (method.includes('ETH')) {
-      entry.tokenA = '0x485f49e0764c305dc6fc1da2e5b786f65f8c95aa';
+      entry.tokenA = '0xc579D1f3CF86749E05CD06f7ADe17856c2CE3126';
       entry.tokenB = entry.token;
       entry.amountAMin = entry.amountETHMin;
       entry.amountBMin = entry.amountTokenMin;
