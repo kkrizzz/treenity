@@ -71,7 +71,17 @@ export default async function applyRoutes(app) {
       latestBigSwaps.forEach((i) => (i.actionType = 'bigSwap'));
       latestNewPools.forEach((i) => (i.actionType = 'newPool'));
 
-      const actions = latestBigSwaps.concat(latestNewPools).sort((a, b) => {
+      let filteredPools: any = [];
+
+      latestNewPools.forEach((pool) => {
+        const inFilteredArrayIndex = filteredPools.findIndex((item) => {
+          const inLabel = [item.base.address, item.quote.address];
+          return inLabel.includes(pool.base.address) && inLabel.includes(pool.quote.address);
+        });
+        if (inFilteredArrayIndex === -1) filteredPools.push(pool);
+      });
+
+      const actions = latestBigSwaps.concat(filteredPools).sort((a, b) => {
         const aTime = ((a.time && new Date(a.time)) || a.createdAt).getTime();
         const bTime = ((b.time && new Date(b.time)) || b.createdAt).getTime();
 
