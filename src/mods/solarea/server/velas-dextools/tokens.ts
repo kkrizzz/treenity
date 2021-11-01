@@ -107,7 +107,7 @@ export default async function updateTokensData(app) {
       base: kline.base,
       quote: kline.quote,
       market: kline.market,
-      createdAt: new Date(),
+      createdAt: new Date(dt.block.timestamp.unixtime * 1000),
     };
 
     await poolsCollection.Model.replaceOne(
