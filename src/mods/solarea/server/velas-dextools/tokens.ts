@@ -110,15 +110,18 @@ export default async function updateTokensData(app) {
       createdAt: new Date(dt.block.timestamp.unixtime * 1000),
     };
 
-    await poolsCollection.Model.replaceOne(
-      {
-        'base.address': pool.base.address,
-        'quote.address': pool.quote.address,
-        market: pool.market,
-      },
-      pool,
-      { upsert: true },
-    );
+    const poolBaseAddress = pool.base.address;
+    const poolQuoteAddress = pool.quote.address;
+
+    const hasPool = await poolsCollection.Model.findOne({
+      'base.address': poolBaseAddress,
+      'quote.address': poolQuoteAddress,
+      market: pool.market,
+    });
+
+    if (!hasPool) {
+      await poolsCollection.create(pool);
+    }
 
     await collection.create(kline);
   }
