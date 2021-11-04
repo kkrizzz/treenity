@@ -98,7 +98,7 @@ class Datafeed {
   subscribeBars(symbolInfo, resolution, onRealtimeCallback, subscriberUID) {
     this._intervals[subscriberUID] = setInterval(async () => {
       const kline = await fetch(
-        `/api/velas/market/${symbolInfo.quote}/${symbolInfo.base}/lastkline?interval=${resolution}`,
+        `/api/velas/market/${symbolInfo.base}/${symbolInfo.quote}/lastkline?interval=${resolution}`,
       ).then((r) => r.json());
       if (kline.length) {
         const [k] = kline;

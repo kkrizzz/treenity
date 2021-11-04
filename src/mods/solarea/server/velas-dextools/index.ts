@@ -2,6 +2,7 @@ import scheduleUpdates from './cron';
 import updateTokensData from './tokens';
 import updateLiquidityData from './pool-liquidity';
 import applyRoutes from './routes';
+import subscribeEvmLogs from './ws-logs-subscribe';
 
 export const indexVelasDextools = (app) => {
   const priceCollection = app.services['velas-dextools'];
@@ -24,4 +25,6 @@ export const indexVelasDextools = (app) => {
   scheduleUpdates(app);
 
   applyRoutes(app);
+
+  subscribeEvmLogs();
 };

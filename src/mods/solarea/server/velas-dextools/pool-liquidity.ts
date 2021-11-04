@@ -1,15 +1,14 @@
 import * as _ from 'lodash';
 
 const fetch = require('node-fetch');
-
 const tokenInfoQuery = `
 query ($after: ISO8601DateTime!) {
   ethereum(network: velas) {
     smartContractCalls(
       smartContractMethod: {in: ["addLiquidity", "addLiquidityETH", "removeLiquidity", "removeLiquidityETH", "removeLiquidityWithPermit", "removeLiquidityETHWithPermit"]}
       options: {}
-      smartContractAddress: {is: "0x93848497Fe87da12a9F3E213b8445d9712257558"}
       time: {after: $after, till: null}
+      smartContractAddress: {is: "0x3D1c58B6d4501E34DF37Cf0f664A58059a188F00"}
     ) {
       smartContractMethod {
         name

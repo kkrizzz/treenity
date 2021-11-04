@@ -70,7 +70,6 @@ async function fetchPools(pc) {
 
   await pc.Model.remove({});
   await pc.Model.insertMany(result);
-  console.log('Updated pools!');
 }
 
 export function indexRefFinanceTokensPrice(app: Application) {
