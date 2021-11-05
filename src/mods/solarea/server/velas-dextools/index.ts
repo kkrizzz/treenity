@@ -5,7 +5,7 @@ import applyRoutes from './routes';
 import subscribeEvmLogs from './ws-logs-subscribe';
 import updateTheGraphTrades from './dex-trades-thegraph';
 
-export const indexVelasDextools = (app) => {
+export const indexVelasDextools = async (app) => {
   const priceCollection = app.collection('velas-dextools');
   app.collection('velas-dextools-pools');
   const liquidityCollection = app.collection('velas-dextools-liquidity');
@@ -23,9 +23,10 @@ export const indexVelasDextools = (app) => {
     time: -1,
   });
 
-  updateTheGraphTrades(app).catch(console.error);
+  while (await updateTheGraphTrades(app));
+
   // updateTokensData(app).catch(console.error);
-  updateLiquidityData(app).catch(console.error);
+  await updateLiquidityData(app);
 
   scheduleUpdates(app);
 

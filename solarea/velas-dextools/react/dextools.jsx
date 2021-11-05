@@ -246,6 +246,8 @@ add(({ token }) => {
               <div className="bu-is-size-4" style={{ marginTop: 4 }}>
                 {isLoadingTrades ? (
                   'Loading price...'
+                ) : !trades.length ? (
+                  'No trades found'
                 ) : (
                   <div
                     style={{

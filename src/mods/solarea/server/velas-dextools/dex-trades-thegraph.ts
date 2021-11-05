@@ -63,62 +63,64 @@ export default async function updateTheGraphTrades(app) {
   const queryResult = await tokenDataBitQueryFetch.json();
   const dexTrades = queryResult.data.swaps;
 
-  for (let i = 0; i < dexTrades.length; i++) {
-    const dt = dexTrades[i];
+  const toInsert = dexTrades
+    .map((dt) => {
+      const type = dt.amount0In === '0' ? 'BUY' : 'SELL';
+      const amountA = parseFloat(type === 'SELL' ? dt.amount0In : dt.amount0Out);
+      const amountB = parseFloat(type === 'BUY' ? dt.amount1In : dt.amount1Out);
 
-    const type = dt.amount0In === '0' ? 'buy' : 'sell';
-    const amountA = parseFloat(type === 'sell' ? dt.amount0In : dt.amount0Out);
-    const amountB = parseFloat(type === 'buy' ? dt.amount1In : dt.amount1Out);
-
-    const { token0, token1 } = dt.pair;
-    const trade1 = {
-      qp: amountA / amountB,
-      amount: amountA,
-      amountUSD: parseFloat(dt.amountUSD),
-      time: new Date(dt.timestamp * 1000),
-      market: dt.pair.id,
-      quote: { address: token0.id, symbol: token0.name },
-      base: { address: token1.id, symbol: token1.name },
-      side: type,
-      tx: {
-        hash: dt.transaction.id,
-        from: {
-          address: dt.from,
+      const { token0, token1 } = dt.pair;
+      const trade1 = {
+        qp: amountA / amountB,
+        amount: amountA,
+        amountUSD: parseFloat(dt.amountUSD),
+        time: new Date(dt.timestamp * 1000),
+        market: dt.pair.id,
+        quote: { address: token0.id, symbol: token0.name },
+        base: { address: token1.id, symbol: token1.name },
+        side: type,
+        tx: {
+          hash: dt.transaction.id,
+          from: {
+            address: dt.from,
+          },
         },
-      },
-    };
-    const trade2 = Object.assign({}, trade1, {
-      qp: 1 / trade1.qp,
-      amount: amountB,
-      quote: trade1.base,
-      base: trade1.quote,
-      side: trade1.side === 'buy' ? 'sell' : 'buy',
-    });
+      };
+      const trade2 = Object.assign({}, trade1, {
+        qp: amountB / amountA,
+        amount: amountB,
+        quote: trade1.base,
+        base: trade1.quote,
+        side: trade1.side === 'BUY' ? 'SELL' : 'BUY',
+      });
 
-    // const pool = {
-    //   base: trade.base,
-    //   quote: trade.quote,
-    //   market: trade.market,
-    //   createdAt: new Date(dt.block.timestamp.unixtime * 1000),
-    // };
-    //
-    // const poolBaseAddress = pool.base.address;
-    // const poolQuoteAddress = pool.quote.address;
-    //
-    // const hasPool = await poolsCollection.Model.findOne({
-    //   'base.address': poolBaseAddress,
-    //   'quote.address': poolQuoteAddress,
-    //   market: pool.market,
-    // });
-    //
-    // if (!hasPool) {
-    //   await poolsCollection.create(pool);
-    // }
+      // const pool = {
+      //   base: trade.base,
+      //   quote: trade.quote,
+      //   market: trade.market,
+      //   createdAt: new Date(dt.block.timestamp.unixtime * 1000),
+      // };
+      //
+      // const poolBaseAddress = pool.base.address;
+      // const poolQuoteAddress = pool.quote.address;
+      //
+      // const hasPool = await poolsCollection.Model.findOne({
+      //   'base.address': poolBaseAddress,
+      //   'quote.address': poolQuoteAddress,
+      //   market: pool.market,
+      // });
+      //
+      // if (!hasPool) {
+      //   await poolsCollection.create(pool);
+      // }
 
-    await collection.create(trade1);
-    await collection.create(trade2);
-  }
+      return [trade1, trade2];
+    })
+    .flat();
 
+  await collection.Model.insertMany(toInsert);
+
+  return dexTrades.length >= 100;
   // updateTradesData(baseTokenAddress, tokenInfo, group, collection);
 
   // const groupedByBaseCurrency = _.groupBy(
