@@ -35,13 +35,14 @@ async function main() {
 
   const db = await createClientDb(app);
   (app as any).collection = function collection(name) {
-    return this.use(
+    this.use(
       name,
       mongoService({
         Model: db.collection(name),
         disableObjectify: true,
       }),
     );
+    return this.service(name);
   };
   app.collection('config');
 
@@ -61,11 +62,6 @@ async function main() {
   app.collection('edges');
   app.collection('users');
   app.collection('session');
-  app.collection('near-token-price');
-  app.collection('near-token-metadata');
-  app.collection('velas-dextools');
-  app.collection('velas-dextools-pools');
-  app.collection('velas-dextools-liquidity');
   const tree = app
     .use('tree', new TreeService())
     .service('tree')

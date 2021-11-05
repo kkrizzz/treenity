@@ -1,14 +1,18 @@
 const cron = require('node-cron');
 
-import updateTokensData from './tokens';
+import updateLiquidityData from './pool-liquidity';
+import updateTokensData from './dex-trades';
+import updateTheGraphTrades from './dex-trades-thegraph';
 
 export default function scheduleUpdates(app) {
   cron.schedule('*/30 * * * * *', async () => {
-    await updateTokensData(app).catch((err) => {
-      console.error('Velas klines update', err);
+    await updateLiquidityData(app).catch((err) => {
+      console.error('Velas Pool Liquidity update', err);
       throw err;
     });
-    await updateTokensData(app).catch((err) => {
+  });
+  cron.schedule('*/5 * * * * *', async () => {
+    await updateTheGraphTrades(app).catch((err) => {
       console.error('Velas Pool Liquidity update', err);
       throw err;
     });

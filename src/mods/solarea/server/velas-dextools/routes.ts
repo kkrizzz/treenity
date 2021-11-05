@@ -39,7 +39,7 @@ async function aggregateCandles(priceCollection, base, quote, from, to, interval
 }
 
 export default async function applyRoutes(app) {
-  const priceCollection = app.services['velas-dextools'];
+  const priceCollection = app.services['velas-dextools-thegraph-swaps'];
   const poolsCollection = app.services['velas-dextools-pools'];
   const liquidityCollection = app.services['velas-dextools-liquidity'];
 

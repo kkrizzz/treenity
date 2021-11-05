@@ -22,6 +22,9 @@ const sortByTimeThenId = (a, b) => {
 };
 
 export function nearIndexer(app: Application) {
+  app.collection('near-token-price');
+  app.collection('near-token-metadata');
+
   app.post('/api/near/acctx', async (req, res) => {
     let { entityId, limit, offset = 0 } = req.body;
     if (!limit) limit = 10;
