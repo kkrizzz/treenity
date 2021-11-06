@@ -214,6 +214,8 @@ function parse() {
     const bytes = Buffer.from(new Uint8Array(value.input));
     console.log(bytes);
     const method = AbiDecoder.decodeMethod('0x' + bytes.toString('hex'));
+    const output = Buffer.from(new Uint8Array(result.output)).toString('hex');
+    const results = AbiDecoder.decodeMethod('0x' + output);
     console.log(method);
   } catch (er) {
     console.error(er);

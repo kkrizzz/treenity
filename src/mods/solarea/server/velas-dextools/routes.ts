@@ -39,7 +39,7 @@ async function aggregateCandles(priceCollection, base, quote, from, to, interval
 }
 
 export default async function applyRoutes(app) {
-  const priceCollection = app.services['velas-dextools'];
+  const priceCollection = app.services['velas-dextools-thegraph-swaps'];
   const poolsCollection = app.services['velas-dextools-pools'];
   const liquidityCollection = app.services['velas-dextools-liquidity'];
   const tokenCollection = app.services['velas-dextools-token-data'];
@@ -254,25 +254,7 @@ export default async function applyRoutes(app) {
     try {
       const { token } = req.params;
 
-      let markets = await priceCollection.Model.aggregate([
-        {
-          $match: {
-            'base.address': token,
-            'quote.address': { $ne: token },
-          },
-        },
-        {
-          $group: {
-            _id: '$quote.address',
-            quote: { $first: '$quote' },
-            base: { $first: '$base' },
-            market: { $first: '$market' },
-          },
-        },
-        {
-          $sort: { market: 1 },
-        },
-      ]).toArray();
+      let markets = await poolsCollection.Model.find({ 'base.address': token }).toArray();
 
       // CALCULATE PRICE CHANGES
       for (let i = 0; i < markets.length; i++) {
@@ -296,8 +278,12 @@ export default async function applyRoutes(app) {
         );
 
         trade24hrAgo = trade24hrAgo || latestMarketTrade;
-        market.priceChange24hrValue = latestMarketTrade.qp - trade24hrAgo.qp;
-        market.priceChange24hrPercent = (market.priceChange24hrValue / latestMarketTrade.qp) * 100;
+        market.priceChange24hrValue = latestMarketTrade
+          ? latestMarketTrade.qp - trade24hrAgo.qp
+          : 0;
+        market.priceChange24hrPercent = latestMarketTrade
+          ? (market.priceChange24hrValue / latestMarketTrade.qp) * 100
+          : 0;
 
         delete market._id;
       }

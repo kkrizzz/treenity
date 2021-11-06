@@ -35,13 +35,14 @@ async function main() {
 
   const db = await createClientDb(app);
   (app as any).collection = function collection(name) {
-    return this.use(
+    this.use(
       name,
       mongoService({
         Model: db.collection(name),
         disableObjectify: true,
       }),
     );
+    return this.service(name);
   };
   app.collection('config');
 

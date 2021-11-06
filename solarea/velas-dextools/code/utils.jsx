@@ -10,7 +10,7 @@ exports.useLatestTokenTrades = (quote, base) => {
   const { data, isLoading } = solarea.useQuery(
     ['market_trades', `${quote}_${base}`],
     () => fetch(`/api/velas/market/${quote}/${base}/trades`).then((res) => res.json()),
-    { refetchInterval: 30000 },
+    { refetchInterval: 10000 },
   );
 
   return [data, isLoading];
