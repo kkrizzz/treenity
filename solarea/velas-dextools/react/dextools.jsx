@@ -107,6 +107,7 @@ const IconContainer = styled.div`
 add(({ token }) => {
   const { data: markets, isLoading: isMarketsLoading } = useLoadMarkets(token);
   const { quote: quoteTokenParam } = solarea.useQueryParams();
+  const [tokenDataFromGraph, isTokenDataFromGraphLoading] = useTokenInfoFromGraph(token);
 
   if (isMarketsLoading) return <div>Loading markets ...</div>;
   if (!markets.length) return <div>Token markets not found</div>;

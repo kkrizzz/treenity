@@ -45,6 +45,14 @@ export default async function applyRoutes(app) {
   const priceCollection = app.services['velas-dextools-thegraph-swaps'];
   const poolsCollection = app.services['velas-dextools-pools'];
   const liquidityCollection = app.services['velas-dextools-liquidity'];
+  const tokenCollection = app.services['velas-dextools-token-data'];
+
+  app.get('/api/velas/token/:token/data', async (req, res) => {
+    const { token } = req.params;
+    if (!token) return res.status(404).send('No token name provided');
+
+    return res.send(await tokenCollection.Model.findOne({ address: token }));
+  });
 
   app.get('/api/velas/poollist', async (req, res) => {
     try {

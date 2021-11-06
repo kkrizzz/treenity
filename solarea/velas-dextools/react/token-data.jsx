@@ -1,5 +1,13 @@
 const TwoColumn = render('dev', 'two-column');
 const Table = render('dev', 'table');
+const { useTokenInfoFromGraph } = await require('solarea://velas-dextools/utils');
+const { numberWithSpaces } = await require('solarea://explorer/utils');
+
+function precisionRoundMod(number, precision) {
+  var factor = Math.pow(10, precision);
+  var n = precision < 0 ? number : 0.01 / factor + number;
+  return Math.round(n * factor) / factor;
+}
 
 const queryMarketData = (market) => `
 query MyQuery {
@@ -49,6 +57,9 @@ const Line = ({ name, children }) => (
 
 const MarketData = ({ market }) => {
   const [marketData, isMarketDataLoading] = useBitQuery(queryMarketData(market));
+  const [tokenDataFromGraph, isTokenDataFromGraphLoading] = useTokenInfoFromGraph(
+    market.base.address,
+  );
 
   if (isMarketDataLoading)
     return (
@@ -80,12 +91,17 @@ const MarketData = ({ market }) => {
         justifyContent: 'space-between',
       }}
     >
+      <Line name="USD price">
+        {isTokenDataFromGraphLoading
+          ? 'Loading...'
+          : '$' + numberWithSpaces(Number(tokenDataFromGraph.derivedUSD).toFixed(4))}
+      </Line>
       {poolBalances.map((i) => (
-        <Line name={`Pooled ${i.currency.symbol}`}>{i.value}</Line>
+        <Line name={`Pooled ${i.currency.symbol}`}>{numberWithSpaces(i.value.toFixed(4))}</Line>
       ))}
-      <Line name="Total trades">{totalTrades}</Line>
-      <Line name={`${market.base.symbol} holders`}>{holders}</Line>
-      <Line name={`${market.base.symbol} supply`}>{totalSupply}</Line>
+      <Line name="Total trades">{numberWithSpaces(totalTrades)}</Line>
+      <Line name={`${market.base.symbol} holders`}>{numberWithSpaces(holders)}</Line>
+      <Line name={`${market.base.symbol} supply`}>{numberWithSpaces(totalSupply)}</Line>
     </div>
   );
 };
