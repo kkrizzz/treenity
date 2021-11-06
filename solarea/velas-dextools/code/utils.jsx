@@ -45,3 +45,11 @@ exports.useLiquidityPoolsActivity = (quote, base, limit) => {
 
   return [data, isLoading];
 };
+
+exports.useTokenInfoFromGraph = (address) => {
+  const { data, isLoading } = solarea.useQuery([address, 'token_data_from_the_graph'], () =>
+    fetch(`/api/velas/token/${address}/data`).then((res) => res.json()),
+  );
+
+  return [data, isLoading];
+};

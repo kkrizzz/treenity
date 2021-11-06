@@ -3,6 +3,7 @@ import updateTokensData from './tokens';
 import updateLiquidityData from './pool-liquidity';
 import applyRoutes from './routes';
 import subscribeEvmLogs from './ws-logs-subscribe';
+import updateTokenData from './the-graph-token-data-indexer';
 
 export const indexVelasDextools = (app) => {
   const priceCollection = app.services['velas-dextools'];
@@ -21,6 +22,7 @@ export const indexVelasDextools = (app) => {
 
   updateTokensData(app).catch(console.error);
   updateLiquidityData(app).catch(console.error);
+  updateTokenData(app).catch(console.error);
 
   scheduleUpdates(app);
 

@@ -66,6 +66,7 @@ async function main() {
   app.collection('velas-dextools');
   app.collection('velas-dextools-pools');
   app.collection('velas-dextools-liquidity');
+  app.collection('velas-dextools-token-data');
   const tree = app
     .use('tree', new TreeService())
     .service('tree')
