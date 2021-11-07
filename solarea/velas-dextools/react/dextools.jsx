@@ -123,34 +123,6 @@ add(({ token }) => {
 
   const [trades, isLoadingTrades] = useLatestTokenTrades(quote.address, base.address);
 
-  useCSS(
-    'dextools-custom-select',
-    css`
-      .dextools-custom-select select {
-        color: var(--theme-a-color) !important;
-        background: transparent;
-        border: none;
-      }
-      .dextools-custom-select:after {
-        border-color: var(--theme-a-color) !important;
-      }
-      .dextools-custom-select:hover:after {
-        border-color: var(--theme-a-hover-color) !important;
-      }
-      .dextools-custom-select select:hover {
-        color: var(--theme-a-hover-color) !important;
-      }
-      .dextools-custom-select select:active {
-        border: none;
-        box-shadow: none;
-      }
-
-      .dextools-custom-select select:focus {
-        box-shadow: none;
-      }
-    `,
-  );
-
   const tabs = [
     {
       name: 'Trades',

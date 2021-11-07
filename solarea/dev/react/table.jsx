@@ -1,4 +1,12 @@
-const Table = ({ columns = [], data = [], headless = false, rowStyle, className, children }) => {
+const Table = ({
+  columns = [],
+  data = [],
+  headless = false,
+  rowStyle,
+  className,
+  children,
+  rowKey,
+}) => {
   if (children) return <table className={className}>{children}</table>;
   return (
     <table className={className}>
@@ -14,9 +22,9 @@ const Table = ({ columns = [], data = [], headless = false, rowStyle, className,
 
       <tbody>
         {data.map((item, index) => (
-          <tr style={rowStyle && rowStyle(item)}>
-            {columns.map((column) => (
-              <td style={{ textAlign: column.textAlign || 'left' }}>
+          <tr key={rowKey ? rowKey(item, index) : index} style={rowStyle && rowStyle(item)}>
+            {columns.map((column, i) => (
+              <td key={i} style={{ textAlign: column.textAlign || 'left' }}>
                 {column.render
                   ? column.render(item[column.dataIndex], item, index, data)
                   : item[column.dataIndex]}

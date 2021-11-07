@@ -91,6 +91,11 @@ add(({ market }) => {
       render: (num, { qp }) => numberWithSpaces((num / qp).toFixed(6)),
     },
     {
+      title: `Total USD`,
+      dataIndex: 'amountUSD',
+      render: (amount) => '$' + numberWithSpaces(amount.toFixed(2)),
+    },
+    {
       title: 'Price',
       dataIndex: 'qp',
       render: (num) => numberWithSpaces((1 / num).toFixed(6)),
@@ -132,6 +137,7 @@ add(({ market }) => {
                 ? 'var(--theme-success-secondary-color)'
                 : 'var(--theme-error-secondary-color)',
           })}
+          rowKey={(item) => item.tx.hash}
           bordered
           columns={columns}
           data={data}

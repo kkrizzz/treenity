@@ -70,6 +70,10 @@ const StyledTokenPair = styled.div`
   }
 `;
 
+const Select = styled.select`
+  text-align: center;
+`;
+
 const ChangeIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -91,14 +95,14 @@ const TokenPair = ({ base, markets, currentMarket, onSwap, onMarketChange, class
       </button>
       <div>
         <div className="bu-select dextools-custom-select">
-          <select
+          <Select
             value={currentMarket}
             onChange={(e) => onMarketChange && onMarketChange(e.target.value)}
           >
             {markets.map((m) => (
               <option value={m.market}>{m.quote.symbol}</option>
             ))}
-          </select>
+          </Select>
         </div>
       </div>
     </StyledTokenPair>
