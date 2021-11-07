@@ -1,6 +1,7 @@
 const LastTrades = render('velas-dextools', 'last-trades');
 const PoolActivity = render('velas-dextools', 'pool-activity');
 const { toast } = await require('solarea://dev/toast');
+const { useTokenInfoFromGraph } = await require('solarea://velas-dextools/utils');
 const Hash = render('velas-dextools', 'hash');
 const Link = render('dev', 'link');
 const Tabs = render('velas-dextools', 'tabs');
