@@ -11,6 +11,7 @@ export const indexVelasDextools = async (app) => {
   app.collection('velas-dextools-pools');
   const liquidityCollection = app.collection('velas-dextools-liquidity');
   app.collection('velas-dextools-thegraph-swaps');
+  app.collection('velas-dextools-token-data');
 
   priceCollection.Model.createIndex({
     'base.address': 1,
@@ -26,7 +27,7 @@ export const indexVelasDextools = async (app) => {
 
   // while (await updateTheGraphTrades(app));
   await updateLiquidityData(app);
-  await updateTokensData(app)
+  await updateTokensData(app);
 
   scheduleUpdates(app);
 
