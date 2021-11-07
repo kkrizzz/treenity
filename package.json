@@ -95,6 +95,7 @@
     "assert": "^2.0.0",
     "beautiful-react-diagrams": "git+https://github.com/feddot2517/beautiful-react-diagrams",
     "bn.js": "^5.2.0",
+    "cached-lookup": "^3.0.0",
     "config": "^3.3.1",
     "cors": "latest",
     "dayjs": "^1.8.36",

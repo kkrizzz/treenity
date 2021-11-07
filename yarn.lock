@@ -3735,6 +3735,11 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
+cached-lookup@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/cached-lookup/-/cached-lookup-3.0.0.tgz#1ba5b380178f361778ca5a75c361edd41411a087"
+  integrity sha512-Ib4JB30HTwjtTX80Dg0p8JJs7HUHCWz5KEvGWo6Z/+eUEumwc0T5lnEUq9Wn0Z4Psnw7lvxJMpPNboDRUib4SA==
+
 call-bind@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.0.tgz#24127054bb3f9bdcb4b1fb82418186072f77b8ce"

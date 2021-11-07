@@ -1,3 +1,6 @@
+import memoize from 'lodash/memoize';
+const CachedLookup = require('cached-lookup');
+
 async function aggregateCandles(priceCollection, base, quote, from, to, interval) {
   const inter = interval * 1000 * 60;
   from = new Date(Math.ceil(from.getTime() / inter) * inter);
@@ -250,47 +253,72 @@ export default async function applyRoutes(app) {
     }
   });
 
-  app.get('/api/velas/token/:token/markets', async (req, res) => {
-    try {
-      const { token } = req.params;
+  function cacheResults(resolver, paramResolver, timeout) {
+    const memoizer = memoize(
+      (params, res) => {
+        return new CachedLookup(() => resolver(params, res));
+      },
+      (params, res) => JSON.stringify(params),
+    );
 
-      let markets = await poolsCollection.Model.find({ 'base.address': token }).toArray();
-
-      // CALCULATE PRICE CHANGES
-      for (let i = 0; i < markets.length; i++) {
-        const market = markets[i];
-
-        let latestMarketTrade = await priceCollection.Model.findOne(
-          { market: market.market },
-          { sort: { time: -1 } },
-        );
-
-        const latestMarketTrade24hrAgoDate = new Date();
-        latestMarketTrade24hrAgoDate.setDate(latestMarketTrade24hrAgoDate.getDate() - 1); // yesterday
-
-        let trade24hrAgo = await priceCollection.Model.findOne(
-          {
-            time: { $gte: latestMarketTrade24hrAgoDate },
-            'base.address': market.base.address,
-            'quote.address': market.quote.address,
-          },
-          { sort: { time: 1 } },
-        );
-
-        trade24hrAgo = trade24hrAgo || latestMarketTrade;
-        market.priceChange24hrValue = latestMarketTrade
-          ? latestMarketTrade.qp - trade24hrAgo.qp
-          : 0;
-        market.priceChange24hrPercent = latestMarketTrade
-          ? (market.priceChange24hrValue / latestMarketTrade.qp) * 100
-          : 0;
-
-        delete market._id;
+    return async (req, res) => {
+      const params = paramResolver(req, res);
+      try {
+        const result = await memoizer(params, res).cached(timeout);
+        res.send(result);
+      } catch (err) {
+        res.sendStatus(500);
+      } finally {
+        res.end();
       }
+    };
+  }
 
-      return res.send(markets);
-    } catch (e) {
-      console.error(e);
+  const getMarkets = async ({ token }) => {
+    if (!token) throw new Error('token must be specified');
+
+    let markets = await poolsCollection.Model.find({ 'base.address': token }).toArray();
+
+    // CALCULATE PRICE CHANGES
+    for (let i = 0; i < markets.length; i++) {
+      const market = markets[i];
+
+      let latestMarketTrade = await priceCollection.Model.findOne(
+        { market: market.market },
+        { sort: { time: -1 } },
+      );
+
+      const latestMarketTrade24hrAgoDate = new Date();
+      latestMarketTrade24hrAgoDate.setDate(latestMarketTrade24hrAgoDate.getDate() - 1); // yesterday
+
+      let trade24hrAgo = await priceCollection.Model.findOne(
+        {
+          'base.address': market.base.address,
+          'quote.address': market.quote.address,
+          time: { $gte: latestMarketTrade24hrAgoDate },
+        },
+        { sort: { time: 1 } },
+      );
+
+      trade24hrAgo = trade24hrAgo || latestMarketTrade;
+      market.priceChange24hrValue = latestMarketTrade ? latestMarketTrade.qp - trade24hrAgo.qp : 0;
+      market.priceChange24hrPercent = latestMarketTrade
+        ? (market.priceChange24hrValue / latestMarketTrade.qp) * 100
+        : 0;
+
+      delete market._id;
     }
-  });
+
+    return markets;
+  };
+  app.get(
+    '/api/velas/token/:token/markets',
+    cacheResults(
+      getMarkets,
+      (req) => ({
+        token: req.params.token,
+      }),
+      5000,
+    ),
+  );
 }
