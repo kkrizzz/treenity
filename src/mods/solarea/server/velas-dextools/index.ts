@@ -1,5 +1,4 @@
 import scheduleUpdates from './cron';
-import updateTokensData from './dex-trades';
 import updateLiquidityData from './pool-liquidity';
 import applyRoutes from './routes';
 import subscribeEvmLogs from './ws-logs-subscribe';
@@ -18,6 +17,15 @@ export const indexVelasDextools = async (app) => {
     'quote.address': 1,
     time: 1,
   });
+  priceCollection.Model.createIndex({
+    'base.address': 1,
+    'quote.address': 1,
+    time: -1,
+  });
+  priceCollection.Model.createIndex({
+    market: 1,
+    time: -1,
+  });
 
   liquidityCollection.Model.createIndex({
     tokenA: 1,
@@ -27,7 +35,7 @@ export const indexVelasDextools = async (app) => {
 
   while (await updateTheGraphTrades(app));
   await updateLiquidityData(app);
-  await updateTokensData(app);
+  await updateTokenData(app);
 
   scheduleUpdates(app);
 
