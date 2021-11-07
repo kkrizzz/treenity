@@ -284,7 +284,10 @@ export default async function applyRoutes(app) {
       const market = markets[i];
 
       let latestMarketTrade = await priceCollection.Model.findOne(
-        { market: market.market },
+        {
+          'base.address': market.base.address,
+          'quote.address': market.quote.address,
+        },
         { sort: { time: -1 } },
       );
 
@@ -301,7 +304,7 @@ export default async function applyRoutes(app) {
       );
 
       trade24hrAgo = trade24hrAgo || latestMarketTrade;
-      market.priceChange24hrValue = latestMarketTrade ? latestMarketTrade.qp - trade24hrAgo.qp : 0;
+      market.priceChange24hrValue = latestMarketTrade ? trade24hrAgo.qp - latestMarketTrade.qp : 0;
       market.priceChange24hrPercent = latestMarketTrade
         ? (market.priceChange24hrValue / latestMarketTrade.qp) * 100
         : 0;

@@ -105,6 +105,27 @@ const IconContainer = styled.div`
   }
 `;
 
+const PriceMain = styled.span`
+  color: ${({ isFall }) => (isFall ? 'var(--theme-error-color)' : 'var(--theme-success-color)')};
+  font-size: 32px;
+  font-weight: 700;
+`;
+const PriceMainSymbol = styled.span`
+  color: #3c5269;
+  font-weight: 700;
+`;
+const PriceUSD = styled.span`
+  font-size: 20px;
+  font-weight: 700;
+`;
+const PriceUSDSymbol = styled(PriceMainSymbol)`
+  font-size: 20px;
+`;
+const PriceChange = styled.span`
+  color: ${({ isFall }) => (isFall ? 'var(--theme-error-color)' : 'var(--theme-success-color)')};
+  font-size: 0.9rem;
+`;
+
 add(({ token }) => {
   const { data: markets, isLoading: isMarketsLoading } = useLoadMarkets(token);
   const { quote: quoteTokenParam } = solarea.useQueryParams();
@@ -230,37 +251,21 @@ add(({ token }) => {
                     }}
                   >
                     <div>
-                      <span
-                        style={{
-                          color: isPriceFall
-                            ? 'var(--theme-success-color)'
-                            : 'var(--theme-error-color)',
-                          fontSize: 32,
-                          fontWeight: 700,
-                        }}
-                      >
-                        {Number(trades[0].qp).toFixed(8)}{' '}
-                      </span>
-                      <span
-                        style={{
-                          color: '#3C5269',
-                          fontWeight: 700,
-                        }}
-                      >
-                        {quote.symbol}
-                      </span>
+                      <PriceMain isFall={isPriceFall}>{Number(trades[0].qp).toFixed(8)} </PriceMain>
+                      <PriceMainSymbol>{quote.symbol}</PriceMainSymbol>
                     </div>
-                    <div
-                      style={{
-                        color: isPriceFall
-                          ? 'var(--theme-success-color)'
-                          : 'var(--theme-error-color)',
-                        fontSize: '0.9rem',
-                      }}
-                    >
-                      (24hr: {priceChange24hrPercent.toFixed(4) + '%'}){' '}
+                    <PriceChange isFall={isPriceFall}>
+                      (24hr: {priceChange24hrPercent.toFixed(2) + '%'}){' '}
                       {Math.abs(priceChange24hrValue).toFixed(6)} {quote.symbol}
-                    </div>
+                    </PriceChange>
+                    {!isTokenDataFromGraphLoading && tokenDataFromGraph && (
+                      <div>
+                        <PriceUSD isFall={isPriceFall}>
+                          {parseFloat(tokenDataFromGraph.derivedUSD).toFixed(4)}{' '}
+                        </PriceUSD>
+                        <PriceUSDSymbol>USD</PriceUSDSymbol>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

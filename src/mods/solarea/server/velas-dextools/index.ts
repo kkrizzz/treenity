@@ -33,13 +33,13 @@ export const indexVelasDextools = async (app) => {
     time: -1,
   });
 
+  applyRoutes(app);
+
   while (await updateTheGraphTrades(app));
   await updateLiquidityData(app);
   await updateTokenData(app);
 
   scheduleUpdates(app);
-
-  applyRoutes(app);
 
   // subscribeEvmLogs();
 };

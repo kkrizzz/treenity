@@ -57,9 +57,6 @@ const Line = ({ name, children }) => (
 
 const MarketData = ({ market }) => {
   const [marketData, isMarketDataLoading] = useBitQuery(queryMarketData(market));
-  const [tokenDataFromGraph, isTokenDataFromGraphLoading] = useTokenInfoFromGraph(
-    market.base.address,
-  );
 
   if (isMarketDataLoading)
     return (
@@ -91,11 +88,6 @@ const MarketData = ({ market }) => {
         justifyContent: 'space-between',
       }}
     >
-      <Line name="USD price">
-        {isTokenDataFromGraphLoading
-          ? 'Loading...'
-          : '$' + numberWithSpaces(Number(tokenDataFromGraph.derivedUSD).toFixed(4))}
-      </Line>
       {poolBalances.map((i) => (
         <Line name={`Pooled ${i.currency.symbol}`}>{numberWithSpaces(i.value.toFixed(4))}</Line>
       ))}
