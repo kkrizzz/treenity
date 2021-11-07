@@ -25,7 +25,7 @@ export const indexVelasDextools = async (app) => {
     time: -1,
   });
 
-  // while (await updateTheGraphTrades(app));
+  while (await updateTheGraphTrades(app));
   await updateLiquidityData(app);
   await updateTokensData(app);
 

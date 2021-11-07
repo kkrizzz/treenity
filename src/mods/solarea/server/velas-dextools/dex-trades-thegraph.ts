@@ -98,7 +98,9 @@ export default async function updateTheGraphTrades(app) {
     })
     .flat();
 
-  await collection.Model.insertMany(toInsert);
+  if (toInsert.length) {
+    await collection.Model.insertMany(toInsert);
+  }
 
   return dexTrades.length >= 100;
 }
