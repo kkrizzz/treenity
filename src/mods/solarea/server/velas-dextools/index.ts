@@ -1,9 +1,10 @@
 import scheduleUpdates from './cron';
-import updateLiquidityData from './pool-liquidity';
+import updateLiquidityData from './pool-liquidity-thegraph';
 import applyRoutes from './routes';
-import subscribeEvmLogs from './ws-logs-subscribe';
+// import subscribeEvmLogs from './ws-logs-subscribe';
 import updateTheGraphTrades from './dex-trades-thegraph';
 import updateTokenData from './the-graph-token-data-indexer';
+import updateTokenPools from './token-pools';
 
 export const indexVelasDextools = async (app) => {
   const priceCollection = app.collection('velas-dextools');
@@ -36,8 +37,9 @@ export const indexVelasDextools = async (app) => {
   applyRoutes(app);
 
   while (await updateTheGraphTrades(app));
-  await updateLiquidityData(app);
+  while (await updateLiquidityData(app));
   await updateTokenData(app);
+  await updateTokenPools(app);
 
   scheduleUpdates(app);
 

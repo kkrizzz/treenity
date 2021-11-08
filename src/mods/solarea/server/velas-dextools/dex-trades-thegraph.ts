@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 
 const tokenInfoQuery = `
 query ($after: Int!) {
-    swaps(orderBy: timestamp, orderDirection: asc, where: { timestamp_gt: $after }) {
+    swaps(orderBy: timestamp, orderDirection: asc, where: { timestamp_gt: $after }, first: 1000) {
       transaction {
         id
         block
@@ -14,11 +14,15 @@ query ($after: Int!) {
         name
         token0 {
           id
+          symbol
           name
+          decimals
         }
         token1 {
           id
+          symbol
           name
+          decimals
         }
         token0Price
         token1Price
@@ -43,24 +47,19 @@ export default async function updateTheGraphTrades(app) {
   const after = Math.floor(afterDate.getTime() / 1000);
 
   const params = { query: tokenInfoQuery, variables: { after } };
-  const tokenDataBitQueryFetch = await fetch(
-    'https://thegraph.wagyuswap.app/subgraphs/name/wagyu',
-    {
-      method: 'POST',
-      cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params),
+  const tokenDataFetch = await fetch('https://thegraph.wagyuswap.app/subgraphs/name/wagyu', {
+    method: 'POST',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify(params),
+  });
 
-  if (tokenDataBitQueryFetch.status !== 200) {
-    throw new Error(
-      `WagyuSwap The Graph: ${tokenDataBitQueryFetch.status}, ${tokenDataBitQueryFetch.statusText}`,
-    );
+  if (tokenDataFetch.status !== 200) {
+    throw new Error(`WagyuSwap The Graph: ${tokenDataFetch.status}, ${tokenDataFetch.statusText}`);
   }
-  const queryResult = await tokenDataBitQueryFetch.json();
+  const queryResult = await tokenDataFetch.json();
   const dexTrades = queryResult.data.swaps;
 
   const toInsert = dexTrades
@@ -73,11 +72,22 @@ export default async function updateTheGraphTrades(app) {
       const trade1 = {
         qp: amountA / amountB,
         amount: amountA,
+        amountB: amountB,
         amountUSD: parseFloat(dt.amountUSD),
         time: new Date(dt.timestamp * 1000),
         market: dt.pair.id,
-        quote: { address: token0.id, symbol: token0.name },
-        base: { address: token1.id, symbol: token1.name },
+        quote: {
+          address: token0.id,
+          symbol: token0.symbol,
+          name: token0.name,
+          decimals: token0.decimals,
+        },
+        base: {
+          address: token1.id,
+          symbol: token1.symbol,
+          name: token1.name,
+          decimals: token0.decimals,
+        },
         side: type,
         tx: {
           hash: dt.transaction.id,
@@ -102,5 +112,5 @@ export default async function updateTheGraphTrades(app) {
     await collection.Model.insertMany(toInsert);
   }
 
-  return dexTrades.length >= 100;
+  return dexTrades.length >= 10;
 }

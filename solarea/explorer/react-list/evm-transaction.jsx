@@ -2,13 +2,26 @@ const TwoColumn = render('dev', 'two-column');
 const Hash = render('dev', 'hash');
 const NamedHash = render('dev', 'named-hash');
 const DashboardCard = render('dev', 'dashboard-card');
+const TimeAgo = render('dev', 'time-ago');
+
 const { weiToEth, lpsRound } = await require('solarea://explorer/utils');
 
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
 add(({ tx }) => {
+  const [block, isBlockLoading] = solarea.useSolanaRpc('eth_getBlockByNumber', [
+    tx.blockNumber,
+    false,
+  ]);
+
   const gasUsed = parseInt(tx.gas, 16);
   const gasPrice = parseInt(tx.gasPrice, 16);
   const fee = weiToEth(gasUsed * gasPrice, 8);
 
+  const blockNumber = parseInt(tx.blockNumber, 16);
   return (
     <>
       <Render
@@ -39,13 +52,18 @@ add(({ tx }) => {
       </div>
       <div className="bu-columns">
         <div className="bu-column bu-is-6">
-          <DashboardCard subcard size="small" title={'Hash'}>
+          <DashboardCard subcard size="small" title="Hash">
             <Hash hash={tx.hash} type="tx" />
           </DashboardCard>
         </div>
         <div className="bu-column bu-is-6">
           <DashboardCard subcard size="small" title="Block">
-            <Hash hash={parseInt(tx.blockNumber, 16)} type="block" urlParams="chain=evm" />
+            <Row>
+              <Hash hash={blockNumber} type="block" urlParams="chain=evm" />
+              <div className="bu-ml-4">
+                {block && <TimeAgo date={new Date(parseInt(block.timestamp, 16) * 1000)} />}
+              </div>
+            </Row>
           </DashboardCard>
         </div>
       </div>

@@ -43,7 +43,10 @@ const SolanaBlockView = ({ entityId }) => {
   }
 
   const transactions = block.transactions;
-  const successfulTransactions = transactions.reduce((acc, val) => acc + (val.meta.err ? 0 : 1), 0);
+  const successfulTransactions = transactions.reduce(
+    (acc, val) => acc + (val.meta && val.meta.err ? 0 : 1),
+    0,
+  );
 
   const filterTrans = (isVote) =>
     block.transactions.filter((t) => {
@@ -58,7 +61,7 @@ const SolanaBlockView = ({ entityId }) => {
     <div class="bu-container bu-is-max-desktop">
       <BulmaCard header={<div class="flex-between">Block</div>} />
       <BulmaCard header="Overview">
-        <div class="bu-columns" style={{ overflowY: 'auto' }}>
+        <div class="bu-columns">
           <div class="bu-column">
             <TwoColumn first="Slot" second={<Hash hash={entityId} type="block" alignRight />} />
             <TwoColumn first="Blockhash" second={block.blockhash} />
@@ -201,9 +204,13 @@ const EthereumBlockView = ({ entityId }) => {
     <div className="bu-container bu-is-max-desktop">
       <DashboardSection title="Block overview">
         <BulmaCard>
-          <div class="bu-columns" style={{ overflowY: 'auto' }}>
+          <div class="bu-columns">
             <div class="bu-column">
               <TwoColumn first="Block height" second={entityId} />
+              <TwoColumn
+                first="Block time"
+                second={new Date(parse16(block.timestamp) * 1000).toLocaleString()}
+              />
               <TwoColumn first="Block hash" second={block.hash} />
               <TwoColumn first="Size" second={parse16(block.size) + '\tbytes'} />
               <TwoColumn first="Num of transactions" second={block.transactions.length} />

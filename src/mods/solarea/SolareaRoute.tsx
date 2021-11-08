@@ -38,7 +38,7 @@ const idToViewResolvers = [
     // all other names
     const fallback = () => <Render {...query} id={id} context={context} name={name} />;
     return (
-      <Render id={hostname} name="layout" context={context} fallback={fallback}>
+      <Render id={hostname} name="layout" context={context} fallback={fallback} query={query}>
         {fallback()}
       </Render>
     );

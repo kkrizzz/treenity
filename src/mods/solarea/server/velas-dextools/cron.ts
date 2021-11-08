@@ -1,10 +1,10 @@
-import updateTokenData from './the-graph-token-data-indexer';
-
 const cron = require('node-cron');
 
-import updateLiquidityData from './pool-liquidity';
+import updateTokenData from './the-graph-token-data-indexer';
+import updateLiquidityData from './pool-liquidity-thegraph';
 import updateTokensData from './dex-trades';
 import updateTheGraphTrades from './dex-trades-thegraph';
+import updateTokenPools from './token-pools';
 
 export default function scheduleUpdates(app) {
   cron.schedule('*/30 * * * * *', async () => {
@@ -25,5 +25,11 @@ export default function scheduleUpdates(app) {
       throw err;
     });
     // TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
+  });
+  cron.schedule('0 * * * * *', async () => {
+    await updateTokenPools(app).catch((err) => {
+      console.error('Velas Pools update', err);
+      throw err;
+    });
   });
 }

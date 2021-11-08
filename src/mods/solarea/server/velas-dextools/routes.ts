@@ -67,8 +67,8 @@ export default async function applyRoutes(app) {
 
     try {
       const latestBigSwaps = await priceCollection.Model.find(
-        { amount: { $gte: 10000 } },
-        { limit: Number(limit) },
+        { amountUSD: { $gte: 1000 } },
+        { limit: Number(limit), sort: { amountUSD: -1 } },
       ).toArray();
 
       const nowDate = new Date();
@@ -76,7 +76,7 @@ export default async function applyRoutes(app) {
 
       const latestNewPools = await poolsCollection.Model.find(
         { createdAt: { $gte: fiveDaysAgoDate } },
-        { limit: Number(limit) },
+        { limit: Number(limit), sort: { createdAt: -1 } },
       ).toArray();
 
       latestBigSwaps.forEach((i) => (i.actionType = 'bigSwap'));
@@ -93,8 +93,8 @@ export default async function applyRoutes(app) {
       });
 
       const actions = latestBigSwaps.concat(filteredPools).sort((a, b) => {
-        const aTime = ((a.time && new Date(a.time)) || a.createdAt).getTime();
-        const bTime = ((b.time && new Date(b.time)) || b.createdAt).getTime();
+        const aTime = a.time || a.createdAt;
+        const bTime = b.time || b.createdAt;
 
         return bTime - aTime;
       });
