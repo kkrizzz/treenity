@@ -69,15 +69,17 @@ export default async function updateLiquidityData(app) {
         from: call.sender,
         tokenA: call.pair.token0,
         tokenB: call.pair.token1,
-        amountA: parseFloat(call.amount0),
-        amountB: parseFloat(call.amount1),
-        amountUSD: parseFloat(call.amountUSD),
+        lastTradeAmountA: parseFloat(call.amount0),
+        lastTradeAmountB: parseFloat(call.amount1),
+        lastTradeAmountUSD: parseFloat(call.amountUSD),
       };
 
       return entry;
     });
 
-    await collection.Model.insertMany(toInsert);
+    if (toInsert.length) {
+      await collection.Model.insertMany(toInsert);
+    }
   };
 
   await createMany(burns, 'remove');

@@ -25,6 +25,9 @@ const PIPELINE = [
 
 export default async function updateTokenPools(app) {
   const priceCollection = app.services['velas-dextools-thegraph-swaps'];
-
-  await priceCollection.Model.aggregate(PIPELINE).next();
+  try {
+    await priceCollection.Model.aggregate(PIPELINE, { allowDiskUse: true }).next();
+  } catch (e) {
+    console.log('error when update pools:', e);
+  }
 }

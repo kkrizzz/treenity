@@ -9,7 +9,7 @@ import updateTokenPools from './token-pools';
 export default function scheduleUpdates(app) {
   cron.schedule('*/30 * * * * *', async () => {
     await updateLiquidityData(app).catch((err) => {
-      console.error('Velas Pool Liquidity update', err);
+      console.error('Velas Liquidity data update', err);
       throw err;
     });
   });
@@ -21,14 +21,14 @@ export default function scheduleUpdates(app) {
   });
   cron.schedule('*/5 * * * * *', async () => {
     await updateTheGraphTrades(app).catch((err) => {
-      console.error('Velas Pool Liquidity update', err);
+      console.error('Velas trades data update', err);
       throw err;
     });
     // TOKENS_TO_INDEX_PRICE.forEach((i) => updatePrice(i, priceCollection));
   });
   cron.schedule('0 * * * * *', async () => {
     await updateTokenPools(app).catch((err) => {
-      console.error('Velas Pools update', err);
+      console.error('Velas token pools update', err);
       throw err;
     });
   });

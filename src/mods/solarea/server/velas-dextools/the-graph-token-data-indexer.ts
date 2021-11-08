@@ -20,7 +20,7 @@ const clientChromeHeaders = {
 
 const tokenDataQuery = `
 query {
-  tokens {
+  tokens(first: 1000) {
     address: id
     symbol
     derivedUSD
