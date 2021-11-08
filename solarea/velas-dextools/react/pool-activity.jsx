@@ -109,18 +109,16 @@ add(({ market }) => {
     },
     {
       title: `${tokens.tokenA.symbol} amount`,
-      dataIndex: 'amountAMin',
-      render: (amountAMin, activity) => {
-        const num = activity.tokenA === tokens.tokenA.symbol ? amountAMin : activity.amountAMin;
-        return numberWithSpaces(tokenToDecimals(num, tokens.tokenA.decimals).toFixed(6));
+      dataIndex: 'amountA',
+      render: (amountA) => {
+        return numberWithSpaces(amountA.toFixed(4));
       },
     },
     {
       title: `${tokens.tokenB.symbol} amount`,
-      dataIndex: 'amountBMin',
-      render: (amountBMin, activity) => {
-        const num = activity.tokenB === tokens.tokenB.symbol ? amountBMin : activity.amountBMin;
-        return numberWithSpaces(tokenToDecimals(num, tokens.tokenB.decimals).toFixed(6));
+      dataIndex: 'amountB',
+      render: (amountB) => {
+        return numberWithSpaces(amountB.toFixed(4));
       },
     },
     {
