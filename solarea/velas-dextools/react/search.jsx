@@ -12,10 +12,13 @@ function buildOptions(string, poolList) {
   poolList.forEach((i) => {
     const baseSymbol = i.base.symbol;
     const quoteSymbol = i.quote.symbol;
+    const label = `${quoteSymbol} / ${baseSymbol}`;
+    const lower = label.toLowerCase();
+    const toSearch = string.split(' ').filter(Boolean);
 
-    if (baseSymbol.toLowerCase().includes(string) || i.base.address === string) {
+    if (!toSearch.some((s) => !lower.includes(s)) || i.base.address === string) {
       options.push({
-        label: `${quoteSymbol} / ${baseSymbol}`,
+        label,
         pathname: `/${i.quote.address}?quote=${i.base.address}`,
       });
     }
