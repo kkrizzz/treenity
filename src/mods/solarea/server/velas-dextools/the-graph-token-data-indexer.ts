@@ -20,6 +20,6 @@ export default async function updateTokenData(app) {
   const collection = app.services['velas-dextools-token-data'];
 
   const newTokens = await loadTokenData();
-  await collection.Model.remove({});
+  await collection.Model.deleteMany({});
   await collection.Model.insertMany(newTokens);
 }

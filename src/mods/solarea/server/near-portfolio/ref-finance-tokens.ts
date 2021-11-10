@@ -68,7 +68,7 @@ async function fetchPools(pc) {
     offset += 200;
   } while (offset < numberOfPools);
 
-  await pc.Model.remove({});
+  await pc.Model.deleteMany({});
   await pc.Model.insertMany(result);
 }
 

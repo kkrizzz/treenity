@@ -277,7 +277,9 @@ export default async function applyRoutes(app) {
   const getMarkets = async ({ token }) => {
     if (!token) throw new Error('token must be specified');
 
-    let markets = await poolsCollection.Model.find({ 'base.address': token }).toArray();
+    let markets = await poolsCollection.Model.find({
+      $or: [{ 'base.address': token }, { 'quote.address': token }],
+    }).toArray();
 
     // CALCULATE PRICE CHANGES
     for (let i = 0; i < markets.length; i++) {

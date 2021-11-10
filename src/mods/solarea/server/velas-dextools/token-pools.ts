@@ -7,13 +7,13 @@ query ($after: BigInt!, $first: Int=1000) {
     _id: id
     name
     token0 {
-      id
+      address: id
       symbol
       name
       decimals
     }
     token1 {
-      id
+      address: id
       symbol
       name
       decimals

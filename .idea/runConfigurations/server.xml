@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="server" type="NodeJSConfigurationType" path-to-js-file="dist/server-dev/node/index.js" working-dir="$PROJECT_DIR$">
+  <configuration default="false" name="server" type="NodeJSConfigurationType" node-parameters="--trace-deprecation " path-to-js-file="dist/server-dev/node/index.js" working-dir="$PROJECT_DIR$">
     <envs>
       <env name="DEBUG" value="@feathersjs/transport-commons/*" />
       <env name="NODE_ENV" value="development" />
