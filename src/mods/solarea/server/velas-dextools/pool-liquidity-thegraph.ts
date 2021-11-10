@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+import { fetchVelasTheGraph } from './utils';
 
 const FIELDS = `
     amount0
@@ -43,24 +43,11 @@ export default async function updateLiquidityData(app) {
   const lastEntry = await collection.Model.findOne({}, { sort: { time: -1 } });
   const lastEntryTime = lastEntry?.time || new Date('2021-10-31T20:00:00.000Z');
   const after = Math.floor(lastEntryTime.getTime() / 1000);
-
-  const params = { query: tokenInfoQuery, variables: { after, limit: 1000 } };
-  const tokenDataFetch = await fetch('https://thegraph.wagyuswap.app/subgraphs/name/wagyu', {
-    method: 'POST',
-    cache: 'no-cache',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(params),
-  });
-
-  if (tokenDataFetch.status !== 200) {
-    throw new Error(`TheGraph: ${tokenDataFetch.status}, ${tokenDataFetch.statusText}`);
-  }
-  const bitQueryResult = await tokenDataFetch.json();
-  const { burns, mints } = bitQueryResult.data;
+  const { burns, mints } = await fetchVelasTheGraph(tokenInfoQuery, { after, limit: 1000 });
 
   const createMany = async (calls, type) => {
+    if (!calls.length) return;
+
     const toInsert = calls.map((call) => {
       const entry: any = {
         type,
@@ -77,9 +64,7 @@ export default async function updateLiquidityData(app) {
       return entry;
     });
 
-    if (toInsert.length) {
-      await collection.Model.insertMany(toInsert);
-    }
+    await collection.Model.insertMany(toInsert);
   };
 
   await createMany(burns, 'remove');

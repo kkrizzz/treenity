@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { fetchVelasTheGraph } from './utils';
 
 const fetch = require('node-fetch');
 
@@ -46,21 +47,7 @@ export default async function updateTheGraphTrades(app) {
   const afterDate = lastTradeTime || new Date('2021-10-31T20:00:00.000Z');
   const after = Math.floor(afterDate.getTime() / 1000);
 
-  const params = { query: tokenInfoQuery, variables: { after } };
-  const tokenDataFetch = await fetch('https://thegraph.wagyuswap.app/subgraphs/name/wagyu', {
-    method: 'POST',
-    cache: 'no-cache',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(params),
-  });
-
-  if (tokenDataFetch.status !== 200) {
-    throw new Error(`WagyuSwap The Graph: ${tokenDataFetch.status}, ${tokenDataFetch.statusText}`);
-  }
-  const queryResult = await tokenDataFetch.json();
-  const dexTrades = queryResult.data.swaps;
+  const { swaps: dexTrades } = await fetchVelasTheGraph(tokenInfoQuery, { after });
 
   const toInsert = dexTrades
     .map((dt) => {

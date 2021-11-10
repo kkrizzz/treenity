@@ -67,7 +67,7 @@ export default async function applyRoutes(app) {
 
     try {
       const latestBigSwaps = await priceCollection.Model.find(
-        { amountUSD: { $gte: 1000 } },
+        { amountUSD: { $gte: 1000 }, side: 'SELL' },
         { limit: Number(limit), sort: { amountUSD: -1 } },
       ).toArray();
 
