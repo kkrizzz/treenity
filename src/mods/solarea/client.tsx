@@ -16,6 +16,7 @@ import { WalletProvider } from './utils/wallet';
 import WalletConnect from './components/WalletConnect';
 import SolareaProgramApi from './program-api/solarea-program-api';
 import { StorageProvider } from './storage-adapters/StorageProvider';
+import { GlobalCSSRender } from './utils/GlobalCSSRender';
 
 config.isClient = true;
 
@@ -31,6 +32,7 @@ export const solareaApi = new SolareaProgramApi();
 
 const inject = (comp) => (
   <QueryClientProvider client={queryClient}>
+    <GlobalCSSRender />
     <WalletProvider>
       <WalletConnect />
       <StorageProvider>{comp}</StorageProvider>
