@@ -29,7 +29,7 @@ add(() => {
             style={{ marginLeft: 4 }}
             title={
               <span>
-                Hot pairs <span style={{ color: 'gray', fontSize: '0.8rem' }}>(5d)</span>
+                Hot pairs <span style={{ color: 'gray', fontSize: '0.8rem' }}>(24hr)</span>
               </span>
             }
           >
@@ -86,7 +86,7 @@ add(() => {
             title={
               <span>
                 Latest important actions{' '}
-                <span style={{ color: 'gray', fontSize: '0.8rem' }}>(5d)</span>
+                <span style={{ color: 'gray', fontSize: '0.8rem' }}>(24hr)</span>
               </span>
             }
           >

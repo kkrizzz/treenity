@@ -72,7 +72,7 @@ export default async function applyRoutes(app) {
       ).toArray();
 
       const nowDate = new Date();
-      const fiveDaysAgoDate = new Date(nowDate.getTime() - 24 * 60 * 60 * 1000 * 5);
+      const fiveDaysAgoDate = new Date(nowDate.getTime() - 24 * 60 * 60 * 1000);
 
       const latestNewPools = await poolsCollection.Model.find(
         { createdAt: { $gte: fiveDaysAgoDate } },
@@ -127,7 +127,7 @@ export default async function applyRoutes(app) {
     const hottestPairs24hr = await priceCollection.Model.aggregate([
       {
         $match: {
-          time: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000 * 5) },
+          time: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
         },
       },
       {
@@ -150,7 +150,7 @@ export default async function applyRoutes(app) {
         },
       },
       {
-        $limit: 10,
+        $limit: 20,
       },
     ]).toArray();
 
