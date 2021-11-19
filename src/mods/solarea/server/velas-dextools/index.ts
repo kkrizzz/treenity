@@ -5,6 +5,7 @@ import applyRoutes from './routes';
 import updateTheGraphTrades from './dex-trades-thegraph';
 import updateTokenData from './the-graph-token-data-indexer';
 import updateTokenPools from './token-pools';
+import updateTokens from './tokens';
 
 export const indexVelasDextools = async (app) => {
   const priceCollection = app.collection('velas-dextools');
@@ -37,6 +38,7 @@ export const indexVelasDextools = async (app) => {
 
   applyRoutes(app);
 
+  await updateTokens(app);
   while (await updateTheGraphTrades(app));
   while (await updateLiquidityData(app));
   await updateTokenData(app);
