@@ -27,7 +27,7 @@ const Table = ({
             key={rowKey ? rowKey(item, index) : index}
             style={{
               cursor: onRowClick ? 'pointer' : 'default',
-              // ...(rowStyle ? rowStyle(item) : {}),
+              ...(rowStyle ? rowStyle(item) : {}),
             }}
             onClick={onRowClick ? () => onRowClick(item) : undefined}
           >
