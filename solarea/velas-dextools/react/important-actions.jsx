@@ -6,6 +6,8 @@ const Link = render('dev', 'link');
 const TimeAgo = render('dev', 'time-ago');
 const NamedHash = render('dev', 'named-hash');
 
+const { numberWithSpaces } = await require('solarea://explorer/utils');
+
 const actionsResolverByType = {
   bigSwap: (trade) => {
     const roundedQuoteAmount = Math.round(trade.amount);
@@ -65,6 +67,14 @@ const CustomTable = styled.div`
   }
 `;
 
+const ArrowContainer = styled.div`
+  cursor: pointer;
+  position: absolute;
+  right: -24px;
+  top: -2px;
+  color: var(--theme-main-content-color);
+`;
+
 const ArrowIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -88,18 +98,11 @@ const columns = [
     title: 'From',
     dataIndex: 'amount',
     render: (amount, trade) => (
-      <span>
-        {Math.round(amount)} <b>{trade.quote.symbol}</b>
-      </span>
-    ),
-  },
-  {
-    title: '',
-    dataIndex: 'base.symbol',
-
-    render: () => (
-      <div style={{ transform: 'translateX(-20px)', width: 0 }}>
-        <ArrowIcon />
+      <div style={{ position: 'relative' }}>
+        {numberWithSpaces(Math.round(amount))} <b>{trade.quote.symbol}</b>
+        <ArrowContainer>
+          <ArrowIcon />
+        </ArrowContainer>
       </div>
     ),
   },
@@ -108,7 +111,7 @@ const columns = [
     dataIndex: 'amountB',
     render: (amountB, trade) => (
       <span>
-        {Math.round(amountB)} <b>{trade.base.symbol}</b>
+        {numberWithSpaces(Math.round(amountB))} <b>{trade.base.symbol}</b>
       </span>
     ),
   },
@@ -117,14 +120,15 @@ const columns = [
     dataIndex: 'amountUSD',
     render: (amountUSD) => (
       <span>
-        {Math.round(amountUSD)}
-        <b> $</b>
+        <b>$</b>
+        {numberWithSpaces(Math.round(amountUSD))}
       </span>
     ),
   },
   {
     title: 'Maker',
     dataIndex: 'tx',
+    nonClickable: true,
     render: (tx) => (
       <div style={{ maxWidth: 120 }}>
         <NamedHash hash={tx.from.address} type="address" />
@@ -134,6 +138,7 @@ const columns = [
   {
     title: 'Tx',
     dataIndex: 'tx',
+    nonClickable: true,
     render: (tx) => (
       <div style={{ maxWidth: 120 }}>
         <Hash hash={tx.hash} type="address" />
@@ -157,6 +162,9 @@ add(() => {
         <Table
           bordered
           columns={columns}
+          onRowClick={(trade) =>
+            window.history.pushState({}, '', `/${trade.base.address}?quote=${trade.quote.address}`)
+          }
           data={importantActions.filter((a) => a.actionType === 'bigSwap')}
         />
       </CustomTable>

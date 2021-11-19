@@ -6,6 +6,7 @@ const Table = ({
   className,
   children,
   rowKey,
+  onRowClick,
 }) => {
   if (children) return <table className={className}>{children}</table>;
   return (
@@ -22,14 +23,29 @@ const Table = ({
 
       <tbody>
         {data.map((item, index) => (
-          <tr key={rowKey ? rowKey(item, index) : index} style={rowStyle && rowStyle(item)}>
-            {columns.map((column, i) => (
-              <td key={i} style={{ textAlign: column.textAlign || 'left' }}>
-                {column.render
-                  ? column.render(item[column.dataIndex], item, index, data)
-                  : item[column.dataIndex]}
-              </td>
-            ))}
+          <tr
+            key={rowKey ? rowKey(item, index) : index}
+            style={{
+              cursor: onRowClick ? 'pointer' : 'default',
+              // ...(rowStyle ? rowStyle(item) : {}),
+            }}
+            onClick={onRowClick ? () => onRowClick(item) : undefined}
+          >
+            {columns.map((column, i) => {
+              const content = column.render
+                ? column.render(item[column.dataIndex], item, index, data)
+                : item[column.dataIndex];
+
+              return (
+                <td key={i} style={{ textAlign: column.textAlign || 'left' }}>
+                  {column.nonClickable ? (
+                    <div onClick={(e) => e.stopPropagation()}>{content}</div>
+                  ) : (
+                    content
+                  )}
+                </td>
+              );
+            })}
           </tr>
         ))}
       </tbody>

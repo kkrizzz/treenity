@@ -19,7 +19,7 @@ add(({ children }) => {
         color: var(--theme-a-color) !important;
       }
 
-      @media screen and (min-width: 1216px) {
+      @media screen and (min-width: 1620px) {
         .bu-container:not(.bu-is-max-desktop) {
           max-width: 1620px;
         }

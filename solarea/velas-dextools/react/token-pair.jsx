@@ -96,7 +96,7 @@ const StyledTokenPair = styled.div`
   display: flex;
   width: max-content;
   height: 52px;
-  z-index: 10;
+  z-index: 2;
 
   .dropdown__main {
     width: max-content !important;
@@ -139,6 +139,7 @@ const StyledTokenPair = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 3;
 
     color: ${(props) => props.theme.colors.secondaryContent};
     position: absolute;
