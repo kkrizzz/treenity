@@ -45,7 +45,7 @@ const prepareOptions = (markets) =>
       text: m.quote.symbol.toLowerCase(),
       content: () => (
         <div
-          title="This token IS NOT TRUSTED. please DYOR"
+          title={m.kind === 1 ? 'This token IS NOT TRUSTED. please DYOR' : ''}
           style={{
             width: '100%',
             display: 'flex',
