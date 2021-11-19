@@ -1,7 +1,10 @@
 const { useLatestImportantActions } = await require('solarea://velas-dextools/utils');
 const Hash = render('dev', 'hash');
+const ScrollBox = render('dev', 'scroll-box');
+const Table = render('dev', 'table');
 const Link = render('dev', 'link');
 const TimeAgo = render('dev', 'time-ago');
+const NamedHash = render('dev', 'named-hash');
 
 const actionsResolverByType = {
   bigSwap: (trade) => {
@@ -36,30 +39,127 @@ const actionsResolverByType = {
   },
 };
 
+const CustomTable = styled.div`
+  thead {
+    border-bottom: 1px solid var(--theme-main-border-color);
+  }
+
+  td {
+    //color: inherit !important;
+  }
+
+  thead > tr > th {
+    color: var(--theme-main-content-color);
+  }
+
+  tbody {
+    background-color: ${(props) => props.theme.colors.subcardBG} !important;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: ${(props) => props.theme.colors.subcardBG} !important;
+  }
+
+  thead {
+    background-color: ${(props) => props.theme.colors.subcardBG} !important;
+  }
+`;
+
+const ArrowIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    className="feather feather-arrow-right"
+  >
+    <line x1="5" y1="12" x2="19" y2="12"></line>
+    <polyline points="12 5 19 12 12 19"></polyline>
+  </svg>
+);
+
+const columns = [
+  {
+    title: 'From',
+    dataIndex: 'amount',
+    render: (amount, trade) => (
+      <span>
+        {Math.round(amount)} <b>{trade.quote.symbol}</b>
+      </span>
+    ),
+  },
+  {
+    title: '',
+    dataIndex: 'base.symbol',
+
+    render: () => (
+      <div style={{ transform: 'translateX(-20px)', width: 0 }}>
+        <ArrowIcon />
+      </div>
+    ),
+  },
+  {
+    title: 'To',
+    dataIndex: 'amountB',
+    render: (amountB, trade) => (
+      <span>
+        {Math.round(amountB)} <b>{trade.base.symbol}</b>
+      </span>
+    ),
+  },
+  {
+    title: 'Total USD',
+    dataIndex: 'amountUSD',
+    render: (amountUSD) => (
+      <span>
+        {Math.round(amountUSD)}
+        <b> $</b>
+      </span>
+    ),
+  },
+  {
+    title: 'Maker',
+    dataIndex: 'tx',
+    render: (tx) => (
+      <div style={{ maxWidth: 120 }}>
+        <NamedHash hash={tx.from.address} type="address" />
+      </div>
+    ),
+  },
+  {
+    title: 'Tx',
+    dataIndex: 'tx',
+    render: (tx) => (
+      <div style={{ maxWidth: 120 }}>
+        <Hash hash={tx.hash} type="address" />
+      </div>
+    ),
+  },
+  {
+    title: 'Time',
+    dataIndex: 'time',
+    render: (time) => <TimeAgo date={time} />,
+  },
+];
+
 add(() => {
   const [importantActions, isImportantActionsLoading] = useLatestImportantActions(10);
 
+  if (isImportantActionsLoading) return <div>Loading</div>;
   return (
-    <div
-      style={{
-        fontSize: '1rem',
-        fontWeight: 500,
-      }}
-    >
-      {isImportantActionsLoading ? (
-        <div>
-          Loading ...
-          <span className="spinner-grow spinner-grow-sm m-r-4" />
-        </div>
-      ) : importantActions && importantActions.length ? (
-        importantActions.map((action, index) => (
-          <div className="bu-columns bu-is-mobile">
-            {actionsResolverByType[action.actionType](action)}
-          </div>
-        ))
-      ) : (
-        'No actions in last 5d '
-      )}
-    </div>
+    <ScrollBox>
+      <CustomTable>
+        <Table
+          bordered
+          columns={columns}
+          data={importantActions.filter((a) => a.actionType === 'bigSwap')}
+        />
+      </CustomTable>
+    </ScrollBox>
   );
 });

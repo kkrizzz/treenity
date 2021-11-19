@@ -74,8 +74,20 @@ const theme = {
     secondaryContent: 'var(--theme-main-content-color)',
     cardBG: 'var(--theme-card-bg-color)',
     border: 'var(--theme-main-border-color)',
+    linkColor: 'var(--theme-a-color)',
+    hoverLinkColor: 'var(--theme-a-hover-color)',
     wagyuswapLinkColor: 'var(--theme-wagyuswap-link-color)',
     wagyuswapLinkBg: 'var(--theme-wagyuswap-link-bg-color)',
+    success: 'var(--theme-success-color)',
+    error: 'var(--theme-error-color)',
+  },
+  addOpacity: (color, opacity) => {
+    let c = color;
+    if (c.includes('var')) {
+      const style = getComputedStyle(document.body);
+      c = style.getPropertyValue(c.replace('var(', '').replace(')', ''));
+    }
+    return `${c}${Math.round((opacity / 100) * 255).toString(16)}`;
   },
 };
 
