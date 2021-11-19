@@ -1,7 +1,11 @@
 const LastTrades = render('velas-dextools', 'last-trades');
 const PoolActivity = render('velas-dextools', 'pool-activity');
 const { toast } = await require('solarea://dev/toast');
-const { useTokenInfoFromGraph } = await require('solarea://velas-dextools/utils');
+const {
+  useTokenInfoFromGraph,
+  useTokenContractInfo,
+} = await require('solarea://velas-dextools/utils');
+const { numberWithSpaces } = await require('solarea://explorer/utils');
 const Hash = render('velas-dextools', 'hash');
 const Link = render('dev', 'link');
 const Tabs = render('velas-dextools', 'tabs');
@@ -114,6 +118,10 @@ const PriceMainSymbol = styled.span`
   color: #3c5269;
   font-weight: 700;
 `;
+const PriceCardContent = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 const PriceUSD = styled.span`
   font-size: 20px;
   font-weight: 700;
@@ -125,11 +133,18 @@ const PriceChange = styled.span`
   color: ${({ isFall }) => (isFall ? 'var(--theme-error-color)' : 'var(--theme-success-color)')};
   font-size: 0.9rem;
 `;
+const Volume = styled.span`
+  color: #a1aab3;
+  font-size: 0.9rem;
+`;
 
 add(({ token }) => {
   const { data: markets, isLoading: isMarketsLoading } = useLoadMarkets(token);
   const { quote: quoteTokenParam } = solarea.useQueryParams();
-  const [tokenDataFromGraph, isTokenDataFromGraphLoading] = useTokenInfoFromGraph(token);
+  const [tokenDataFromGraph, isTokenDataFromGraphLoading] = useTokenInfoFromGraph(
+    token,
+    quoteTokenParam,
+  );
 
   if (isMarketsLoading) return <div>Loading markets ...</div>;
   if (!markets.length) return <div>Token markets not found</div>;
@@ -157,9 +172,7 @@ add(({ token }) => {
     },
   ];
 
-  const priceChange24hrPercent = currentMarket.priceChange24hrPercent;
-  const priceChange24hrValue = currentMarket.priceChange24hrValue;
-  const isPriceFall = priceChange24hrPercent < 0;
+  const isPriceFall = tokenDataFromGraph && tokenDataFromGraph.percentChange < 0;
   return (
     <div class="p-b-8">
       <div class="bu-columns">
@@ -244,29 +257,31 @@ add(({ token }) => {
                 ) : !trades.length ? (
                   'No trades found'
                 ) : (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }}
-                  >
+                  <PriceCardContent>
                     <div>
-                      <PriceMain isFall={isPriceFall}>{Number(trades[0].qp).toFixed(8)} </PriceMain>
+                      <PriceMain isFall={isPriceFall}>
+                        {numberWithSpaces(trades[0].qp, 8)}{' '}
+                      </PriceMain>
                       <PriceMainSymbol>{quote.symbol}</PriceMainSymbol>
                     </div>
-                    <PriceChange isFall={isPriceFall}>
-                      (24hr: {priceChange24hrPercent.toFixed(2) + '%'}){' '}
-                      {Math.abs(priceChange24hrValue).toFixed(6)} {quote.symbol}
-                    </PriceChange>
                     {!isTokenDataFromGraphLoading && tokenDataFromGraph && (
                       <div>
-                        <PriceUSD isFall={isPriceFall}>
-                          {parseFloat(tokenDataFromGraph.derivedUSD).toFixed(4)}{' '}
-                        </PriceUSD>
-                        <PriceUSDSymbol>USD</PriceUSDSymbol>
+                        <PriceChange isFall={isPriceFall}>
+                          24H: {numberWithSpaces(tokenDataFromGraph.percentChange, 2) + '%'}{' '}
+                          {Math.abs(tokenDataFromGraph.priceChange).toFixed(6)} {quote.symbol}
+                        </PriceChange>
+                        <Volume>
+                          , vol: ${numberWithSpaces(currentMarket.dailyVolumeUSD.toFixed(0), 0)}
+                        </Volume>
+                        <div>
+                          <PriceUSD isFall={isPriceFall}>
+                            {parseFloat(tokenDataFromGraph.derivedUSD).toFixed(4)}{' '}
+                          </PriceUSD>
+                          <PriceUSDSymbol>USD</PriceUSDSymbol>
+                        </div>
                       </div>
                     )}
-                  </div>
+                  </PriceCardContent>
                 )}
               </div>
 

@@ -2,7 +2,7 @@ const cron = require('node-cron');
 
 import updateTokenData from './the-graph-token-data-indexer';
 import updateLiquidityData from './pool-liquidity-thegraph';
-import updateTokensData from './dex-trades';
+// import updateTokensData from './dex-trades';
 import updateTheGraphTrades from './dex-trades-thegraph';
 import updateTokenPools from './token-pools';
 

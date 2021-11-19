@@ -11,13 +11,13 @@ const FIELDS = `
     }
     pair {
       token0 {
-        id
+        address: id
         symbol
         name
         decimals
       }
       token1 {
-        id
+        address: id
         symbol
         name
         decimals
@@ -56,9 +56,9 @@ export default async function updateLiquidityData(app) {
         from: call.sender,
         tokenA: call.pair.token0,
         tokenB: call.pair.token1,
-        lastTradeAmountA: parseFloat(call.amount0),
-        lastTradeAmountB: parseFloat(call.amount1),
-        lastTradeAmountUSD: parseFloat(call.amountUSD),
+        amountA: parseFloat(call.amount0),
+        amountB: parseFloat(call.amount1),
+        amountUSD: parseFloat(call.amountUSD),
       };
 
       return entry;

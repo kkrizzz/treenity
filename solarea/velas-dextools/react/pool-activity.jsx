@@ -76,14 +76,14 @@ const Info = styled.div`
 
 add(({ market }) => {
   const { base, quote } = market;
-  const [data, isLoading] = useLiquidityPoolsActivity(base.address, quote.address, 10);
+  const [data, isLoading] = useLiquidityPoolsActivity(base.address, quote.address, 100);
 
   if (isLoading) return <Info>Loading pool activity ...</Info>;
   if (!data || !data.length) return <Info>No pool activity found</Info>;
 
   const tokens = {
-    tokenA: base.address === data[0].tokenA ? base : quote,
-    tokenB: quote.address === data[0].tokenB ? quote : base,
+    tokenA: base.address === data[0].tokenA ? quote : base,
+    tokenB: quote.address === data[0].tokenB ? base : quote,
   };
 
   const columns = [
@@ -110,16 +110,17 @@ add(({ market }) => {
     {
       title: `${tokens.tokenA.symbol} amount`,
       dataIndex: 'amountA',
-      render: (amountA) => {
-        return numberWithSpaces(amountA.toFixed(4));
-      },
+      render: (amountA) => numberWithSpaces(amountA, 4),
     },
     {
       title: `${tokens.tokenB.symbol} amount`,
       dataIndex: 'amountB',
-      render: (amountB) => {
-        return numberWithSpaces(amountB.toFixed(4));
-      },
+      render: (amountB) => numberWithSpaces(amountB, 4),
+    },
+    {
+      title: `USD amount`,
+      dataIndex: 'amountUSD',
+      render: (amountUSD) => '$' + numberWithSpaces(amountUSD, 2),
     },
     {
       title: 'From',

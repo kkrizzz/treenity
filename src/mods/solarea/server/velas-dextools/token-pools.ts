@@ -1,4 +1,4 @@
-// Created with Studio 3T, the IDE for MongoDB - https://studio3t.com/
+import sumBy from 'lodash/sumBy';
 import { fetchVelasTheGraph } from './utils';
 
 const QUERY = `
@@ -17,6 +17,10 @@ query ($after: BigInt!, $first: Int=1000) {
       symbol
       name
       decimals
+    }
+    pairHourData(first: 24, orderBy:hourStartUnix, orderDirection:desc) {
+      hourlyVolumeUSD
+      hourlyTxns
     }
     totalSupply
     totalTransactions
@@ -59,6 +63,8 @@ export default async function updateTokenPools(app) {
         priceB: pair.token1Price,
         txs: pair.totalTransactions,
         supply: pair.totalSupply,
+        dailyVolumeUSD: sumBy(pair.pairHourData, (d: any) => parseFloat(d.hourlyVolumeUSD)),
+        dailyTxns: sumBy(pair.pairHourData, (d: any) => parseFloat(d.hourlyTxns)),
       };
       const result = await poolsCollection.replaceOne({ _id: pair._id }, item);
       if (!result.result.nModified) {

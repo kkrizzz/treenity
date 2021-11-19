@@ -6,7 +6,7 @@ const { numberWithSpaces } = await require('solarea://explorer/utils');
 const nameStyle = { color: '#A1AAB3', fontWeight: 500 };
 const valueStyle = { fontWeight: 700 };
 const Line = ({ name, children }) => (
-  <div className="bu-columns bu-is-mobile">
+  <div className="bu-columns bu-is-mobile" style={{ lineHeight: '1rem' }}>
     <div className="bu-column" style={nameStyle}>
       {name}
     </div>
@@ -37,11 +37,14 @@ const MarketData = ({ market }) => {
       }}
     >
       {/*{poolBalances.map((i) => (*/}
-      {/*  <Line name={`Pooled ${i.currency.symbol}`}>{numberWithSpaces(i.value.toFixed(4))}</Line>*/}
+      {/*  <Line name={`Pooled ${i.currency.symbol}`}>{numberWithSpaces(i.value, 4)}</Line>*/}
       {/*))}*/}
-      {/*<Line name="Total trades">{numberWithSpaces(totalTrades)}</Line>*/}
-      <Line name={`${market.base.symbol} holders`}>{numberWithSpaces(holders)}</Line>
-      <Line name={`${market.base.symbol} supply`}>{numberWithSpaces(totalSupply)}</Line>
+      <Line name="Liquidity USD">${numberWithSpaces(market.amountUSD, 2)}</Line>
+      <Line name="Total trades">{numberWithSpaces(market.txs)}</Line>
+      <Line name={`Pooled ${market.base.symbol}`}>{numberWithSpaces(market.amountA, 2)}</Line>
+      <Line name={`Pooled ${market.quote.symbol}`}>{numberWithSpaces(market.amountB, 2)}</Line>
+      <Line name={`${market.base.symbol} holders`}>{numberWithSpaces(tokenData.holders)}</Line>
+      <Line name={`${market.base.symbol} supply`}>{numberWithSpaces(tokenData.supply, 2)}</Line>
     </div>
   );
 };

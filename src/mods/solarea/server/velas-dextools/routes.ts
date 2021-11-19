@@ -1,4 +1,5 @@
 import memoize from 'lodash/memoize';
+
 const CachedLookup = require('cached-lookup');
 
 async function aggregateCandles(priceCollection, base, quote, from, to, interval) {
@@ -41,17 +42,53 @@ async function aggregateCandles(priceCollection, base, quote, from, to, interval
   ]).toArray();
 }
 
+async function calc24PriceChange(priceCollection, quote, base) {
+  let latestMarketTrade = await priceCollection.Model.findOne(
+    {
+      'base.address': base,
+      'quote.address': quote,
+    },
+    { sort: { time: -1 } },
+  );
+
+  const latestMarketTrade24hrAgoDate = new Date();
+  latestMarketTrade24hrAgoDate.setDate(latestMarketTrade24hrAgoDate.getDate() - 1); // yesterday
+
+  let trade24hrAgo = await priceCollection.Model.findOne(
+    {
+      'base.address': base,
+      'quote.address': quote,
+      time: { $gte: latestMarketTrade24hrAgoDate },
+    },
+    { sort: { time: 1 } },
+  );
+
+  trade24hrAgo = trade24hrAgo || latestMarketTrade;
+  const price = latestMarketTrade ? trade24hrAgo.qp - latestMarketTrade.qp : 0;
+  const percent = latestMarketTrade ? (price / latestMarketTrade.qp) * 100 : 0;
+  return {
+    price,
+    percent,
+  };
+}
+
 export default async function applyRoutes(app) {
   const priceCollection = app.services['velas-dextools-thegraph-swaps'];
   const poolsCollection = app.services['velas-dextools-pools'];
   const liquidityCollection = app.services['velas-dextools-liquidity'];
   const tokenCollection = app.services['velas-dextools-token-data'];
 
-  app.get('/api/velas/token/:token/data', async (req, res) => {
-    const { token } = req.params;
+  app.get('/api/velas/token/:token/:base/data', async (req, res) => {
+    const { token, base } = req.params;
     if (!token) return res.status(404).send('No token name provided');
 
-    return res.send(await tokenCollection.Model.findOne({ address: token }));
+    const tokenData = await tokenCollection.Model.findOne({ address: token });
+
+    const changeData = await calc24PriceChange(priceCollection, token, base);
+    tokenData.priceChange = changeData.price;
+    tokenData.percentChange = changeData.percent;
+
+    return res.send(tokenData);
   });
 
   app.get('/api/velas/poollist', async (req, res) => {
@@ -66,16 +103,14 @@ export default async function applyRoutes(app) {
     const { limit = 0 } = req.query;
 
     try {
+      const fromDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
       const latestBigSwaps = await priceCollection.Model.find(
-        { amountUSD: { $gte: 1000 }, side: 'SELL' },
+        { amountUSD: { $gte: 1000 }, time: { $gte: fromDate }, side: 'SELL' },
         { limit: Number(limit), sort: { amountUSD: -1 } },
       ).toArray();
 
-      const nowDate = new Date();
-      const fiveDaysAgoDate = new Date(nowDate.getTime() - 24 * 60 * 60 * 1000);
-
       const latestNewPools = await poolsCollection.Model.find(
-        { createdAt: { $gte: fiveDaysAgoDate } },
+        { createdAt: { $gte: fromDate } },
         { limit: Number(limit), sort: { createdAt: -1 } },
       ).toArray();
 
@@ -113,8 +148,8 @@ export default async function applyRoutes(app) {
     const liquidity = await liquidityCollection.Model.find(
       {
         $or: [
-          { tokenA: base, tokenB: quote },
-          { tokenA: quote, tokenB: base },
+          { 'tokenA.address': quote, 'tokenB.address': base },
+          { 'tokenA.address': base, 'tokenB.address': quote },
         ],
       },
       { sort: { time: -1 }, limit: parseInt(limit), offset: parseInt(offset) },
@@ -281,38 +316,21 @@ export default async function applyRoutes(app) {
       $or: [{ 'base.address': token }, { 'quote.address': token }],
     }).toArray();
 
-    // CALCULATE PRICE CHANGES
-    for (let i = 0; i < markets.length; i++) {
-      const market = markets[i];
+    markets = markets.map((m) => {
+      if (m.base.address === token) return m;
 
-      let latestMarketTrade = await priceCollection.Model.findOne(
-        {
-          'base.address': market.base.address,
-          'quote.address': market.quote.address,
-        },
-        { sort: { time: -1 } },
-      );
-
-      const latestMarketTrade24hrAgoDate = new Date();
-      latestMarketTrade24hrAgoDate.setDate(latestMarketTrade24hrAgoDate.getDate() - 1); // yesterday
-
-      let trade24hrAgo = await priceCollection.Model.findOne(
-        {
-          'base.address': market.base.address,
-          'quote.address': market.quote.address,
-          time: { $gte: latestMarketTrade24hrAgoDate },
-        },
-        { sort: { time: 1 } },
-      );
-
-      trade24hrAgo = trade24hrAgo || latestMarketTrade;
-      market.priceChange24hrValue = latestMarketTrade ? trade24hrAgo.qp - latestMarketTrade.qp : 0;
-      market.priceChange24hrPercent = latestMarketTrade
-        ? (market.priceChange24hrValue / latestMarketTrade.qp) * 100
-        : 0;
-
-      delete market._id;
-    }
+      return {
+        ...m,
+        base: m.quote,
+        quote: m.base,
+        amountA: m.amountB,
+        amountB: m.amountA,
+        volumeA: m.volumeB,
+        volumeB: m.volumeA,
+        priceA: m.priceB,
+        priceB: m.priceA,
+      };
+    });
 
     return markets;
   };
