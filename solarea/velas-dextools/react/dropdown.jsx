@@ -14,9 +14,7 @@ const DropDown = ({ options = [], defaultValue, onChange, value }) => {
   const currentOption = value
     ? options.find((option) => option.value === value)
     : privateCurrentOption;
-  const filteredOptions = query
-    ? options.filter(({ text }) => text.includes(query.toLowerCase()))
-    : options;
+  const filteredOptions = query ? options.filter(({ text }) => text.includes(query)) : options;
 
   const handleClickOutside = (e) => {
     if (isOpen && dropDownContainerRef && !dropDownContainerRef.current.contains(e.target)) {
@@ -52,7 +50,7 @@ const DropDown = ({ options = [], defaultValue, onChange, value }) => {
           className="dropdown__search"
           value={query}
           placeholder="Filter"
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value.toLowerCase())}
         />
 
         {filteredOptions.map((option) => (
