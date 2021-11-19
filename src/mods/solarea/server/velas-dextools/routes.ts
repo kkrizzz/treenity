@@ -76,7 +76,7 @@ export default async function applyRoutes(app) {
   const priceCollection = app.services['velas-dextools-thegraph-swaps'];
   const poolsCollection = app.services['velas-dextools-pools'];
   const liquidityCollection = app.services['velas-dextools-liquidity'];
-  const tokenCollection = app.services['velas-dextools-token-data'];
+  const tokenCollection = app.services['velas-dextools-tokens'];
 
   app.get('/api/velas/token/:token/:base/data', async (req, res) => {
     const { token, base } = req.params;

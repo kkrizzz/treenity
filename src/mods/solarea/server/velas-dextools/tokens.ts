@@ -9,6 +9,8 @@ query ($skip: Int!, $first: Int=1000) {
     decimals
     totalLiquidity
     totalTransactions
+    derivedUSD
+    tradeVolumeUSD
   }
 }
 `;
@@ -28,6 +30,8 @@ async function updateTokens(app) {
       const item = {
         ...token,
         totalLiquidity: parseFloat(token.totalLiquidity),
+        derivedUSD: parseFloat(token.derivedUSD),
+        tradeVolumeUSD: parseFloat(token.tradeVolumeUSD),
         totalTransactions: parseInt(token.totalTransactions),
         decimals: parseInt(token.decimals),
       };
