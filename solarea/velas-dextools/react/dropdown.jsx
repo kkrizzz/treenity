@@ -8,14 +8,15 @@ const DropDown = ({ options = [], defaultValue, onChange, value }) => {
   const dropDownContainerRef = React.useRef(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [query, setQuery] = React.useState('');
-  const [privatCurrentOption, setCurrentOption] = React.useState(
+  const [privateCurrentOption, setCurrentOption] = React.useState(
     options.find((option) => option.value === defaultValue),
   );
   const currentOption = value
     ? options.find((option) => option.value === value)
-    : privatCurrentOption;
-  const validator = query ? new RegExp(`${query}`, 'i') : null;
-  const filteredOptions = validator ? options.filter(({ text }) => validator.test(text)) : options;
+    : privateCurrentOption;
+  const filteredOptions = query
+    ? options.filter(({ text }) => text.includes(query.toLowerCase()))
+    : options;
 
   const handleClickOutside = (e) => {
     if (isOpen && dropDownContainerRef && !dropDownContainerRef.current.contains(e.target)) {

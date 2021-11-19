@@ -42,7 +42,7 @@ const prepareOptions = (markets) =>
     .sort((m1, m2) => m2.kind - m1.kind)
     .map((m) => ({
       value: m.quote.address,
-      text: m.quote.symbol,
+      text: m.quote.symbol.toLowerCase(),
       content: () => (
         <div
           title="This token IS NOT TRUSTED. please DYOR"
