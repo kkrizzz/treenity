@@ -2,8 +2,8 @@ import sumBy from 'lodash/sumBy';
 import { fetchVelasTheGraph } from './utils';
 
 const QUERY = `
-query ($after: BigInt!, $first: Int=1000) {
-  pairs(first: $first, where: {timestamp_gt:$after}, orderBy:timestamp, orderDirection: asc) {
+query ($skip: Int!, $first: Int=1000) {
+  pairs(first: $first, skip: $skip, orderBy:timestamp, orderDirection: asc) {
     _id: id
     name
     token0 {
@@ -38,16 +38,28 @@ query ($after: BigInt!, $first: Int=1000) {
 }
 `;
 
-export default async function updateTokenPools(app) {
+async function updateTokenPools(app) {
   const poolsCollection = app.services['velas-dextools-pools'].Model;
-  let after = 0;
+  const tokensCollection = app.services['velas-dextools-tokens'].Model;
+  let skip = 0;
   let pairs;
+
+  const tokens = await tokensCollection.find({}).toArray();
+
   while (true) {
-    ({ pairs } = await fetchVelasTheGraph(QUERY, { after }));
+    ({ pairs } = await fetchVelasTheGraph(QUERY, { skip }));
     if (!pairs.length) break;
 
     for (let i = 0; i < pairs.length; i++) {
       const pair = pairs[i];
+
+      // calc token kind
+      const token0 = tokens.find((t) => t._id === pair.token0.address);
+      const token1 = tokens.find((t) => t._id === pair.token1.address);
+      const token0Kind = token0?.kind ?? 1;
+      const token1Kind = token1?.kind ?? 1;
+      const kind = Math.min(token0Kind, token1Kind);
+
       const item: any = {
         name: pair.name,
         base: pair.token0,
@@ -65,6 +77,7 @@ export default async function updateTokenPools(app) {
         supply: pair.totalSupply,
         dailyVolumeUSD: sumBy(pair.pairHourData, (d: any) => parseFloat(d.hourlyVolumeUSD)),
         dailyTxns: sumBy(pair.pairHourData, (d: any) => parseFloat(d.hourlyTxns)),
+        kind,
       };
       const result = await poolsCollection.replaceOne({ _id: pair._id }, item);
       if (!result.result.nModified) {
@@ -73,6 +86,8 @@ export default async function updateTokenPools(app) {
       }
     }
 
-    after = pairs[pairs.length - 1].timestamp;
+    skip += pairs.length;
   }
 }
+
+export default updateTokenPools;

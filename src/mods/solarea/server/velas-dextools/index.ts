@@ -12,6 +12,7 @@ export const indexVelasDextools = async (app) => {
   const liquidityCollection = app.collection('velas-dextools-liquidity');
   app.collection('velas-dextools-thegraph-swaps');
   app.collection('velas-dextools-token-data');
+  app.collection('velas-dextools-tokens');
 
   priceCollection.Model.createIndex({
     'base.address': 1,

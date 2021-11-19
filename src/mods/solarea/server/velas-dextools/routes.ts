@@ -93,7 +93,7 @@ export default async function applyRoutes(app) {
 
   app.get('/api/velas/poollist', async (req, res) => {
     try {
-      res.send(await poolsCollection.Model.find().toArray());
+      res.send(await poolsCollection.Model.find({ kind: { $gt: 0 } }).toArray());
     } catch (e) {
       res.statusCode(500).send('Pool list not found');
     }
@@ -110,7 +110,7 @@ export default async function applyRoutes(app) {
       ).toArray();
 
       const latestNewPools = await poolsCollection.Model.find(
-        { createdAt: { $gte: fromDate } },
+        { createdAt: { $gte: fromDate }, kind: { $gt: 0 } },
         { limit: Number(limit), sort: { createdAt: -1 } },
       ).toArray();
 
@@ -314,6 +314,7 @@ export default async function applyRoutes(app) {
 
     let markets = await poolsCollection.Model.find({
       $or: [{ 'base.address': token }, { 'quote.address': token }],
+      kind: { $gt: 0 },
     }).toArray();
 
     markets = markets.map((m) => {
