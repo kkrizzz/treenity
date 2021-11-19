@@ -130,6 +130,23 @@ const DropDownContainer = styled.div`
     //animation: growDown 300ms ease-in-out forwards;
   }
 
+  & > .dropdown__options::-webkit-scrollbar {
+    height: 0;
+    width: 10px;
+    background-color: var(--theme-card-bg-color);
+    border-radius: 10px;
+  }
+  & > .dropdown__options::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: var(--theme-main-content-color);
+    height: 100px;
+  }
+
+  & > .dropdown__options::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: var(--theme-card-bg-color);
+  }
+
   &.dropdown__container_open > .dropdown__options {
     display: flex;
   }
