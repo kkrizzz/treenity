@@ -141,12 +141,13 @@ const Volume = styled.span`
 add(({ token }) => {
   const { data: markets, isLoading: isMarketsLoading } = useLoadMarkets(token);
   const { quote: quoteTokenParam } = solarea.useQueryParams();
+  const { data: quoteMarkets, isLoading: isQuoteMarketsLoading } = useLoadMarkets(quoteTokenParam);
   const [tokenDataFromGraph, isTokenDataFromGraphLoading] = useTokenInfoFromGraph(
-    token,
-    quoteTokenParam,
+      token,
+      quoteTokenParam,
   );
 
-  if (isMarketsLoading) return <div>Loading markets ...</div>;
+  if (isMarketsLoading || isQuoteMarketsLoading) return <div>Loading markets ...</div>;
   if (!markets.length) return <div>Token markets not found</div>;
 
   const [currentMarket, setMarket] = React.useState(markets[0]);
@@ -198,16 +199,12 @@ add(({ token }) => {
 
             <TokenPair
               className="bu-ml-4"
-              base={base.symbol}
-              markets={markets}
-              currentMarket={currentMarket.market}
-              onSwap={() =>
-                window.history.pushState({}, '', `/${quote.address}?quote=${base.address}`)
-              }
-              onMarketChange={(value) => {
-                const targetMarket = markets.find((m) => m.market === value);
-                setMarket(targetMarket);
-                insertUrlParam('quote', targetMarket.quote.address);
+              base={base}
+              quote={quote}
+              baseMarkets={markets}
+              quoteMarkets={quoteMarkets}
+              onMarketChange={(baseAddress, quoteAddress) => {
+                window.history.pushState({}, '', `/${baseAddress}?quote=${quoteAddress}`);
               }}
             />
             <HeaderHash

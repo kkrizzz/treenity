@@ -98,7 +98,10 @@ const Search = ({ onChange }) => {
   );
 
   return (
-    <p className="bu-control bu-has-icons-right explorer-layout-input">
+    <p
+      className="bu-control bu-has-icons-right explorer-layout-input bu-column bu-is-5"
+      style={{ paddingLeft: 0 }}
+    >
       <div class={`bu-dropdown ${results.length ? 'bu-is-active' : ''}`} style={{ width: '100%' }}>
         <div style={{ flex: 1 }}>
           <input
@@ -108,11 +111,20 @@ const Search = ({ onChange }) => {
             aria-haspopup="true"
             aria-controls="search-dropdown"
             value={value}
-            style={{ paddingLeft: 40 }}
+            style={{ padding: '16px 16px 16px 47px', height: 'auto' }}
             onChange={onSetValue}
             onKeyPress={(evt) => evt.code === 'Enter' && doSearch()}
           />
-          <span class="bu-icon bu-is-left" style={{ top: 2, left: 2 }}>
+          <span
+            class="bu-icon bu-is-left"
+            style={{
+              top: 20,
+              left: 16,
+              color: 'var(--theme-a-hover-color)',
+              height: 22,
+              width: 15,
+            }}
+          >
             <div onClick={doSearch}>
               <Render id="icons" name="search" />
             </div>

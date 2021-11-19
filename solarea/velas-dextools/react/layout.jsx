@@ -18,6 +18,12 @@ add(({ children }) => {
         background: transparent !important;
         color: var(--theme-a-color) !important;
       }
+
+      @media screen and (min-width: 1216px) {
+        .bu-container:not(.bu-is-max-desktop) {
+          max-width: 1620px;
+        }
+      }
     `,
   );
 
