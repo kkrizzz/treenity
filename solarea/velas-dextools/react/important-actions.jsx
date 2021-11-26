@@ -5,41 +5,185 @@ const Table = render('dev', 'table');
 const Link = render('dev', 'link');
 const TimeAgo = render('dev', 'time-ago');
 const NamedHash = render('dev', 'named-hash');
+const Tabs = render('velas-dextools', 'tabs');
 
 const { numberWithSpaces } = await require('solarea://explorer/utils');
 
-const actionsResolverByType = {
-  bigSwap: (trade) => {
-    const roundedQuoteAmount = Math.round(trade.amount);
-    const actionText = `Swapped ${roundedQuoteAmount} ${trade.quote.symbol} for ${(
-      (1 / trade.qp) *
-      roundedQuoteAmount
-    ).toFixed(4)} ${trade.base.symbol}`;
-    return (
-      <>
-        <div className="bu-column bu-is-8" style={{ fontWeight: 700, color: '#464646' }}>
-          <Link to={`/${trade.base.address}?quote=${trade.quote.address}`}>{actionText}</Link>
-        </div>
-        <div className="bu-column bu-is-4">
-          <TimeAgo date={trade.time} />
-        </div>
-      </>
-    );
+const swapColumns = [
+  {
+    title: 'From',
+    dataIndex: 'amount',
+    render: (amount, trade) => (
+      <div style={{ position: 'relative' }}>
+        {numberWithSpaces(Math.round(amount))} <b>{trade.quote.symbol}</b>
+        <ArrowContainer>
+          <ArrowIcon />
+        </ArrowContainer>
+      </div>
+    ),
   },
-  newPool: ({ base, quote, createdAt }) => {
-    const actionText = `New pool ${base.symbol}/${quote.symbol} created`;
-    return (
-      <>
-        <div className="bu-column bu-is-8" style={{ fontWeight: 700, color: '#464646' }}>
-          <Link to={`/${base.address}?quote=${quote.address}`}>{actionText}</Link>
-        </div>
-        <div className="bu-column bu-is-4">
-          <TimeAgo date={createdAt} />
-        </div>
-      </>
-    );
+  {
+    title: 'To',
+    dataIndex: 'amountB',
+    render: (amountB, trade) => (
+      <span>
+        {numberWithSpaces(Math.round(amountB))} <b>{trade.base.symbol}</b>
+      </span>
+    ),
   },
-};
+  {
+    title: 'Total USD',
+    dataIndex: 'amountUSD',
+    render: (amountUSD) => (
+      <span>
+        <b>$</b>
+        {numberWithSpaces(Math.round(amountUSD))}
+      </span>
+    ),
+  },
+  {
+    title: 'Maker',
+    dataIndex: 'tx',
+    nonClickable: true,
+    render: (tx) => (
+      <div style={{ maxWidth: 120 }}>
+        <Hash
+          hash={tx.from.address}
+          type="custom"
+          customLink={`//velas.solarea.io/address/${tx.from.address}`}
+        />
+      </div>
+    ),
+  },
+  {
+    title: 'Tx',
+    dataIndex: 'tx',
+    nonClickable: true,
+    render: (tx) => (
+      <div style={{ maxWidth: 120 }}>
+        <Hash type="custom" hash={tx.hash} customLink={`//velas.solarea.io/tx/${tx.hash}`} />
+      </div>
+    ),
+  },
+  {
+    title: 'Time',
+    dataIndex: 'time',
+    render: (time) => <TimeAgo date={time} />,
+  },
+];
+
+const poolsColumns = [
+  {
+    title: 'Pair',
+    dataIndex: 'base',
+    render: (_, { base, quote }) => (
+      <div style={{ fontWeight: 700 }}>
+        <Link to={`/${base.address}?quote=${quote.address}`}>
+          {base.symbol}/{quote.symbol}
+        </Link>
+      </div>
+    ),
+  },
+  {
+    title: 'Activity',
+    dataIndex: 'base',
+    render: () => <div>Created</div>,
+  },
+  {
+    title: 'Time',
+    dataIndex: 'createdAt',
+    render: (createdAt) => <TimeAgo date={createdAt} />,
+  },
+  {
+    title: 'Liquidity USD',
+    dataIndex: 'amountUSD',
+    render: (amountUSD) => (
+      <span>
+        <b>$</b>
+        {numberWithSpaces(Math.round(amountUSD))}
+      </span>
+    ),
+  },
+];
+
+add(() => {
+  const [importantActions, isImportantActionsLoading] = useLatestImportantActions(10);
+
+  if (isImportantActionsLoading) return <div>Loading</div>;
+
+  const tabs = [
+    {
+      name: 'Big swaps',
+      content: () => (
+        <ScrollBox>
+          <CustomTable>
+            <Table
+              bordered
+              columns={swapColumns}
+              onRowClick={(trade) =>
+                window.history.pushState(
+                  {},
+                  '',
+                  `/${trade.base.address}?quote=${trade.quote.address}`,
+                )
+              }
+              data={importantActions.filter((a) => a.actionType === 'bigSwap')}
+            />
+          </CustomTable>
+        </ScrollBox>
+      ),
+    },
+    {
+      name: 'Pools activity',
+      content: () => (
+        <ScrollBox>
+          <CustomTable>
+            <Table
+              bordered
+              columns={poolsColumns}
+              data={importantActions.filter((a) => a.actionType === 'newPool')}
+              onRowClick={(trade) =>
+                window.history.pushState(
+                  {},
+                  '',
+                  `/${trade.base.address}?quote=${trade.quote.address}`,
+                )
+              }
+            />
+          </CustomTable>
+        </ScrollBox>
+      ),
+    },
+    // {
+    //   name: 'Pools activity2',
+    //   content: () => (
+    //     <div style={{ fontSize: 14, padding: '8px 16px 16px 16px' }}>
+    //       <div
+    //         className="bu-columns"
+    //         style={{ fontWeight: 700, color: 'var(--theme-main-content-color)' }}
+    //       >
+    //         <div className="bu-column bu-is-8">Activity</div>
+    //         <div className="bu-column bu-is-4">Time</div>
+    //       </div>
+    //       {importantActions.map(({ base, quote, createdAt }) => (
+    //         <div className="bu-columns">
+    //           <div className="bu-column bu-is-8" style={{ fontWeight: 700, color: '#464646' }}>
+    //             <Link
+    //               to={`/${base.address}?quote=${quote.address}`}
+    //             >{`New pool ${base.symbol}/${quote.symbol} created`}</Link>
+    //           </div>
+    //           <div className="bu-column bu-is-4">
+    //             <TimeAgo date={createdAt} />
+    //           </div>
+    //         </div>
+    //       ))}
+    //     </div>
+    //   ),
+    // },
+  ];
+
+  return <Tabs tabs={tabs} />;
+});
 
 const CustomTable = styled.div`
   thead {
@@ -92,82 +236,3 @@ const ArrowIcon = () => (
     <polyline points="12 5 19 12 12 19"></polyline>
   </svg>
 );
-
-const columns = [
-  {
-    title: 'From',
-    dataIndex: 'amount',
-    render: (amount, trade) => (
-      <div style={{ position: 'relative' }}>
-        {numberWithSpaces(Math.round(amount))} <b>{trade.quote.symbol}</b>
-        <ArrowContainer>
-          <ArrowIcon />
-        </ArrowContainer>
-      </div>
-    ),
-  },
-  {
-    title: 'To',
-    dataIndex: 'amountB',
-    render: (amountB, trade) => (
-      <span>
-        {numberWithSpaces(Math.round(amountB))} <b>{trade.base.symbol}</b>
-      </span>
-    ),
-  },
-  {
-    title: 'Total USD',
-    dataIndex: 'amountUSD',
-    render: (amountUSD) => (
-      <span>
-        <b>$</b>
-        {numberWithSpaces(Math.round(amountUSD))}
-      </span>
-    ),
-  },
-  {
-    title: 'Maker',
-    dataIndex: 'tx',
-    nonClickable: true,
-    render: (tx) => (
-      <div style={{ maxWidth: 120 }}>
-        <NamedHash hash={tx.from.address} type="address" />
-      </div>
-    ),
-  },
-  {
-    title: 'Tx',
-    dataIndex: 'tx',
-    nonClickable: true,
-    render: (tx) => (
-      <div style={{ maxWidth: 120 }}>
-        <Hash hash={tx.hash} type="address" />
-      </div>
-    ),
-  },
-  {
-    title: 'Time',
-    dataIndex: 'time',
-    render: (time) => <TimeAgo date={time} />,
-  },
-];
-
-add(() => {
-  const [importantActions, isImportantActionsLoading] = useLatestImportantActions(10);
-
-  if (isImportantActionsLoading) return <div>Loading</div>;
-  return (
-    <ScrollBox>
-      <CustomTable>
-        <Table
-          bordered
-          columns={columns}
-          onRowClick={(trade) =>
-            window.history.pushState({}, '', `/${trade.base.address}?quote=${trade.quote.address}`)
-          }
-          data={importantActions.filter((a) => a.actionType === 'bigSwap')}
-        />
-      </CustomTable>
-    </ScrollBox>
-  );
-});
