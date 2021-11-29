@@ -13,8 +13,6 @@ export const addStyle = (css: string, id: string) => {
     return;
   }
 
-  console.log(globalStyles.length, '---- add ' + id);
-
   globalStyles.push({ css, id, count: 1 });
   if (updateGlobalStyles) updateGlobalStyles();
   else console.error('updateGlobalStyles is null');
@@ -24,17 +22,10 @@ export const removeStyle = (id: string) => {
   const styleIndex = globalStyles.findIndex((style) => style.id === id);
   if (!styleIndex) return;
   if (--globalStyles[styleIndex].count === 0) {
-    console.log(globalStyles.length, '---- remove ', id);
-
     globalStyles.splice(styleIndex, 1);
     if (updateGlobalStyles) updateGlobalStyles();
     else console.error('updateGlobalStyles is null');
-  } else
-    console.log(
-      globalStyles.length,
-      '---- decrease ' + id,
-      ' - count: ' + globalStyles[styleIndex].count,
-    );
+  }
 };
 
 const GlobalStyle = createGlobalStyle`
