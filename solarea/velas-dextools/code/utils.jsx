@@ -16,10 +16,11 @@ exports.useLatestTokenTrades = (quote, base) => {
   return [data, isLoading];
 };
 
-exports.useLatestImportantActions = (limit) => {
+exports.useLatestImportantActions = (limit, type = 'any') => {
   const { data, isLoading } = solarea.useQuery(
-    ['latest_actions', limit],
-    () => fetch(`/api/velas/importantactions?limit=${limit}`).then((res) => res.json()),
+    ['latest_actions', limit, type],
+    () =>
+      fetch(`/api/velas/importantactions?limit=${limit}&type=${type}`).then((res) => res.json()),
     { refetchInterval: 30000 },
   );
 

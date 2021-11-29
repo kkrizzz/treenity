@@ -100,32 +100,42 @@ export default async function applyRoutes(app) {
   });
 
   app.get('/api/velas/importantactions', async (req, res) => {
-    const { limit = 0 } = req.query;
+    const { limit = 10, type = 'any' } = req.query as {
+      limit?: number;
+      type?: 'any' | 'bigSwaps' | 'newPools';
+    };
 
     try {
       const fromDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      const latestBigSwaps = await priceCollection.Model.find(
-        { amountUSD: { $gte: 1000 }, time: { $gte: fromDate }, side: 'SELL' },
-        { limit: Number(limit), sort: { amountUSD: -1 } },
-      ).toArray();
-
-      const latestNewPools = await poolsCollection.Model.find(
-        { createdAt: { $gte: fromDate }, kind: { $gt: 0 } },
-        { limit: Number(limit), sort: { createdAt: -1 } },
-      ).toArray();
-
-      latestBigSwaps.forEach((i) => (i.actionType = 'bigSwap'));
-      latestNewPools.forEach((i) => (i.actionType = 'newPool'));
 
       let filteredPools: any = [];
+      let latestBigSwaps: any = [];
 
-      latestNewPools.forEach((pool) => {
-        const inFilteredArrayIndex = filteredPools.findIndex((item) => {
-          const inLabel = [item.base.address, item.quote.address];
-          return inLabel.includes(pool.base.address) && inLabel.includes(pool.quote.address);
+      if (type === 'any' || type === 'bigSwaps') {
+        latestBigSwaps = await priceCollection.Model.find(
+          { amountUSD: { $gte: 1000 }, time: { $gte: fromDate }, side: 'SELL' },
+          { limit: Number(limit), sort: { amountUSD: -1 } },
+        ).toArray();
+        latestBigSwaps.forEach((i) => (i.actionType = 'bigSwap'));
+        if (type === 'bigSwaps') return latestBigSwaps;
+      }
+
+      if (type === 'any' || type === 'newPools') {
+        const latestNewPools = await poolsCollection.Model.find(
+          { createdAt: { $gte: fromDate }, kind: { $gt: 0 } },
+          { limit: Number(limit), sort: { createdAt: -1 } },
+        ).toArray();
+        latestNewPools.forEach((i) => (i.actionType = 'newPool'));
+
+        latestNewPools.forEach((pool) => {
+          const inFilteredArrayIndex = filteredPools.findIndex((item) => {
+            const inLabel = [item.base.address, item.quote.address];
+            return inLabel.includes(pool.base.address) && inLabel.includes(pool.quote.address);
+          });
+          if (inFilteredArrayIndex === -1) filteredPools.push(pool);
         });
-        if (inFilteredArrayIndex === -1) filteredPools.push(pool);
-      });
+        if (type === 'newPools') return filteredPools;
+      }
 
       const actions = latestBigSwaps.concat(filteredPools).sort((a, b) => {
         const aTime = a.time || a.createdAt;

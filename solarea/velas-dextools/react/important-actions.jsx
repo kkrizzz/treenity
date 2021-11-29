@@ -4,7 +4,6 @@ const ScrollBox = render('dev', 'scroll-box');
 const Table = render('dev', 'table');
 const Link = render('dev', 'link');
 const TimeAgo = render('dev', 'time-ago');
-const NamedHash = render('dev', 'named-hash');
 const Tabs = render('velas-dextools', 'tabs');
 
 const { numberWithSpaces } = await require('solarea://explorer/utils');
@@ -107,9 +106,10 @@ const poolsColumns = [
 ];
 
 add(() => {
-  const [importantActions, isImportantActionsLoading] = useLatestImportantActions(10);
+  const [bigSwaps, isBigSwapsLoading] = useLatestImportantActions(10, 'bigSwaps');
+  const [newPools, isNewPoolsLoading] = useLatestImportantActions(10, 'newPools');
 
-  if (isImportantActionsLoading) return <div>Loading</div>;
+  if (isBigSwapsLoading) return <div>Loading</div>;
 
   const tabs = [
     {
@@ -127,7 +127,7 @@ add(() => {
                   `/${trade.base.address}?quote=${trade.quote.address}`,
                 )
               }
-              data={importantActions.filter((a) => a.actionType === 'bigSwap')}
+              data={bigSwaps}
             />
           </CustomTable>
         </ScrollBox>
@@ -141,7 +141,7 @@ add(() => {
             <Table
               bordered
               columns={poolsColumns}
-              data={importantActions.filter((a) => a.actionType === 'newPool')}
+              data={newPools}
               onRowClick={(trade) =>
                 window.history.pushState(
                   {},
