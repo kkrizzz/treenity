@@ -24,6 +24,17 @@ add(({ children }) => {
           max-width: 1620px;
         }
       }
+      @media screen and (min-width: 1216px) {
+        .bu-container:not(.bu-is-max-desktop) {
+          max-width: calc(100vw - 100px);
+        }
+      }
+
+      @media screen and (max-width: 1024px) {
+        .bu-container:not(.bu-is-max-desktop) {
+          max-width: calc(100vw - 32px);
+        }
+      }
     `,
   );
 
