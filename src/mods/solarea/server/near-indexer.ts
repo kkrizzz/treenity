@@ -3,15 +3,6 @@ import _ from 'lodash';
 const { Pool, Client } = require('pg');
 const fetch = require('node-fetch');
 
-const client = new Client({
-  user: 'public_readonly',
-  host: '104.199.89.51',
-  database: 'mainnet_explorer',
-  password: 'nearprotocol',
-  port: 5432,
-});
-client.connect();
-
 const sortByTimeThenId = (a, b) => {
   const time =
     a.receipt_action.receipt_included_in_block_timestamp -
@@ -21,7 +12,13 @@ const sortByTimeThenId = (a, b) => {
   );
 };
 
-export function nearIndexer(app: Application) {
+export async function nearIndexer(app: Application) {
+  const nearConfig = app.get('near');
+
+  const client = new Client(nearConfig.pgCredentials);
+
+  await client.connect().catch((err) => console.log('near: cannot connect to db: ', err));
+
   app.collection('near-token-price');
   app.collection('near-token-metadata');
 
