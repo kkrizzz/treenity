@@ -90,13 +90,21 @@ add(() => {
           ) : hotTokens && hotTokens.length ? (
             hotTokens.map(
               (
-                { _id: { base_address, base_symbol, quote_address, quote_symbol }, count, price },
+                {
+                  _id: { base_address, base_symbol, quote_address, quote_symbol },
+                  count,
+                  price,
+                  buyCount,
+                  sellCount,
+                },
                 index,
               ) => (
                 <Link to={`/${base_address}?quote=${quote_address}`}>
                   <HotPairCard
                     large={index < 3}
                     count={count}
+                    sellCount={sellCount}
+                    buyCount={buyCount}
                     price={
                       price < 100
                         ? Math.round(price * 10000000) / 10000000

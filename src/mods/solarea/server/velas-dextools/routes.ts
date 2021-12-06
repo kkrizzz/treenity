@@ -187,6 +187,16 @@ export default async function applyRoutes(app) {
           count: {
             $sum: 1,
           },
+          buyCount: {
+            $sum: {
+              $cond: [{ $eq: ['$side', 'BUY'] }, 1, 0],
+            },
+          },
+          sellCount: {
+            $sum: {
+              $cond: [{ $eq: ['$side', 'SELL'] }, 1, 0],
+            },
+          },
         },
       },
       {

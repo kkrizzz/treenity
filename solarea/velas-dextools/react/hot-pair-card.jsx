@@ -2,7 +2,15 @@ const DashboardCard = render('dev', 'dashboard-card');
 
 const { numberWithSpaces } = await require('solarea://explorer/utils');
 
-const HotPairCard = ({ price, count, base_symbol, quote_symbol, large = true }) => {
+const HotPairCard = ({
+  price,
+  count,
+  sellCount,
+  buyCount,
+  base_symbol,
+  quote_symbol,
+  large = true,
+}) => {
   if (large)
     return (
       <DashboardCard subcard style={{ marginBottom: 10 }}>
@@ -18,13 +26,13 @@ const HotPairCard = ({ price, count, base_symbol, quote_symbol, large = true }) 
             trades: {numberWithSpaces(count)}
           </div>
           <div style={{ color: 'var(--theme-success-color)', marginRight: 16 }}>
-            buy: {numberWithSpaces(count / 2)}
+            buy: {numberWithSpaces(buyCount)}
           </div>
           <div style={{ color: 'var(--theme-error-color)', marginRight: 'auto' }}>
-            sell: {numberWithSpaces(count / 2)}
+            sell: {numberWithSpaces(sellCount)}
           </div>
 
-          <SmallBar count={count} sell={count / 2} />
+          <SmallBar count={count} buy={buyCount} />
         </div>
       </DashboardCard>
     );
@@ -38,11 +46,11 @@ const HotPairCard = ({ price, count, base_symbol, quote_symbol, large = true }) 
         </div>
         <div className="HotPair_stats">
           <span style={{ color: 'var(--theme-a-color)' }}>{numberWithSpaces(count)}</span>/
-          <span style={{ color: 'var(--theme-success-color)' }}>{numberWithSpaces(count / 2)}</span>
-          /<span style={{ color: 'var(--theme-error-color)' }}>{numberWithSpaces(count / 2)}</span>
+          <span style={{ color: 'var(--theme-success-color)' }}>{numberWithSpaces(buyCount)}</span>/
+          <span style={{ color: 'var(--theme-error-color)' }}>{numberWithSpaces(sellCount)}</span>
         </div>
 
-        <SmallBar count={count} sell={count / 2} small />
+        <SmallBar count={count} buy={buyCount} small />
 
         <div className="HotPair_price">{price}</div>
       </SmallHotPairContainer>
@@ -95,7 +103,7 @@ const SmallBar = styled(({ className }) => (
 
   & > div {
     background: ${({ theme }) => theme.colors.success};
-    width: calc(100% * ${({ count, sell }) => sell / count});
+    width: calc(100% * ${({ count, buy }) => buy / count});
     height: 100%;
   }
 
