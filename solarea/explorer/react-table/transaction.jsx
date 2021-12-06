@@ -16,12 +16,11 @@ add(({ transaction, signature }) => {
   const txDate = new Date(transaction.blockTime * 1000);
 
   return (
-    <DashboardCard title={<Hash hash={signature} type="tx" />}>
+    <DashboardCard subcard title={<Hash hash={signature} type="tx" />}>
       <div
         className="bu-media  bu-is-align-items-center"
         style={{
           fontSize: 12,
-          color: 'var(--theme-main-content-color)',
           paddingTop: 12,
           flexWrap: 'wrap',
         }}

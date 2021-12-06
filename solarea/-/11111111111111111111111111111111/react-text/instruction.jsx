@@ -1,11 +1,11 @@
 const SystemInstructionType = [
-  'createAccount',
-  'createAccountWithSeed',
-  'allocate',
+  'createAccount', //done
+  'createAccountWithSeed', //done
+  'allocate', //done
   'allocateWithSeed',
-  'assign',
+  'assign', //done
   'assignWithSeed',
-  'transfer',
+  'transfer', //done
   'advanceNonce',
   'withdrawNonce',
   'authorizeNonce',
