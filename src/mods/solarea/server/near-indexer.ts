@@ -13,14 +13,14 @@ const sortByTimeThenId = (a, b) => {
 };
 
 export async function nearIndexer(app: Application) {
+  app.collection('near-token-price');
+  app.collection('near-token-metadata');
+
   const nearConfig = app.get('near');
 
   const client = new Client(nearConfig.pgCredentials);
 
-  await client.connect().catch((err) => console.log('near: cannot connect to db: ', err));
-
-  app.collection('near-token-price');
-  app.collection('near-token-metadata');
+  await client.connect().catch((err) => console.log('near: cannot connect to db: ', err.message));
 
   app.post('/api/near/acctx', async (req, res) => {
     let { entityId, limit, offset = 0 } = req.body;
