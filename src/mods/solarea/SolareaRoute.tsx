@@ -9,8 +9,18 @@ import findMap from '../../utils/find-map';
 // import EditorGridLayout from './editor/NewEditor/EditorGridLayout';
 const SolareaEdit = React.lazy(() => import('./editor/NewEditor/SolareaEdit3'));
 const EditorGridLayout = React.lazy(() => import('./editor/NewEditor/EditorGridLayout'));
+const GraphQLEditor = React.lazy(() => import('./graphql-editor/GraphQLEditor'));
 
 const idToViewResolvers = [
+  (id, name, context, { query: { graphql } }) => {
+    if (graphql !== undefined) {
+      return (
+        <Suspense fallback={<div>Loading Grid Layout...</div>}>
+          <GraphQLEditor />
+        </Suspense>
+      );
+    }
+  },
   (id, name, context, { query: { edit, grid, ...query } }) => {
     if (edit !== undefined && grid !== undefined) {
       return (

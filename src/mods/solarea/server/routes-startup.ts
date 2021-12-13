@@ -8,6 +8,7 @@ import { currentPrice } from './near-portfolio/current-price';
 import './near-portfolio/ref-finance-tokens';
 import { indexRefFinanceTokensPrice } from './near-portfolio/ref-finance-tokens';
 import { indexVelasDextools } from './velas-dextools/index';
+import { graphqlEditorProxy } from './graphql-editor';
 
 export function routesStartup(app: Application) {
   prettierFormat(app);
@@ -16,4 +17,5 @@ export function routesStartup(app: Application) {
   nearIndexer(app);
   indexRefFinanceTokensPrice(app);
   indexVelasDextools(app);
+  graphqlEditorProxy(app);
 }
