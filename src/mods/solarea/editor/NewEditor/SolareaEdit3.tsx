@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, Suspense } from 'react';
 import CodeMirror from '../CodeMirror';
 import { Icon } from '../../components/Icon';
 import './SolareaEdit.scss';
@@ -17,6 +17,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
 import { SolareaEditPreview } from './Preview';
 import { useSolanaStorage, useRestStorage } from '../../storage-adapters/StorageProvider';
+import GraphQLEditor from '../../graphql-editor/GraphQLEditor';
 import { SolareaLinkData, SolareaViewData } from '../../storage-adapters/IStorageAdapter';
 
 const CodeUploaderWithPreview = ({ view, editorValue, uploadToSolanaStarted }) => {
@@ -106,7 +107,7 @@ const EditorWidthController = () => {
   );
 };
 
-const SolareaEditMenu = ({ id, name }) => {
+const SolareaEditMenu = ({ id, name, onSelectTab }) => {
   const [
     code,
     setCode,
@@ -190,7 +191,7 @@ const SolareaEditMenu = ({ id, name }) => {
 
   return (
     <div className="sol-menu-markup">
-      <div className="sol-menu-markup-list">
+      <div className="sol-menu-markup-list" style={{ zIndex: 10 }}>
         <MenuItem
           onClick={() => {
             setCode(editorValue);
@@ -210,6 +211,9 @@ const SolareaEditMenu = ({ id, name }) => {
         </Tooltip>
 
         <MenuItem icon="info" title="hotkeys" onClick={toggleShowHotkeys} />
+
+        <MenuItem icon="graphql" title="Graph QL" onClick={() => onSelectTab('graphql')} />
+        <MenuItem icon="edit" title="Editor" onClick={() => onSelectTab('edit')} />
 
         <Modal header="Hotkeys" isOpen={showHotkeys} onClose={toggleShowHotkeys}>
           <h4>
@@ -249,6 +253,8 @@ const SolareaEdit = ({ value, id, name, context, ...params }) => {
     state.loadInitialCode,
   ]);
 
+  const [currentTab, setCurrentTab] = useState('edit');
+
   const solanaStorage = useSolanaStorage();
   const restStorage = useRestStorage();
 
@@ -257,27 +263,36 @@ const SolareaEdit = ({ value, id, name, context, ...params }) => {
     loadInitialCode(solanaStorage, restStorage, viewId);
   }, []);
 
+  const tabs = {
+    edit: (
+      <>
+        <Snippets />
+        <div
+          style={{
+            maxWidth: editorMaxWidth,
+            width: '100%',
+            transition: 'max-width 0.5s ease-in-out',
+            backgroundColor: '#282c33',
+          }}
+        >
+          <CodeMirror
+            value={initialCode}
+            onChange={(value) => {
+              setEditorValue(value);
+            }}
+          />
+        </div>
+        <EditorWidthController />
+        {/*<SolareaEditPreview id={id} value={value} name={name} {...params} />*/}
+      </>
+    ),
+    graphql: <GraphQLEditor />,
+  };
+
   return (
     <div className="sol-markup-wr">
-      <SolareaEditMenu id={id} name={name} />
-      <Snippets />
-      <div
-        style={{
-          maxWidth: editorMaxWidth,
-          width: '100%',
-          transition: 'max-width 0.5s ease-in-out',
-          backgroundColor: '#282c33',
-        }}
-      >
-        <CodeMirror
-          value={initialCode}
-          onChange={(value) => {
-            setEditorValue(value);
-          }}
-        />
-      </div>
-      <EditorWidthController />
-      <SolareaEditPreview id={id} value={value} name={name} {...params} />
+      <SolareaEditMenu id={id} name={name} onSelectTab={(newTab) => setCurrentTab(newTab)} />
+      {tabs[currentTab] || 'none'}
     </div>
   );
 };

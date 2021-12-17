@@ -15,10 +15,20 @@ import { getValueFrom, getLeft, getTop } from '../utils/common';
 import { DocExplorer } from './DocExplorer';
 import { getIntrospectionQuery, buildClientSchema } from 'graphql';
 import useDebounce from '../utils/useDebounce';
-import { flattenData } from './flattenData';
 
 const EditorInstance = ({ number }) => {
-  const { updateQuery, currentQuery, schema, setSchema } = useQueryStore();
+  const {
+    updateQuery,
+    schema,
+    updateSchema,
+    isSchemaLoading,
+    isSchemaError,
+    fetchQuery,
+    isQueryLoading,
+    isQueryError,
+  } = useQueryStore();
+  const currentQuery = useQueryStore((state) => state.getCurrentQuery());
+
   const [docExplorerOpen, toggleDocExplorer] = useState(false);
   const [_variableToType, _setVariableToType] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -205,7 +215,6 @@ const EditorInstance = ({ number }) => {
 
   const getResult = useCallback(() => {
     // ReactTooltip.hide(executeButton.current)
-    setLoading(true);
     let queryType = getQueryTypes(currentQuery.query);
     console.log(queryType);
     if (JSON.stringify(queryType) !== JSON.stringify(queryTypes)) {
@@ -228,43 +237,21 @@ const EditorInstance = ({ number }) => {
       );
     }
 
-    let temp = currentQuery.variables !== '{}';
-    fetcher({ query: currentQuery.query, variables: temp ? currentQuery.variables : null }).then(
-      (data) => {
-        data.json().then((json) => {
-          let values = null;
-          if ('data' in json) {
-            if (currentQuery.displayed_data && currentQuery.displayed_data !== 'data') {
-              if (currentQuery.data_type === 'flatten') {
-                values = flattenData(json.data);
-              } else {
-                values = getValueFrom(json.data, displayed_data);
-              }
-            } else {
-              values = json.data;
-              if ('extensions' in json) {
-                values.extensions = json.extensions;
-              }
-            }
-          }
-          setDataSource({
-            data: 'data' in json ? json.data : null,
-            extensions: 'extensions' in json ? json.extensions : null,
-            displayed_data: displayed_data || '',
-            values,
-            error: 'errors' in json ? json.errors : null,
-            query: currentQuery.query,
-            variables: currentQuery.variables,
-          });
-          if (!('data' in json)) updateQuery({ widget_id: 'json.widget' }, 0);
-        });
+    fetchQuery(displayed_data).then(([json, values]) => {
+      setDataSource({
+        data: 'data' in json ? json.data : null,
+        extensions: 'extensions' in json ? json.extensions : null,
+        displayed_data: displayed_data || '',
+        values,
+        error: 'errors' in json ? json.errors : null,
+        query: currentQuery.query,
+        variables: currentQuery.variables,
+      });
+      if (!('data' in json)) updateQuery({ widget_id: 'json.widget' }, 0);
 
-        setLoading(false);
-        setAccordance(true);
-        // ReactTooltip.hide(executeButton.current)
-      },
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      setAccordance(true);
+      // ReactTooltip.hide(executeButton.current)
+    });
   }, [JSON.stringify(currentQuery), schema, JSON.stringify(queryTypes)]);
   useEffect(() => {
     !dataSource.values &&
@@ -301,48 +288,19 @@ const EditorInstance = ({ number }) => {
     },
     [schema, queryTypes, 0],
   );
-  const fetcher = (graphQLParams) => {
-    return fetch(`/solarea/graphql?url=${encodeURI(currentQuery.endpoint_url)}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQLParams),
-      credentials: 'same-origin',
-    });
-  };
+
   useEffect(() => {
     if (number === 0) {
-      const fetchSchema = () => {
-        setLoading(true);
-        let introspectionQuery = getIntrospectionQuery();
-        let staticName = 'IntrospectionQuery';
-        let introspectionQueryName = staticName;
-        let graphQLParams = {
-          query: introspectionQuery,
-          operationName: introspectionQueryName,
-        };
-
-        fetcher(graphQLParams)
-          .then((response) => response.json())
-          .then((result) => {
-            if (typeof result !== 'string' && 'data' in result) {
-              let schema = buildClientSchema(result.data);
-              setSchema(schema);
-            }
-            setLoading(false);
-            setErrorLoading(false);
-          })
-          .catch((e) => {
-            setLoading(false);
-            setErrorLoading(true);
-          });
-      };
-      fetchSchema();
+      updateSchema();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedURL]);
+  useEffect(() => {
+    setLoading(isSchemaLoading || isQueryLoading);
+  }, [isSchemaLoading, isQueryLoading]);
+  useEffect(() => {
+    setErrorLoading(isSchemaError || isQueryError);
+  }, [isSchemaError, isQueryError]);
 
   return (
     <div className="graphiql__wrapper graphiql__wrapper_active">

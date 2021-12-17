@@ -66,8 +66,9 @@
     display: flex;
     flex-direction: column;
 }
-.App {
+.GraphQLEditor {
     height: 100vh;
+    width: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -213,7 +214,7 @@
     cursor: pointer;
     color: #555;
 }
-.content .gallery__query__control self:not(&:last-child) {
+.content .gallery__query__control self:not(:last-child) {
     margin-right: 0.5em;
 }
 .content .gallery__query__control i {
@@ -458,7 +459,7 @@
 }
 .button_filled {
     background-color: #d1d1d1;
-    border: 1px solid #c27a7a 38;
+    border: 1px solid #c27a7a;
     margin: 35px auto 0;
 }
 .query__save {
@@ -656,7 +657,7 @@
     margin-bottom: 4px;
 }
 .doc-type-description code, .doc-type-description pre, .doc-category code, .doc-category pre {
-    --saf-0: rgba(0, 0, 0, );
+    --saf-0: rgba(0, 0, 0 );
     font-size: 12px;
     line-height: 1.50001;
     font-variant-ligatures: none;
@@ -672,7 +673,7 @@
     padding: 2px 3px 1px;
     border: 1px solid var(--saf-0);
     border-radius: 3px;
-    background-color: rgba(0, 0, 0, );
+    background-color: rgba(0, 0, 0);
     color: #e01e5a;
     background-color: white;
 }

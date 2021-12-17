@@ -1,6 +1,4 @@
 import React from 'react';
-import '../App.scss';
-import EditorInstance from './EditorInstance'
-import './bitqueditor/App.scss'
+import EditorInstance from './EditorInstance';
 
-export const GraphqlExplorer = () => <EditorInstance number={0} key={0} />
+export const GraphqlExplorer = () => <EditorInstance number={0} key={0} />;

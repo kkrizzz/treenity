@@ -36,7 +36,7 @@ export default function CodeMirror({ value, onChange }) {
       editor.dispatch({
         changes: {
           from: 0,
-          to: Number.MAX_SAFE_INTEGER,
+          to: editor?.state.doc.length,
           insert: value,
         },
       });
