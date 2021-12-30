@@ -205,11 +205,11 @@ const EditorInstance = ({ number }) => {
   };
 
   useEffect(() => {
-    if (number === 0 && !currentQuery.saved) {
+    if (number === 0) {
       const model = getQueryTypes(currentQuery.query);
       setQueryTypes(model);
     }
-  }, [currentQuery.data_type, currentQuery.saved, dataSource.values]);
+  }, [currentQuery.data_type, dataSource.values]);
 
   const plugins = useMemo(() => [JsonPlugin], []);
 
@@ -230,8 +230,6 @@ const EditorInstance = ({ number }) => {
       updateQuery(
         {
           displayed_data,
-          widget_id: 'json.widget',
-          saved: currentQuery.id && true,
         },
         0,
       );
@@ -253,15 +251,6 @@ const EditorInstance = ({ number }) => {
       // ReactTooltip.hide(executeButton.current)
     });
   }, [JSON.stringify(currentQuery), schema, JSON.stringify(queryTypes)]);
-  useEffect(() => {
-    !dataSource.values &&
-      currentQuery.query &&
-      currentQuery.saved &&
-      number === 0 &&
-      schema &&
-      getResult();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [schema]);
   const editQueryHandler = useCallback(
     (handleSubject) => {
       if ('query' in handleSubject) {

@@ -1,12 +1,12 @@
 import { Application } from '@feathersjs/express';
-import fetch from 'node-fetch';
 import { URL, URLSearchParams } from 'url';
+import fetch from 'node-fetch';
 
 export function graphqlEditorProxy(app: Application) {
-  app.use('/solarea/graphql', async function (req, res) {
-    const { url, ...q } = req.query;
+  app.use('/solarea/graphql/proxy', async function (req, res) {
+    const { url, ...q } = req.query as { url: string; [key: string]: string };
 
-    var cleanProxyUrl = new URL(url.replace(/\/$/, ''));
+    const cleanProxyUrl = new URL(url.replace(/\/$/, ''));
     cleanProxyUrl.search = new URLSearchParams(q).toString();
 
     try {
@@ -25,15 +25,5 @@ export function graphqlEditorProxy(app: Application) {
       const data = await response.json();
       res.send(data);
     } catch (e) {}
-    // req
-    //   .pipe(
-    //       fetch(cleanProxyUrl).then((response) => {
-    //       const accessControlAllowOriginHeader = response.headers['access-control-allow-origin'];
-    //       if (accessControlAllowOriginHeader && accessControlAllowOriginHeader !== origin) {
-    //         response.headers['access-control-allow-origin'] = origin;
-    //       }
-    //     }),
-    //   )
-    // .pipe(res);
   });
 }

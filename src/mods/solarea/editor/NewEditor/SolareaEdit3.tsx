@@ -19,6 +19,7 @@ import { SolareaEditPreview } from './Preview';
 import { useSolanaStorage, useRestStorage } from '../../storage-adapters/StorageProvider';
 import GraphQLEditor from '../../graphql-editor/GraphQLEditor';
 import { SolareaLinkData, SolareaViewData } from '../../storage-adapters/IStorageAdapter';
+import useComponentQueries from './useComponentQueries';
 
 const CodeUploaderWithPreview = ({ view, editorValue, uploadToSolanaStarted }) => {
   return (
@@ -246,6 +247,9 @@ const SolareaEditMenu = ({ id, name, onSelectTab }) => {
 };
 
 const SolareaEdit = ({ value, id, name, context, ...params }) => {
+  const viewId = new SolareaViewId(id, name, context);
+  const { componentQueries, add } = useComponentQueries(viewId);
+
   const [setEditorValue, editorMaxWidth, initialCode, loadInitialCode] = useEditorStore((state) => [
     state.setEditorValue,
     state.editorMaxWidth,
@@ -259,7 +263,6 @@ const SolareaEdit = ({ value, id, name, context, ...params }) => {
   const restStorage = useRestStorage();
 
   useEffect(() => {
-    const viewId = new SolareaViewId(id, name, context);
     loadInitialCode(solanaStorage, restStorage, viewId);
   }, []);
 
@@ -286,7 +289,7 @@ const SolareaEdit = ({ value, id, name, context, ...params }) => {
         {/*<SolareaEditPreview id={id} value={value} name={name} {...params} />*/}
       </>
     ),
-    graphql: <GraphQLEditor />,
+    graphql: <GraphQLEditor addToComponent={add} />,
   };
 
   return (
