@@ -6,7 +6,7 @@ interface Query {
   description: string;
 }
 
-export function useQueriesGallery(
+export function useEndpointQueries(
   endpointID?: string,
 ): { queries: Array<Query>; isQueriesLoading: boolean } {
   const { data, isLoading } = useQuery(
@@ -21,5 +21,5 @@ export function useQueriesGallery(
     { enabled: !!endpointID },
   );
 
-  return { queries: data, isQueriesLoading: isLoading };
+  return { queries: data || [], isQueriesLoading: isLoading };
 }

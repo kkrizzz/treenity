@@ -6,6 +6,8 @@ import { keymap } from '@codemirror/view';
 import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 
 import './CodeMirror.css';
+import { styled } from './NewEditor/SolariaEditTheme';
+import Icon from './NewEditor/components/Icon';
 
 // import './codemirror-addons/keyword';
 
@@ -48,39 +50,93 @@ export default function CodeMirror({ value, onChange }) {
   }, [value]);
 
   return (
-    <div
-      className="solarea-editor"
-      style={{ display: 'flex', height: '100vh', width: '100%' }}
-      ref={container}
-    />
+    <CodeEditorContainer>
+      <div className="code-editor__toolbar">
+        <div>
+          <Icon name="addFile" />
+          <Icon name="addFolder" />
+          <Icon name="save" />
+        </div>
+        <div>
+          <Icon name="share" />
+          <Icon name="terminal" />
+          <Icon name="maximize" />
+        </div>
+      </div>
+      <div className="code-editor__editor" ref={container} />
+    </CodeEditorContainer>
   );
 }
 
-// export function CodeMirrorComponent({ value }) {
-//   return (
-//     <CodeMirror
-//       {...renderPreviewLongPress}
-//       value={value}
-//       options={{
-//         resetSelectionOnContextMenu: false,
-//         readOnly: !!link,
-//         tabSize: 2,
-//         autoCloseTags: true,
-//         extraKeys: {
-//           'Ctrl-Space': 'autocomplete',
-//           'Ctrl-LeftClick': function (cm, e) {
-//             // its a redefine
-//           },
-//         },
-//         mode: 'jsx',
-//         theme: 'material',
-//         lineNumbers: true,
-//         lineWrapping: false,
-//         htmlMode: true,
-//         hintOptions: { hint: renderTagAutoComplete },
-//       }}
-//       ref={editor}
-//       onChange={onChange}
-//     />
-//   );
-// }
+const CodeEditorContainer = styled.div`
+  height: 100%;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-color: ${(p) => p.theme.colors.text.primary + '1a'};
+  box-sizing: border-box;
+
+  .code-editor__toolbar {
+    padding-left: 24px;
+    padding-right: 8px;
+    color: ${(p) => p.theme.colors.text.primary};
+    height: 32px;
+    width: 100%;
+    background: ${(p) => p.theme.colors.fill.secondary};
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid ${(p) => p.theme.colors.text.primary + '1a'};
+    box-sizing: border-box;
+
+    svg {
+      line-height: 0;
+      opacity: 0.25;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    & > div {
+      display: flex;
+      align-items: center;
+    }
+
+    & > div:first-child > svg {
+      margin-right: 4px;
+    }
+
+    & > div:last-child > svg {
+      margin-left: 4px;
+    }
+  }
+
+  .code-editor__editor {
+    padding-left: 16px;
+    display: flex;
+    width: calc(100% - 16px);
+    height: calc(100% - 32px);
+    background: ${(p) => p.theme.colors.fill.secondaryDark};
+
+    .cm-editor {
+      background: transparent;
+      width: calc(100% - 8px);
+
+      .cm-activeLine,
+      .cm-activeLineGutter {
+        background: ${(p) => p.theme.colors.fill.secondaryLight};
+      }
+    }
+
+    .cm-scroller {
+      margin-top: 8px;
+
+      & > * {
+        color: ${(p) => p.theme.colors.text.primary + '40'};
+        background: transparent;
+        font-family: monospace;
+      }
+    }
+  }
+`;

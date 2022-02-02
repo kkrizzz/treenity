@@ -280,7 +280,7 @@ button.columns_number {
   z-index: 10;
   top:50%;
   right: 0;
-  left: calc(50% - 25px);
+  left: calc(50% - 18px) !important;
   border: none;
   outline: none !important;
   background: #c7c7c7;

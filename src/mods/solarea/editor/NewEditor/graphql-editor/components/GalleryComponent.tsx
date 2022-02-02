@@ -1,10 +1,10 @@
 import React from 'react';
 import { useQueryStore } from '../store/queriesStore';
-import QueryBuilder from './QueryBuilder/index';
+import QueryBuilder from './QueryBuilder';
 import { makeDefaultArg, getDefaultScalarArgValue } from './QueryBuilder/CustomArgs';
 
 const GalleryComponent = () => {
-  const { updateQuery, schema } = useQueryStore();
+  const { updateQuery, schema, currentQuery } = useQueryStore();
 
   const currentQuery = useQueryStore((state) => state.getCurrentQuery());
 

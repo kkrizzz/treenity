@@ -4,53 +4,25 @@ import { fetcher } from '../api';
 import { flattenData } from '../components/flattenData';
 import { getValueFrom } from '../utils/common';
 
-// const r = {
-//   "query": "query MyQuery {\n  allFilms {\n    films {\n      episodeID\n      director\n      id\n      title\n    }\n  }\n}\n",
-//     "variables": null,
-//     "endpointID": "61c2ffc9b7cf23906b15b115",
-//     "name": "Get all films",
-//     "description": "List of all Star Wars films",
-//
-// }
 export const useQueryStore = create<any>((set, get) => ({
   isSchemaLoading: false,
   isSchemaError: false,
   isQueryLoading: false,
   isQueryError: false,
-  queries: [
-    {
-      _id: '1',
-      query: '',
-      variables: '{}',
-      endpoint_url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
-      name: 'startWars',
-    },
-    {
-      _id: '2',
-      query: '',
-      variables: '{}',
-      data_type: 'response',
-      config: {},
-      endpoint_url: 'https://thegraph.wagyuswap.app/subgraphs/name/wagyu',
-      name: 'wagy',
-    },
-  ],
+  queries: [],
+  currentQuery: null,
   currentQueryID: null,
+
   setCurrentQuery(_id) {
-    set(() => ({ currentQueryID: _id, schema: null }));
+    const { queries } = get();
+
+    set(() => ({ currentQuery: queries.find((q) => q._id === _id), schema: null }));
   },
   setQueries(queries) {
     set(() => ({ queries: queries, schema: null }));
   },
 
-  getCurrentQuery() {
-    const { queries, currentQueryID }: any = get();
-
-    console.log(currentQueryID);
-    if (!currentQueryID) return null;
-
-    return queries.find((q) => q._id === currentQueryID);
-  },
+  getCurrentQuery() {},
 
   updateQuery: (params) =>
     set(({ queries, currentQueryID }) => {
@@ -63,12 +35,14 @@ export const useQueryStore = create<any>((set, get) => ({
     }),
 
   updateSchema: () => {
+    const { getCurrentQuery, currentQueryID }: any = get();
+    if (!currentQueryID) return;
+
     set({ isSchemaLoading: true });
     let graphQLParams = {
       query: getIntrospectionQuery(),
       operationName: 'IntrospectionQuery',
     };
-    const { getCurrentQuery }: any = get();
 
     console.log('asdsa');
 
@@ -93,6 +67,7 @@ export const useQueryStore = create<any>((set, get) => ({
   fetchQuery: async (displayedData) => {
     const currentQuery = get().getCurrentQuery();
     console.log(currentQuery);
+    if (!currentQuery?._id) return;
 
     set({ isQueryLoading: true });
 

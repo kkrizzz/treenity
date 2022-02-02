@@ -1,10 +1,12 @@
-import { Accordion } from '../../components/Accordion';
+import { Accordion } from './components/Accordion';
 import React from 'react';
 import { useEditorSelect } from '../../stores/editor-store';
 import { key } from '../../utils/keyCode';
 import { makeId } from '../../utils/make-id';
 
 import './Snippets.scss';
+import Input from './components/Input';
+import Select from './components/Select';
 
 const LinkSelector = () => {
   const [link, setLink, editorValue] = useEditorSelect('link', 'setLink', 'editorValue');
@@ -17,26 +19,23 @@ const LinkSelector = () => {
   };
 
   return (
-    <label className="solarea-snippets-input">
-      <input
-        className="solarea-snippets-input__field"
-        placeholder="link"
-        onBlur={onBlurLinkInput}
-        onKeyUp={(e) => {
-          if (key.isEnter(e)) {
-            onBlurLinkInput(e);
-            e.stopPropagation();
-          }
-        }}
-        style={{ width: '100%', height: 38 }}
-        name="link"
-        type="text"
-        id="link"
-        defaultValue={link}
-        disabled={!!editorValue}
-      />
-      <span className="solarea-snippets-input__label">view id</span>
-    </label>
+    <Input
+      label="View ID"
+      placeholder="link"
+      onBlur={onBlurLinkInput}
+      onKeyUp={(e) => {
+        if (key.isEnter(e)) {
+          onBlurLinkInput(e);
+          e.stopPropagation();
+        }
+      }}
+      style={{ width: '100%', height: 38 }}
+      name="link"
+      type="text"
+      id="link"
+      defaultValue={link}
+      disabled={!!editorValue}
+    />
   );
 };
 
@@ -50,26 +49,19 @@ const ContextSelector = () => {
     'setSelectedContext',
   );
   return (
-    <div>
-      <label className="solarea-snippets-input">
-        <select
-          className="solarea-snippets-input__field solarea-snippets-select__field"
-          onChange={(e) => setSelectedContext(e.target.value)}
-          value={selectedContext}
-          defaultValue={''}
-          placeholder="context"
-        >
-          {availableContexts.map((context) => (
-            <option selected={selectedContext === context} value={context}>
-              {context ? context : 'react'}
-            </option>
-          ))}
-        </select>
-        <span className="solarea-snippets-input__label solarea-snippets-select__label">
-          view id
-        </span>
-      </label>
-    </div>
+    <Select
+      label="View ID"
+      onChange={(e) => setSelectedContext(e.target.value)}
+      value={selectedContext}
+      defaultValue={''}
+      placeholder="context"
+    >
+      {availableContexts.map((context) => (
+        <option selected={selectedContext === context} value={context}>
+          {context ? context : 'react'}
+        </option>
+      ))}
+    </Select>
   );
 };
 const CurrentAddressSelector = () => {
@@ -83,37 +75,32 @@ const CurrentAddressSelector = () => {
   };
 
   return (
-    <div>
-      <label className="solarea-snippets-input">
-        <input
-          className="solarea-snippets-input__field"
-          value={currentAddress}
-          onBlur={onBlurCurrentAddressSelector}
-          onKeyUp={(e) => {
-            if (key.isEnter(e)) {
-              onBlurCurrentAddressSelector(e);
-              e.stopPropagation();
-            }
-          }}
-          style={{ width: '100%', height: 38, fontSize: 11 }}
-          name="currentAddress"
-          type="text"
-          id="currentAddress"
-          placeholder="current address"
-        />
-        <span className="solarea-snippets-input__label">view id</span>
-      </label>
-    </div>
+    <Input
+      label="View ID"
+      value={currentAddress}
+      onBlur={onBlurCurrentAddressSelector}
+      onKeyUp={(e) => {
+        if (key.isEnter(e)) {
+          onBlurCurrentAddressSelector(e);
+          e.stopPropagation();
+        }
+      }}
+      style={{ width: '100%', height: 38, fontSize: 11 }}
+      name="currentAddress"
+      type="text"
+      id="currentAddress"
+      placeholder="current address"
+    />
   );
 };
 
 export const Snippets = () => {
   return (
     <div className="snippets-markup">
-      <Accordion title="linking">
+      <Accordion title="Linking">
         <LinkSelector />
       </Accordion>
-      <Accordion title="settings">
+      <Accordion title="Settings">
         <ContextSelector />
         <CurrentAddressSelector />
       </Accordion>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from '../../components/Icon';
 import { icons } from '../../components/icons';
-import { Tooltip } from './Tooltip';
+import { Tooltip } from './components/Tooltip';
 
 type MenuItemProps = {
   icon: keyof typeof icons;
@@ -10,7 +10,7 @@ type MenuItemProps = {
 };
 
 export const MenuItem = ({ title, onClick, icon }: MenuItemProps) => (
-  <Tooltip className="sol-menu-item" text={title} onClick={onClick}>
+  <Tooltip className="sol-edit-menu__item" text={title} onClick={onClick}>
     <Icon name={icon} />
   </Tooltip>
 );

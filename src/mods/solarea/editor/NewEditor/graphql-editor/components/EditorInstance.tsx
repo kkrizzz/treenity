@@ -293,12 +293,12 @@ const EditorInstance = ({ number }) => {
 
   return (
     <div className="graphiql__wrapper graphiql__wrapper_active">
-      <ToolbarComponent
-        queryEditor={queryEditor}
-        variablesEditor={variablesEditor}
-        docExplorerOpen={docExplorerOpen}
-        toggleDocExplorer={toggleDocExplorer}
-      />
+      {/*<ToolbarComponent*/}
+      {/*  queryEditor={queryEditor}*/}
+      {/*  variablesEditor={variablesEditor}*/}
+      {/*  docExplorerOpen={docExplorerOpen}*/}
+      {/*  toggleDocExplorer={toggleDocExplorer}*/}
+      {/*/>*/}
       <div className={'over-wrapper ' + (!currentQuery.layout ? 'active' : '')} ref={overwrap}>
         {/*<ReactTooltip */}
         {/*	place="top"*/}
