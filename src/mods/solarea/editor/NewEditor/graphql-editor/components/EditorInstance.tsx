@@ -18,7 +18,7 @@ import useDebounce from '../utils/useDebounce';
 
 const EditorInstance = ({ number }) => {
   const {
-    updateQuery,
+    updateCurrentQuery,
     schema,
     updateSchema,
     isSchemaLoading,
@@ -26,8 +26,8 @@ const EditorInstance = ({ number }) => {
     fetchQuery,
     isQueryLoading,
     isQueryError,
+    currentQuery,
   } = useQueryStore();
-  const currentQuery = useQueryStore((state) => state.getCurrentQuery());
 
   const [docExplorerOpen, toggleDocExplorer] = useState(false);
   const [_variableToType, _setVariableToType] = useState(null);
@@ -227,12 +227,9 @@ const EditorInstance = ({ number }) => {
       ? Object.keys(queryType)[Object.keys(queryType).length - 1]
       : currentQuery.displayed_data;
     if (unusablePair) {
-      updateQuery(
-        {
-          displayed_data,
-        },
-        0,
-      );
+      updateCurrentQuery({
+        displayed_data,
+      });
     }
 
     fetchQuery(displayed_data).then(([json, values]) => {
@@ -245,7 +242,7 @@ const EditorInstance = ({ number }) => {
         query: currentQuery.query,
         variables: currentQuery.variables,
       });
-      if (!('data' in json)) updateQuery({ widget_id: 'json.widget' }, 0);
+      if (!('data' in json)) updateCurrentQuery({ widget_id: 'json.widget' });
 
       setAccordance(true);
       // ReactTooltip.hide(executeButton.current)
@@ -271,7 +268,7 @@ const EditorInstance = ({ number }) => {
             setQueryTypes(queryType);
         }
       }
-      updateQuery({ ...handleSubject, url: null }, 0, null);
+      updateCurrentQuery({ ...handleSubject, url: null });
       setAccordance(false);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },

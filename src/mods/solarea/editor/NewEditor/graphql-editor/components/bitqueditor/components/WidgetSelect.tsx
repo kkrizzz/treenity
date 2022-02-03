@@ -3,7 +3,7 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import { QueriesStore, TabsStore } from '../../../store/queriesStore';
 
 const WidgetSelect = ({ dataWidgets, dataIndexInModel, plugins, name }) => {
-  const { updateQuery, currentQuery } = QueriesStore;
+  const { updateCurrentQuery, currentQuery } = QueriesStore;
   const { index } = TabsStore;
   return (
     <>
@@ -38,7 +38,7 @@ const WidgetSelect = ({ dataWidgets, dataIndexInModel, plugins, name }) => {
                       <a
                         className="dropdown-item"
                         onClick={() =>
-                          updateQuery({ widget_id: plugins[i] && plugins[i].id }, index)
+                          updateCurrentQuery({ widget_id: plugins[i] && plugins[i].id }, index)
                         }
                         href="# "
                         key={i}

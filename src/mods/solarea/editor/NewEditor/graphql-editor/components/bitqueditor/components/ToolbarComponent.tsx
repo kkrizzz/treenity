@@ -4,11 +4,10 @@ import { print } from 'graphql';
 import React from 'react';
 
 const ToolbarComponent = ({ queryEditor, variablesEditor, docExplorerOpen, toggleDocExplorer }) => {
-  const { updateQuery } = useQueryStore();
-  const currentQuery = useQueryStore((state) => state.getCurrentQuery());
+  const { updateCurrentQuery, currentQuery } = useQueryStore();
 
   const handleInputURLChange = (e) => {
-    updateQuery({ endpoint_url: e.target.value }, 0);
+    updateCurrentQuery({ endpoint_url: e.target.value });
   };
   const prettifyQuery = () => {
     const editor = queryEditor.current.getEditor();

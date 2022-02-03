@@ -8,7 +8,6 @@ import { useQueryStore } from './store/queriesStore';
 import EndpointCard from '../components/EndpointCard';
 
 const EndpointsLibrary = ({ onChooseEndpoint }) => {
-  const { setQueries, setCurrentQuery } = useQueryStore();
   const { endpoints, isEndpointsLoading } = useEndpoints();
   const [currentEndpoint, setCurrentEndpoint] = useState<Endpoint | null>(null);
   const { queries, isQueriesLoading } = useEndpointQueries(currentEndpoint?._id);
@@ -34,71 +33,71 @@ const EndpointsLibrary = ({ onChooseEndpoint }) => {
     </EndpointsGalleryContainer>
   );
 
-  return (
-    <QueriesLibraryContainer>
-      <div className="queries-library-container__endpoints">
-        <h2>Endpoints</h2>
-
-        {isEndpointsLoading
-          ? 'Loading'
-          : endpoints?.map((endpoint) => (
-              <div
-                className={currentEndpoint?._id === endpoint._id ? 'active' : ''}
-                onClick={() => setCurrentEndpoint(endpoint)}
-              >
-                {endpoint.name}
-
-                <p>{endpoint.description}</p>
-              </div>
-            ))}
-      </div>
-      <div
-        className="queries-library-container__endpoints"
-        style={{ marginLeft: 8, border: 'none' }}
-      >
-        <h2>Queries</h2>
-        {!currentEndpoint ? (
-          'Choose endpoint'
-        ) : isQueriesLoading ? (
-          'Loading'
-        ) : (
-          <>
-            {queries.map((query) => (
-              <div
-                // className={currentEndpoint?._id === endpoint._id ? 'active' : ''}
-                onClick={() => {
-                  setQueries([{ ...query, endpoint_url: currentEndpoint.url }]);
-                  setCurrentQuery(query._id);
-                }}
-              >
-                {query.name}
-
-                <p>{query.description}</p>
-              </div>
-            ))}
-
-            <div
-              onClick={() => {
-                setQueries([
-                  {
-                    _id: '1',
-                    query: '',
-                    variables: '{}',
-                    endpoint_url: currentEndpoint.url,
-                    name: 'newQuery',
-                  },
-                ]);
-                setCurrentQuery('1');
-              }}
-            >
-              Blank Query
-              <p>Try endpoint from the blank query</p>
-            </div>
-          </>
-        )}
-      </div>
-    </QueriesLibraryContainer>
-  );
+  // return (
+  //   <QueriesLibraryContainer>
+  //     <div className="queries-library-container__endpoints">
+  //       <h2>Endpoints</h2>
+  //
+  //       {isEndpointsLoading
+  //         ? 'Loading'
+  //         : endpoints?.map((endpoint) => (
+  //             <div
+  //               className={currentEndpoint?._id === endpoint._id ? 'active' : ''}
+  //               onClick={() => setCurrentEndpoint(endpoint)}
+  //             >
+  //               {endpoint.name}
+  //
+  //               <p>{endpoint.description}</p>
+  //             </div>
+  //           ))}
+  //     </div>
+  //     <div
+  //       className="queries-library-container__endpoints"
+  //       style={{ marginLeft: 8, border: 'none' }}
+  //     >
+  //       <h2>Queries</h2>
+  //       {!currentEndpoint ? (
+  //         'Choose endpoint'
+  //       ) : isQueriesLoading ? (
+  //         'Loading'
+  //       ) : (
+  //         <>
+  //           {queries.map((query) => (
+  //             <div
+  //               // className={currentEndpoint?._id === endpoint._id ? 'active' : ''}
+  //               onClick={() => {
+  //                 setQueries([{ ...query, endpoint_url: currentEndpoint.url }]);
+  //                 setCurrentQuery(query._id);
+  //               }}
+  //             >
+  //               {query.name}
+  //
+  //               <p>{query.description}</p>
+  //             </div>
+  //           ))}
+  //
+  //           <div
+  //             onClick={() => {
+  //               setQueries([
+  //                 {
+  //                   _id: '1',
+  //                   query: '',
+  //                   variables: '{}',
+  //                   endpoint_url: currentEndpoint.url,
+  //                   name: 'newQuery',
+  //                 },
+  //               ]);
+  //               setCurrentQuery('1');
+  //             }}
+  //           >
+  //             Blank Query
+  //             <p>Try endpoint from the blank query</p>
+  //           </div>
+  //         </>
+  //       )}
+  //     </div>
+  //   </QueriesLibraryContainer>
+  // );
 };
 
 const EndpointsGalleryContainer = styled.div(

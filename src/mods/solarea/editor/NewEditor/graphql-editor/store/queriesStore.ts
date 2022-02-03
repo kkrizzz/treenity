@@ -9,34 +9,19 @@ export const useQueryStore = create<any>((set, get) => ({
   isSchemaError: false,
   isQueryLoading: false,
   isQueryError: false,
-  queries: [],
   currentQuery: null,
-  currentQueryID: null,
+  schema: null,
 
-  setCurrentQuery(_id) {
-    const { queries } = get();
-
-    set(() => ({ currentQuery: queries.find((q) => q._id === _id), schema: null }));
+  setCurrentQuery(query) {
+    console.log();
+    set(() => ({ currentQuery: query || undefined, schema: null }));
   },
-  setQueries(queries) {
-    set(() => ({ queries: queries, schema: null }));
-  },
-
-  getCurrentQuery() {},
-
-  updateQuery: (params) =>
-    set(({ queries, currentQueryID }) => {
-      const index = queries.findIndex((q) => q._id === currentQueryID);
-      if (index === -1) return;
-
-      const newQueries = [...queries];
-      newQueries[index] = { ...queries[index], ...params };
-      return { queries: newQueries };
-    }),
+  updateCurrentQuery: (params) =>
+    set(({ currentQuery }) => ({ currentQuery: { ...currentQuery, ...params } })),
 
   updateSchema: () => {
-    const { getCurrentQuery, currentQueryID }: any = get();
-    if (!currentQueryID) return;
+    const { currentQuery }: any = get();
+    if (!currentQuery) return;
 
     set({ isSchemaLoading: true });
     let graphQLParams = {
@@ -44,9 +29,7 @@ export const useQueryStore = create<any>((set, get) => ({
       operationName: 'IntrospectionQuery',
     };
 
-    console.log('asdsa');
-
-    fetcher(graphQLParams, getCurrentQuery())
+    fetcher(graphQLParams, currentQuery)
       .then((response) => response.json())
       .then((result) => {
         if (typeof result !== 'string' && 'data' in result) {
@@ -62,10 +45,9 @@ export const useQueryStore = create<any>((set, get) => ({
       });
   },
   setSchema: (schema) => set(() => ({ schema })),
-  schema: null,
 
   fetchQuery: async (displayedData) => {
-    const currentQuery = get().getCurrentQuery();
+    const currentQuery = get().currentQuery;
     console.log(currentQuery);
     if (!currentQuery?._id) return;
 

@@ -4,9 +4,7 @@ import QueryBuilder from './QueryBuilder';
 import { makeDefaultArg, getDefaultScalarArgValue } from './QueryBuilder/CustomArgs';
 
 const GalleryComponent = () => {
-  const { updateQuery, schema, currentQuery } = useQueryStore();
-
-  const currentQuery = useQueryStore((state) => state.getCurrentQuery());
+  const { updateCurrentQuery, schema, currentQuery } = useQueryStore();
 
   return (
     <div className={'gallery flex flex-col active'}>
@@ -16,7 +14,7 @@ const GalleryComponent = () => {
         title={'Builder'}
         schema={schema}
         query={currentQuery.query}
-        onEdit={(query) => updateQuery({ query }, 0)}
+        onEdit={(query) => updateCurrentQuery({ query })}
         explorerIsOpen={true}
         getDefaultScalarArgValue={getDefaultScalarArgValue}
         makeDefaultArg={makeDefaultArg}
