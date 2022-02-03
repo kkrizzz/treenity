@@ -1,0 +1,3 @@
+add(({ children }) => {
+  return children;
+});
