@@ -1,62 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import CodeMirror from '../CodeMirror';
-import './SolareaEdit.scss';
+import React, { useState } from 'react';
 
-import useEditorStore from '../../stores/editor-store';
-import { Snippets } from './Snippets';
+import './SolareaEdit.scss';
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
-import { useRestStorage, useSolanaStorage } from '../../storage-adapters/StorageProvider';
-import GraphQLEditor from './graphql-editor/GraphQLEditor';
-import useComponentQueries from './useComponentQueries';
+import QueriesMarket from './graphql-editor/QueriesMarket';
 import { SolareaEditMenu } from './SolareaEditMenu';
-import { EditorWidthController } from './EditorWidthController';
 import { SolariaEditThemeProvider, styled } from './SolariaEditTheme';
+import ComponentEditor from './ComponentEditor';
 
 const SolareaEdit = ({ value, id, name, context, ...params }) => {
   const viewId = new SolareaViewId(id, name, context);
-  const { componentQueries, add } = useComponentQueries(viewId);
-
-  const [setEditorValue, editorMaxWidth, initialCode, loadInitialCode] = useEditorStore((state) => [
-    state.setEditorValue,
-    state.editorMaxWidth,
-    state.initialCode,
-    state.loadInitialCode,
-  ]);
 
   const [currentTab, setCurrentTab] = useState('edit');
 
-  const solanaStorage = useSolanaStorage();
-  const restStorage = useRestStorage();
-
-  useEffect(() => {
-    loadInitialCode(solanaStorage, restStorage, viewId);
-  }, []);
-
   const tabs = {
-    edit: (
-      <>
-        <Snippets />
-        <div
-          style={{
-            maxWidth: editorMaxWidth,
-            width: '100%',
-            transition: 'max-width 0.5s ease-in-out',
-            // backgroundColor: '#282c33',
-            height: '100%',
-          }}
-        >
-          <CodeMirror
-            value={initialCode}
-            onChange={(value) => {
-              setEditorValue(value);
-            }}
-          />
-        </div>
-        {/*<EditorWidthController />*/}
-        {/*<SolareaEditPreview id={id} value={value} name={name} {...params} />*/}
-      </>
-    ),
-    graphql: <GraphQLEditor addToComponent={add} />,
+    edit: () => <ComponentEditor viewId={viewId} />,
+    graphql: () => <QueriesMarket viewId={viewId} />,
   };
 
   return (
@@ -70,7 +28,7 @@ const SolareaEdit = ({ value, id, name, context, ...params }) => {
         />
 
         <h1>{currentTab === 'edit' ? 'Editor' : 'URLs'}</h1>
-        <div className="sol-edit__content">{tabs[currentTab] || 'none'}</div>
+        <div className="sol-edit__content">{tabs[currentTab] ? tabs[currentTab]() : 'none'}</div>
       </SolareaEditContainer>
     </SolariaEditThemeProvider>
   );

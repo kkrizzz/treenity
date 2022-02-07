@@ -1,18 +1,12 @@
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
 import { useQuery } from 'react-query';
-
-interface IComponentQuery {
-  _id: string;
-  componentID: string;
-
-  query: string;
-  name: string;
-}
+import IComponentQuery from './types/IComponentQuery';
 
 const useComponentQueries = ({ id: componentID }: SolareaViewId) => {
   const url = `/solarea/graphql/components/queries?componentID=${componentID}`;
-  const { data: componentQueries, isLoading } = useQuery(['componentQueries', componentID], () =>
-    fetch(url).then((r) => r.json() as Promise<Array<IComponentQuery>>),
+  const { data: componentQueries, isLoading, refetch } = useQuery(
+    ['componentQueries', componentID],
+    () => fetch(url).then((r) => r.json() as Promise<Array<IComponentQuery>>),
   );
 
   const save = (queries): Promise<Response> =>
@@ -31,12 +25,18 @@ const useComponentQueries = ({ id: componentID }: SolareaViewId) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        queries: [{ endpoint_url, variables, name: camelize(name), query }],
+        queryData: { endpoint_url, variables, name: camelize(name), query },
         componentID,
       }),
     });
 
-  return { componentQueries: componentQueries || [], isLoading, save, add };
+  return {
+    componentQueries: componentQueries || [],
+    isLoading,
+    save,
+    add,
+    refetch,
+  };
 };
 
 function camelize(str) {

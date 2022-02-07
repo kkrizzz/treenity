@@ -4,26 +4,66 @@ import { useEndpointQueries } from './hooks/useEndpointQueries';
 import QueryCard from '../components/QueryCard';
 import { styled, css } from '../SolariaEditTheme';
 import { useQueryStore } from './store/queriesStore';
+import { EditorContainer } from './EditorContainer';
 
 interface EndpointQueriesProps {
   endpoint: Endpoint;
   onChooseQuery: (query: any) => unknown;
+  onBack: () => unknown;
 }
 
-const EndpointQueries: FC<EndpointQueriesProps> = ({ endpoint, onChooseQuery, children }) => {
+const EndpointQueries: FC<EndpointQueriesProps> = ({ endpoint, onChooseQuery, onBack }) => {
   const { queries } = useEndpointQueries(endpoint._id);
 
   return (
-    <EndpointQueriesContainer>
-      <div className="endpoint-queries__title">Queries</div>
-      {queries.map((query) => (
-        <QueryCard key={query._id} name={query.name} onClick={() => onChooseQuery(query)} />
-      ))}
+    <EditorContainer className="GraphQLEditor">
+      <div className="editor__current-endpoint">{endpoint.url}</div>
 
-      {children}
-    </EndpointQueriesContainer>
+      <div className="content flex" style={{ width: '100%' }}>
+        <div className={'gallery flex flex-col active'} style={{ zIndex: 0 }}>
+          <EndpointQueriesContainer>
+            <div className="endpoint-queries__title">Queries</div>
+            {queries.map((query) => (
+              <QueryCard key={query._id} name={query.name} onClick={() => onChooseQuery(query)} />
+            ))}
+
+            <button className="editor__back-btn" onClick={onBack}>
+              ← Change URL
+            </button>
+          </EndpointQueriesContainer>
+        </div>
+
+        <EmptyEditor>
+          <div>
+            {[...Array(41).keys()].map((key) => (
+              <div>{key + 1}</div>
+            ))}
+          </div>
+        </EmptyEditor>
+      </div>
+    </EditorContainer>
   );
 };
+
+const EmptyEditor = styled.div(
+  ({ theme }) => css`
+    margin-top: -5px;
+
+    & > div {
+      font-family: monospace;
+      color: ${theme.colors.text.primary}40;
+      text-align: right;
+      border-left: 1px solid ${theme.colors.fill.secondaryLight};
+
+      height: 100%;
+      padding-top: 10px;
+
+      & > div {
+        padding-left: 16px;
+      }
+    }
+  `,
+);
 
 const EndpointQueriesContainer = styled.div`
   margin-right: 8px;

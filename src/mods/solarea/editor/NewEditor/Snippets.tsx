@@ -1,5 +1,5 @@
 import { Accordion } from './components/Accordion';
-import React from 'react';
+import React, { FC } from 'react';
 import { useEditorSelect } from '../../stores/editor-store';
 import { key } from '../../utils/keyCode';
 import { makeId } from '../../utils/make-id';
@@ -94,7 +94,7 @@ const CurrentAddressSelector = () => {
   );
 };
 
-export const Snippets = () => {
+export const Snippets: FC = ({ children }) => {
   return (
     <div className="snippets-markup">
       <Accordion title="Linking">
@@ -104,6 +104,7 @@ export const Snippets = () => {
         <ContextSelector />
         <CurrentAddressSelector />
       </Accordion>
+      {children}
     </div>
   );
 };

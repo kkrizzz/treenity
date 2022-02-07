@@ -20,6 +20,7 @@ export const solariaEditDarkTheme = {
     text: {
       primary: '#F1F1F1',
       secondary: '#F1F1F180',
+      secondaryLight: '#F8F8F8CC',
     },
   },
 };

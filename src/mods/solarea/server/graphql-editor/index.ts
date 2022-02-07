@@ -1,4 +1,5 @@
 import { graphqlEditorProxy } from './graphqlEditorProxy';
+import { ObjectID } from 'mongodb';
 import { Application } from '@feathersjs/express';
 
 const ENDPOINTS_COLLECTION_NAME = 'graphql-editor-endpoints';
@@ -52,16 +53,50 @@ function graphqlComponentQueries(app: Application) {
 
   app.post('/solarea/graphql/components/queries', async (req, res) => {
     try {
-      const { queries, componentID } = req.body;
-      if (queries == null || !Array.isArray(queries)) return res.status(400).send();
+      const { queryData, componentID } = req.body;
+      if (queryData == null || typeof queryData !== 'object') return res.status(400).send();
+      const { variables, endpoint_url, name, query } = queryData;
 
-      for (let { _id, componentID: _, ...queryData } of queries) {
-        if (_id != null)
-          await componentQueriesCollection.updateOne({ componentID, _id }, { $set: queryData });
-        else await componentQueriesCollection.insertOne({ componentID, ...queryData });
-      }
+      await componentQueriesCollection.insertOne({
+        componentID,
+        variables,
+        endpoint_url,
+        name,
+        query,
+      });
+      res.status(201).send();
+    } catch (e) {
+      console.error(e);
+      res.status(500).send('Server Error');
+    }
+  });
 
-      res.send();
+  app.delete('/solarea/graphql/components/queries/:queryID', async (req, res) => {
+    try {
+      const r = await componentQueriesCollection.deleteOne({
+        _id: ObjectID(req.params.queryID),
+      });
+
+      if (r.deletedCount) res.send(r);
+      else res.status(404).send();
+    } catch (e) {
+      console.error(e);
+      res.status(500).send('Server Error');
+    }
+  });
+  app.patch('/solarea/graphql/components/queries/:queryID', async (req, res) => {
+    try {
+      const { variables, query } = req.body;
+      const update: any = {};
+      if (variables) update.variables = variables;
+      if (query) update.query = query;
+
+      await componentQueriesCollection.updateOne(
+        { _id: ObjectID(req.params.queryID) },
+        { $set: update },
+      );
+
+      res.status(204).send();
     } catch (e) {
       console.error(e);
       res.status(500).send('Server Error');

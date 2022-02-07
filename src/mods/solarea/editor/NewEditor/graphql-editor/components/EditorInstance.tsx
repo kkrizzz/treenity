@@ -14,7 +14,7 @@ import QueryErrorIndicator from './QueryErrorIndicator';
 import { getValueFrom, getLeft, getTop } from '../utils/common';
 import { DocExplorer } from './DocExplorer';
 import { getIntrospectionQuery, buildClientSchema } from 'graphql';
-import useDebounce from '../utils/useDebounce';
+import useDebounce from '../hooks/useDebounce';
 
 const EditorInstance = ({ number }) => {
   const {
