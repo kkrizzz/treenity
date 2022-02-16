@@ -19,14 +19,14 @@ const useComponentQueries = ({ id: componentID }: SolareaViewId) => {
       body: JSON.stringify({ queries, componentID }),
     });
 
-  const add = ({ variables, endpoint_url, name, query }): Promise<Response> =>
+  const add = ({ variables, endpointURL, name, query }): Promise<Response> =>
     fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        queryData: { endpoint_url, variables, name: camelize(name), query },
+        queryData: { endpointURL, variables, name: camelize(name), query },
         componentID,
       }),
     });

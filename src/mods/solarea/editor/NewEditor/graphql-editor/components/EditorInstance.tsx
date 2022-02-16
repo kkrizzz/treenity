@@ -36,7 +36,7 @@ const EditorInstance = ({ number }) => {
   const [queryTypes, setQueryTypes] = useState('');
   const [dataSource, setDataSource] = useState({});
   const [accordance, setAccordance] = useState(true);
-  const debouncedURL = useDebounce(currentQuery.endpoint_url, 500);
+  const debouncedURL = useDebounce(currentQuery.endpointURL, 500);
   const workspace = useRef(null);
   const overwrap = useRef(null);
   const executeButton = useRef(null);

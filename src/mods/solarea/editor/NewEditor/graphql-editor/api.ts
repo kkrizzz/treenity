@@ -2,7 +2,7 @@ import camelize from './utils/camelize';
 import IComponentQuery from '../types/IComponentQuery';
 
 export const fetcher = (graphQLParams, query) => {
-  return fetch(`/solarea/graphql/proxy?url=${encodeURI(query.endpoint_url)}`, {
+  return fetch(`/solarea/graphql/proxy?url=${encodeURI(query.endpointURL)}`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -23,7 +23,7 @@ export const deleteQueryFromComponent = (queryID: string): Promise<Response> =>
 
 export const addQueryToComponent = (
   componentID: string,
-  { variables, endpoint_url, name, query }: Omit<IComponentQuery, '_id' | 'componentID'>,
+  { variables, endpointURL, name, query }: Omit<IComponentQuery, '_id' | 'componentID'>,
 ): Promise<Response> =>
   fetch(`/solarea/graphql/components/queries`, {
     method: 'POST',
@@ -31,7 +31,7 @@ export const addQueryToComponent = (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      queryData: { endpoint_url, variables, name: camelize(name), query },
+      queryData: { endpointURL, variables, name: camelize(name), query },
       componentID,
     }),
   });

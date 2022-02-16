@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import './GraphQLEditor.css';
 import './editor.css';
 import { Endpoint, useEndpoints } from './hooks/useEndpoints';
-import { useEndpointQueries } from './hooks/useEndpointQueries';
 import styled, { css } from 'styled-components';
-import { useQueryStore } from './store/queriesStore';
 import EndpointCard from '../components/EndpointCard';
+import Input from '../components/Input';
+import Modal from '../components/Modal';
+import Button from '../components/Button';
 
-const EndpointsLibrary = ({ onChooseEndpoint }) => {
+interface EndpointsLibraryProps {
+  onChooseEndpoint: (endpoint: Endpoint) => void;
+
+  onCreateCustomQuery: (url: string) => void;
+}
+const EndpointsLibrary: FC<EndpointsLibraryProps> = ({ onChooseEndpoint, onCreateCustomQuery }) => {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [url, setUrl] = useState('');
   const { endpoints, isEndpointsLoading } = useEndpoints();
-  const [currentEndpoint, setCurrentEndpoint] = useState<Endpoint | null>(null);
-  const { queries, isQueriesLoading } = useEndpointQueries(currentEndpoint?._id);
 
   return (
     <EndpointsGalleryContainer>
@@ -23,81 +29,39 @@ const EndpointsLibrary = ({ onChooseEndpoint }) => {
                 title={endpoint.url.split('/')[2]}
                 name={endpoint.name}
                 description={endpoint.description}
-                onClick={() => {
-                  console.log(endpoint);
-                  onChooseEndpoint && onChooseEndpoint(endpoint);
-                }}
+                onClick={() => onChooseEndpoint(endpoint)}
               />
             ))}
+
+        <EndpointCard
+          title={'Custom endpont'}
+          name={'Create custom endpont'}
+          description={''}
+          onClick={() => {
+            setShowAddModal(true);
+          }}
+        />
       </div>
+
+      <Modal isVisible={showAddModal} onClose={() => setShowAddModal(false)}>
+        <h2>Create custom endpont</h2>
+        <Input label={'URL'} value={url} onChange={(event) => setUrl(event.target.value)} />
+
+        <div style={{ display: 'flex' }}>
+          <Button
+            style={{ marginLeft: 'auto', marginTop: 12 }}
+            onClick={() => {
+              onCreateCustomQuery(url);
+              setUrl('');
+              setShowAddModal(false);
+            }}
+          >
+            Create
+          </Button>
+        </div>
+      </Modal>
     </EndpointsGalleryContainer>
   );
-
-  // return (
-  //   <QueriesLibraryContainer>
-  //     <div className="queries-library-container__endpoints">
-  //       <h2>Endpoints</h2>
-  //
-  //       {isEndpointsLoading
-  //         ? 'Loading'
-  //         : endpoints?.map((endpoint) => (
-  //             <div
-  //               className={currentEndpoint?._id === endpoint._id ? 'active' : ''}
-  //               onClick={() => setCurrentEndpoint(endpoint)}
-  //             >
-  //               {endpoint.name}
-  //
-  //               <p>{endpoint.description}</p>
-  //             </div>
-  //           ))}
-  //     </div>
-  //     <div
-  //       className="queries-library-container__endpoints"
-  //       style={{ marginLeft: 8, border: 'none' }}
-  //     >
-  //       <h2>Queries</h2>
-  //       {!currentEndpoint ? (
-  //         'Choose endpoint'
-  //       ) : isQueriesLoading ? (
-  //         'Loading'
-  //       ) : (
-  //         <>
-  //           {queries.map((query) => (
-  //             <div
-  //               // className={currentEndpoint?._id === endpoint._id ? 'active' : ''}
-  //               onClick={() => {
-  //                 setQueries([{ ...query, endpoint_url: currentEndpoint.url }]);
-  //                 setCurrentQuery(query._id);
-  //               }}
-  //             >
-  //               {query.name}
-  //
-  //               <p>{query.description}</p>
-  //             </div>
-  //           ))}
-  //
-  //           <div
-  //             onClick={() => {
-  //               setQueries([
-  //                 {
-  //                   _id: '1',
-  //                   query: '',
-  //                   variables: '{}',
-  //                   endpoint_url: currentEndpoint.url,
-  //                   name: 'newQuery',
-  //                 },
-  //               ]);
-  //               setCurrentQuery('1');
-  //             }}
-  //           >
-  //             Blank Query
-  //             <p>Try endpoint from the blank query</p>
-  //           </div>
-  //         </>
-  //       )}
-  //     </div>
-  //   </QueriesLibraryContainer>
-  // );
 };
 
 const EndpointsGalleryContainer = styled.div(

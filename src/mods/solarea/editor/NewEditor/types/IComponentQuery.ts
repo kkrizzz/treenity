@@ -4,6 +4,6 @@ export default interface IComponentQuery {
 
   query: string;
   name: string;
-  endpoint_url: string;
+  endpointURL: string;
   variables: unknown;
 }

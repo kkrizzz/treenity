@@ -7,7 +7,7 @@ const ToolbarComponent = ({ queryEditor, variablesEditor, docExplorerOpen, toggl
   const { updateCurrentQuery, currentQuery } = useQueryStore();
 
   const handleInputURLChange = (e) => {
-    updateCurrentQuery({ endpoint_url: e.target.value });
+    updateCurrentQuery({ endpointURL: e.target.value });
   };
   const prettifyQuery = () => {
     const editor = queryEditor.current.getEditor();
@@ -42,7 +42,7 @@ const ToolbarComponent = ({ queryEditor, variablesEditor, docExplorerOpen, toggl
           <input
             className="endpointURL"
             type="text"
-            value={currentQuery.endpoint_url}
+            value={currentQuery.endpointURL}
             onChange={handleInputURLChange}
           />
         )}

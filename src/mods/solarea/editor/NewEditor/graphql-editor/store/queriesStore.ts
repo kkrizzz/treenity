@@ -13,7 +13,7 @@ export const useQueryStore = create<any>((set, get) => ({
   schema: null,
 
   setCurrentQuery(query) {
-    console.log();
+    console.log(query);
     set(() => ({ currentQuery: query || undefined, schema: null }));
   },
   updateCurrentQuery: (params) =>
@@ -49,7 +49,7 @@ export const useQueryStore = create<any>((set, get) => ({
   fetchQuery: async (displayedData) => {
     const currentQuery = get().currentQuery;
     console.log(currentQuery);
-    if (!currentQuery?._id) return;
+    if (!currentQuery?._id) return [];
 
     set({ isQueryLoading: true });
 

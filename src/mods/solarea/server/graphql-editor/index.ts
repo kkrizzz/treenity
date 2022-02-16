@@ -55,12 +55,12 @@ function graphqlComponentQueries(app: Application) {
     try {
       const { queryData, componentID } = req.body;
       if (queryData == null || typeof queryData !== 'object') return res.status(400).send();
-      const { variables, endpoint_url, name, query } = queryData;
+      const { variables, endpointURL, name, query } = queryData;
 
       await componentQueriesCollection.insertOne({
         componentID,
         variables,
-        endpoint_url,
+        endpointURL,
         name,
         query,
       });

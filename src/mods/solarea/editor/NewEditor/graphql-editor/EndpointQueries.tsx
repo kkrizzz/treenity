@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import { Endpoint } from './hooks/useEndpoints';
 import { useEndpointQueries } from './hooks/useEndpointQueries';
 import QueryCard from '../components/QueryCard';
-import { styled, css } from '../SolariaEditTheme';
-import { useQueryStore } from './store/queriesStore';
+import { css, styled } from '../SolariaEditTheme';
 import { EditorContainer } from './EditorContainer';
+import Icon from '../components/Icon';
 
 interface EndpointQueriesProps {
   endpoint: Endpoint;
@@ -22,14 +22,15 @@ const EndpointQueries: FC<EndpointQueriesProps> = ({ endpoint, onChooseQuery, on
       <div className="content flex" style={{ width: '100%' }}>
         <div className={'gallery flex flex-col active'} style={{ zIndex: 0 }}>
           <EndpointQueriesContainer>
-            <div className="endpoint-queries__title">Queries</div>
+            <div className="editor__builder-head" onClick={onBack}>
+              <button>
+                <Icon name="chevronLeft" />
+              </button>
+              Queries
+            </div>
             {queries.map((query) => (
               <QueryCard key={query._id} name={query.name} onClick={() => onChooseQuery(query)} />
             ))}
-
-            <button className="editor__back-btn" onClick={onBack}>
-              ← Change URL
-            </button>
           </EndpointQueriesContainer>
         </div>
 

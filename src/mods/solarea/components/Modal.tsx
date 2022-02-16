@@ -22,10 +22,11 @@ export const Modal = (props: ModalProps) => {
       onClick={() => props.onBackdropPress()}
       style={{
         top: 0,
-        position: 'absolute',
+        left: 0,
+        position: 'fixed',
         zIndex: 100500,
-        width: '100%',
-        height: '100%',
+        width: '100vw',
+        height: '100vh',
         background: props.transparent ? 'transparent' : props.background || 'rgba(69,69,69,0.34)',
       }}
     >
