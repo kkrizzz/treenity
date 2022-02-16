@@ -4,6 +4,7 @@ import { useLoadAccountComponent } from '../hooks/useLoadComponent';
 import { Icon } from '../components/Icon';
 import { toast } from '../utils/toast';
 import { useEditorGridLayout } from '../editor/NewEditor/useEditorGridLayout';
+import { useGraphQL } from '../hooks/useGraphQL';
 
 interface RenderProps {
   id: string;
@@ -47,6 +48,7 @@ function Render(props: RenderProps) {
   const [componentInfo, isLoading] = loaderHook
     ? loaderHook(props)
     : useLoadAccountComponent(id, name, context);
+
   // console.log('rendering', id, name, context, isLoading);
   if (isLoading) {
     return loading ? loading(props) : <span className="spinner-grow spinner-grow-sm m-r-4" />;
@@ -59,7 +61,13 @@ function Render(props: RenderProps) {
 
   let result: JSX.Element | null = null;
   try {
-    const { component: Component, props, needAccount } = componentInfo;
+    const { component: Component, props, needAccount, queries } = componentInfo;
+
+    const queriesData = {};
+    queries?.forEach(
+      (q) =>
+        (queriesData[q.name] = useGraphQL(q.endpoint_url, q.query, { variables: q.variables })),
+    );
 
     if (more.addable === true) {
       result = (
@@ -67,6 +75,7 @@ function Render(props: RenderProps) {
           <Component
             {...more}
             {...props}
+            {...queriesData}
             id={id}
             context={context}
             name={name}
@@ -83,6 +92,7 @@ function Render(props: RenderProps) {
         <Component
           {...more}
           {...props}
+          {...queriesData}
           id={id}
           value={accountInfo}
           context={context}

@@ -11,6 +11,8 @@ import { SolareaViewId } from './SolareaViewId';
 import { WalletAdapterInterface } from '../utils/wallet';
 import { PublicKey } from '@solana/web3.js';
 import memoize from 'lodash/memoize';
+import { loadQueryFromComponent } from '../editor/NewEditor/graphql-editor/api';
+import IComponentQuery from '../editor/NewEditor/types/IComponentQuery';
 
 interface Entry {
   _id: string;
@@ -62,14 +64,19 @@ export class RestStorageAdapter implements IStorageAdapter {
     );
   }
 
+  _loadView(id: string): Promise<[SolareaViewData, IComponentQuery[]]> {
+    return Promise.all([this.restManager.get(id), loadQueryFromComponent(id)]);
+  }
+
   get = memoize(
     async (id: SolareaViewId, opts?: IGetStorageOptions): Promise<SolareaViewData> => {
-      let viewData = await this.restManager.get(id.id);
+      let [viewData, queries] = await this._loadView(id.id);
       if (opts?.resolveLinks) {
         while (viewData.type === mimeTypesData['solarea/link']) {
-          viewData = await this.restManager.get((viewData as SolareaLinkData).linkTo.id);
+          [viewData, queries] = await this._loadView((viewData as SolareaLinkData).linkTo.id);
         }
       }
+      if (viewData) viewData.queries = queries;
       return viewData;
     },
     (id, opts) => `${id.id}${opts?.resolveLinks}`,

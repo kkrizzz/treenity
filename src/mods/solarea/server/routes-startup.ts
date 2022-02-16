@@ -13,9 +13,9 @@ import { graphqlEditor } from './graphql-editor';
 export function routesStartup(app: Application) {
   prettierFormat(app);
   emailSubscribeRoute(app);
-  klinesProxy(app);
-  nearIndexer(app);
-  indexRefFinanceTokensPrice(app);
-  indexVelasDextools(app);
+  // klinesProxy(app);
+  // nearIndexer(app);
+  // indexRefFinanceTokensPrice(app);
+  // indexVelasDextools(app);
   graphqlEditor(app);
 }
