@@ -61,13 +61,16 @@ function Render(props: RenderProps) {
 
   let result: JSX.Element | null = null;
   try {
-    const { component: Component, props, needAccount, queries } = componentInfo;
+    const { component: Component, props, needAccount, viewData } = componentInfo;
 
     const queriesData = {};
-    queries?.forEach(
-      (q) =>
-        (queriesData[q.name] = useGraphQL(q.endpoint_url, q.query, { variables: q.variables })),
-    );
+    viewData.queries?.forEach((q) => {
+      let [data, isLoading] = useGraphQL(q.endpointURL, q.query, { variables: q.variables });
+      queriesData[q.name] = {
+        data: data?.data,
+        isLoading,
+      };
+    });
 
     if (more.addable === true) {
       result = (
@@ -102,7 +105,15 @@ function Render(props: RenderProps) {
       );
     } else {
       result = (
-        <Component {...more} {...props} id={id} context={context} name={name} children={children} />
+        <Component
+          {...more}
+          {...props}
+          {...queriesData}
+          id={id}
+          context={context}
+          name={name}
+          children={children}
+        />
       );
     }
   } catch (e) {
