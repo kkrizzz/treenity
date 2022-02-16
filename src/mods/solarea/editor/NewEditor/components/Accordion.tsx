@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Icon } from '../../../components/Icon';
 import { styled } from '../SolariaEditTheme';
 
 export const Accordion = ({ title, children }) => {
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(true);
 
   return (
     <AccordionContainer isActive={isActive}>
