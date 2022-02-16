@@ -7,9 +7,6 @@ import EndpointQueries from './EndpointQueries';
 import { toast } from '../../../utils/toast';
 import { addQueryToComponent } from './api';
 import QueryEditor from './QueryEditor';
-import Input from '../components/Input';
-import Button from '../components/Button';
-import Modal from '../components/Modal';
 
 const QueriesMarket = ({ viewId }) => {
   const { setCurrentQuery, currentQuery } = useQueryStore();
@@ -39,7 +36,7 @@ const QueriesMarket = ({ viewId }) => {
               _id: 'none',
               query: '',
               variables: null,
-              endpoint_url: url,
+              endpointURL: url,
               name: 'New Query',
               endpointID: '',
             });

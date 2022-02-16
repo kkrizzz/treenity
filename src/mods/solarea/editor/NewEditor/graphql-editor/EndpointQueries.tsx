@@ -31,6 +31,22 @@ const EndpointQueries: FC<EndpointQueriesProps> = ({ endpoint, onChooseQuery, on
             {queries.map((query) => (
               <QueryCard key={query._id} name={query.name} onClick={() => onChooseQuery(query)} />
             ))}
+
+            <button
+              className="editor__back-btn"
+              onClick={() =>
+                onChooseQuery({
+                  _id: 'none',
+                  query: '',
+                  variables: null,
+                  endpointURL: endpoint.url,
+                  name: 'New Query',
+                  endpointID: '',
+                })
+              }
+            >
+              + Create custom
+            </button>
           </EndpointQueriesContainer>
         </div>
 
