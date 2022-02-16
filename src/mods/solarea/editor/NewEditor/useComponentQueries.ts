@@ -1,6 +1,7 @@
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
 import { useQuery } from 'react-query';
 import IComponentQuery from './types/IComponentQuery';
+import camelize from './graphql-editor/utils/camelize';
 
 const useComponentQueries = ({ id: componentID }: SolareaViewId) => {
   const url = `/solarea/graphql/components/queries?componentID=${componentID}`;
@@ -38,13 +39,5 @@ const useComponentQueries = ({ id: componentID }: SolareaViewId) => {
     refetch,
   };
 };
-
-function camelize(str) {
-  return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    })
-    .replace(/\s+/g, '');
-}
 
 export default useComponentQueries;
