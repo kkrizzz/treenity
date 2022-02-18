@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { loadScript } from '../compiler/load-script';
 import { makeId } from '../utils/make-id';
-import Render from '../render/Render';
+import Render, { render } from '../render/Render';
 import { addComponent } from '../component-db';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useEditorSelect } from '../stores/editor-store';
@@ -35,11 +35,20 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
   if (!code && !currentAddress) return null;
   if (isLoading) return <div className="spinner" />;
 
+  const Component = () => (
+    <Render {...params} id={currentAddress || id} name={name} context={context || 'react'} />
+  );
+
   return (
     <ErrorBoundary>
       <GlobalCSSRender />
-      <Render id={currentAddress || id} name={'layout'} context={context || 'react'}>
-        <Render {...params} id={currentAddress || id} name={name} context={context || 'react'} />
+      <Render
+        id={currentAddress || id}
+        name={'preview-layout'}
+        context={context || 'react'}
+        fallback={Component}
+      >
+        <Component />
       </Render>
     </ErrorBoundary>
   );
