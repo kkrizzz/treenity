@@ -6,14 +6,15 @@ import QueriesMarket from './graphql-editor/QueriesMarket';
 import { SolareaEditMenu } from './SolareaEditMenu';
 import { SolariaEditThemeProvider, styled } from './SolariaEditTheme';
 import ComponentEditor from './ComponentEditor';
+import { SolareaEditPreview } from './Preview';
 
-const SolareaEdit = ({ value, id, name, context, ...params }) => {
+const SolareaEdit = ({ id, name, context, ...params }) => {
   const viewId = new SolareaViewId(id, name, context);
 
   const [currentTab, setCurrentTab] = useState('edit');
 
   const tabs = {
-    edit: () => <ComponentEditor viewId={viewId} />,
+    edit: () => <ComponentEditor viewId={viewId} params={params} />,
     graphql: () => <QueriesMarket viewId={viewId} />,
   };
 

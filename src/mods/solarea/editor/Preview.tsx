@@ -6,6 +6,7 @@ import { addComponent } from '../component-db';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useEditorSelect } from '../stores/editor-store';
 import { createExecutionContext } from '../utils/create-execution-context';
+import { GlobalCSSRender } from '../utils/GlobalCSSRender';
 
 export function Preview({ accountData, code, id, name, context, ...params }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +37,10 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
 
   return (
     <ErrorBoundary>
-      <Render {...params} id={currentAddress || id} name={name} context={context || 'react'} />
+      <GlobalCSSRender />
+      <Render id={currentAddress || id} name={'layout'} context={context || 'react'}>
+        <Render {...params} id={currentAddress || id} name={name} context={context || 'react'} />
+      </Render>
     </ErrorBoundary>
   );
 }

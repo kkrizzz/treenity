@@ -54,7 +54,7 @@ export function useLoadAccountComponent(
   name: string,
   context: string,
 ): [any, boolean] {
-  if (!addressRegEx.test(address)) throw new Error('bad address');
+  if (!addressRegEx.test(address)) throw new Error('bad address - ' + address);
 
   const config = getComponent(address, name, context);
 

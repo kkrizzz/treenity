@@ -1,8 +1,10 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
-import Frame, { FrameContextConsumer } from 'react-frame-component';
+import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
+import Frame, { FrameContextConsumer, FrameContext } from 'react-frame-component';
 import { Icon } from '../components/Icon';
+import { StyleSheetManager } from 'styled-components';
 
 import './DeviceScaleFrame.css';
+import { css, styled } from './NewEditor/SolariaEditTheme';
 
 export const MINIMAL_VIEWPORTS = {
   mobile: {
@@ -32,7 +34,7 @@ export const MINIMAL_VIEWPORTS = {
 };
 
 export const DeviceScaleFrame = ({ children }) => {
-  const [iFrameBodyViewport, setIframeBodyViewport] = useState(MINIMAL_VIEWPORTS['mobile']);
+  const [iFrameBodyViewport, setIframeBodyViewport] = useState(MINIMAL_VIEWPORTS['desktop']);
 
   const frameRef = useRef<any>();
 
@@ -64,38 +66,26 @@ export const DeviceScaleFrame = ({ children }) => {
 
   return (
     <>
-      <div className="solarea-device-scale-frame-toolbar">
+      <StyledPreviewToolbarContainer>
         {Object.keys(MINIMAL_VIEWPORTS).map((key) => {
           return (
             <div
-              className="solarea-device-scale-frame-toolbar__item"
+              className={`preview-toolbar__item ${
+                iFrameBodyViewport === MINIMAL_VIEWPORTS[key] ? 'preview-toolbar__item_active' : ''
+              }`}
               onClick={() => updateViewport(MINIMAL_VIEWPORTS[key])}
             >
               <Icon name={MINIMAL_VIEWPORTS[key].icon} />
             </div>
           );
         })}
-        <div className="solarea-device-scale-frame-toolbar__item">
-          {iFrameBodyViewport.styles.width}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="icon icon-tabler icon-tabler-space"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M4 10v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1 -1v-3" />
-          </svg>
 
-          {iFrameBodyViewport.styles.height}
+        <div className="preview-toolbar__item preview-toolbar__item_bordered">
+          {iFrameBodyViewport.styles.width} X {iFrameBodyViewport.styles.height}
         </div>
-      </div>
+
+        <button className="preview-toolbar__full-screen-btn"> Full Screen Preview </button>
+      </StyledPreviewToolbarContainer>
       <div
         style={{
           width: '100%',
@@ -119,7 +109,8 @@ export const DeviceScaleFrame = ({ children }) => {
             {({ window: iframeWindow, document: iframeDocument }) => (
               <>
                 {updateIframe({ iframeWindow, iframeDocument })}
-                {children}
+
+                <InjectFrameStyles>{children}</InjectFrameStyles>
               </>
             )}
           </FrameContextConsumer>
@@ -128,3 +119,58 @@ export const DeviceScaleFrame = ({ children }) => {
     </>
   );
 };
+
+const InjectFrameStyles = (props) => {
+  const { document } = useContext(FrameContext);
+  return <StyleSheetManager target={document.body}>{props.children}</StyleSheetManager>;
+};
+
+const StyledPreviewToolbarContainer = styled.div(
+  ({ theme }) => css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.11);
+    color: ${theme.colors.text.primary};
+    height: 32px;
+    width: 100%;
+    background: ${theme.colors.fill.secondary};
+
+    .preview-toolbar__item {
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: ${theme.colors.text.primary};
+      cursor: pointer;
+      align-items: center;
+      display: flex;
+    }
+
+    .preview-toolbar__item_active {
+      background: ${theme.colors.fill.secondaryLight};
+    }
+    .preview-toolbar__item_bordered {
+      border-width: 0 1px 0 1px;
+      border-style: solid;
+      border-color: ${theme.colors.text.primary};
+      color: ${theme.colors.text.secondary};
+      border-radius: 0;
+      margin: 0 20px 0 20px;
+      padding: 0 20px 0 20px;
+      cursor: default;
+    }
+    .preview-toolbar__full-screen-btn {
+      width: 136px;
+      height: 22px;
+      padding: 0;
+      border-radius: 4px;
+      border: none;
+      font-weight: bold;
+      font-size: 10px;
+      line-height: 10px;
+      text-transform: uppercase;
+      color: ${theme.colors.text.primary};
+      background: ${theme.colors.fill.secondaryLight};
+      cursor: pointer;
+    }
+  `,
+);

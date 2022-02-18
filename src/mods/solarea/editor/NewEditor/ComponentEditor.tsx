@@ -12,8 +12,9 @@ import CodeMirror from '../CodeMirror';
 import { css, styled } from './SolariaEditTheme';
 import QueryEditor from './graphql-editor/QueryEditor';
 import { useQueryStore } from './graphql-editor/store/queriesStore';
+import { SolareaEditPreview } from './Preview';
 
-const ComponentEditor = ({ viewId }) => {
+const ComponentEditor = ({ viewId, params }) => {
   const { setCurrentQuery } = useQueryStore();
   const [showQueryEditor, setShowQueryEditor] = useState(false);
   const openEditor = (query: any) => {
@@ -93,8 +94,7 @@ const ComponentEditor = ({ viewId }) => {
           }}
         />
       </div>
-      {/*<EditorWidthController />*/}
-      {/*<SolareaEditPreview id={id} value={value} name={name} {...params} />*/}
+      <SolareaEditPreview id={viewId.address} name={viewId.name} {...params} />
     </>
   );
 };
