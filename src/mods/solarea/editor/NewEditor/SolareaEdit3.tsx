@@ -6,7 +6,6 @@ import QueriesMarket from './graphql-editor/QueriesMarket';
 import { SolareaEditMenu } from './SolareaEditMenu';
 import { SolariaEditThemeProvider, styled } from './SolariaEditTheme';
 import ComponentEditor from './ComponentEditor';
-import { SolareaEditPreview } from './Preview';
 
 const SolareaEdit = ({ id, name, context, ...params }) => {
   const viewId = new SolareaViewId(id, name, context);
@@ -29,7 +28,10 @@ const SolareaEdit = ({ id, name, context, ...params }) => {
         />
 
         <h1>{currentTab === 'edit' ? 'Editor' : 'URLs'}</h1>
-        <div className="sol-edit__content">{tabs[currentTab] ? tabs[currentTab]() : 'none'}</div>
+        <div className="sol-edit__content">
+          {currentTab === 'edit' && <ComponentEditor viewId={viewId} params={params} />}
+          {currentTab === 'graphql' && <QueriesMarket viewId={viewId} />}
+        </div>
       </SolareaEditContainer>
     </SolariaEditThemeProvider>
   );
