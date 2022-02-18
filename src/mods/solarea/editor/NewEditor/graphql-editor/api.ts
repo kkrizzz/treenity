@@ -1,3 +1,4 @@
+import fetch from 'cross-fetch';
 import camelize from './utils/camelize';
 import IComponentQuery from '../types/IComponentQuery';
 
@@ -11,6 +12,11 @@ export const fetcher = (graphQLParams, query) => {
     body: JSON.stringify(graphQLParams),
     credentials: 'same-origin',
   });
+};
+
+export const loadQueryFromComponent = (queryID: string): Promise<IComponentQuery[]> => {
+  const url = `/solarea/graphql/components/queries?componentID=${queryID}`;
+  return fetch(url).then((r) => r.json() as Promise<Array<IComponentQuery>>);
 };
 
 export const deleteQueryFromComponent = (queryID: string): Promise<Response> =>

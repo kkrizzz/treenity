@@ -33,7 +33,7 @@ async function loadScriptComponent(address, name, context, apis: any[]) {
         ...createExecutionContext(),
         add(component, options = {}): void {
           component.displayName = id.id;
-          addComponent(address, name, context, options, component);
+          addComponent(address, name, context, { ...options, viewData }, component);
         },
       });
     } else if (mimetype) {
@@ -49,12 +49,14 @@ async function loadScriptComponent(address, name, context, apis: any[]) {
   }
 }
 
+interface ComponentInfo {}
+
 export function useLoadAccountComponent(
   address: string,
   name: string,
   context: string,
-): [any, boolean] {
-  if (!addressRegEx.test(address)) throw new Error('bad address - ' + address);
+): [ComponentInfo | null, boolean] {
+  if (!addressRegEx.test(address)) throw new Error('bad address');
 
   const config = getComponent(address, name, context);
 
@@ -76,7 +78,7 @@ export function useLoadAccountComponent(
   const solanaStorage = useSolanaStorage();
   const restStorage = useRestStorage();
 
-  useAsyncEffect(async () => {
+  useEffect(() => {
     loadScriptComponent(address, name, context, [restStorage]).finally(() => setLoading(false));
   }, [address, name, context]);
 

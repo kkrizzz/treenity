@@ -4,6 +4,7 @@ import { useLoadAccountComponent } from '../hooks/useLoadComponent';
 import { Icon } from '../components/Icon';
 import { toast } from '../utils/toast';
 import { useEditorGridLayout } from '../editor/NewEditor/useEditorGridLayout';
+import { useGraphQL } from '../hooks/useGraphQL';
 
 interface RenderProps {
   id: string;
@@ -47,6 +48,7 @@ function Render(props: RenderProps) {
   const [componentInfo, isLoading] = loaderHook
     ? loaderHook(props)
     : useLoadAccountComponent(id, name, context);
+
   // console.log('rendering', id, name, context, isLoading);
   if (isLoading) {
     return loading ? loading(props) : <span className="spinner-grow spinner-grow-sm m-r-4" />;
@@ -59,7 +61,16 @@ function Render(props: RenderProps) {
 
   let result: JSX.Element | null = null;
   try {
-    const { component: Component, props, needAccount } = componentInfo;
+    const { component: Component, props, needAccount, viewData } = componentInfo;
+
+    const queriesData = {};
+    viewData.queries?.forEach((q) => {
+      let [data, isLoading] = useGraphQL(q.endpointURL, q.query, { variables: q.variables });
+      queriesData[q.name] = {
+        data: data?.data,
+        isLoading,
+      };
+    });
 
     if (more.addable === true) {
       result = (
@@ -67,6 +78,7 @@ function Render(props: RenderProps) {
           <Component
             {...more}
             {...props}
+            {...queriesData}
             id={id}
             context={context}
             name={name}
@@ -83,6 +95,7 @@ function Render(props: RenderProps) {
         <Component
           {...more}
           {...props}
+          {...queriesData}
           id={id}
           value={accountInfo}
           context={context}
@@ -92,7 +105,15 @@ function Render(props: RenderProps) {
       );
     } else {
       result = (
-        <Component {...more} {...props} id={id} context={context} name={name} children={children} />
+        <Component
+          {...more}
+          {...props}
+          {...queriesData}
+          id={id}
+          context={context}
+          name={name}
+          children={children}
+        />
       );
     }
   } catch (e) {

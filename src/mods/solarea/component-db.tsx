@@ -1,9 +1,17 @@
 import set from 'lodash/set';
 import get from 'lodash/get';
+import IComponentQuery from './editor/NewEditor/types/IComponentQuery';
+import { SolareaViewData } from './storage-adapters/IStorageAdapter';
 
 export const components: { [code: string]: any } = {};
 
-export function getComponent(id, name, context): { component: any, [name: string]: any } {
+interface ComponentInfo {
+  component: any;
+  viewData?: SolareaViewData;
+  [name: string]: any;
+}
+
+export function getComponent(id, name, context): ComponentInfo {
   return get(components, [id, context, name]);
 }
 

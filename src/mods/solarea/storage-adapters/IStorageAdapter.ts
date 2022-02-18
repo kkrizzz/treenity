@@ -1,6 +1,7 @@
 import { SolareaViewId } from './SolareaViewId';
 import { mimeTypesData } from '../utils/mime-types-data';
 import { PublicKey } from '@solana/web3.js';
+import IComponentQuery from '../editor/NewEditor/types/IComponentQuery';
 
 export class SolareaViewData {
   public id: SolareaViewId;
@@ -9,6 +10,7 @@ export class SolareaViewData {
 
   public owner?: PublicKey[];
   public dataSource?: 'rest' | 'solana';
+  queries?: IComponentQuery[];
 
   constructor(id: SolareaViewId, type: number, data: Buffer, owner?: PublicKey[]) {
     this.id = id;
