@@ -533,25 +533,25 @@ div.CodeMirror-lint-tooltip > * + * {
 /* Punctuation */
 
 .cm-punctuation {
-  color: #555;
+  color: rgba(241, 241, 241, 0.4);
 }
 
 /* Keyword */
 
 .cm-keyword {
-  color: #B11A04;
+  color: #c678dd;
 }
 
 /* OperationName, FragmentName */
 
 .cm-def {
-  color: #D2054E;
+  color: #61afef;
 }
 
 /* FieldName */
 
 .cm-property {
-  color: #1F61A0;
+  color: #e06c75;
 }
 
 /* FieldAlias */
@@ -563,37 +563,37 @@ div.CodeMirror-lint-tooltip > * + * {
 /* ArgumentName and ObjectFieldName */
 
 .cm-attribute {
-  color: #8B2BB9;
+  color: #abb2bf;
 }
 
 /* Number */
 
 .cm-number {
-  color: #2882F9;
+  color: #e5c07b;
 }
 
 /* String */
 
 .cm-string {
-  color: #D64292;
+  color: #98c379;
 }
 
 /* Boolean */
 
 .cm-builtin {
-  color: #D47509;
+  color: #d19a66;
 }
 
 /* EnumValue */
 
 .cm-string-2 {
-  color: #0B7FC7;
+  color: #c3fa9c;
 }
 
 /* Variable */
 
 .cm-variable {
-  color: #397D13;
+  color: #56b6c2;
 }
 
 /* Directive */
@@ -605,7 +605,7 @@ div.CodeMirror-lint-tooltip > * + * {
 /* Type */
 
 .cm-atom {
-  color: #CA9800;
+  color: #e5c07b;
 }
 
 /* BASICS */
@@ -657,7 +657,7 @@ div.CodeMirror-lint-tooltip > * + * {
 /* CURSOR */
 
 .CodeMirror .CodeMirror-cursor {
-  border-left: 1px solid black;
+  border-left: 1px solid #528bff;
 }
 
 /* Shown when moving in bi-directional text */
@@ -912,6 +912,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 
 .CodeMirror-code {
   outline: none;
+  color: #F1F1F1;
+  caret-color: #F1F1F1;
 }
 
 /* Force content-box sizing for the elements where we expect it */
@@ -1162,7 +1164,7 @@ span.CodeMirror-selectedtext { background: none; }
 .CodeMirror-lint-tooltip {
   background-color: infobackground;
   border-radius: 4px 4px 4px 4px;
-  border: 1px solid black;
+  border: 1px solid white;
   color: infotext;
   font-family: monospace;
   font-size: 10pt;
@@ -1246,7 +1248,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 .CodeMirror-hints {
   background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 1px 3px rgba(245, 244, 244, 0.45);
   font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
   font-size: 13px;
   list-style: none;
@@ -1262,7 +1264,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 .CodeMirror-hint {
   border-top: solid 1px #f7f7f7;
-  color: #141823;
+  color: #839de5;
   cursor: pointer;
   margin: 0;
   max-width: 300px;

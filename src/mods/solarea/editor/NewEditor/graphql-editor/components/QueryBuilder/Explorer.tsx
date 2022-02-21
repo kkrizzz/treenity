@@ -33,24 +33,24 @@ import {
 // Names match class names in graphiql app.css
 // https://github.com/graphql/graphiql/blob/master/packages/graphiql/css/app.css
 const defaultColors = {
-  keyword: '#B11A04',
+  keyword: '#c678dd',
   // OperationName, FragmentName
-  def: '#D2054E',
+  def: '#61afef',
   // FieldName
-  property: '#1F61A0',
+  property: '#e06c75',
   // FieldAlias
   qualifier: '#1C92A9',
   // ArgumentName and ObjectFieldName
-  attribute: '#8B2BB9',
-  number: '#2882F9',
-  string: '#D64292',
+  attribute: '#abb2bf',
+  number: '#e5c07b',
+  string: '#98c379',
   // Boolean
-  builtin: '#D47509',
+  builtin: '#d19a66',
   // Enum
-  string2: '#0B7FC7',
-  variable: '#397D13',
+  string2: '#c3fa9c',
+  variable: '#56b6c2',
   // Type
-  atom: '#CA9800',
+  atom: '#e5c07b',
 };
 
 const defaultArrowOpen = (
@@ -76,7 +76,7 @@ const defaultCheckboxChecked = (
   >
     <path
       d="M16 0H2C0.9 0 0 0.9 0 2V16C0 17.1 0.9 18 2 18H16C17.1 18 18 17.1 18 16V2C18 0.9 17.1 0 16 0ZM16 16H2V2H16V16ZM14.99 6L13.58 4.58L6.99 11.17L4.41 8.6L2.99 10.01L6.99 14L14.99 6Z"
-      fill="#666"
+      fill={'#F1F1F1'}
     />
   </svg>
 );
@@ -92,7 +92,7 @@ const defaultCheckboxUnchecked = (
   >
     <path
       d="M16 2V16H2V2H16ZM16 0H2C0.9 0 0 0.9 0 2V16C0 17.1 0.9 18 2 18H16C17.1 18 18 17.1 18 16V2C18 0.9 17.1 0 16 0Z"
-      fill="#CCC"
+      fill={'#464b69'}
     />
   </svg>
 );
@@ -600,8 +600,9 @@ class ScalarInput extends React.PureComponent<any, {}> {
         {argType.name === 'String' ? '"' : ''}
         <input
           style={{
+            background: 'transparent',
             border: 'none',
-            borderBottom: '1px solid #888',
+            borderBottom: '1px solid #F1F1F180',
             outline: 'none',
             width: `${Math.max(1, Math.min(15, value.length + 1))}ch`,
             color,
@@ -944,7 +945,12 @@ class AbstractArgView extends React.PureComponent<any> {
             variablize();
           }
         }}
-        style={styleConfig.styles.actionButtonStyle}
+        style={{
+          ...styleConfig.styles.actionButtonStyle,
+          background: '#292B3D',
+          marginLeft: 4,
+          color: '#F1F1F1',
+        }}
       >
         <span style={{ color: styleConfig.colors.variable }}>{'$'}</span>
       </button>
@@ -1520,6 +1526,9 @@ class FieldView extends React.PureComponent<any> {
               }}
               style={{
                 ...styleConfig.styles.actionButtonStyle,
+                background: '#292B3D',
+                marginLeft: 4,
+                color: '#F1F1F1',
               }}
             >
               <span>{'…'}</span>

@@ -64,7 +64,7 @@ function Render(props: RenderProps) {
     const { component: Component, props, needAccount, viewData } = componentInfo;
 
     const queriesData = {};
-    viewData.queries?.forEach((q) => {
+    viewData?.queries?.forEach((q) => {
       let [data, isLoading] = useGraphQL(q.endpointURL, q.query, { variables: q.variables });
       queriesData[q.name] = {
         data: data?.data,

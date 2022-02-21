@@ -304,7 +304,9 @@ button.columns_number {
 }
 
 div.CodeMirror span.CodeMirror-matchingbracket {
-  color: #555 !important
+  background-color: #bad0f847 !important;
+  outline: 1px solid #515a6b;
+  color: #0b0 !important;
 }
 
 .bitqueditor__toolbar {
