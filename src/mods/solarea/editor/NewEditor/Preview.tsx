@@ -6,7 +6,7 @@ import { ErrorBoundary } from '../../components/ErrorBoundary';
 import Render from '../../render/Render';
 import { Preview } from '../Preview';
 
-export const SolareaEditPreview = ({ value, id, name, ...params }) => {
+export const SolareaEditPreview = ({ value: accountData, id, name, ...params }) => {
   const [code, link, selectedContext] = useEditorStore((state) => [
     state.code,
     state.link,
@@ -33,7 +33,7 @@ export const SolareaEditPreview = ({ value, id, name, ...params }) => {
             <Preview
               {...params}
               key={code}
-              accountData={value}
+              accountData={accountData}
               code={code}
               id={id}
               name={name}

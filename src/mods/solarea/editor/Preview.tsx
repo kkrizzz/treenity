@@ -14,6 +14,8 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
   let [, , , hostname] = useParams();
   const [currentAddress] = useEditorSelect('currentAddress');
 
+  const [value, onChange] = useState(accountData);
+
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -38,7 +40,14 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
   if (isLoading) return <div className="spinner" />;
 
   const Component = () => (
-    <Render {...params} id={currentAddress || id} name={name} context={context || 'react'} />
+    <Render
+      value={value}
+      onChange={onChange}
+      {...params}
+      id={currentAddress || id}
+      name={name}
+      context={context || 'react'}
+    />
   );
 
   return (
@@ -50,7 +59,7 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
         context={context || 'react'}
         fallback={Component}
       >
-        <Component />
+        {Component()}
       </Render>
     </ErrorBoundary>
   );

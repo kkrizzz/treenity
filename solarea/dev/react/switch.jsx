@@ -12,6 +12,8 @@ const Switch = ({ className = '', value = false, onChange = () => {}, children }
   );
 };
 
+add(Switch);
+
 const StyledSwitchContainer = styled.div`
   display: flex;
   align-items: center;
@@ -57,5 +59,3 @@ const StyledSwitchContainer = styled.div`
     margin: 0 8px 0 0;
   }
 `;
-
-add(Switch);
