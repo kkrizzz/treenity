@@ -19,7 +19,8 @@ export const EditorGridLayout = ({ id, name, context }) => {
   const [gridLayout, updateGridLayout, addGridItem] = useEditorGridLayout(viewId);
 
   const handleAddItem = () => {
-    addGridItem(targetId, 'default', 'react', {});
+    const [id, name = 'default', context = 'react'] = targetId.split(/[~/.]/);
+    addGridItem(id, name, context, {});
     setTargetId('');
   };
 

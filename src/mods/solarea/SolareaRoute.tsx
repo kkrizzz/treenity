@@ -11,11 +11,13 @@ const SolareaEdit = React.lazy(() => import('./editor/NewEditor/SolareaEdit3'));
 const EditorGridLayout = React.lazy(() => import('./editor/NewEditor/EditorGridLayout'));
 
 const idToViewResolvers = [
-  (id, name, context, { query: { edit, grid, ...query } }) => {
+  (id, name, context, { query: { edit, grid, ...query }, hostname }) => {
     if (edit !== undefined && grid !== undefined) {
       return (
         <Suspense fallback={<div>Loading Grid Layout...</div>}>
-          <EditorGridLayout {...query} id={id} name={name} context={context} />
+          <Render id={hostname} name="layout" context={context} query={query}>
+            <EditorGridLayout {...query} id={id} name={name} context={context} />
+          </Render>
         </Suspense>
       );
     }

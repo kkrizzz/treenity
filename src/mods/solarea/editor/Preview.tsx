@@ -7,9 +7,11 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useEditorSelect } from '../stores/editor-store';
 import { createExecutionContext } from '../utils/create-execution-context';
 import { GlobalCSSRender } from '../utils/GlobalCSSRender';
+import useParams from '../hooks/useParams';
 
 export function Preview({ accountData, code, id, name, context, ...params }) {
   const [isLoading, setIsLoading] = useState(true);
+  let [, , , hostname] = useParams();
   const [currentAddress] = useEditorSelect('currentAddress');
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
     <ErrorBoundary>
       <GlobalCSSRender />
       <Render
-        id={currentAddress || id}
+        id={hostname || currentAddress || id}
         name={'preview-layout'}
         context={context || 'react'}
         fallback={Component}
