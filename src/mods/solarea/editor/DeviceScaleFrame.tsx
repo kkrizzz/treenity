@@ -97,8 +97,7 @@ export const DeviceScaleFrame = ({ children }) => {
       >
         <Frame
           ref={(ref) => (frameRef.current = ref)}
-          initialContent='<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body><div id="root"></div></body></html>'
-          mountTarget="#root"
+          head={<meta name="viewport" content="width=device-width, initial-scale=1.0" />}
           style={{
             ...iFrameBodyViewport.styles,
             border:
@@ -109,7 +108,6 @@ export const DeviceScaleFrame = ({ children }) => {
             {({ window: iframeWindow, document: iframeDocument }) => (
               <>
                 {updateIframe({ iframeWindow, iframeDocument })}
-
                 <InjectFrameStyles>{children}</InjectFrameStyles>
               </>
             )}
