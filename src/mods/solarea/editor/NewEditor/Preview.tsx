@@ -7,41 +7,57 @@ import Render from '../../render/Render';
 import { Preview } from '../Preview';
 
 export const SolareaEditPreview = ({ value: accountData, id, name, ...params }) => {
-  const [code, link, selectedContext] = useEditorStore((state) => [
-    state.code,
-    state.link,
-    state.selectedContext,
-  ]);
+  const {
+    code,
+    link,
+    selectedContext,
+    setCode,
+    editorValue,
+    editorMaxWidth,
+    setEditorMaxWidth,
+  } = useEditorStore();
 
   const linkObj = useMemo(() => SolareaViewId.fromString(link), [link]);
+  const isFullscreen = !!editorMaxWidth;
+  const toggleFullscreenMode = () => {
+    setEditorMaxWidth(editorMaxWidth ? 0 : 680);
+  };
 
   return (
     <div className="sol-markup-preview">
-      <DeviceScaleFrame>
-        {link ? (
-          <ErrorBoundary>
-            <Render
-              {...params}
-              key={linkObj.address}
-              id={linkObj.address}
-              name={linkObj.name}
-              context={linkObj.context}
-            />
-          </ErrorBoundary>
-        ) : (
-          code && (
-            <Preview
-              {...params}
-              key={code}
-              accountData={accountData}
-              code={code}
-              id={id}
-              name={name}
-              context={selectedContext}
-            />
-          )
-        )}
-      </DeviceScaleFrame>
+      <ErrorBoundary>
+        <DeviceScaleFrame
+          onRefresh={() => {
+            setCode(editorValue);
+          }}
+          onToggleFullscreenMode={toggleFullscreenMode}
+          isFullscreen={isFullscreen}
+        >
+          {link ? (
+            <ErrorBoundary>
+              <Render
+                {...params}
+                key={linkObj.address}
+                id={linkObj.address}
+                name={linkObj.name}
+                context={linkObj.context}
+              />
+            </ErrorBoundary>
+          ) : (
+            code && (
+              <Preview
+                {...params}
+                key={code}
+                accountData={accountData}
+                code={code}
+                id={id}
+                name={name}
+                context={selectedContext}
+              />
+            )
+          )}
+        </DeviceScaleFrame>
+      </ErrorBoundary>
     </div>
   );
 };
