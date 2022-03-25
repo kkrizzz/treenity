@@ -19,8 +19,8 @@ export const MINIMAL_VIEWPORTS = {
     icon: 'tablet',
     styles: {
       zoom: 0.7,
-      height: '1112px',
-      width: '834px',
+      height: '1000px',
+      width: '750px',
     },
   },
   desktop: {
@@ -33,7 +33,7 @@ export const MINIMAL_VIEWPORTS = {
   },
 };
 
-export const DeviceScaleFrame = ({ children }) => {
+export const DeviceScaleFrame = ({ children, onRefresh, onToggleFullscreenMode, isFullscreen }) => {
   const [iFrameBodyViewport, setIframeBodyViewport] = useState(MINIMAL_VIEWPORTS['desktop']);
 
   const frameRef = useRef<any>();
@@ -59,9 +59,10 @@ export const DeviceScaleFrame = ({ children }) => {
 
   useLayoutEffect(() => {
     if (!frameRef.current) return;
-    const context = frameRef.current.contentWindow;
-    globalThis.System.onload = () =>
+    const context = frameRef.current.node.contentWindow;
+    globalThis.System.onload = () => {
       updateIframe({ iframeDocument: context.document, iframeWindow: context });
+    };
   }, [frameRef.current]);
 
   return (
@@ -84,7 +85,13 @@ export const DeviceScaleFrame = ({ children }) => {
           {iFrameBodyViewport.styles.width} X {iFrameBodyViewport.styles.height}
         </div>
 
-        <button className="preview-toolbar__full-screen-btn"> Full Screen Preview </button>
+        <button className="preview-toolbar__full-screen-btn" onClick={onToggleFullscreenMode}>
+          {isFullscreen ? 'Full' : 'Part'} Screen Preview
+        </button>
+
+        <button className="preview-toolbar__refresh-btn" onClick={onRefresh}>
+          <Icon name="refresh" />
+        </button>
       </StyledPreviewToolbarContainer>
       <div
         style={{
@@ -125,6 +132,7 @@ const InjectFrameStyles = (props) => {
 
 const StyledPreviewToolbarContainer = styled.div(
   ({ theme }) => css`
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -135,6 +143,8 @@ const StyledPreviewToolbarContainer = styled.div(
     background: ${theme.colors.fill.secondary};
 
     .preview-toolbar__item {
+      font-size: 14px;
+
       padding: 2px 8px;
       border-radius: 4px;
       color: ${theme.colors.text.primary};
@@ -169,6 +179,21 @@ const StyledPreviewToolbarContainer = styled.div(
       color: ${theme.colors.text.primary};
       background: ${theme.colors.fill.secondaryLight};
       cursor: pointer;
+    }
+    .preview-toolbar__refresh-btn {
+      background: transparent;
+      margin: 0;
+      padding: 0;
+      border: none;
+      color: ${theme.colors.text.primary};
+      cursor: pointer;
+      position: absolute;
+      right: 8px;
+      opacity: 0.25;
+
+      &:hover {
+        opacity: 1;
+      }
     }
   `,
 );

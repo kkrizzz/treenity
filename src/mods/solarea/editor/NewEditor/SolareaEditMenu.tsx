@@ -183,15 +183,15 @@ export const SolareaEditMenu = ({ id, name, onSelectTab, currentTab }) => {
           <Icon name="graphql" />
         </Tooltip>
 
-        <MenuItem
-          onClick={() => {
-            setCode(editorValue);
-          }}
-          icon="refresh"
-          title="Update preview"
-        />
-        <MenuItem onClick={() => saveToMongo()} icon="save" title="Store" />
-        <MenuItem onClick={() => saveToSolana()} icon="solana" title="Store onchain" />
+        {/*<MenuItem*/}
+        {/*  onClick={() => {*/}
+        {/*    setCode(editorValue);*/}
+        {/*  }}*/}
+        {/*  icon="refresh"*/}
+        {/*  title="Update preview"*/}
+        {/*/>*/}
+        {/*<MenuItem onClick={() => saveToMongo()} icon="save" title="Store" />*/}
+        {/*<MenuItem onClick={() => saveToSolana()} icon="solana" title="Store onchain" />*/}
 
         <MenuItem onClick={openView} icon="play" title="Open view" />
 

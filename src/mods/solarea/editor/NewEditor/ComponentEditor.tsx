@@ -7,12 +7,15 @@ import { Snippets } from './Snippets';
 import { Accordion } from './components/Accordion';
 import Icon from './components/Icon';
 import { deleteQueryFromComponent, editQueryFromComponent } from './graphql-editor/api';
-import { toast } from '../../utils/toast';
+import { error, toast } from '../../utils/toast';
 import CodeMirror from '../CodeMirror';
 import { css, styled } from './SolariaEditTheme';
 import QueryEditor from './graphql-editor/QueryEditor';
 import { useQueryStore } from './graphql-editor/store/queriesStore';
 import { SolareaEditPreview } from './Preview';
+import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
+import { SolareaLinkData, SolareaViewData } from '../../storage-adapters/IStorageAdapter';
+import { mimeTypesData } from '../../utils/mime-types-data';
 
 const ComponentEditor = ({ viewId, params }) => {
   const { setCurrentQuery } = useQueryStore();
@@ -38,9 +41,50 @@ const ComponentEditor = ({ viewId, params }) => {
 
   const { componentQueries, refetch: refetchComponentQueries } = useComponentQueries(viewId);
 
-  const { setEditorValue, editorMaxWidth, initialCode, loadInitialCode } = useEditorStore();
+  const {
+    setEditorValue,
+    editorMaxWidth,
+    initialCode,
+    loadInitialCode,
+    link,
+    editorValue,
+  } = useEditorStore();
   const solanaStorage = useSolanaStorage();
   const restStorage = useRestStorage();
+
+  const getSaveData = (data?: Buffer, type?: number) => {
+    const linkId = link && link.includes('~') ? SolareaViewId.fromString(link) : undefined;
+
+    return linkId
+      ? new SolareaLinkData(viewId, linkId)
+      : new SolareaViewData(
+          viewId,
+          type || mimeTypesData['solarea/jsx'],
+          data || Buffer.from(editorValue),
+        );
+  };
+
+  const saveToMongo = async (data?: Buffer, type?: number) => {
+    try {
+      await restStorage.save(getSaveData(data, type));
+
+      await loadInitialCode(solanaStorage, restStorage, viewId.id);
+      toast('Successfully saved');
+    } catch (err: any) {
+      console.dir(err);
+      error(`Cant save: ${err.message} ${err.code || ''}`);
+    }
+  };
+
+  const saveToSolana = async (data?: Buffer, type?: number) => {
+    try {
+      await solanaStorage.save(getSaveData(data, type));
+
+      await loadInitialCode(solanaStorage, restStorage, viewId.id);
+    } catch (err) {
+      return toast('Sorry, something went wrong', 5000, '#f1224b');
+    }
+  };
 
   useEffect(() => {
     loadInitialCode(solanaStorage, restStorage, viewId);
@@ -92,6 +136,8 @@ const ComponentEditor = ({ viewId, params }) => {
           onChange={(value) => {
             setEditorValue(value);
           }}
+          onSave={saveToMongo}
+          onSaveToBC={saveToSolana}
         />
       </div>
       <SolareaEditPreview id={viewId.address} name={viewId.name} {...params} />

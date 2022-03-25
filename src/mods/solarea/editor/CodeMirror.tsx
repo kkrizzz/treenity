@@ -11,7 +11,7 @@ import Icon from './NewEditor/components/Icon';
 
 // import './codemirror-addons/keyword';
 
-export default function CodeMirror({ value, onChange }) {
+export default function CodeMirror({ value, onChange, onSave, onSaveToBC }) {
   const container = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView>();
 
@@ -53,9 +53,18 @@ export default function CodeMirror({ value, onChange }) {
     <CodeEditorContainer>
       <div className="code-editor__toolbar">
         <div>
-          <Icon name="addFile" />
-          <Icon name="addFolder" />
-          <Icon name="save" />
+          <span>
+            <Icon name="addFile" />
+          </span>
+          <span>
+            <Icon name="addFolder" />
+          </span>
+          <span onClick={onSave}>
+            <Icon name="save" />
+          </span>
+          <span onClick={onSave}>
+            <Icon name="saveToSolana" />
+          </span>
         </div>
         <div>
           <Icon name="share" />
@@ -88,6 +97,9 @@ const CodeEditorContainer = styled.div`
     border-bottom: 1px solid ${(p) => p.theme.colors.text.primary + '1a'};
     box-sizing: border-box;
 
+    span {
+      display: flex;
+    }
     svg {
       line-height: 0;
       opacity: 0.25;
@@ -103,11 +115,11 @@ const CodeEditorContainer = styled.div`
       align-items: center;
     }
 
-    & > div:first-child > svg {
+    & > div:first-child > * {
       margin-right: 4px;
     }
 
-    & > div:last-child > svg {
+    & > div:last-child > * {
       margin-left: 4px;
     }
   }
