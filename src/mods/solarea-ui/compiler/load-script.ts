@@ -1,6 +1,6 @@
 import { html } from 'htm/preact';
 import findLastIndex from 'lodash/findLastIndex';
-import { promised } from '../utils/promised';
+import { promised } from '../../solarea/utils/promised';
 
 export const loadedScripts: { [id: string]: any } = {};
 globalThis.__loadedScripts = loadedScripts;
@@ -12,6 +12,10 @@ function unload(id) {
   }
 }
 
+/**
+ * transpile JSX-like file to plain js-with-htm file
+ * @param code
+ */
 function fixHtmlInnerCode(code: string) {
   const inners: number[] = [];
   let prev = 0;
@@ -140,8 +144,7 @@ export function loadScript(id: string, code: string, context) {
 
   (async function() {
   try {
-    const { useAccount, useAccountTransactions, useCSS, css, require, useBitQuery, html, add, Render, render, preact, ...context } = __ls.context;
-    `}
+    const { useCSS, css, require, html, add, Render, render, preact, ...context } = __ls.context;`}
     ////////////// user code /////////////////
     
     ${fixedCode}

@@ -5,11 +5,15 @@ import { Container, PrimaryButton, SomeComponent, XCard } from './components';
 import { Card, Layout } from 'antd';
 
 const createDrag = (Component, inline = false): React.FC<any> => (props) => {
-  const { connectors: { connect, drag } } = useNode();
+  const {
+    connectors: { connect, drag },
+  } = useNode();
 
-  return (<div ref={ref => connect(drag(ref))} style={{ display: inline ? 'inline-block' : 'block' }}>
-    <Component {...props} />
-  </div>);
+  return (
+    <div ref={(ref) => connect(drag(ref!))} style={{ display: inline ? 'inline-block' : 'block' }}>
+      <Component {...props} />
+    </div>
+  );
 };
 
 const Btn = createDrag(PrimaryButton, true);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { loadScript } from '../compiler/load-script';
+import { loadScript } from '../../solarea-ui/compiler/load-script';
 import { makeId } from '../utils/make-id';
 import Render, { render } from '../render/Render';
 import { addComponent } from '../component-db';

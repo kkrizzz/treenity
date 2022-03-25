@@ -23,6 +23,8 @@
       <excludeFolder url="file://$MODULE_DIR$/solarea/-/stage.solarea.io" />
       <excludeFolder url="file://$MODULE_DIR$/solarea/-/velas.defi.parts" />
       <excludeFolder url="file://$MODULE_DIR$/solarea/-/defi.parts" />
+      <excludeFolder url="file://$MODULE_DIR$/src/mods/channels/.parcel-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/public/charting_library/bundles" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

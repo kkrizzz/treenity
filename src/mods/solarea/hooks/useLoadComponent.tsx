@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useAsyncEffect from 'use-async-effect';
 import { mimeTypesData } from '../utils/mime-types-data';
 import { addComponent, getComponent } from '../component-db';
-import { loadScript } from '../compiler/load-script';
+import { loadScript } from '../../solarea-ui/compiler/load-script';
 import { resolveViewByMime } from '../components/Files/Resolver';
 import { useRestStorage, useSolanaStorage } from '../storage-adapters/StorageProvider';
 import { SolareaViewId } from '../storage-adapters/SolareaViewId';
@@ -51,7 +51,7 @@ async function loadScriptComponent(address, name, context, apis: any[]) {
 
 interface ComponentInfo {}
 
-export function useLoadAccountComponent(
+export function useLoadComponent(
   address: string,
   name: string,
   context: string,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { addComponent, getComponent } from '../component-db';
-import { loadScript } from '../compiler/load-script';
+import { loadScript } from '../../solarea-ui/compiler/load-script';
 import { createExecutionContext } from '../utils/create-execution-context';
 import { useQuery } from 'react-query';
 

@@ -1,10 +1,8 @@
 import React from 'react';
 import { useAccount } from '../hooks/useAccount';
-import { useLoadAccountComponent } from '../hooks/useLoadComponent';
-import { Icon } from '../components/Icon';
-import { toast } from '../utils/toast';
-import { useEditorGridLayout } from '../editor/NewEditor/useEditorGridLayout';
+import { useLoadComponent } from '../hooks/useLoadComponent';
 import { useGraphQL } from '../hooks/useGraphQL';
+import { ComponentWrapper } from './ComponentWrapper';
 
 interface RenderProps {
   id: string;
@@ -13,24 +11,6 @@ interface RenderProps {
   children?: any;
 
   [more: string]: any;
-}
-
-function ComponentWrapper({ id, name, context, children, props, more }) {
-  const [, , addGridComponent] = useEditorGridLayout('default~react~default');
-
-  const saveTo = () => {
-    addGridComponent(id, name, context, { ...props, ...more });
-    toast('Added to grid "default"');
-  };
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <div style={{ top: 0, right: 0, zIndex: 100, position: 'absolute' }} onClick={saveTo}>
-        <Icon name="play" />
-      </div>
-      {children}
-    </div>
-  );
 }
 
 function Render(props: RenderProps) {
@@ -47,7 +27,7 @@ function Render(props: RenderProps) {
   } = props;
   const [componentInfo, isLoading] = loaderHook
     ? loaderHook(props)
-    : useLoadAccountComponent(id, name, context);
+    : useLoadComponent(id, name, context);
 
   // console.log('rendering', id, name, context, isLoading);
   if (isLoading) {

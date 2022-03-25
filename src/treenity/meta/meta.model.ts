@@ -16,8 +16,7 @@ import {
 } from 'mobx-state-tree/dist/types/complex-types/model';
 import { Instance } from 'mobx-state-tree/dist/internal';
 
-export interface Node {
-}
+export interface Node {}
 
 export const WithId = types.model('withid', {
   _id: types.string,
@@ -43,11 +42,13 @@ export const Meta = types
       Object.assign(self, obj);
     },
   }))
-  .views(self => ({
+  .views((self) => ({
     get node() {
       return getParent(self, 2);
     },
   }));
+
+export interface IMeta extends Instance<typeof Meta> {}
 
 // export function meta2<T extends IModelType<any, any>, T1 extends IModelType<any, any>(fn: (T) => T1) {
 //   const comp =
@@ -69,10 +70,8 @@ meta(
       some: types.string,
     })
     .actions((self) => ({
-      $doFavor() {
-      },
+      $doFavor() {},
 
-      $runOnServer() {
-      },
+      $runOnServer() {},
     })),
 );
