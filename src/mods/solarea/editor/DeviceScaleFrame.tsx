@@ -59,7 +59,8 @@ export const DeviceScaleFrame = ({ children, onRefresh, onToggleFullscreenMode, 
 
   useLayoutEffect(() => {
     if (!frameRef.current) return;
-    const context = frameRef.current.node.contentWindow;
+
+    const context = frameRef.current.contentWindow;
     globalThis.System.onload = () => {
       updateIframe({ iframeDocument: context.document, iframeWindow: context });
     };

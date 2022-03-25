@@ -59,7 +59,7 @@ const SolareaEditContainer = styled.div`
     background: ${(p) => p.theme.colors.fill.secondary};
     display: flex;
     align-items: stretch;
-    height: calc(100vh - 40px);
+    height: max(100vh - 40px, 800px);
   }
 `;
 
