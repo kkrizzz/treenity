@@ -13,14 +13,14 @@ import { ResourcesMeta } from '../metas/resource.meta';
 // function useResource(creator, changes) {
 //
 // }
-const nodeFactory = new MetaNodeFactory();
+const metaNodeFactory = new MetaNodeFactory();
 
 export const NodeGraph = (props) => {
-  useState();
+  // useState();
   const [engine, model] = useMemo(() => {
     //1) setup the diagram engine
     var engine = createEngine();
-    engine.getNodeFactories().registerFactory(nodeFactory);
+    engine.getNodeFactories().registerFactory(metaNodeFactory);
 
     //2) setup the diagram model
     var model = new DiagramModel();
@@ -56,7 +56,7 @@ export const NodeGraph = (props) => {
   const rand = (n, s = 0) => Math.floor(Math.random() * n) + s;
   const addNode = () => {
     const name = /*prompt('Node name', 'New node') ||*/ 'Unknown';
-    const node2 = nodeFactory.generateModelByMeta(
+    const node2 = metaNodeFactory.generateModelByMeta(
       ResourcesMeta.create({
         _id: 'some-id' + rand(1e8),
         resources: [

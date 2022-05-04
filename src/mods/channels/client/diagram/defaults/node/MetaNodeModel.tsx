@@ -22,6 +22,8 @@ export interface DefaultNodeModelGenerics extends NodeModelGenerics {
 export class MetaNodeModel extends NodeModel<DefaultNodeModelGenerics> {
   protected portsIn: DefaultPortModel[];
   protected portsOut: DefaultPortModel[];
+  protected portsCorner: DefaultPortModel[];
+
   public meta: IMeta;
 
   // constructor(name: string, color: string);
@@ -32,7 +34,7 @@ export class MetaNodeModel extends NodeModel<DefaultNodeModelGenerics> {
       id: meta._id,
       type: 'meta',
       name: typeName,
-      color: 'rgb(0,192,255)',
+      color: '#EFEFEF',
       ...options,
     });
     this.meta = meta;
@@ -40,6 +42,7 @@ export class MetaNodeModel extends NodeModel<DefaultNodeModelGenerics> {
 
     this.portsOut = []; //ports.filter((r) => !r.in);
     this.portsIn = []; // ports.filter((r) => r.in);
+    this.portsCorner = [];
 
     const ports = (meta as IResourceMeta).resources
       .map(
@@ -47,12 +50,30 @@ export class MetaNodeModel extends NodeModel<DefaultNodeModelGenerics> {
           new DefaultPortModel({ in: r.dir === 'in', name: r.name, label: r.name, id: r.name }),
       )
       .forEach((port) => this.addPort(port));
+
+    this.addCornerPort('start', PortModelAlignment.LEFT, true);
+    this.addCornerPort('stop', PortModelAlignment.RIGHT, false);
+    this.addCornerPort('error', PortModelAlignment.RIGHT, false);
   }
 
   doClone(lookupTable: {}, clone: any): void {
     clone.portsIn = [];
     clone.portsOut = [];
     super.doClone(lookupTable, clone);
+  }
+
+  addCornerPort(name: string, alignment: PortModelAlignment, isIn = true) {
+    const port = new DefaultPortModel({
+      in: isIn,
+      name: name,
+      label: name,
+      alignment,
+    });
+    super.addPort(port);
+    this.portsCorner.push(port);
+  }
+  getCornerPort(name: string): DefaultPortModel | undefined {
+    return this.portsCorner.find((p) => p.getOptions().name === name);
   }
 
   removePort(port: DefaultPortModel): void {

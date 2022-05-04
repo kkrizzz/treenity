@@ -1,7 +1,7 @@
 /.idea/shelf
 
 /.cache
-/.parcel-cache
+/**/.parcel-cache/
 /dist
 /legacy
 node_modules
