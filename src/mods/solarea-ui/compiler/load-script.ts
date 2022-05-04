@@ -156,7 +156,7 @@ export function loadScript(id: string, code: string, context) {
     __ls.onError(err);
   }
   })().catch(err => __ls.onError(err));
-  //# sourceURL=${id}.js`}`;
+  //# source${`URL`}=${id}.js`}`;
 
   try {
     const script = document.createElement('script');

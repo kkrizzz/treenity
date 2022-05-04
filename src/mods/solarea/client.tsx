@@ -18,8 +18,6 @@ import SolareaProgramApi from './program-api/solarea-program-api';
 import { StorageProvider } from './storage-adapters/StorageProvider';
 import { GlobalCSSRender } from './utils/GlobalCSSRender';
 
-config.isClient = true;
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
