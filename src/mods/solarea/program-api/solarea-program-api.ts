@@ -53,8 +53,8 @@ export default class SolareaProgramApi {
   createInstruction(
     walletPub: typeof PublicKey,
     address: Seed,
-    context: Seed,
     name: Seed,
+    context: Seed,
     dataLength: number,
     dataType: number,
   ): [typeof TransactionInstruction, typeof PublicKey] {
@@ -84,8 +84,8 @@ export default class SolareaProgramApi {
   createTransactions(
     walletPub: typeof PublicKey,
     address: string,
-    context: string,
     name: string,
+    context: string,
     data: Buffer,
     dataType: number,
     isUpdate: boolean = false,
@@ -93,8 +93,8 @@ export default class SolareaProgramApi {
     const [createInst, storagePub] = this.createInstruction(
       walletPub,
       address,
-      context,
       name,
+      context,
       data.length,
       dataType,
     );
@@ -158,4 +158,7 @@ export default class SolareaProgramApi {
     const data = accountData.slice(34);
     return { owner, type, data };
   }
+}
+function urlToAddressContext(url: string): [string, string, string] {
+  throw new Error('Function not implemented.');
 }

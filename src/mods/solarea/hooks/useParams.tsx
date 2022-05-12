@@ -3,14 +3,23 @@ import useLocation from './useLocation';
 const DEFAULT = 'default';
 const REACT = 'react';
 
+export function urlToAddressContext(url: string): [string, string, string] {
+  const [addr, name = DEFAULT, context = REACT] = url
+    .slice(url.indexOf(':') + 1)
+    .split('/')
+    .filter(Boolean);
+
+  return [addr, name, context];
+}
+
 export default function useParams() {
   const location = useLocation();
 
   const hostname = location.hostname;
   const names = hostname.split('.').reverse();
-  const paths = location.pathname.split('/').filter((i) => !!i);
+  const paths = location.pathname.split('/').filter(Boolean);
 
-  let addr, name, context;
+  const [addr, name = DEFAULT, context = REACT] = paths.length ? paths : [hostname];
 
   // has 2 or more subdomains
   // if (names.length >= 4) {
@@ -29,14 +38,14 @@ export default function useParams() {
   //   context = paths[1];
   // just domain name - 'meta.store'
   // } else
-  if (paths.length === 0) {
-    addr = hostname; //`${names[1]}.${names[0]}`;
-    // url site.name/addr/name/context - address with name in context
-  } else {
-    addr = paths[0];
-    name = paths[1];
-    context = paths[2];
-  }
+  // if (paths.length === 0) {
+  //   addr = hostname; //`${names[1]}.${names[0]}`;
+  //   // url site.name/addr/name/context - address with name in context
+  // } else {
+  //   addr = paths[0];
+  //   name = paths[1];
+  //   context = paths[2];
+  // }
   // some defaults if needed
-  return [addr, name || DEFAULT, context || REACT, hostname];
+  return [addr, name, context, hostname];
 }

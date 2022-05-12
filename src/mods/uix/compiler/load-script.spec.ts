@@ -1,4 +1,4 @@
-import { reactToHtmPreact } from './load-script';
+import { reactToHtmPreact } from './transpiler';
 
 describe('load-script', () => {
   describe('compilation', () => {

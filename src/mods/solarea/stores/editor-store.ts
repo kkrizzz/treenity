@@ -1,11 +1,11 @@
 import create from 'zustand';
-import { mimeTypesData } from '../utils/mime-types-data';
+import { mimeTypesData } from '../../uix/utils/mime-types-data';
 import { SolareaViewId } from '../storage-adapters/SolareaViewId';
 import {
   IStorageAdapter,
   SolareaLinkData,
   SolareaViewData,
-} from '../storage-adapters/IStorageAdapter';
+} from '../../uix/storage/adapters/IStorageAdapter';
 
 const doSet = (set, name: string, transform = (...x) => x[0]) => (...values) =>
   set((state) => ({

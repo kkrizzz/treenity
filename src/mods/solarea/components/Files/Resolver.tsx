@@ -3,6 +3,7 @@ import { ImageView } from './ImageView';
 import { applicationResolvers } from './applicationResolvers';
 import { AudioView } from './AudioView';
 import { textResolvers } from './textResolvers';
+import { mimeTypesData } from '../../../uix/utils/mime-types-data';
 
 export const resolveViewByMime = ({
   mimetype,

@@ -1,5 +1,5 @@
-import { makeId } from '../utils/make-id';
-import { createViewAddress } from '../program-api/solarea-program-api';
+import { makeUrl } from '../utils/make-url';
+// import { createViewAddress } from '../program-api/solarea-program-api';
 
 export class SolareaViewId {
   readonly address: string;
@@ -12,7 +12,7 @@ export class SolareaViewId {
     this.name = name || 'default';
     this.context = context || 'react';
 
-    this.id = makeId(this.address, this.name, this.context);
+    this.id = makeUrl(this.address, this.name, this.context);
   }
 
   static fromString(id: string): SolareaViewId {
@@ -20,7 +20,7 @@ export class SolareaViewId {
     return new SolareaViewId(address, name, context);
   }
 
-  get storageAddress() {
-    return createViewAddress(this.address, this.context, this.name);
-  }
+  // get storageAddress() {
+  //   return createViewAddress(this.address, this.context, this.name);
+  // }
 }

@@ -1,8 +1,9 @@
 import React from 'react';
-import { addComponent, getComponent } from '../component-db';
-import { loadScript } from '../../solarea-ui/compiler/load-script';
-import { createExecutionContext } from '../utils/create-execution-context';
 import { useQuery } from 'react-query';
+
+import { addComponent, getComponent } from '../db/component-db';
+import { loadScript } from '../compiler/load-script';
+import { createExecutionContext } from '../compiler/create-execution-context';
 
 interface RenderCodeProps {
   id: string;

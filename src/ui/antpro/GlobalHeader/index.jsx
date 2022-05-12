@@ -33,7 +33,7 @@ export default class GlobalHeader extends PureComponent {
     if (notices.length === 0) {
       return {};
     }
-    const newNotices = notices.map(notice => {
+    const newNotices = notices.map((notice) => {
       const newNotice = { ...notice };
       if (newNotice.datetime) {
         newNotice.datetime = dayjs(notice.datetime).fromNow();
@@ -129,7 +129,7 @@ export default class GlobalHeader extends PureComponent {
                 className="action search"
                 placeholder="Search"
                 options={[]}
-                onSearch={value => {
+                onSearch={(value) => {
                   console.log('input', value); // eslint-disable-line
                 }}
               />

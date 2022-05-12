@@ -8,22 +8,22 @@ import { DataflowMenuItem } from './components/DataflowMenuItem';
 import { testBlock } from './blocks/test-block';
 import { dataflowBlocks } from './blocks';
 import { Button, Input } from 'antd';
-import { block } from "./blocks/block";
+import { block } from './blocks/block';
 
 addComponent(Dataflow, 'react layout', {}, ({ onChange, value }) => {
   const initialSchema = createSchema({
     nodes: [
-        testBlock([100, 100]),
-        ...value.node.metas.map(meta => {
-          return block({content: `${meta._t}.${meta._id}`})
-        })
+      testBlock([100, 100]),
+      ...value.node.metas.map((meta) => {
+        return block({ content: `${meta._t}.${meta._id}` });
+      }),
     ],
   });
 
   const [schema, controller] = useSchema(initialSchema);
 
   const [additionalInfo, setAdditionalInfo] = React.useState(
-    schema.nodes.map((i) => ({ id: i.id }))
+    schema.nodes.map((i) => ({ id: i.id })),
   );
 
   const [selectedNodeId, setSelectedNodeId] = React.useState<any>(undefined);

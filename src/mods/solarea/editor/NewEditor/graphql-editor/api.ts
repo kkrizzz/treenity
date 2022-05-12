@@ -15,7 +15,7 @@ export const fetcher = (graphQLParams, query) => {
 };
 
 export const loadQueryFromComponent = (queryID: string): Promise<IComponentQuery[]> => {
-  const url = `/solarea/graphql/components/queries?componentID=${queryID}`;
+  const url = `/solarea/graphql/components/queries?componentID=${encodeURIComponent(queryID)}`;
   return fetch(url).then((r) => r.json() as Promise<Array<IComponentQuery>>);
 };
 

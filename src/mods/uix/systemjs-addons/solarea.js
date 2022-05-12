@@ -1,4 +1,5 @@
-import { SolareaViewId } from '../storage-adapters/SolareaViewId';
+import { apis } from '../storage/apis';
+import { SolareaViewId } from '../../solarea/storage-adapters/SolareaViewId';
 import { mimeTypesData } from '../utils/mime-types-data';
 import { hook } from './hook';
 
@@ -11,18 +12,16 @@ hook('fetch', async function (next, url) {
 
   const [, , address, name, context = 'code'] = url.split('/');
 
-  const id = new SolareaViewId(address, name, context);
+  url = `sol:${address}/${name}/${context}`;
 
-  const { solanaStorage, restStorage } = globalThis.solarea;
-
-  const [solSettle, restSettle] = await Promise.allSettled([
-    solanaStorage.get(id, { resolveLinks: true }),
-    restStorage.get(id, { resolveLinks: true }),
+  const [restSettle] = await Promise.allSettled([
+    // solanaStorage.get(id, { resolveLinks: true }),
+    apis.sol.get(url, { resolveLinks: true }),
   ]);
 
   const viewData =
-    (solSettle.status === 'fulfilled' && solSettle.value) ||
-    (restSettle.status === 'fulfilled' && restSettle.value);
+    // (solSettle.status === 'fulfilled' && solSettle.value) ||
+    restSettle.status === 'fulfilled' && restSettle.value;
 
   if (!viewData) return;
 

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import useEditorStore from '../../stores/editor-store';
 import { UploadPreview } from '../../components/Files/UploadPreview';
-import { mimeTypesData } from '../../utils/mime-types-data';
-import { useRestStorage, useSolanaStorage } from '../../storage-adapters/StorageProvider';
+import { mimeTypesData } from '../../../uix/utils/mime-types-data';
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
-import { SolareaLinkData, SolareaViewData } from '../../storage-adapters/IStorageAdapter';
+import { SolareaLinkData, SolareaViewData } from '../../../uix/storage/adapters/IStorageAdapter';
 import { error, toast } from '../../utils/toast';
 import { MenuItem } from './EditorMenu';
 import { Tooltip } from './components/Tooltip';
@@ -14,6 +13,8 @@ import { Modal } from '../../components/Modal/Modal';
 import { CodeUploaderWithPreview } from './CodeUploaderWithPreview';
 import { styled } from './SolariaEditTheme';
 import NewIcon from './components/Icon';
+import { useRestStorage } from '../../../uix/storage/adapters/RestStorageAdapter';
+// import { useSolanaStorage } from '../../storage-adapters/SolanaStorageAdapter';
 
 const SolareaLogo = () => (
   <svg
@@ -110,7 +111,7 @@ export const SolareaEditMenu = ({ id, name, onSelectTab, currentTab }) => {
   const [uploadToSolanaStarted, setUploadToSolanaStarted] = useState(false);
 
   const restStorage = useRestStorage();
-  const solanaStorage = useSolanaStorage();
+  // const solanaStorage = useSolanaStorage();
 
   const getSaveData = (data?: Buffer, type?: number) => {
     const linkId = link && link.includes('~') ? SolareaViewId.fromString(link) : undefined;
@@ -131,7 +132,7 @@ export const SolareaEditMenu = ({ id, name, onSelectTab, currentTab }) => {
     try {
       await restStorage.save(getSaveData(data, type));
 
-      await loadInitialCode(solanaStorage, restStorage, id);
+      await loadInitialCode(restStorage, id);
       toast('Successfully saved');
     } catch (err: any) {
       console.dir(err);
@@ -144,12 +145,12 @@ export const SolareaEditMenu = ({ id, name, onSelectTab, currentTab }) => {
       setUploadingToSolana(true);
       setUploadToSolanaStarted(true);
 
-      await solanaStorage.save(getSaveData(data, type)).finally(() => {
-        setUploadingToSolana(false);
-        setUploadToSolanaStarted(false);
-      });
+      // await solanaStorage.save(getSaveData(data, type)).finally(() => {
+      //   setUploadingToSolana(false);
+      //   setUploadToSolanaStarted(false);
+      // });
 
-      await loadInitialCode(solanaStorage, restStorage, id);
+      await loadInitialCode(restStorage, id);
     } catch (err) {
       return toast('Sorry, something went wrong', 5000, '#f1224b');
     }

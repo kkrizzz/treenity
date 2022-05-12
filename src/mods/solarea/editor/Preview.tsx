@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { loadScript } from '../../solarea-ui/compiler/load-script';
-import { makeId } from '../utils/make-id';
+import { loadScript } from '../../uix/compiler/load-script';
+import { makeUrl } from '../utils/make-url';
 import Render, { render } from '../render/Render';
-import { addComponent } from '../component-db';
-import { ErrorBoundary } from '../components/ErrorBoundary';
+import { addComponent } from '../../uix/db/component-db';
+import { ErrorBoundary } from '../../uix/utils/ErrorBoundary';
 import { useEditorSelect } from '../stores/editor-store';
-import { createExecutionContext } from '../utils/create-execution-context';
-import { GlobalCSSRender } from '../utils/GlobalCSSRender';
+import { createExecutionContext } from '../../uix/compiler/create-execution-context';
+import { GlobalCSSRender } from '../../uix/utils/GlobalCSSRender';
 import useParams from '../hooks/useParams';
 
 export function Preview({ accountData, code, id, name, context, ...params }) {
@@ -19,7 +19,7 @@ export function Preview({ accountData, code, id, name, context, ...params }) {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      await loadScript(makeId(currentAddress || id, name, context), code, {
+      await loadScript(makeUrl(currentAddress || id, name, context), code, {
         ...createExecutionContext(),
         add(component) {
           addComponent(currentAddress || id, name, context, {}, component);

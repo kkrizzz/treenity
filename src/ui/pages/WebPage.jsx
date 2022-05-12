@@ -15,10 +15,12 @@ import composeWithTracker from '../utils/withTracker';
 
 export const WebPageComponent = ({ root, current, currentNode, params, allChildren }) => {
   return (
-    <CurrentNodeProvider value={{
-      current, setCurrent: () => {
-      },
-    }}>
+    <CurrentNodeProvider
+      value={{
+        current,
+        setCurrent: () => {},
+      }}
+    >
       {current ? (
         <MetaContext context="react" name="layout">
           <Layout>

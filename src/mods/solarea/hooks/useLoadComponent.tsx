@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import useAsyncEffect from 'use-async-effect';
-import { mimeTypesData } from '../utils/mime-types-data';
-import { addComponent, getComponent } from '../component-db';
-import { loadScript } from '../../solarea-ui/compiler/load-script';
+import { mimeTypesData } from '../../uix/utils/mime-types-data';
+import { addComponent, getComponent } from '../../uix/db/component-db';
+import { loadScript } from '../../uix/compiler/load-script';
 import { resolveViewByMime } from '../components/Files/Resolver';
-import { useRestStorage, useSolanaStorage } from '../storage-adapters/StorageProvider';
 import { SolareaViewId } from '../storage-adapters/SolareaViewId';
-import { createExecutionContext } from '../utils/create-execution-context';
+import { createExecutionContext } from '../../uix/compiler/create-execution-context';
+import { useRestStorage } from '../../uix/storage/adapters/RestStorageAdapter';
+import { useSolanaStorage } from '../storage-adapters/SolanaStorageAdapter';
 
 const addressRegEx = /^[A-z0-9:\.\-_]+$/;
 

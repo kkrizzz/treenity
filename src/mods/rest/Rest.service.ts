@@ -28,12 +28,10 @@ interface ctx extends HookContext {
 const loadFromFs = async (app, context: ctx, value: any) => {
   try {
     if (!value.fileSystem) throw new Error('no filesystem');
+    const fileName = context.id.replace(/~/g, '/') + '.jsx';
     const checkInFs = await fs
-      .readFile(`${value.fileSystem}/${context.id}.jsx`, 'utf-8')
-      .catch(() => fs.readFile(`${value.fileSystem}/${context.id.replace(/~/g, '/')}.jsx`, 'utf-8'))
-      .catch(() =>
-        fs.readFile(`${value.fileSystem}/-/${context.id.replace(/~/g, '/')}.jsx`, 'utf-8'),
-      );
+      .readFile(`${value.fileSystem}/${fileName}`, 'utf-8')
+      .catch(() => fs.readFile(`${value.fileSystem}/-/${fileName}`, 'utf-8'));
     if (checkInFs)
       context.result = {
         data: checkInFs,
@@ -41,7 +39,9 @@ const loadFromFs = async (app, context: ctx, value: any) => {
         type: 1,
         _id: context.id,
       };
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+  }
   return context;
 };
 

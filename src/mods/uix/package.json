@@ -1,0 +1,28 @@
+{
+  "name": "uix",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "uix:serve": "NODE_ENV=development parcel serve --port 3103 index.html --dist-dir ../../dist/uix",
+    "uix:build": "NODE_ENV=production parcel build ./index.html --dist-dir ../../../dist/uix-prod",
+    "uix:analyze": "yarn uix:build --reporter @parcel/reporter-bundle-analyzer",
+    "clean": "rm -rf .parcel-cache dist"
+  },
+  "alias": {
+    "react": "preact/compat",
+    "react-dom": "preact/compat"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "htm": "^3.1.1",
+    "lodash.get": "^4.4.2",
+    "lodash.memoize": "^4.1.2",
+    "lodash.set": "^4.3.2",
+    "preact": "^10.7.1",
+    "swr": "^1.3.0",
+    "use-async-effect": "^2.2.5"
+  },
+  "devDependencies": {
+    "parcel": "^2.5.0"
+  }
+}

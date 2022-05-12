@@ -839,8 +839,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   vertical-align: top;
   white-space: normal;
   /* Hack to make IE7 behave */
-  /**zoom:1;*/
-  /**display:inline;*/
+  zoom:1;
+  display:inline;
 }
 
 .CodeMirror-gutter-wrapper {

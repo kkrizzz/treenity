@@ -1,5 +1,5 @@
 import React from 'react';
-import { addComponent } from '../component-db';
+import { addComponent } from '../../uix/db/component-db';
 
 addComponent('default', 'default', 'react', {}, () => (
   <div>

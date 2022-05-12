@@ -1,14 +1,16 @@
-import { ServiceMethods } from '@feathersjs/feathers';
-import { errors, FeathersError } from '@feathersjs/errors';
+// import { ServiceMethods } from '@feathersjs/feathers';
+// import { errors, FeathersError } from '@feathersjs/errors';
 
 function checkError(req: any) {
   if (req.status >= 300) {
-    if (errors[req.status]) throw new errors[req.status]();
-    throw new FeathersError(req.statusText, 'Error', req.status, '', {});
+    // if (errors[req.status]) throw new errors[req.status]();
+    // throw new FeathersError(req.statusText, 'Error', req.status, '', {});
+    throw new Error(req.statusText + ' Error: ' + req.status);
   }
 }
 
-class RestStorageManager<T> implements ServiceMethods<T> {
+class RestStorageManager<T> {
+  //implements ServiceMethods<T> {
   constructor(
     private baseUrl: string,
     private session: string,

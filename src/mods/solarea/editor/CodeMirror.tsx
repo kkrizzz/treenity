@@ -11,7 +11,7 @@ import Icon from './NewEditor/components/Icon';
 
 // import './codemirror-addons/keyword';
 
-export default function CodeMirror({ value, onChange, onSave, onSaveToBC }) {
+export default function CodeMirror({ value, onChange, onSave /*, onSaveToBC*/ }) {
   const container = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView>();
 

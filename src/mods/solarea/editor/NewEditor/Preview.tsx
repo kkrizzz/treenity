@@ -2,7 +2,7 @@ import useEditorStore from '../../stores/editor-store';
 import React, { useMemo } from 'react';
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
 import { DeviceScaleFrame } from '../DeviceScaleFrame';
-import { ErrorBoundary } from '../../components/ErrorBoundary';
+import { ErrorBoundary } from '../../../uix/utils/ErrorBoundary';
 import Render from '../../render/Render';
 import { Preview } from '../Preview';
 

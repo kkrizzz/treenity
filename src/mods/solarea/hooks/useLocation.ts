@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'preact';
 
 history.pushState = function pushState(data, title, url) {
   History.prototype.pushState.call(history, data, title, url);

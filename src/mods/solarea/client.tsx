@@ -1,22 +1,25 @@
 import React from 'react';
 import { html, render } from 'htm/preact';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ConnectionProvider } from './hooks/useConnection';
+// import { ConnectionProvider } from './hooks/useConnection';
 
 // XXX global imports
-import './systemjs-addons/css';
-import './systemjs-addons/solarea';
+import '../uix/systemjs-addons/css';
+import '../uix/systemjs-addons/solarea';
 import './global-imports';
-import './index.css';
+// import './index.css';
 
 import config from '../../config-common';
+config.isClient = true;
+
 import SolareaRoute from './SolareaRoute';
 import './components/DefaultComponents';
-import { WalletProvider } from './utils/wallet';
-import WalletConnect from './components/WalletConnect';
-import SolareaProgramApi from './program-api/solarea-program-api';
-import { StorageProvider } from './storage-adapters/StorageProvider';
-import { GlobalCSSRender } from './utils/GlobalCSSRender';
+// import { WalletProvider } from './utils/wallet';
+// import WalletConnect from './components/WalletConnect';
+// import SolareaProgramApi from './program-api/solarea-program-api';
+import { StorageProvider } from '../uix/storage/adapters/StorageProvider';
+import { GlobalCSSRender } from '../uix/utils/GlobalCSSRender';
+import { ErrorBoundary } from '../uix/utils/ErrorBoundary';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,16 +29,18 @@ const queryClient = new QueryClient({
   },
 });
 
-export const solareaApi = new SolareaProgramApi();
+// export const solareaApi = new SolareaProgramApi();
 
 const inject = (comp) => (
-  <QueryClientProvider client={queryClient}>
+  <ErrorBoundary>
     <GlobalCSSRender />
-    <WalletProvider>
-      <WalletConnect />
+    <QueryClientProvider client={queryClient}>
+      {/*<WalletProvider>*/}
+      {/*  <WalletConnect />*/}
       <StorageProvider>{comp}</StorageProvider>
-    </WalletProvider>
-  </QueryClientProvider>
+      {/*</WalletProvider>*/}
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 const App = () => {

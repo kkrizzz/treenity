@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { createGlobalStyle } from 'styled-components';
+import { Global, css } from '@emotion/react';
 
 type Style = { css: string; id: string; count: number };
 
@@ -28,9 +28,9 @@ export const removeStyle = (id: string) => {
   }
 };
 
-const GlobalStyle = createGlobalStyle`
-  ${(p) => p.css}
-`;
+// const GlobalStyle = createGlobalStyle`
+//   ${(p) => p.css}
+// `;
 
 export const GlobalCSSRender = () => {
   const [, update] = React.useState(0);
@@ -42,7 +42,7 @@ export const GlobalCSSRender = () => {
   return (
     <>
       {globalStyles.map((style) => (
-        <GlobalStyle css={style.css} />
+        <Global styles={css(style.css)} />
       ))}
     </>
   );

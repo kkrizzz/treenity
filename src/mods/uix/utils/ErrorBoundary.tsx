@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -24,9 +24,12 @@ export class ErrorBoundary extends React.Component {
 
   render() {
     const { error } = this.state;
+    useEffect(() => {
+      if (error) console.error('ErrorBoundary', error);
+    }, [error]);
     if (error) {
       // You can render any custom fallback UI
-      return <div className="card error">{error.message}</div>;
+      return <pre className="card error">{error.stack}</pre>;
     }
 
     return this.props.children;

@@ -1,4 +1,4 @@
-export const MONGO_SERVICE_URL = '/solarea/api';
+export const REST_SERVICE_URL = '/solarea/api';
 
 export const SESSION_SERVICE_URL = '/solarea/sessionid';
 

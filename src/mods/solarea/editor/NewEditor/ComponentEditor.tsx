@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import useComponentQueries from './useComponentQueries';
 import useEditorStore from '../../stores/editor-store';
-import { useRestStorage, useSolanaStorage } from '../../storage-adapters/StorageProvider';
 import { Snippets } from './Snippets';
 import { Accordion } from './components/Accordion';
 import Icon from './components/Icon';
@@ -14,8 +13,10 @@ import QueryEditor from './graphql-editor/QueryEditor';
 import { useQueryStore } from './graphql-editor/store/queriesStore';
 import { SolareaEditPreview } from './Preview';
 import { SolareaViewId } from '../../storage-adapters/SolareaViewId';
-import { SolareaLinkData, SolareaViewData } from '../../storage-adapters/IStorageAdapter';
-import { mimeTypesData } from '../../utils/mime-types-data';
+import { SolareaLinkData, SolareaViewData } from '../../../uix/storage/adapters/IStorageAdapter';
+import { mimeTypesData } from '../../../uix/utils/mime-types-data';
+import { useRestStorage } from '../../../uix/storage/adapters/RestStorageAdapter';
+// import { useSolanaStorage } from '../../storage-adapters/SolanaStorageAdapter';
 
 const ComponentEditor = ({ viewId, params }) => {
   const { setCurrentQuery } = useQueryStore();
@@ -49,7 +50,7 @@ const ComponentEditor = ({ viewId, params }) => {
     link,
     editorValue,
   } = useEditorStore();
-  const solanaStorage = useSolanaStorage();
+  // const solanaStorage = useSolanaStorage();
   const restStorage = useRestStorage();
 
   const getSaveData = (data?: Buffer, type?: number) => {
@@ -68,7 +69,7 @@ const ComponentEditor = ({ viewId, params }) => {
     try {
       await restStorage.save(getSaveData(data, type));
 
-      await loadInitialCode(solanaStorage, restStorage, viewId.id);
+      await loadInitialCode(restStorage, viewId.id);
       toast('Successfully saved');
     } catch (err: any) {
       console.dir(err);
@@ -76,18 +77,18 @@ const ComponentEditor = ({ viewId, params }) => {
     }
   };
 
-  const saveToSolana = async (data?: Buffer, type?: number) => {
-    try {
-      await solanaStorage.save(getSaveData(data, type));
-
-      await loadInitialCode(solanaStorage, restStorage, viewId.id);
-    } catch (err) {
-      return toast('Sorry, something went wrong', 5000, '#f1224b');
-    }
-  };
+  // const saveToSolana = async (data?: Buffer, type?: number) => {
+  //   try {
+  //     await solanaStorage.save(getSaveData(data, type));
+  //
+  //     await loadInitialCode(solanaStorage, restStorage, viewId.id);
+  //   } catch (err) {
+  //     return toast('Sorry, something went wrong', 5000, '#f1224b');
+  //   }
+  // };
 
   useEffect(() => {
-    loadInitialCode(solanaStorage, restStorage, viewId);
+    loadInitialCode(restStorage, viewId);
   }, []);
 
   if (showQueryEditor)
@@ -137,7 +138,7 @@ const ComponentEditor = ({ viewId, params }) => {
             setEditorValue(value);
           }}
           onSave={saveToMongo}
-          onSaveToBC={saveToSolana}
+          // onSaveToBC={saveToSolana}
         />
       </div>
       <SolareaEditPreview id={viewId.address} name={viewId.name} {...params} />

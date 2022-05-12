@@ -2,17 +2,22 @@ import { Connection, PublicKey, sendAndConfirmRawTransaction, Transaction } from
 import memoize from 'lodash/memoize';
 import { WalletAdapterInterface } from '../utils/wallet';
 import { SolareaViewId } from './SolareaViewId';
-import { solareaApi } from '../client';
+// import { solareaApi } from '../client';
 import { promiseSequence } from '../../../utils/promise-sequence';
 import {
   IGetStorageOptions,
   IStorageAdapter,
   SolareaLinkData,
   SolareaViewData,
-} from './IStorageAdapter';
+} from '../../uix/storage/adapters/IStorageAdapter';
 import { getMultipleAccounts } from '../utils/get-multiple-accounts';
 import { sleep } from '../utils/sleep';
-import { mimeTypesData } from '../utils/mime-types-data';
+import { mimeTypesData } from '../../uix/utils/mime-types-data';
+import { createContext, useContext } from 'react';
+import SolareaProgramApi, { createViewAddress } from '../program-api/solarea-program-api';
+import { urlToAddressContext } from '../hooks/useParams';
+
+export const solareaApi = new SolareaProgramApi();
 
 const sendTransaction = (connection: Connection, t: Transaction) =>
   sendAndConfirmRawTransaction(connection, t.serialize(), {
@@ -66,8 +71,8 @@ export class SolanaStorageAdapter implements IStorageAdapter {
     return true;
   }
 
-  async _loadViewData(id: SolareaViewId): Promise<SolareaViewData> {
-    const [storageAddress] = id.storageAddress;
+  async _loadViewData(url: string): Promise<SolareaViewData> {
+    const [storageAddress] = urlToStorageAddress(url);
 
     const accountData = await loadSolanaAccount(this.connection, storageAddress);
     if (!accountData) throw new Error('not_found');
@@ -75,16 +80,16 @@ export class SolanaStorageAdapter implements IStorageAdapter {
     const { owner, data, type } = solareaApi.unpackData(accountData);
 
     if (type === mimeTypesData['solarea/link']) {
-      return new SolareaLinkData(id, SolareaViewId.fromString(data.toString('utf-8')), [owner]);
+      return new SolareaLinkData(url, SolareaViewId.fromString(data.toString('utf-8')).id, [owner]);
     }
 
-    const viewData = new SolareaViewData(id, type, data, [owner]);
+    const viewData = new SolareaViewData(url, type, data, [owner]);
     viewData.dataSource = 'solana';
     return viewData;
   }
 
-  async get(id: SolareaViewId, opts?: IGetStorageOptions): Promise<SolareaViewData> {
-    let viewData = await this._loadViewData(id);
+  async get(url: string, opts?: IGetStorageOptions): Promise<SolareaViewData> {
+    let viewData = await this._loadViewData(url);
 
     if (opts?.resolveLinks) {
       while (viewData.type === mimeTypesData['solarea/link']) {
@@ -98,16 +103,15 @@ export class SolanaStorageAdapter implements IStorageAdapter {
   async save(data: SolareaViewData): Promise<void> {
     if (!this.validateWallet()) return;
 
-    const { address, context, name } = data.id;
-
-    const [storageAddress] = data.id.storageAddress;
+    const [storageAddress] = urlToStorageAddress(data.url);
     const account = await this.connection.getAccountInfo(storageAddress);
     const isUpdate = !!account;
+    const [addr, name, context] = urlToAddressContext(data.url);
     const [txs, _storageAddress] = solareaApi.createTransactions(
       this.walletConnection.wallet.publicKey,
-      address,
-      context,
+      addr,
       name,
+      context,
       data.data,
       data.type,
       isUpdate,
@@ -128,9 +132,9 @@ export class SolanaStorageAdapter implements IStorageAdapter {
     console.log('storageAddress - ', storageAddress);
   }
 
-  async remove(id: SolareaViewId): Promise<void> {
+  async remove(url: string): Promise<void> {
     const walletPub = this.walletConnection.wallet.publicKey;
-    const [storageAddress] = id.storageAddress;
+    const [storageAddress] = urlToStorageAddress(url);
 
     const transaction = new Transaction().add(
       solareaApi.removeInstruction(walletPub, storageAddress),
@@ -142,4 +146,17 @@ export class SolanaStorageAdapter implements IStorageAdapter {
     const signed = await this.walletConnection.wallet.signTransaction(transaction);
     await sendTransaction(this.connection, signed);
   }
+}
+
+export const SolanaStorageContext = createContext<SolanaStorageAdapter | null>(null);
+
+export function useSolanaStorage(): SolanaStorageAdapter {
+  const adapter = useContext(SolanaStorageContext);
+  if (!adapter) throw new Error('Solana storage adapter not present in context');
+
+  return adapter;
+}
+
+function urlToStorageAddress(url: string): [PublicKey, number] {
+  return createViewAddress(...urlToAddressContext(url));
 }

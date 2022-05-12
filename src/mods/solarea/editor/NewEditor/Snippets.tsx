@@ -2,7 +2,7 @@ import { Accordion } from './components/Accordion';
 import React, { FC } from 'react';
 import { useEditorSelect } from '../../stores/editor-store';
 import { key } from '../../utils/keyCode';
-import { makeId } from '../../utils/make-id';
+import { makeUrl } from '../../utils/make-url';
 
 import './Snippets.scss';
 import Input from './components/Input';
@@ -13,7 +13,7 @@ const LinkSelector = () => {
 
   const onBlurLinkInput = (e) => {
     const { value } = e.target;
-    const linkId = !value || value.includes('~') ? value : makeId(value, 'default', 'react');
+    const linkId = !value || value.includes('~') ? value : makeUrl(value, 'default', 'react');
     setLink(linkId);
     e.target.value = linkId;
   };

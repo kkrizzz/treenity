@@ -103,7 +103,7 @@ export const DeviceScaleFrame = ({ children, onRefresh, onToggleFullscreenMode, 
         }}
       >
         <Frame
-          ref={(ref) => (frameRef.current = ref)}
+          forwardedRef={frameRef}
           head={<meta name="viewport" content="width=device-width, initial-scale=1.0" />}
           style={{
             ...iFrameBodyViewport.styles,

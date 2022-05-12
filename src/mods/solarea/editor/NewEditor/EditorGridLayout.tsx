@@ -3,7 +3,7 @@ import GridLayout from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './EditorGridLayout.css';
-import { makeId } from '../../utils/make-id';
+import { makeUrl } from '../../utils/make-url';
 import Render from '../../render/Render';
 import { Icon } from '../../components/Icon';
 import { useEditorGridLayout } from './useEditorGridLayout';
@@ -11,7 +11,7 @@ import { EditorLayoutItem } from './gridLayoutTypes';
 
 export const EditorGridLayout = ({ id, name, context }) => {
   const viewId = useMemo(() => {
-    return makeId(id, name, context);
+    return makeUrl(id, name, context);
   }, [id, name, context]);
 
   const [targetId, setTargetId] = React.useState('');
